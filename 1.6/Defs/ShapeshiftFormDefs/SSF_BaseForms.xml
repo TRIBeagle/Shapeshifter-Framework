@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- 완전 변신 베이스: 인간 파츠와 의상/무기/유전자 기본 숨김 -->
+  <ShapeshifterFramework.ShapeshiftFormDef Name="SSF_BaseForm_Animal" Abstract="True">
+    <body><mode>Replace</mode></body>
+    <head><mode>Hidden</mode></head>
+    <hair><mode>Hidden</mode></hair>
+    <beard><mode>Hidden</mode></beard>
+    <tattooBody><mode>Hidden</mode></tattooBody>
+    <tattooHead><mode>Hidden</mode></tattooHead>
+
+    <renderHideApparelLayers><li>All</li></renderHideApparelLayers>
+    <renderHideApparelDefNames><li>All</li></renderHideApparelDefNames>
+    <renderHideWeaponTags><li>All</li></renderHideWeaponTags>
+    <renderHideWeaponDefNames><li>All</li></renderHideWeaponDefNames>
+    <renderHideGeneExclusionTags><li>All</li></renderHideGeneExclusionTags>
+    <renderHideGeneDefNames><li>All</li></renderHideGeneDefNames>
+
+    <bodyDrawScale>1.0</bodyDrawScale>
+    <headDrawScale>1.0</headDrawScale>
+    <bodyOffset>(0,0)</bodyOffset>
+    <headOffset>(0,0)</headOffset>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 휴머노이드 베이스: 사람 파츠 유지, 모자만 기본 숨김 -->
+  <ShapeshifterFramework.ShapeshiftFormDef Name="SSF_BaseForm_Humanoid" Abstract="True">
+    <body><mode>Default</mode></body>
+    <head><mode>Default</mode></head>
+    <hair><mode>Default</mode></hair>
+    <beard><mode>Default</mode></beard>
+    <tattooBody><mode>Default</mode></tattooBody>
+    <tattooHead><mode>Default</mode></tattooHead>
+
+    <renderHideApparelLayers><li>Overhead</li></renderHideApparelLayers>
+
+    <bodyDrawScale>1.0</bodyDrawScale>
+    <headDrawScale>1.0</headDrawScale>
+    <bodyOffset>(0,0)</bodyOffset>
+    <headOffset>(0,0)</headOffset>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+</Defs>

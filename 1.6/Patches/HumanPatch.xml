@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- Human ThingDef에 CompShapeshifter / CompShapeshiftRangeToggle 두 개 모두 부착 -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>/Defs/ThingDef[defName="Human"]/comps</xpath>
+
+    <!-- comps 노드가 없으면 새로 만들며 두 컴프를 함께 추가 -->
+    <nomatch Class="PatchOperationAdd">
+      <xpath>/Defs/ThingDef[defName="Human"]</xpath>
+      <value>
+        <comps>
+          <li>
+            <compClass>ShapeshifterFramework.Comps.CompShapeshifter</compClass>
+          </li>
+        </comps>
+      </value>
+    </nomatch>
+
+    <!-- comps가 이미 있다면, 각각 중복 없을 때만 추가 -->
+    <match Class="PatchOperationSequence">
+      <operations>
+        <li Class="PatchOperationAdd">
+          <xpath>/Defs/ThingDef[defName="Human"]/comps[not(li/compClass="ShapeshifterFramework.Comps.CompShapeshifter")]</xpath>
+          <value>
+            <li>
+              <compClass>ShapeshifterFramework.Comps.CompShapeshifter</compClass>
+            </li>
+          </value>
+        </li>
+      </operations>
+    </match>
+  </Operation>
+</Patch>

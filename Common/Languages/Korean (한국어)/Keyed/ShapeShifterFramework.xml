@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <!-- Gizmo / Commands -->
+  <ShapeshiftCommandLabel>변신: {0}</ShapeshiftCommandLabel>
+  <ShapeshiftCommandDesc>변신 폼: {0}</ShapeshiftCommandDesc>
+  <ShapeshiftRevertLabel>변신 해제</ShapeshiftRevertLabel>
+  <ShapeshiftRevertDesc>변신을 해제합니다</ShapeshiftRevertDesc>
+  <ShapeshiftRevertDesc_WithTime>변신이 {0:0.0}초 남음</ShapeshiftRevertDesc_WithTime>
+  <ShapeshiftSwitchLabel>전환: {0}</ShapeshiftSwitchLabel>
+  <ShapeshiftSwitchDesc>전환 폼: {0}</ShapeshiftSwitchDesc>
+
+  <!-- Dropdown menu titles (폼이 많을 때) -->
+  <ShapeshiftMenuChooseLabel>변신: 폼 선택</ShapeshiftMenuChooseLabel>
+  <ShapeshiftMenuChooseDesc>변신할 폼을 선택합니다.</ShapeshiftMenuChooseDesc>
+  <ShapeshiftMenuSwitchLabel>변신: 폼 전환</ShapeshiftMenuSwitchLabel>
+  <ShapeshiftMenuSwitchDesc>다른 폼으로 전환합니다.</ShapeshiftMenuSwitchDesc>
+
+  <!-- 변신 실패 메시지(allowedFromForms 등 조건 불충족) -->
+  <Shapeshift_CannotTransform>{0} 형태로 변신할 수 없습니다.</Shapeshift_CannotTransform>
+
+  <!-- Gene overlay -->
+  <ShapeshiftGeneAppearanceHidden>변신({0}) 효과: 외형만 숨김</ShapeshiftGeneAppearanceHidden>
+
+  <!-- Stat/Capacity explain lines -->
+  <ShapeshiftStatFactor>변신 ({0}): ×{1}</ShapeshiftStatFactor>
+  <ShapeshiftStatOffset>변신 ({0}): {1}</ShapeshiftStatOffset>
+  <ShapeshiftCapacityFactor>변신 ({0}): ×{1}</ShapeshiftCapacityFactor>
+  <ShapeshiftCapacityOffset>변신 ({0}): {1}</ShapeshiftCapacityOffset>
+
+  <!-- Settings -->
+  <MaxInlineGizmoCountSetting_title>변신 버튼 최대 개수</MaxInlineGizmoCountSetting_title>
+  <MaxInlineGizmoCountSetting_Desc>폼 수가 이 값을 초과하면 드롭다운 메뉴(목록)로 전환됩니다.</MaxInlineGizmoCountSetting_Desc>
+  <EnablePortraitScaleSetting_title>포트레잇 배율 적용</EnablePortraitScaleSetting_title>
+  <EnablePortraitScaleSetting_desc>각 폼의 portraitDrawScale 값을 정보창 포트레잇에 적용합니다. 포트레잇 바 계열 모드와 충돌하면 꺼 주세요.</EnablePortraitScaleSetting_desc>
+  <ScaleHeldWeaponsSetting_title>장비 무기 크기를 바디 배율에 연동</ScaleHeldWeaponsSetting_title>
+  <ScaleHeldWeaponsSetting_desc>변신 바디 드로우 배율에 맞춰 들고 있는 무기 그래픽을 등방으로 확대/축소합니다. 다른 무기 크기 조절 모드와 충돌하면 꺼 주세요.</ScaleHeldWeaponsSetting_desc>
+  <resetAllSetting_title>모두 기본값으로</resetAllSetting_title>
+
+  <!-- Fallback (일부 코드에서 폴백으로 사용) -->
+  <Shapeshift>변신</Shapeshift>
+</LanguageData>

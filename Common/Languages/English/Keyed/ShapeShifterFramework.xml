@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <!-- Gizmo / Commands -->
+  <ShapeshiftCommandLabel>Shapeshift: {0}</ShapeshiftCommandLabel>
+  <ShapeshiftCommandDesc>Form: {0}</ShapeshiftCommandDesc>
+  <ShapeshiftRevertLabel>Revert</ShapeshiftRevertLabel>
+  <ShapeshiftRevertDesc>Revert shapeshift</ShapeshiftRevertDesc>
+  <ShapeshiftRevertDesc_WithTime>{0:0.0}s remaining</ShapeshiftRevertDesc_WithTime>
+  <ShapeshiftSwitchLabel>Switch: {0}</ShapeshiftSwitchLabel>
+  <ShapeshiftSwitchDesc>Switch form: {0}</ShapeshiftSwitchDesc>
+
+  <!-- Dropdown menu titles -->
+  <ShapeshiftMenuChooseLabel>Shapeshift: Choose form</ShapeshiftMenuChooseLabel>
+  <ShapeshiftMenuChooseDesc>Select a form to shapeshift into.</ShapeshiftMenuChooseDesc>
+  <ShapeshiftMenuSwitchLabel>Shapeshift: Switch form</ShapeshiftMenuSwitchLabel>
+  <ShapeshiftMenuSwitchDesc>Switch to another form.</ShapeshiftMenuSwitchDesc>
+
+  <!-- Fail message used when a form cannot be entered (allowedFromForms etc.) -->
+  <Shapeshift_CannotTransform>Cannot transform to {0}.</Shapeshift_CannotTransform>
+
+  <!-- Gene overlay -->
+  <ShapeshiftGeneAppearanceHidden>Appearance only, hidden by shapeshift ({0})</ShapeshiftGeneAppearanceHidden>
+
+  <!-- Stat/Capacity explain lines -->
+  <ShapeshiftStatFactor>Shapeshift ({0}): ×{1}</ShapeshiftStatFactor>
+  <ShapeshiftStatOffset>Shapeshift ({0}): {1}</ShapeshiftStatOffset>
+  <ShapeshiftCapacityFactor>Shapeshift ({0}): ×{1}</ShapeshiftCapacityFactor>
+  <ShapeshiftCapacityOffset>Shapeshift ({0}): {1}</ShapeshiftCapacityOffset>
+
+  <!-- Settings -->
+  <SSF_MaxInlineGizmoCount>Max shapeshift buttons (inline)</SSF_MaxInlineGizmoCount>
+  <SSF_MaxInlineGizmoCount_Desc>If the number of forms exceeds this, switch to a dropdown list.</SSF_MaxInlineGizmoCount_Desc>
+  <EnablePortraitScaleSetting_title>Enable portrait scaling</EnablePortraitScaleSetting_title>
+  <EnablePortraitScaleSetting_desc>Apply each form's portraitDrawScale to the info-card portrait. Turn this OFF if it conflicts with portrait bar mods.</EnablePortraitScaleSetting_desc>
+  <ScaleHeldWeaponsSetting_title>Scale held weapons with body</ScaleHeldWeaponsSetting_title>
+  <ScaleHeldWeaponsSetting_desc>Held weapons scale uniformly by the shapeshift body draw scale. Turn this OFF if another mod also scales weapons.</ScaleHeldWeaponsSetting_desc>
+  <resetAllSetting_title>Reset to defaults</resetAllSetting_title>
+
+  <!-- Fallback -->
+  <Shapeshift>Shapeshift</Shapeshift>
+</LanguageData>
