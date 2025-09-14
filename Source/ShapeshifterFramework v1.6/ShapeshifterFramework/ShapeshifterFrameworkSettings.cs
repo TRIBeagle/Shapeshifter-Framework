@@ -80,7 +80,6 @@ namespace ShapeshifterFramework
 
             list.Gap(10f);
 
-            // ── NEW: 토글 노출
             bool tmpShowToggle = showVerbAutoToggle;
             list.CheckboxLabeled("ShowVerbAutoToggle_title".Translate(),
                 ref tmpShowToggle, "ShowVerbAutoToggle_desc".Translate());

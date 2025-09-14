@@ -34,8 +34,30 @@
   <EnablePortraitScaleSetting_desc>Apply each form's portraitDrawScale to the info-card portrait. Turn this OFF if it conflicts with portrait bar mods.</EnablePortraitScaleSetting_desc>
   <ScaleHeldWeaponsSetting_title>Scale held weapons with body</ScaleHeldWeaponsSetting_title>
   <ScaleHeldWeaponsSetting_desc>Held weapons scale uniformly by the shapeshift body draw scale. Turn this OFF if another mod also scales weapons.</ScaleHeldWeaponsSetting_desc>
+  <AutoReequipFromInventory_title>Auto-reequip from inventory</AutoReequipFromInventory_title>
+  <AutoReequipFromInventory_desc>After reverting, automatically reequip weapons/tools from the pawn's inventory.</AutoReequipFromInventory_desc>
+  <AutoReequipFromGround_title>Auto-reequip from ground</AutoReequipFromGround_title>
+  <AutoReequipFromGround_desc>After reverting, automatically pick up and reequip previously dropped gear nearby.</AutoReequipFromGround_desc>
+  <forbidDroppedItemsOnTransform_title>Forbid dropped items on transform</forbidDroppedItemsOnTransform_title>
+  <forbidDroppedItemsOnTransform_desc>Temporarily mark items dropped during transformation as forbidden.</forbidDroppedItemsOnTransform_desc>
+  <ShowVerbAutoToggle_title>Show auto-attack toggle</ShowVerbAutoToggle_title>
+  <ShowVerbAutoToggle_desc>Display an auto-attack toggle on attack commands.</ShowVerbAutoToggle_desc>
   <resetAllSetting_title>Reset to defaults</resetAllSetting_title>
 
   <!-- Fallback -->
   <Shapeshift>Shapeshift</Shapeshift>
+  
+  <!-- Verb Gizmo Labels & Descriptions -->
+  <Shapeshift.Verb.Attack>Attack</Shapeshift.Verb.Attack>
+  <Shapeshift.Verb.ToggleDesc>Toggle auto-attack.</Shapeshift.Verb.ToggleDesc>
+  <Shapeshift.Verb.OrderDesc>Order to attack.</Shapeshift.Verb.OrderDesc>
+  <ShapeshiftNoProjectileForVerb>This attack cannot be used because it has no projectile.</ShapeshiftNoProjectileForVerb>
+  <Shapeshift_Menu_Blocked>Blocked</Shapeshift_Menu_Blocked>
+  <Shapeshift_CannotWearWhileTransformed>{PAWN} cannot wear apparel while transformed.</Shapeshift_CannotWearWhileTransformed>
+  <Shapeshift_CannotEquipWhileTransformed>{PAWN} cannot equip items while transformed.</Shapeshift_CannotEquipWhileTransformed>
+  
+  <!-- Inspect: shapeshift state -->
+  <ShapeshiftInspect_Permanent>Shapeshift: Unlimited</ShapeshiftInspect_Permanent>
+  <!-- {0} = GenDate.ToStringTicksToPeriod formatted string -->
+  <ShapeshiftInspect_Remaining>Shapeshift: {0} remaining</ShapeshiftInspect_Remaining>
 </LanguageData>

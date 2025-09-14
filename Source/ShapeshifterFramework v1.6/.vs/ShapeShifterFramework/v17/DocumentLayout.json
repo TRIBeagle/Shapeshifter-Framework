@@ -3,12 +3,113 @@
   "WorkspaceRootPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|c:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\shapeshifter framework\\source\\shapeshifterframework v1.6\\shapeshifterframework\\compat\\compat_facialanimation_overrideshook.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|c:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\shapeshifter framework\\source\\shapeshifterframework v1.6\\shapeshifterframework\\shapeshifterframeworksettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\shapeshifterframeworksettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\comps\\compshapeshifter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\comps\\compshapeshifter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\utilities\\shapeshiftcapacityexplainutility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\utilities\\shapeshiftcapacityexplainutility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\shapeshiftformdef.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\shapeshiftformdef.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|c:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\shapeshifter framework\\source\\shapeshifterframework v1.6\\shapeshifterframework\\utilities\\shapeshiftapplyhediffutility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\utilities\\shapeshiftapplyhediffutility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|c:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\shapeshifter framework\\source\\shapeshifterframework v1.6\\shapeshifterframework\\utilities\\shapeshiftpartrestorerecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\utilities\\shapeshiftpartrestorerecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\utilities\\shapeshiftdiagnostics.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\utilities\\shapeshiftdiagnostics.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\utilities\\shapeshiftfilthscope.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\utilities\\shapeshiftfilthscope.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\shapeshiftapplyhediffutility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\shapeshiftapplyhediffutility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Game\\\uB9BC\uC6D4\uB4DC\\\uB514\uCEF4\uD30C\uC77C\\\uB514\uCEF4\uD30C\uC77C 1.6\\RimWorld-1.6_2\\RimWorld\\QuestPart_AddHediff.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Game\\\uB9BC\uC6D4\uB4DC\\\uB514\uCEF4\uD30C\uC77C\\\uB514\uCEF4\uD30C\uC77C 1.6\\RimWorld-1.6_2\\RimWorld\\CompUseEffect_AddHediffAndEnableDisappearsComp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Game\\\uB9BC\uC6D4\uB4DC\\\uB514\uCEF4\uD30C\uC77C\\\uB514\uCEF4\uD30C\uC77C 1.6\\RimWorld-1.6_2\\RimWorld\\CompProperties_UseEffectAddHediff.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\utilities\\shapeshiftequiplockscope.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\utilities\\shapeshiftequiplockscope.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\utilities\\shapeshiftruntimecaches.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\utilities\\shapeshiftruntimecaches.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\patches\\patch_pawnwounddrawer_writecache.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\patches\\patch_pawnwounddrawer_writecache.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\utilities\\shapeshiftoverlayhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\utilities\\shapeshiftoverlayhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\utilities\\shapeshiftpatchstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\utilities\\shapeshiftpatchstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\patches\\patch_pawn_dokillsideeffects_playdeathvoicesound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\patches\\patch_pawn_dokillsideeffects_playdeathvoicesound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\patches\\patch_pawn_healthtracker_dropbloodsmear.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\patches\\patch_pawn_healthtracker_dropbloodsmear.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\patches\\patch_pawn_healthtracker_dropbloodfilth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\patches\\patch_pawn_healthtracker_dropbloodfilth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\patches\\patch_filthmaker_trymakefilth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\patches\\patch_filthmaker_trymakefilth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\patches\\patch_pawn_kill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\patches\\patch_pawn_kill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\patches\\patch_damageworker_addinjury_playwoundedvoicesound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\patches\\patch_damageworker_addinjury_playwoundedvoicesound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\patches\\patch_pawn_calltracker_docall.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\patches\\patch_pawn_calltracker_docall.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\utilities\\shapeshiftvoicehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\utilities\\shapeshiftvoicehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\shapeshifterframework\\compat\\compat_facialanimation_overrideshook.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\compat\\compat_facialanimation_overrideshook.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|c:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\shapeshifter framework\\source\\shapeshifterframework v1.6\\shapeshifterframework\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4246AD2F-66D2-4552-B02F-622B0031DCCB}|ShapeShifterFramework\\ShapeshifterFramework.csproj|solutionrelative:shapeshifterframework\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftHediffApplyUtil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ShapeShifterFramework\\Utilities\\ShapeshiftHediffApplyUtil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,19 +124,223 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Compat_FacialAnimation_OverridesHook.cs",
-              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Compat\\Compat_FacialAnimation_OverridesHook.cs",
-              "RelativeDocumentMoniker": "ShapeshifterFramework\\Compat\\Compat_FacialAnimation_OverridesHook.cs",
-              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Compat\\Compat_FacialAnimation_OverridesHook.cs",
-              "RelativeToolTip": "ShapeshifterFramework\\Compat\\Compat_FacialAnimation_OverridesHook.cs",
-              "ViewState": "AgIAAMcAAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
+              "Title": "ShapeshifterFrameworkSettings.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\ShapeshifterFrameworkSettings.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\ShapeshifterFrameworkSettings.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\ShapeshifterFrameworkSettings.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\ShapeshifterFrameworkSettings.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAAIwEAAAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T14:29:18.751Z",
+              "WhenOpened": "2025-09-14T19:00:16.221Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ShapeshiftPartRestoreRecord.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftPartRestoreRecord.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Utilities\\ShapeshiftPartRestoreRecord.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftPartRestoreRecord.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Utilities\\ShapeshiftPartRestoreRecord.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T18:17:34.693Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ShapeshiftApplyHediffUtility.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Utilities\\ShapeshiftApplyHediffUtility.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\Utilities\\ShapeshiftApplyHediffUtility.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Utilities\\ShapeshiftApplyHediffUtility.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\Utilities\\ShapeshiftApplyHediffUtility.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAtwGUAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T14:16:03.127Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "CompShapeshifter.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Comps\\CompShapeshifter.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\Comps\\CompShapeshifter.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Comps\\CompShapeshifter.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\Comps\\CompShapeshifter.cs",
+              "ViewState": "AgIAADQEAAAAAAAAAAAawFMEAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:22:19.897Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ShapeshiftFormDef.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\ShapeshiftFormDef.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\ShapeshiftFormDef.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\ShapeshiftFormDef.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\ShapeshiftFormDef.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAlwCMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:24:51.276Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ShapeshiftCapacityExplainUtility.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Utilities\\ShapeshiftCapacityExplainUtility.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\Utilities\\ShapeshiftCapacityExplainUtility.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Utilities\\ShapeshiftCapacityExplainUtility.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\Utilities\\ShapeshiftCapacityExplainUtility.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAawD8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:11:40.495Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ShapeshiftDiagnostics.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftDiagnostics.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Utilities\\ShapeshiftDiagnostics.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftDiagnostics.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Utilities\\ShapeshiftDiagnostics.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAgwB0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T18:03:07.022Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ShapeshiftFilthScope.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftFilthScope.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Utilities\\ShapeshiftFilthScope.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftFilthScope.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Utilities\\ShapeshiftFilthScope.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:38:54.171Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ShapeshiftApplyHediffUtility.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\ShapeshiftApplyHediffUtility.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\ShapeshiftApplyHediffUtility.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\ShapeshiftApplyHediffUtility.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\ShapeshiftApplyHediffUtility.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T17:44:55.995Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "CompProperties_UseEffectAddHediff.cs",
+              "DocumentMoniker": "E:\\Game\\\uB9BC\uC6D4\uB4DC\\\uB514\uCEF4\uD30C\uC77C\\\uB514\uCEF4\uD30C\uC77C 1.6\\RimWorld-1.6_2\\RimWorld\\CompProperties_UseEffectAddHediff.cs",
+              "ToolTip": "E:\\Game\\\uB9BC\uC6D4\uB4DC\\\uB514\uCEF4\uD30C\uC77C\\\uB514\uCEF4\uD30C\uC77C 1.6\\RimWorld-1.6_2\\RimWorld\\CompProperties_UseEffectAddHediff.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T13:59:41.001Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "CompUseEffect_AddHediffAndEnableDisappearsComp.cs",
+              "DocumentMoniker": "E:\\Game\\\uB9BC\uC6D4\uB4DC\\\uB514\uCEF4\uD30C\uC77C\\\uB514\uCEF4\uD30C\uC77C 1.6\\RimWorld-1.6_2\\RimWorld\\CompUseEffect_AddHediffAndEnableDisappearsComp.cs",
+              "ToolTip": "E:\\Game\\\uB9BC\uC6D4\uB4DC\\\uB514\uCEF4\uD30C\uC77C\\\uB514\uCEF4\uD30C\uC77C 1.6\\RimWorld-1.6_2\\RimWorld\\CompUseEffect_AddHediffAndEnableDisappearsComp.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T13:59:54.288Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "QuestPart_AddHediff.cs",
+              "DocumentMoniker": "E:\\Game\\\uB9BC\uC6D4\uB4DC\\\uB514\uCEF4\uD30C\uC77C\\\uB514\uCEF4\uD30C\uC77C 1.6\\RimWorld-1.6_2\\RimWorld\\QuestPart_AddHediff.cs",
+              "ToolTip": "E:\\Game\\\uB9BC\uC6D4\uB4DC\\\uB514\uCEF4\uD30C\uC77C\\\uB514\uCEF4\uD30C\uC77C 1.6\\RimWorld-1.6_2\\RimWorld\\QuestPart_AddHediff.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T14:00:02.897Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ShapeshiftEquipLockScope.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Utilities\\ShapeshiftEquipLockScope.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\Utilities\\ShapeshiftEquipLockScope.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Utilities\\ShapeshiftEquipLockScope.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\Utilities\\ShapeshiftEquipLockScope.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T12:48:02.745Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "ShapeshiftHediffApplyUtil.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Utilities\\ShapeshiftHediffApplyUtil.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\Utilities\\ShapeshiftHediffApplyUtil.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Utilities\\ShapeshiftHediffApplyUtil.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\Utilities\\ShapeshiftHediffApplyUtil.cs",
+              "ViewState": "AgIAALUAAAAAAAAAAAAqwMwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T18:12:09.574Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ShapeshiftRuntimeCaches.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftRuntimeCaches.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Utilities\\ShapeshiftRuntimeCaches.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftRuntimeCaches.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Utilities\\ShapeshiftRuntimeCaches.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAkwDkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:11:45.838Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Patch_PawnWoundDrawer_WriteCache.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_PawnWoundDrawer_WriteCache.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Patches\\Patch_PawnWoundDrawer_WriteCache.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_PawnWoundDrawer_WriteCache.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Patches\\Patch_PawnWoundDrawer_WriteCache.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAowEwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:46:24.908Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "ShapeshiftOverlayHelper.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Utilities\\ShapeshiftOverlayHelper.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\Utilities\\ShapeshiftOverlayHelper.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Utilities\\ShapeshiftOverlayHelper.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\Utilities\\ShapeshiftOverlayHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:46:10.928Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "ShapeshiftPatchStatus.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftPatchStatus.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Utilities\\ShapeshiftPatchStatus.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftPatchStatus.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Utilities\\ShapeshiftPatchStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAgwA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T18:03:24.395Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
               "Title": "AssemblyInfo.cs",
               "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Properties\\AssemblyInfo.cs",
               "RelativeDocumentMoniker": "ShapeshifterFramework\\Properties\\AssemblyInfo.cs",
@@ -43,8 +348,115 @@
               "RelativeToolTip": "ShapeshifterFramework\\Properties\\AssemblyInfo.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T14:29:17.841Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T14:29:17.841Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Patch_Pawn_DoKillSideEffects_PlayDeathVoiceSound.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_Pawn_DoKillSideEffects_PlayDeathVoiceSound.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Patches\\Patch_Pawn_DoKillSideEffects_PlayDeathVoiceSound.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_Pawn_DoKillSideEffects_PlayDeathVoiceSound.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Patches\\Patch_Pawn_DoKillSideEffects_PlayDeathVoiceSound.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:18:54.022Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Patch_Pawn_HealthTracker_DropBloodSmear.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_Pawn_HealthTracker_DropBloodSmear.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Patches\\Patch_Pawn_HealthTracker_DropBloodSmear.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_Pawn_HealthTracker_DropBloodSmear.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Patches\\Patch_Pawn_HealthTracker_DropBloodSmear.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:43:23.207Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Patch_Pawn_HealthTracker_DropBloodFilth.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_Pawn_HealthTracker_DropBloodFilth.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Patches\\Patch_Pawn_HealthTracker_DropBloodFilth.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_Pawn_HealthTracker_DropBloodFilth.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Patches\\Patch_Pawn_HealthTracker_DropBloodFilth.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:39:10.193Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Patch_FilthMaker_TryMakeFilth.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Patches\\Patch_FilthMaker_TryMakeFilth.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\Patches\\Patch_FilthMaker_TryMakeFilth.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Patches\\Patch_FilthMaker_TryMakeFilth.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\Patches\\Patch_FilthMaker_TryMakeFilth.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAkwDcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:35:21.211Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "Patch_Pawn_Kill.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_Pawn_Kill.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Patches\\Patch_Pawn_Kill.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_Pawn_Kill.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Patches\\Patch_Pawn_Kill.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwA8AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:21:55.877Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Patches\\Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Patches\\Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Patches\\Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:12:58.509Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Patch_Pawn_CallTracker_DoCall.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Patches\\Patch_Pawn_CallTracker_DoCall.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\Patches\\Patch_Pawn_CallTracker_DoCall.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Patches\\Patch_Pawn_CallTracker_DoCall.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\Patches\\Patch_Pawn_CallTracker_DoCall.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:12:47.816Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "ShapeshiftVoiceHelper.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftVoiceHelper.cs",
+              "RelativeDocumentMoniker": "ShapeShifterFramework\\Utilities\\ShapeshiftVoiceHelper.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeShifterFramework\\Utilities\\ShapeshiftVoiceHelper.cs",
+              "RelativeToolTip": "ShapeShifterFramework\\Utilities\\ShapeshiftVoiceHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwA8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T17:12:12.319Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "Compat_FacialAnimation_OverridesHook.cs",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Compat\\Compat_FacialAnimation_OverridesHook.cs",
+              "RelativeDocumentMoniker": "ShapeshifterFramework\\Compat\\Compat_FacialAnimation_OverridesHook.cs",
+              "ToolTip": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\Shapeshifter Framework\\Source\\ShapeshifterFramework v1.6\\ShapeshifterFramework\\Compat\\Compat_FacialAnimation_OverridesHook.cs",
+              "RelativeToolTip": "ShapeshifterFramework\\Compat\\Compat_FacialAnimation_OverridesHook.cs",
+              "ViewState": "AgIAAMcAAAAAAAAAAAAmwOIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T14:29:18.751Z"
             }
           ]
         }

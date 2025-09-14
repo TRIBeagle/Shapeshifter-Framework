@@ -43,6 +43,23 @@ namespace ShapeshifterFramework
         public bool? autoAttackDefault; // 토글 기본값(null이면 On)
     }
 
+    // AddedPart 정책
+    public enum AddedPartPolicy
+    {
+        ForceAdd,     // 조건 무시하고 강제 설치
+        OnlyIfMissing // 해당 파츠가 결손(Missing)일 때만 설치
+    }
+
+    // Hediff 엔트리(부위/그룹/전신 + Severity + 정책)
+    public class HediffAddEntry
+    {
+        public HediffDef hediff;                    // 필수
+        public BodyPartDef targetPart;              // 선택: 지정 시 그 BodyPartDef의 모든 파츠(좌우 포함)
+        public List<BodyPartGroupDef> targetGroups; // 선택: 그룹들
+        public float? severity;                     // 선택: 지정 시 SetSeverity
+        public AddedPartPolicy addedPartPolicy = AddedPartPolicy.OnlyIfMissing;
+    }
+
     /// <summary>
     /// 변신 폼 Def(외형/필터/요건/버튼/지속/부여물 일괄 관리)
     /// </summary>
@@ -124,7 +141,7 @@ namespace ShapeshifterFramework
         public RequirementMatchMode? requirementsMode; // 기본 All
 
         // 변신 중 부여
-        public List<HediffDef> addHediffs;
+        public List<HediffAddEntry> addHediffs;
         public List<AbilityDef> addAbilities;
 
         // ── 추가 Verb/Tool 정의 및 대체 플래그 ──
@@ -171,7 +188,17 @@ namespace ShapeshifterFramework
         // 버튼/기타
         public string gizmoIconPathEnter;   // 변신 버튼 아이콘
         public string gizmoIconPathRevert;  // 해제 버튼 아이콘
-        public int? duration = null;      // 지속 틱(null=무제한)
+        public int? durationTicks = null;      // 지속 틱(null=무제한)
+
+        // 보이스
+        public SoundDef soundCall;
+        public SoundDef soundWounded;
+        public SoundDef soundDeath;
+
+        // 혈흔/스미어
+        public ThingDef bloodDef;
+        public ThingDef bloodSmearDef;
+        public FleshTypeDef fleshType;
 
         // HAR 옵션
         [MayRequire("erdelf.HumanoidAlienRaces")] public bool showHarAddons = false;

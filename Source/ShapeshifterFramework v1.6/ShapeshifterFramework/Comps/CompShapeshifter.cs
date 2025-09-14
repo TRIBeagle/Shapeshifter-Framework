@@ -58,6 +58,10 @@ namespace ShapeshifterFramework.Comps
         // 변신 복귀 중 내부 재장착 허용 플래그 (세이브 불필요, 런타임 전용)
         public bool suppressEquipLock = false;
 
+        // 우리가 추가한 헤디프(인스턴스) 추적은 기존 tempAddedHediffs 사용
+        private readonly List<ShapeshifterFramework.Utilities.ShapeshiftPartRestoreRecord> tempPartRestoreRecords
+            = new List<ShapeshifterFramework.Utilities.ShapeshiftPartRestoreRecord>(8);
+
         // ─────────────────────────────────────────────────────────────
         // shapeshift VerbOwner: 폼의 verbs/tools를 VerbTracker로 노출
         private class ShapeshiftVerbOwner : IVerbOwner
@@ -178,7 +182,7 @@ namespace ShapeshifterFramework.Comps
             verbAutoToggle[AutoKey(index)] = true;
         }
 
-        /// <summary>verb 명령 라벨(Def의 verbGizmoOptions 우선, 없으면 verbProps.label/Attack)</summary>
+        /// <summary>verb 명령 라벨(Def verbGizmoOptions 우선, 없으면 verbProps.label/Attack)</summary>
         public string GetVerbLabel(int index, Verb v, bool preferToggleLabel)
         {
             var vp = v?.verbProps;
@@ -186,9 +190,10 @@ namespace ShapeshifterFramework.Comps
             if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
             {
                 string s = preferToggleLabel ? opt[index].toggleLabel : opt[index].label;
-                if (!string.IsNullOrEmpty(s)) return s;
+                if (!string.IsNullOrEmpty(s)) return s.Translate().CapitalizeFirst();
             }
-            string __label = string.IsNullOrEmpty(vp?.label) ? "Attack".Translate().ToString() : vp.label;
+
+            string __label = string.IsNullOrEmpty(vp?.label) ? "Shapeshift.Verb.Attack".Translate() : vp.label.Translate();
             return __label.CapitalizeFirst();
         }
 
@@ -199,10 +204,11 @@ namespace ShapeshifterFramework.Comps
             if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
             {
                 string s = forToggle ? opt[index].toggleDesc : opt[index].desc;
-                if (!string.IsNullOrEmpty(s)) return s;
+                if (!string.IsNullOrEmpty(s)) return s.Translate();
             }
-            if (forToggle) return "Toggle auto-attack for this verb.".Translate();
-            return "Order to attack using this verb.".Translate();
+
+            if (forToggle) return "Shapeshift.Verb.ToggleDesc".Translate();
+            return "Shapeshift.Verb.OrderDesc".Translate();
         }
 
         // ─────────────────────────────────────────────────────────────
@@ -219,7 +225,7 @@ namespace ShapeshifterFramework.Comps
                     RemoveForm();
                     return;
                 }
-                if (currentForm.duration.HasValue && currentForm.duration.Value > 0)
+                if (currentForm.durationTicks.HasValue && currentForm.durationTicks.Value > 0)
                 {
                     transformTimer--;
                     if (transformTimer <= 0) RemoveForm();
@@ -228,6 +234,34 @@ namespace ShapeshifterFramework.Comps
                 // 전용 VerbTracker 틱 업데이트
                 try { ShapeshiftVerbTracker?.VerbsTick(); } catch { }
             }
+        }
+
+        // 바닐라 틱 접근: transformTimer가 남은 틱을 의미(0 이하이면 무시)
+        private int RemainingShapeshiftTicks
+        {
+            get
+            {
+                int t = transformTimer; // 기존 카운트다운 필드 사용
+                return t > 0 ? t : 0;
+            }
+        }
+        public override string CompInspectStringExtra()
+        {
+            if (!isTransformed || currentForm == null)
+                return null;
+
+            // durationTicks가 없거나 <=0 이면 영구 변신
+            if (!currentForm.durationTicks.HasValue || currentForm.durationTicks.Value <= 0)
+                return "ShapeshiftInspect_Permanent".Translate();
+
+            int remain = transformTimer; // 남은 틱(CompTick에서 감소하는 기존 필드)
+            if (remain <= 0) return null;
+
+            // 바닐라 포맷(다국어 대응)
+            string timeStr = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: true);
+
+            // "변신: 남은 시간 {0}" / "Shapeshift: {0} remaining"
+            return "ShapeshiftInspect_Remaining".Translate(timeStr);
         }
 
         // ─────────────────────────────────────────────────────────────
@@ -323,28 +357,23 @@ namespace ShapeshifterFramework.Comps
             // 헤디프 부여
             tempAddedHediffs.Clear();
             tempAddedHediffsDefCache.Clear();
+            tempPartRestoreRecords.Clear();
             if (form.addHediffs != null && form.addHediffs.Count > 0 && pawn.health != null)
             {
-                for (int i = 0; i < form.addHediffs.Count; i++)
-                {
-                    HediffDef hd = form.addHediffs[i]; if (hd == null) continue;
-                    if (pawn.health.hediffSet.GetFirstHediffOfDef(hd) == null)
-                    {
-                        Hediff h = pawn.health.AddHediff(hd);
-                        if (h != null)
-                        {
-                            tempAddedHediffs.Add(h);
-                            tempAddedHediffsDefCache.Add(hd);
-                        }
-                    }
-                }
+                ShapeshifterFramework.Utilities.ShapeshiftApplyHediffUtility.ApplyHediffEntries(
+                    pawn,
+                    form.addHediffs,
+                    tempAddedHediffs,
+                    tempAddedHediffsDefCache,
+                    tempPartRestoreRecords
+                );
             }
 
             // 상태 적용
             currentForm = form;
             ShapeshiftTransformFxUtility.PlayEnterFx(pawn, form); // 변신 시작 FX
-            if (form.duration.HasValue && form.duration.Value > 0)
-                transformTimer = form.duration.Value;
+            if (form.durationTicks.HasValue && form.durationTicks.Value > 0)
+                transformTimer = form.durationTicks.Value;
 
             // 체형/머리형 적용(인간형만)
             if (pawn.story != null)
@@ -352,6 +381,24 @@ namespace ShapeshifterFramework.Comps
                 if (form.bodyType != null) pawn.story.bodyType = form.bodyType;
                 if (form.headType != null) pawn.story.headType = form.headType;
             }
+
+            // 보이스 캐시 등록
+            if (form.soundCall != null)
+                ShapeshiftRuntimeCaches.CallByPawn[pawn] = form.soundCall;
+            if (form.soundWounded != null)
+                ShapeshiftRuntimeCaches.WoundedByPawn[pawn] = form.soundWounded;
+            if (form.soundDeath != null)
+                ShapeshiftRuntimeCaches.DeathByPawn[pawn] = form.soundDeath;
+
+            // 혈흔, 스미어 캐시 등록
+            if (form.bloodDef != null)
+                ShapeshiftRuntimeCaches.BloodByPawn[pawn] = form.bloodDef;
+            if (form.bloodSmearDef != null)
+                ShapeshiftRuntimeCaches.SmearByPawn[pawn] = form.bloodSmearDef;
+
+            // FleshType 캐시 등록
+            if (form.fleshType != null)
+                ShapeshiftRuntimeCaches.FleshTypeByPawn[pawn] = form.fleshType;
 
             // 전용 VerbTracker는 프로퍼티 접근 시 생성 → Refresh에서 Verb 리셋 포함
             shapeshiftVerbTracker = null;
@@ -377,19 +424,18 @@ namespace ShapeshifterFramework.Comps
                 tempAddedAbilities.Clear();
             }
 
-            // 헤디프 회수
+            // 헤디프 회수 + 원상 복원
             if (pawn.health != null)
             {
-                if (tempAddedHediffs.Count > 0)
+                // 1) 우리가 추가한 헤디프 제거
+                for (int i = 0; i < tempAddedHediffs.Count; i++)
                 {
-                    for (int i = 0; i < tempAddedHediffs.Count; i++)
-                    {
-                        Hediff h = tempAddedHediffs[i];
-                        if (h != null && pawn.health.hediffSet.hediffs.Contains(h))
-                            pawn.health.RemoveHediff(h);
-                    }
+                    Hediff h = tempAddedHediffs[i];
+                    if (h != null && pawn.health.hediffSet.hediffs.Contains(h))
+                        pawn.health.RemoveHediff(h);
                 }
 
+                // 2) Def 캐시 기반 방어적 정리 (혹시 남은 동일 Def)
                 if (tempAddedHediffsDefCache != null && tempAddedHediffsDefCache.Count > 0)
                 {
                     List<Hediff> list = pawn.health.hediffSet.hediffs;
@@ -397,14 +443,52 @@ namespace ShapeshifterFramework.Comps
                     {
                         HediffDef def = tempAddedHediffsDefCache[i]; if (def == null) continue;
                         for (int j = list.Count - 1; j >= 0; j--)
-                        {
                             if (list[j].def == def) pawn.health.RemoveHediff(list[j]);
-                        }
                     }
                 }
 
+                // 3) 파츠 단위 원상 복원
+                //    - 변신 전 결손이 아니었던 파츠: RestorePart로 자연복원(무출혈)
+                //    - 변신 전 기존 AddedPart가 있었던 파츠: 다시 재설치(복구)
+                for (int i = 0; i < tempPartRestoreRecords.Count; i++)
+                {
+                    var rec = tempPartRestoreRecords[i];
+                    if (rec == null || rec.Part == null) continue;
+
+                    // 변신 전 결손이 아니었다면 자연 파츠 복원(우리가 AddedPart 제거하면서 MissingPart가 생겼을 수 있음)
+                    if (!rec.WasMissingBefore)
+                    {
+                        try { pawn.health.RestorePart(rec.Part); } catch { }
+                    }
+
+                    // 변신 전 설치되어 있던 AddedPart들을 다시 설치(복구)
+                    if (rec.PreExistingAdded != null && rec.PreExistingAdded.Count > 0)
+                    {
+                        for (int k = 0; k < rec.PreExistingAdded.Count; k++)
+                        {
+                            var prev = rec.PreExistingAdded[k];
+                            if (prev?.Def == null) continue;
+                            var reinst = pawn.health.AddHediff(prev.Def, rec.Part, null);
+                            if (reinst != null && prev.Severity.HasValue)
+                            {
+                                try { reinst.Severity = prev.Severity.Value; } catch { }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // 변신 전 결손이었으면(=자연 파츠가 원래 없었으면) 자연 파츠를 다시 제거해야 하나?
+                        // 설계: WasMissingBefore==true인 경우는 "결손 상태를 유지"하도록 RestorePart를 호출하지 않았으므로,
+                        //       현재 상태는 MissingPart 그대로 유지됨. 별도 조치 불필요.
+                    }
+                }
+
+                if (ShapeshifterFramework.Utilities.ShapeshiftApplyHediffUtility.DebugLog)
+                    Log.Message($"SSF Revert: restored {tempPartRestoreRecords.Count} part(s)");
+
                 tempAddedHediffs.Clear();
                 tempAddedHediffsDefCache.Clear();
+                tempPartRestoreRecords.Clear();
             }
 
             transformTimer = 0;
@@ -428,8 +512,32 @@ namespace ShapeshifterFramework.Comps
 
             currentForm = null;
 
+            // 캐시 해제
+            ShapeshiftRuntimeCaches.ClearFor(pawn);
+
             RefreshPawn(pawn);
             InvalidateGizmoCache();
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // 외부 알림 (예: Pawn.Kill Postfix에서 호출)
+
+        /// <summary>
+        /// Pawn이 사망했을 때 호출됨.
+        /// 변신 해제 및 런타임 캐시 정리를 강제로 실행.
+        /// </summary>
+        public void Notify_Killed(DamageInfo? dinfo, Hediff exactCulprit)
+        {
+            var pawn = parent as Pawn;
+            if (pawn == null) return;
+
+            if (isTransformed)
+            {
+                RemoveForm();
+            }
+
+            ShapeshiftRuntimeCaches.ClearFor(pawn);
+            Log.Message($"[SSF] {pawn} killed, shapeshift forcibly deactivated.");
         }
 
         // ─────────────────────────────────────────────────────────────
@@ -866,7 +974,7 @@ namespace ShapeshifterFramework.Comps
                 yield return new Command_Action
                 {
                     defaultLabel = "ShapeshiftRevertLabel".Translate(),
-                    defaultDesc = (currentForm.duration.HasValue && currentForm.duration.Value > 0)
+                    defaultDesc = (currentForm.durationTicks.HasValue && currentForm.durationTicks.Value > 0)
                         ? "ShapeshiftRevertDesc_WithTime".Translate((float)0 / 60f)
                         : "ShapeshiftRevertDesc".Translate(),
                     action = delegate { RemoveForm(); },
