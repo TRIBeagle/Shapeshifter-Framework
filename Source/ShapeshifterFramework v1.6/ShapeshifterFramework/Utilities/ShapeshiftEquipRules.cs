@@ -1,6 +1,4 @@
-﻿using Verse;
-using ShapeshifterFramework;
-using ShapeshifterFramework.Comps;
+﻿using ShapeshifterFramework.Comps;
 
 namespace ShapeshifterFramework.Utilities
 {

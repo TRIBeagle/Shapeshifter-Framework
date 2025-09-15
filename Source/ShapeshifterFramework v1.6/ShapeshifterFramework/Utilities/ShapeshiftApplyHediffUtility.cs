@@ -1,6 +1,4 @@
 ﻿// .NET 4.8 / C# 7.3
-using RimWorld;
-using System;
 using System.Collections.Generic;
 using Verse;
 

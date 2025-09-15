@@ -1,6 +1,6 @@
 ﻿// .NET Framework 4.8 / C# 7.3
-using Verse;
 using RimWorld;
+using Verse;
 
 namespace ShapeshifterFramework.Utilities
 {

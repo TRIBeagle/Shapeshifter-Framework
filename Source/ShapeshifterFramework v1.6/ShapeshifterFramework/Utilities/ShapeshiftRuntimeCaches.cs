@@ -1,6 +1,6 @@
 ﻿// .NET Framework 4.8 / C# 7.3
-using System.Collections.Generic;
 using RimWorld;
+using System.Collections.Generic;
 using Verse;
 
 namespace ShapeshifterFramework.Utilities

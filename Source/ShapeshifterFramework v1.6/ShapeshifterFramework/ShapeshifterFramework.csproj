@@ -69,6 +69,12 @@
     <Compile Include="Compat\Compat_HAR_AddComp.cs" />
     <Compile Include="Compat\Compat_FacialAnimation_HeadWorker_ScaleFor.cs" />
     <Compile Include="Compat\Compat_HAR_BodyAddon_ScaleFor.cs" />
+    <Compile Include="Comps\CompUseEffect_ShiftTarget .cs" />
+    <Compile Include="Comps\CompProperties_UseEffect_ShiftTarget.cs" />
+    <Compile Include="Comps\CompProperties_AbilityShiftTarget.cs" />
+    <Compile Include="Comps\CompAbilityEffect_ShiftTarget.cs" />
+    <Compile Include="Projectiles\Projectile_Polymorph.cs" />
+    <Compile Include="Extensions\PolymorphProjectileExtension.cs" />
     <Compile Include="Patches\Patch_PawnWoundDrawer_WriteCache.cs" />
     <Compile Include="Patches\Patch_Pawn_HealthTracker_DropBloodSmear.cs" />
     <Compile Include="Patches\Patch_Pawn_HealthTracker_DropBloodFilth.cs" />
@@ -102,6 +108,7 @@
     <Compile Include="Utilities\ShapeshiftDiagnostics.cs" />
     <Compile Include="Utilities\ShapeshiftOverlayHelper.cs" />
     <Compile Include="Utilities\ShapeshiftFilthScope.cs" />
+    <Compile Include="Utilities\ShapeshiftTargetUtility.cs" />
     <Compile Include="Utilities\ShapeshiftVoiceHelper.cs" />
     <Compile Include="Utilities\ShapeshiftRuntimeCaches.cs" />
     <Compile Include="Utilities\ShapeshiftTransformFxUtility.cs" />

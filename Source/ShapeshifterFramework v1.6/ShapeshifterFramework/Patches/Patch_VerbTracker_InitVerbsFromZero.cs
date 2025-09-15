@@ -9,10 +9,10 @@
 
 using HarmonyLib;
 using RimWorld;
+using ShapeshifterFramework.Comps;
 using System;
 using System.Collections.Generic;
 using Verse;
-using ShapeshifterFramework.Comps;
 
 namespace ShapeshifterFramework.Patches
 {

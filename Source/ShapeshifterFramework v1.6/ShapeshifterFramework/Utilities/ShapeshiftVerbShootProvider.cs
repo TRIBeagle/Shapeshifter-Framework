@@ -3,9 +3,9 @@
 // 목적: 변신 폼 원거리 verb 우클릭 강제 사격 메뉴 생성(토글 OFF 무시)
 // 변경: LaunchProjectile 계열은 defaultProjectile이 없으면 메뉴에서 제외(발사체 NRE 방지)
 
+using RimWorld;
 using System;
 using System.Collections.Generic;
-using RimWorld;
 using Verse;
 using Verse.AI;
 

@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using ShapeshifterFramework.Comps;
-using System;
 using Verse;
 
 namespace ShapeshifterFramework.Patches

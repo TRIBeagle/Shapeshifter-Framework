@@ -1,9 +1,9 @@
-﻿using System;
-using System.Reflection;
-using HarmonyLib;
-using Verse;
+﻿using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Utilities;
+using System;
+using System.Reflection;
+using Verse;
 
 namespace ShapeshifterFramework.Patches
 {

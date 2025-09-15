@@ -2,13 +2,12 @@
 // 변신 중, 폼에 지정된 작업을 "추가로" 불가 처리
 //  - 대상: Pawn의 컴파일러 생성 GetDisabledWorkTypes(List<WorkTypeDef>) 메서드
 //  - 참고: 1.5 예시도 같은 타겟팅을 사용(CompilerGenerated + 이름 매칭) :contentReference[oaicite:2]{index=2}
+using HarmonyLib;
+using ShapeshifterFramework.Comps;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using HarmonyLib;
-using RimWorld;
-using ShapeshifterFramework.Comps;
 using Verse;
 
 namespace ShapeshifterFramework.Patches

@@ -4,11 +4,10 @@
 //       ApplyDamage 내부의 base.EquipmentSource.def 접근으로 인한 NRE를 예방.
 // 방식: Prefix로 원본 ApplyDamage를 대체하여 null-safe로 동일 동작 수행.
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using HarmonyLib;
 using RimWorld;
+using System;
+using System.Reflection;
 using Verse;
 
 namespace ShapeshifterFramework.Patches

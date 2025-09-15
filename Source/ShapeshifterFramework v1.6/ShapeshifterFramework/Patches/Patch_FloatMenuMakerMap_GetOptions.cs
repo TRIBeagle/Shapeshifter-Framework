@@ -3,11 +3,11 @@
 // 대상: FloatMenuMakerMap.GetOptions(...) Postfix에서 __result 후처리
 // 주의: WorldObject는 Thing이 아니므로 캐스팅하지 않음(월드 타겟 무시)
 
-using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;        // CompShapeshifter
 using ShapeshifterFramework.Utilities;    // ShapeshiftEquipRules
+using System.Collections.Generic;
 using UnityEngine;                        // Vector3
 using Verse;
 

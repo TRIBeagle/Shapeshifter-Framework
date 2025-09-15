@@ -1,10 +1,9 @@
 ﻿// .NET Framework 4.8 / C# 7.3
+using HarmonyLib;
+using ShapeshifterFramework.Utilities;
 using System;
 using System.Reflection;
-using HarmonyLib;
 using Verse;
-using RimWorld;
-using ShapeshifterFramework.Utilities;
 
 namespace ShapeshifterFramework.Patches
 {

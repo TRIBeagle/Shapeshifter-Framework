@@ -1,6 +1,6 @@
 ﻿// .NET 4.8 / C# 7.3
-using System;
 using ShapeshifterFramework.Comps;
+using System;
 
 namespace ShapeshifterFramework.Utilities
 {

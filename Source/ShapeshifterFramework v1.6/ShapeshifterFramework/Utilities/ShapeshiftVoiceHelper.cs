@@ -1,5 +1,4 @@
 ﻿// .NET Framework 4.8 / C# 7.3
-using RimWorld;
 using Verse;
 using Verse.Sound;
 

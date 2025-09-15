@@ -3,11 +3,11 @@
 // 목적: 총이 없어도 변신 폼의 원거리 Verb가 있으면 사격 명중률 툴팁을 표시
 // 수정: 비폭력 Pawn일 때는 계산을 스킵해 오류 방지
 
-using System.Text;
 using HarmonyLib;
 using RimWorld;
-using Verse;
 using ShapeshifterFramework.Comps;
+using System.Text;
+using Verse;
 
 namespace ShapeshifterFramework.Patches
 {

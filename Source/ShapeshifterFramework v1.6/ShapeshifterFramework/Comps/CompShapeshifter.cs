@@ -15,9 +15,7 @@
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;
-using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Verse;
 using Verse.AI;
 

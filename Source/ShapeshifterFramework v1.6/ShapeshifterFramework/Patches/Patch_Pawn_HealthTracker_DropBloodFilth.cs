@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
-using Verse;
-using RimWorld;
 using ShapeshifterFramework.Utilities;
-using System.Reflection;
+using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
