@@ -3,6 +3,7 @@
 // - GameComponent로 한 틱마다 큐를 확인. (세이브 불필요 — 런타임 전용)
 // - Dictionary TryGetValue로 가볍게 쿨다운 관리.
 // - 예외/NRE 방지 가드 다수.
+// - 추가 최적화: 오래된 쿨다운 엔트리 정리, Fleck 생성 상한 적용.
 
 using RimWorld;
 using System;
@@ -29,6 +30,12 @@ namespace ShapeshifterFramework.Utilities
         // 쿨다운: key = (pawn, phase) 해시
         private static readonly Dictionary<int, int> _cooldowns = new Dictionary<int, int>(64);
 
+        // ──────────────────────────────────────────────────────────────
+        // Configurable values
+        private const int CooldownExpiryTicks = 60000; // 1게임일 후 자동 정리
+        private const int MaxFleckCount = 50;          // Fleck 안전상한
+        // ──────────────────────────────────────────────────────────────
+
         public ShapeshiftTransformFxRunner(Game game) { _inst = this; }
 
         public static ShapeshiftTransformFxRunner Instance
@@ -42,10 +49,11 @@ namespace ShapeshifterFramework.Utilities
 
         public override void GameComponentTick()
         {
-            if (_queue.Count == 0) return;
+            if (_queue.Count == 0 && _cooldowns.Count == 0) return;
 
             int now = Find.TickManager.TicksGame;
-            // in-place remove
+
+            // ── 실행 큐 처리 ──
             for (int i = _queue.Count - 1; i >= 0; i--)
             {
                 var item = _queue[i];
@@ -53,6 +61,19 @@ namespace ShapeshifterFramework.Utilities
 
                 _queue.RemoveAt(i);
                 TryPlayNow(item.pawn, item.form, item.isEnter);
+            }
+
+            // ── 오래된 쿨다운 엔트리 정리 ──
+            if (_cooldowns.Count > 0 && (now % 250 == 0)) // 250틱(약4초)마다 점검
+            {
+                var toRemove = new List<int>();
+                foreach (var kv in _cooldowns)
+                {
+                    if (now - kv.Value > CooldownExpiryTicks)
+                        toRemove.Add(kv.Key);
+                }
+                for (int i = 0; i < toRemove.Count; i++)
+                    _cooldowns.Remove(toRemove[i]);
             }
         }
 
@@ -93,8 +114,7 @@ namespace ShapeshifterFramework.Utilities
                 // 맵/스폰 체크: 시각효과는 맵에서만, 사운드는 맵 사운드로 1회
                 if (!pawn.Spawned || pawn.MapHeld == null)
                 {
-                    // 맵 외에서는 시각효과 생략, 사운드도 생략(일관성)
-                    return;
+                    return; // 맵 외에서는 생략
                 }
 
                 var map = pawn.MapHeld;
@@ -116,7 +136,7 @@ namespace ShapeshifterFramework.Utilities
                     e.Cleanup();
                 }
 
-                // ── Fleck (count>0일 때만)
+                // ── Fleck (상한 적용)
                 var fleck = isEnter ? form.transformEnterFleck : form.transformExitFleck;
                 int count = isEnter ? form.transformEnterFleckCount : form.transformExitFleckCount;
                 float scale = isEnter ? Mathf.Max(0.01f, form.transformEnterFleckScale)
@@ -124,6 +144,7 @@ namespace ShapeshifterFramework.Utilities
 
                 if (fleck != null && count > 0)
                 {
+                    count = Mathf.Min(count, MaxFleckCount);
                     for (int i = 0; i < count; i++)
                     {
                         Vector3 p = drawPos;

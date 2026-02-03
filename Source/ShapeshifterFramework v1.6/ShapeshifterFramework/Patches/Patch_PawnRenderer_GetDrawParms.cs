@@ -1,6 +1,7 @@
 ﻿// Patch_PawnRenderer_GetDrawParms.cs
-// 목적: 폼 오프셋 + (포트레잇 전용) 전체 스케일 적용
+// 목적: 폼 오프셋 + (포트레잇 전용) 전체 스케일 적용 + (수영) NoBody 플래그 조건부 해제
 // 조건: C# 7.3 호환
+// 비고: 수영 NoBody 해제는 ParallelPreRenderPawnAt Postfix로는 늦어서 효과 없음(PreDraw 이후).
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
@@ -13,18 +14,36 @@ namespace ShapeshifterFramework.Patches
     public static class Patch_PawnRenderer_GetDrawParms
     {
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
-        static void Postfix(PawnRenderer __instance,
-                            Vector3 rootLoc, float angle, Rot4 bodyFacing, RotDrawMode bodyDrawType, PawnRenderFlags flags,
-                            ref PawnDrawParms __result)
+        static void Postfix(
+            PawnRenderer __instance,
+            Vector3 rootLoc, float angle, Rot4 bodyFacing, RotDrawMode bodyDrawType, PawnRenderFlags flags,
+            ref PawnDrawParms __result)
         {
-            // Pawn/Comp/Form
+            // Pawn
             Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
             if (pawn == null) return;
+
+            // ShapeShift Comp/Form
             var comp = ShapeshiftUtility.GetShapeShiftComp(pawn);
             if (comp == null || !comp.isTransformed || comp.currentForm == null) return;
             var form = comp.currentForm;
 
-            // ── 1) 공통: 바디 오프셋(맵/포트레잇 동일)
+            // ── A) 수영 중 NoBody 해제(헤드 숨김 폼이 완전 투명 되는 문제 방지)
+            // 원인: 바닐라가 swimming일 때 PawnRenderFlags.NoBody를 켬.
+            // 해결: GetDrawParms 단계에서 __result.flags에서 NoBody를 조건부로 빼야 PreDraw에 반영됨.
+            if (pawn.Swimming && (flags & PawnRenderFlags.NoBody) != 0)
+            {
+                ShapeshiftFormDef runForm;
+                if (ShapeshiftPartControlUtility.ShouldRun(pawn, out runForm) && runForm != null)
+                {
+                    if (ShapeshiftPartControlUtility.IsHeadHiddenForGender(pawn, runForm))
+                    {
+                        __result.flags &= ~PawnRenderFlags.NoBody;
+                    }
+                }
+            }
+
+            // ── B) 공통: 바디 오프셋(맵/포트레잇 동일)
             Vector2 add2 = form.bodyOffset.HasValue ? form.bodyOffset.Value : Vector2.zero;
             if (add2 != Vector2.zero)
             {
@@ -37,7 +56,7 @@ namespace ShapeshifterFramework.Patches
                 __result.matrix = m;
             }
 
-            // ── 2) 포트레잇 전용: 전체 균등 스케일 (옵션 허용 시)
+            // ── C) 포트레잇 전용: 전체 균등 스케일 (옵션 허용 시)
             if ((flags & PawnRenderFlags.Portrait) != 0)
             {
                 var settings = ShapeshifterFrameworkMod.Settings;

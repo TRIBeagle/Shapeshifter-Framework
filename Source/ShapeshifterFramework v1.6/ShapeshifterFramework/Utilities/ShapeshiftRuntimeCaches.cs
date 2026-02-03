@@ -11,6 +11,7 @@ namespace ShapeshifterFramework.Utilities
         public static readonly Dictionary<Pawn, SoundDef> CallByPawn = new Dictionary<Pawn, SoundDef>(128);
         public static readonly Dictionary<Pawn, SoundDef> WoundedByPawn = new Dictionary<Pawn, SoundDef>(128);
         public static readonly Dictionary<Pawn, SoundDef> DeathByPawn = new Dictionary<Pawn, SoundDef>(128);
+        public static readonly Dictionary<Pawn, SoundDef> AngryByPawn = new Dictionary<Pawn, SoundDef>(128);
 
         // 혈흔/스미어 캐시 (폼 전용)
         public static readonly Dictionary<Pawn, ThingDef> BloodByPawn = new Dictionary<Pawn, ThingDef>(128);
@@ -30,6 +31,7 @@ namespace ShapeshifterFramework.Utilities
             CallByPawn.Remove(pawn);
             WoundedByPawn.Remove(pawn);
             DeathByPawn.Remove(pawn);
+            AngryByPawn.Remove(pawn);
 
             // 혈흔
             BloodByPawn.Remove(pawn);
@@ -47,6 +49,7 @@ namespace ShapeshifterFramework.Utilities
             CallByPawn.Clear();
             WoundedByPawn.Clear();
             DeathByPawn.Clear();
+            AngryByPawn.Clear();
 
             BloodByPawn.Clear();
             SmearByPawn.Clear();

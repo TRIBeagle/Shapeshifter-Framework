@@ -1,20 +1,38 @@
-﻿// .NET Framework 4.8 / C# 7.3
-// Patch_Verb_ShootBeam_EquipmentSafe.cs
-// 목적: 변신 폼처럼 장비 없이(EquipmentSource=null) Verb_ShootBeam 사용 시
-//       ApplyDamage 내부의 base.EquipmentSource.def 접근으로 인한 NRE를 예방.
-// 방식: Prefix로 원본 ApplyDamage를 대체하여 null-safe로 동일 동작 수행.
+﻿// 목적: EquipmentSource가 null인 Verb_ShootBeam에서 NRE 방지 (base.EquipmentSource.def 접근)
+// 근거: 바닐라 1.6 Verb_ShootBeam.pathCells는 HashSet<IntVec3>
+// 최적화: pathCells 접근은 FieldRef 우선, 실패 시 FieldInfo 폴백(핫패스에서 예외로 모드 로딩 죽는 것 방지)
 
 using HarmonyLib;
 using RimWorld;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch]
-    public static class Patch_Verb_ShootBeam_EquipmentSafe
+    internal static class Patch_Verb_ShootBeam_EquipmentSafe
     {
+        private static readonly FieldInfo PathCellsFI;
+        private static readonly AccessTools.FieldRef<Verb_ShootBeam, HashSet<IntVec3>> PathCellsRef;
+
+        static Patch_Verb_ShootBeam_EquipmentSafe()
+        {
+            // FieldInfo는 항상 확보 시도
+            PathCellsFI = AccessTools.Field(typeof(Verb_ShootBeam), "pathCells");
+
+            // FieldRef는 타입이 정확히 맞을 때만 성공. 실패해도 모드 로딩을 죽이지 않기 위해 try/catch.
+            try
+            {
+                PathCellsRef = AccessTools.FieldRefAccess<Verb_ShootBeam, HashSet<IntVec3>>("pathCells");
+            }
+            catch
+            {
+                PathCellsRef = null;
+            }
+        }
+
         // private void ApplyDamage(Thing thing, IntVec3 sourceCell, float damageFactor = 1f)
         static MethodBase TargetMethod()
         {
@@ -29,48 +47,62 @@ namespace ShapeshifterFramework.Patches
         {
             try
             {
-                if (thing == null) return false;
+                if (__instance == null) return true; // 원본
+                if (thing == null) return false;     // 바닐라도 바로 return
 
-                // 필요한 필드/프로퍼티 접근
-                var verbProps = __instance.verbProps;                 // VerbProperties
-                var caster = __instance.Caster;                    // Thing
-                var map = caster?.Map;
-                if (map == null || verbProps == null) return false;
+                var caster = __instance.Caster;
+                if (caster == null) return true;
 
-                // 원본: InterpolatedPosition 기반 LOS 보정
+                var map = caster.Map;
+                if (map == null) return true;
+
+                var verbProps = __instance.verbProps;
+                if (verbProps == null || verbProps.beamDamageDef == null) return false;
+
+                // 바닐라 동일: LOS 마지막 셀 보정
                 IntVec3 intVec = __instance.InterpolatedPosition.Yto0().ToIntVec3();
                 IntVec3 intVec2 = GenSight.LastPointOnLineOfSight(
-                    sourceCell, intVec,
+                    sourceCell,
+                    intVec,
                     (IntVec3 c) => c.InBounds(map) && c.CanBeSeenOverFast(map),
                     skipFirstCell: true
                 );
                 if (intVec2.IsValid) intVec = intVec2;
 
-                // 필요한 값 체크
-                if (verbProps.beamDamageDef == null) return false;
-
-                // 무기(def) null-safe
+                // NRE 핵심: EquipmentSource가 null일 수 있음
                 ThingDef equipmentDef = __instance.EquipmentSource != null ? __instance.EquipmentSource.def : null;
 
-                // 로그/각도
                 float angleFlat = (__instance.CurrentTarget.Cell - caster.Position).AngleFlat;
                 var log = new BattleLogEntry_RangedImpact(caster, thing, __instance.CurrentTarget.Thing, equipmentDef, null, null);
 
-                // pathCells.Count 접근(사설 필드)
-                int pathCount = 1;
-                var fPathCells = AccessTools.Field(typeof(Verb_ShootBeam), "pathCells");
-                var pathCellsObj = fPathCells?.GetValue(__instance) as System.Collections.ICollection;
-                if (pathCellsObj != null && pathCellsObj.Count > 0) pathCount = pathCellsObj.Count;
+                int cellCount = 1;
+                HashSet<IntVec3> pathCells = null;
 
-                // DamageInfo 구성(원본과 동일, 단 equipmentDef null-safe)
+                if (PathCellsRef != null)
+                {
+                    try { pathCells = PathCellsRef(__instance); } catch { pathCells = null; }
+                }
+                if (pathCells == null && PathCellsFI != null)
+                {
+                    try { pathCells = PathCellsFI.GetValue(__instance) as HashSet<IntVec3>; } catch { pathCells = null; }
+                }
+
+                if (pathCells != null && pathCells.Count > 0) cellCount = pathCells.Count;
+
                 DamageInfo dinfo;
                 if (verbProps.beamTotalDamage > 0f)
                 {
-                    float perCell = verbProps.beamTotalDamage / (float)pathCount;
-                    perCell *= damageFactor;
+                    float num = verbProps.beamTotalDamage / (float)cellCount;
+                    num *= damageFactor;
                     dinfo = new DamageInfo(
-                        verbProps.beamDamageDef, perCell, verbProps.beamDamageDef.defaultArmorPenetration,
-                        angleFlat, caster, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown,
+                        verbProps.beamDamageDef,
+                        num,
+                        verbProps.beamDamageDef.defaultArmorPenetration,
+                        angleFlat,
+                        caster,
+                        null,
+                        equipmentDef,
+                        DamageInfo.SourceCategory.ThingOrUnknown,
                         __instance.CurrentTarget.Thing
                     );
                 }
@@ -78,20 +110,26 @@ namespace ShapeshifterFramework.Patches
                 {
                     float amount = (float)verbProps.beamDamageDef.defaultDamage * damageFactor;
                     dinfo = new DamageInfo(
-                        verbProps.beamDamageDef, amount, verbProps.beamDamageDef.defaultArmorPenetration,
-                        angleFlat, caster, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown,
+                        verbProps.beamDamageDef,
+                        amount,
+                        verbProps.beamDamageDef.defaultArmorPenetration,
+                        angleFlat,
+                        caster,
+                        null,
+                        equipmentDef,
+                        DamageInfo.SourceCategory.ThingOrUnknown,
                         __instance.CurrentTarget.Thing
                     );
                 }
 
                 thing.TakeDamage(dinfo).AssociateWithLog(log);
 
-                // 화재 처리(원본과 동일 로직; chance 커브 null-safe)
                 if (thing.CanEverAttachFire())
                 {
                     float chance = (verbProps.flammabilityAttachFireChanceCurve == null)
                         ? verbProps.beamChanceToAttachFire
                         : verbProps.flammabilityAttachFireChanceCurve.Evaluate(thing.GetStatValue(StatDefOf.Flammability));
+
                     if (Rand.Chance(chance))
                         thing.TryAttachFire(verbProps.beamFireSizeRange.RandomInRange, caster);
                 }
@@ -100,14 +138,12 @@ namespace ShapeshifterFramework.Patches
                     FireUtility.TryStartFireIn(intVec, map, verbProps.beamFireSizeRange.RandomInRange, caster, verbProps.flammabilityAttachFireChanceCurve);
                 }
 
-                // 원본 스킵
-                return false;
+                return false; // 원본 스킵
             }
             catch (Exception e)
             {
-                Log.Error($"[SSF] ShootBeam safe patch failed: {e}");
-                // 오류 시 원본 호출(최후의 수단)
-                return true;
+                Log.Error($"[SSF] Patch_Verb_ShootBeam_EquipmentSafe failed: {e}");
+                return true; // 예외 시 원본으로 폴백
             }
         }
     }

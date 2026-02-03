@@ -4,7 +4,7 @@ using Verse;
 
 namespace ShapeshifterFramework.Utilities
 {
-    public static class ShapeshiftInventoryReequipUtil
+    public static class ShapeshiftInventoryReequipUtility
     {
         // 무기: 인벤에서 꺼내 장비. 실패하면 반드시 인벤으로 되돌리되,
         // 인벤이 가득하면 근처에 드랍(유실 방지).

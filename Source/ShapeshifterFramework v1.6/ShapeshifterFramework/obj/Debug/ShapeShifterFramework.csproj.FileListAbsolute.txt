@@ -12,3 +12,9 @@ C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Shapeshifter Framewo
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Shapeshifter Framework\Source\ShapeshifterFramework v1.6\ShapeShifterFramework\obj\Debug\ShapeshifterFramework.csproj.CoreCompileInputs.cache
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Shapeshifter Framework\Source\ShapeshifterFramework v1.6\ShapeShifterFramework\obj\Debug\ShapeshifterFramework.dll
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Shapeshifter Framework\Source\ShapeshifterFramework v1.6\ShapeShifterFramework\obj\Debug\ShapeshifterFramework.pdb
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\Shapeshifter Framework\1.6\Assemblies\ShapeshifterFramework.dll
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\Shapeshifter Framework\1.6\Assemblies\ShapeshifterFramework.pdb
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\Shapeshifter Framework\Source\ShapeshifterFramework v1.6\ShapeShifterFramework\obj\Debug\ShapeshifterFramework.csproj.AssemblyReference.cache
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\Shapeshifter Framework\Source\ShapeshifterFramework v1.6\ShapeShifterFramework\obj\Debug\ShapeshifterFramework.csproj.CoreCompileInputs.cache
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\Shapeshifter Framework\Source\ShapeshifterFramework v1.6\ShapeShifterFramework\obj\Debug\ShapeshifterFramework.dll
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\Shapeshifter Framework\Source\ShapeshifterFramework v1.6\ShapeShifterFramework\obj\Debug\ShapeshifterFramework.pdb

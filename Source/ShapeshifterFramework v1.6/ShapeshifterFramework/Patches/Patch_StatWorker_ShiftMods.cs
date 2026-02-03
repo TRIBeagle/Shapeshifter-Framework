@@ -1,12 +1,11 @@
 ﻿// Patch_StatWorker_ShiftMods.cs
 // 목적: 스탯 실값 계산에 폼 statFactors/Offsets를 반영.
 // 용도: Postfix에서 현재 StatDef에 한해 __result에 가산/배수 적용.
-// 주의: req.Pawn 확보 실패/폼 없음/해당 항목 없음이면 무변경.
+// 최적화: StatWorker.stat 접근을 FieldInfo.GetValue(리플렉션) → FieldRef(델리게이트)로 변경 (핫패스)
 
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
-using System.Reflection;
 using Verse;
 
 namespace ShapeshifterFramework.Patches
@@ -15,8 +14,9 @@ namespace ShapeshifterFramework.Patches
         new[] { typeof(StatRequest), typeof(bool) })]
     public static class Patch_StatWorker_ShiftMods
     {
-        // 현재 StatWorker가 처리 중인 StatDef (protected 필드 'stat')
-        static readonly FieldInfo StatField = AccessTools.Field(typeof(StatWorker), "stat");
+        // protected StatDef stat;  (StatWorker)
+        private static readonly AccessTools.FieldRef<StatWorker, StatDef> StatRef =
+            AccessTools.FieldRefAccess<StatWorker, StatDef>("stat");
 
         static void Postfix(StatWorker __instance, StatRequest req, bool applyPostProcess, ref float __result)
         {
@@ -29,8 +29,9 @@ namespace ShapeshifterFramework.Patches
             var form = comp?.currentForm;
             if (comp == null || !comp.isTransformed || form == null) return;
 
-            // 3) 현재 계산 중인 StatDef
-            var stat = (StatDef)StatField.GetValue(__instance);
+            // 3) 현재 계산 중인 StatDef (리플렉션 대신 FieldRef)
+            StatDef stat = null;
+            try { stat = StatRef(__instance); } catch { stat = null; }
             if (stat == null) return;
 
             // 4) 폼 보정치 합산(해당 stat만)

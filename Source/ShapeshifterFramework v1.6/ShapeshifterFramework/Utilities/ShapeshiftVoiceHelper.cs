@@ -31,6 +31,12 @@ namespace ShapeshifterFramework.Utilities
             if (pawn == null) return false;
             return ShapeshiftRuntimeCaches.DeathByPawn.TryGetValue(pawn, out def) && def != null;
         }
+        public static bool TryGetAngry(Pawn pawn, out SoundDef def)
+        {
+            def = null;
+            if (pawn == null) return false;
+            return ShapeshiftRuntimeCaches.AngryByPawn.TryGetValue(pawn, out def) && def != null;
+        }
 
         /// <summary>
         /// 바닐라가 유전자/뮤턴트 오버라이드 시 pitch/volume을 CurLifeStage 기준으로 리셋하므로

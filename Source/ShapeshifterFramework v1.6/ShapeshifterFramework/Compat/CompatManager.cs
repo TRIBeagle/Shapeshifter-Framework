@@ -1,15 +1,21 @@
-﻿// ShapeshiftCompat.cs
-// 정책 요약:
-// - Failed(id, reason): ReportOnce() 이전엔 집계만, 이후(런타임)엔 즉시 1회 경고 출력
-// - HasFailed(id): 동일 id 중복 경고 억제용
-// - ReportAllOnce(): 준비(RegisterBeforeReport) → 모드별 요약/카운트/실패목록 출력
+﻿// ShapeshifterFramework | Compat | CompatManager.cs
+// 목적   : 외부 모드(HAR/FA)별 호환 패치 상태를 집계·보고하는 경량 매니저(구 ShapeshiftCompat).
+// 용도   : 패치 성공/실패/메트릭을 누적하고, ReportAllOnce에서 1회 요약을 출력한다.
+// 변경   : 2025-09-22 v1.1 — ShapeshiftCompat → CompatManager로 리네이밍(주석 규칙 적용, 로직 변경 없음).
+// 주의   : Report 이전에는 Failed 집계만 수행하고, Report 이후 런타임에는 동일 id에 대해 1회 경고를 즉시 출력.
 
 using System.Collections.Generic;
 using Verse;
 
 namespace ShapeshifterFramework.Compat
 {
-    // 모드별 집계기
+    /// <summary>
+    /// 모드별 집계기. 패치 성공/실패, 메트릭(added/deduped 등), 1회 보고(ReportOnce)를 담당한다.
+    /// 정책:
+    /// - <see cref="Failed(string, string)"/>: Report 이전엔 집계만, Report 이후엔 동일 id 경고를 즉시 1회 출력.
+    /// - <see cref="HasFailed(string)"/>: 동일 id 중복 경고 억제용.
+    /// - <see cref="ReportOnce()"/>: 모드별 요약/카운트/실패 목록을 한 번만 출력.
+    /// </summary>
     internal sealed class CompatMod
     {
         internal readonly string PackageId;
@@ -22,18 +28,28 @@ namespace ShapeshifterFramework.Compat
 
         private bool reported;
 
+        /// <summary>패키지 식별자/로그 프리픽스를 바인딩한다.</summary>
         internal CompatMod(string packageId, string logPrefix)
         {
             PackageId = packageId;
             LogPrefix = logPrefix;
         }
 
-        internal bool IsActive => ShapeshiftCompat.IsActive(PackageId);
+        /// <summary>대상 모드가 현재 활성인지.</summary>
+        internal bool IsActive => CompatManager.IsActive(PackageId);
+
+        /// <summary>성공(패치 적용) 카운트.</summary>
         internal int OkCount => ok.Count;
+
+        /// <summary>실패(패치 미적용/오류) 카운트.</summary>
         internal int FailCount => fail.Count;
 
+        /// <summary>패치 적용 성공 id 등록.</summary>
         internal void Patched(string id) => ok.Add(id);
 
+        /// <summary>
+        /// 실패 id와 사유를 기록. ReportOnce 이후라면 동일 id 경고를 즉시 1회 출력한다.
+        /// </summary>
         internal void Failed(string id, string reason)
         {
             // 시작 단계에선 집계만, Report 이후(게임 도중)는 즉시 경고도 1회 출력
@@ -41,10 +57,10 @@ namespace ShapeshifterFramework.Compat
             if (reported) Log.Warning($"{LogPrefix} {id} failed: {reason}");
         }
 
-        // 중복 경고 억제용
+        /// <summary>동일 실패 id가 이미 보고/집계되었는지.</summary>
         internal bool HasFailed(string id) => fail.ContainsKey(id);
 
-        // 메트릭(예: AddComp 요약)
+        /// <summary>메트릭 값을 설정(예: AddComp 요약).</summary>
         internal void MetricSet(string scope, string key, long value)
         {
             if (!metrics.TryGetValue(scope, out var bag))
@@ -52,6 +68,7 @@ namespace ShapeshifterFramework.Compat
             bag[key] = value;
         }
 
+        /// <summary>메트릭 값을 누적.</summary>
         internal void MetricAdd(string scope, string key, long delta = 1)
         {
             if (!metrics.TryGetValue(scope, out var bag))
@@ -60,6 +77,12 @@ namespace ShapeshifterFramework.Compat
             bag[key] = cur + delta;
         }
 
+        /// <summary>
+        /// 모드별 보고를 정확히 한 번만 수행한다.
+        /// - AddComp 요약(added/deduped)
+        /// - 패치 카운트(성공/실패)
+        /// - 실패 목록(경고)
+        /// </summary>
         internal void ReportOnce()
         {
             if (reported || !IsActive) return;
@@ -89,21 +112,35 @@ namespace ShapeshifterFramework.Compat
         }
     }
 
-    internal static class ShapeshiftCompat
+    /// <summary>
+    /// 호환 패치 전역 엔트리. 모드 활성 감지, CompatMod 인스턴스 보관,
+    /// Report 시점 준비(RegisterBeforeReport) 및 모드별 ReportOnce 집행을 담당한다.
+    /// </summary>
+    internal static class CompatManager
     {
+        // ── 외부 패키지 ID ──
         internal const string Pkg_HAR = "erdelf.HumanoidAlienRaces";
         internal const string Pkg_FA = "Nals.FacialAnimation";
 
+        // ── 로그 프리픽스 ──
         internal const string LOG_HAR = "[SSF/HAR]";
         internal const string LOG_FA = "[SSF/FA]";
 
+        /// <summary>
+        /// 모드 활성 확인. <paramref name="ignorePostfix"/>는 RimWorld의 ModLister 규약을 따른다.
+        /// </summary>
         internal static bool IsActive(string packageId, bool ignorePostfix = false)
             => ModLister.GetActiveModWithIdentifier(packageId, ignorePostfix) != null;
 
+        /// <summary>HAR/FA 집계기.</summary>
         internal static readonly CompatMod HAR = new CompatMod(Pkg_HAR, LOG_HAR);
         internal static readonly CompatMod FA = new CompatMod(Pkg_FA, LOG_FA);
 
-        // Report 전에 준비단계
+        /// <summary>
+        /// Report 이전 준비 단계:
+        /// - HAR: AddComp 실행 보장(요약 메트릭 준비)
+        /// - FA : 시작 시 폼 유효성 검증(잘못된 TypeDef defName 선보고)
+        /// </summary>
         private static void RegisterBeforeReport()
         {
             // HAR: AddComp 실행 보장(요약 메트릭 준비)
@@ -118,6 +155,10 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
+        /// <summary>
+        /// 모든 모드의 보고를 수행한다(각 1회).
+        /// 모두 성공이면 최종 OK 메시지를 출력한다.
+        /// </summary>
         internal static void ReportAllOnce()
         {
             RegisterBeforeReport();

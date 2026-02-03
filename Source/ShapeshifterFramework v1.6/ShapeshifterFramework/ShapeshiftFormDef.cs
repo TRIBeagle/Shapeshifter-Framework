@@ -17,10 +17,33 @@ namespace ShapeshifterFramework
     public class PartOverrideOption
     {
         public PartControlMode mode = PartControlMode.Default;
-        public string replacementTexPath = null;
 
-        public PartOverrideOption male = null;   // 선택: 남성 전용
-        public PartOverrideOption female = null; // 선택: 여성 전용
+        // 텍스처 교체
+        public string replacementTexPath = null;
+        public string swimmingReplacementTexPath = null; // 선택: 물/수영 시 텍스처 교체용(미사용이면 null)
+
+        // 색상
+        public Color? color = null; // 선택: 교체 시 색상 보정(없으면 흰색)
+        public Color? swimmingColor = null; // 선택: 수영 텍스처 사용 시 색상 보정(없으면 color 폴백)
+
+        // 셰이더 타입(DefName). 예: Cutout, CutoutComplex, CutoutWithOverlay, CutoutSkin, Transparent 등
+        // - null이면 노드 기본 셰이더(바디=Cutout, 헤어=CutoutHair 등) 사용
+        public string shaderTypeDefName = null;
+
+        // 수영 텍스처를 실제로 선택했을 때 사용할 셰이더 타입(DefName)
+        // - null이면 shaderTypeDefName 폴백
+        // - 둘 다 null이고 바디 수영 텍스처면 Utility에서 Transparent로 안전 폴백(바닐라 수영 에셋 대응)
+        public string swimmingShaderTypeDefName = null;
+
+        // 바닥 그림자(ellipse) 오버라이드: 바디에만 의미 있음.
+        // - 입력하면 해당 ShadowData로 대체
+        // - null이면 바닐라(종족 bodyGraphicData.shadowData / specialShadowData) 유지
+        public Vector3? shadowVolume = null;
+        public Vector3? shadowOffset = null;
+
+        // 성별 전용
+        public PartOverrideOption male = null;
+        public PartOverrideOption female = null;
     }
 
     // 조건 컨디션 모드
@@ -186,6 +209,7 @@ namespace ShapeshifterFramework
         public int transformFxCooldownTicks = 30;   // 동일 단계 쿨다운(틱)
 
         // 버튼/기타
+        public bool hideGizmo = false;
         public string gizmoIconPathEnter;   // 변신 버튼 아이콘
         public string gizmoIconPathRevert;  // 해제 버튼 아이콘
         public int? durationTicks = null;      // 지속 틱(null=무제한)
@@ -194,6 +218,13 @@ namespace ShapeshifterFramework
         public SoundDef soundCall;
         public SoundDef soundWounded;
         public SoundDef soundDeath;
+        public SoundDef soundAngry;
+        public SoundDef soundEating;
+
+        // 근접 전투 사운드
+        public SoundDef soundMeleeHitPawn;
+        public SoundDef soundMeleeHitBuilding;
+        public SoundDef soundMeleeMiss;
 
         // 혈흔/스미어
         public ThingDef bloodDef;

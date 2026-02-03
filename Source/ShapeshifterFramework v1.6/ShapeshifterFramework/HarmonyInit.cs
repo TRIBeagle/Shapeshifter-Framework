@@ -15,7 +15,7 @@ namespace ShapeshifterFramework
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             // 개별 패치들은 성공/실패만 집계함. 여기서 모드별 요약 1회 출력.
-            ShapeshiftCompat.ReportAllOnce();
+            CompatManager.ReportAllOnce();
         }
     }
 }

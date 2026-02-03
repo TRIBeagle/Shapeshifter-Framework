@@ -1,12 +1,10 @@
-﻿// Compat_FacialAnimation_OverridesHook.cs
-// 목적/특징:
-//  - 한 파일 = 한 패치 카운트("OverridesHook").
-//  - CompShapeshifter와 완전 분리: Harmony 훅으로 변신/해제/로드 후에만介入.
-//  - 시작 시 전체 폼의 *TypeDef defName 유효성 검증 → Report에서 출력.
-//  - 변신 시 동일 오류(같은 id)는 "중복 경고 억제": 시작 때 이미 보고된 건 다시 찍지 않음.
-//  - Color는 바닐라 ColorInt? → ToColor, dirty 갱신은 필드→프로퍼티 폴백.
-//
-// 주의: *TypeDef defName만 사용. (백호환 미사용)
+﻿// ShapeshifterFramework | Compat | Compat_FacialAnimation_OverridesHook.cs
+// 목적   : Facial Animation과의 연동을 Harmony 훅으로 처리하여 변신/해제/로드 시점에만 개입,
+//          폼에 지정된 FA FaceTypeDef와 눈 색상(Color)을 적용·복원한다.
+// 용도   : CompShapeshifter의 ApplyForm/RemoveForm/PostExposeData를 후킹해 백업-오버라이드-원복을 수행.
+// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙 적용(주석만 정리, 로직 변경 없음).
+// 저장   : GameComponent(FAStateStore)에 Pawn별 Backup을 딥세이브. PostLoadInit에 정리(Cleanup).
+// 주의   : *TypeDef는 defName만 사용(백호환 미사용). 동일 오류(id)는 한 번만 경고(중복 억제).
 
 using HarmonyLib;
 using ShapeshifterFramework.Comps;
@@ -18,14 +16,23 @@ using Verse;
 
 namespace ShapeshifterFramework.Compat
 {
-    // ────────────────────────────────────────────────────────────────
-    // Facial Animation 유틸 (8개 오버라이드 + 시작 시 검증 + 중복 억제)
+    #region Facial Animation Overrides (validation/backup/apply/restore)
+
+    /// <summary>
+    /// Facial Animation 유틸리티:
+    /// - 시작 시 전체 폼 유효성 검증(존재하지 않는 FaceTypeDef defName 감지, 동일 오류 1회 보고)
+    /// - 현재 Pawn의 FA 상태 백업/적용/원복(눈 색상 포함, DirtyFlag 갱신)
+    /// - 변신 시점에만 Harmony 훅으로 개입(CompShapeshifter와 코드 의존 분리)
+    /// </summary>
     internal static class FacialAnimationCompat
     {
-        internal static bool Active => ShapeshiftCompat.FA.IsActive;
+        /// <summary>외부 모드 활성/감지 상태.</summary>
+        internal static bool Active => CompatManager.FA.IsActive;
 
-        // ── 시작 시 전체 폼 유효성 검증 ──────────────────────────────────────────
-        // 같은 문제는 시작 로그에 한 번만 표시하고, 이후 변신 시에는 중복 경고 억제
+        /// <summary>
+        /// [시작 단계] 모든 ShapeshiftFormDef에 대해 FA 타입 defName 유효성을 검증한다.
+        /// 동일한 문제는 한 번만 Report(중복 경고 억제).
+        /// </summary>
         internal static void ValidateAllForms()
         {
             if (!Active) return;
@@ -47,6 +54,10 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
+        /// <summary>
+        /// 컨트롤러 별 대상 Def 타입을 추론하여 defName을 검증한다.
+        /// 실패 시 동일 id에 대해 한 번만 경고.
+        /// </summary>
         private static void ValidateDefField(string controller, string defName, ShapeshiftFormDef owner)
         {
             if (string.IsNullOrEmpty(defName)) return;
@@ -68,7 +79,9 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        // ── 세이브/로드용 백업 덩어리 ──────────────────────────────────────────
+        /// <summary>
+        /// Pawn의 현재 FA 상태를 Backup에 저장한다(Def 선택 + 눈 색상).
+        /// </summary>
         public sealed class Backup : IExposable
         {
             // face type defName
@@ -80,6 +93,7 @@ namespace ShapeshifterFramework.Compat
             internal bool eyeColorSet;
             internal bool eyeColor2Set;
 
+            /// <summary>세이브/로드. 색상 존재 여부 플래그를 별도로 보존.</summary>
             public void ExposeData()
             {
                 Scribe_Values.Look(ref head, "faHead");
@@ -101,11 +115,13 @@ namespace ShapeshifterFramework.Compat
                 eyeColor2 = eyeColor2Set ? (Color?)c2 : null;
             }
 
+            /// <summary>백업 내용이 비었는지 여부.</summary>
             public bool IsEmpty =>
                 head == null && eyeball == null && lid == null &&
                 brow == null && mouth == null && skin == null &&
                 !eyeColor.HasValue && !eyeColor2.HasValue;
 
+            /// <summary>백업 초기화.</summary>
             public void Clear()
             {
                 head = eyeball = lid = brow = mouth = skin = null;
@@ -114,7 +130,11 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        // 현재 상태 백업
+        /// <summary>
+        /// Pawn의 현재 FA 타입/색상을 Backup에 저장한다.
+        /// </summary>
+        /// <param name="pawn">대상 Pawn</param>
+        /// <param name="dst">목적지 백업</param>
         internal static void BackupCurrent(Pawn pawn, Backup dst)
         {
             if (!Active || pawn == null || dst == null) return;
@@ -136,7 +156,9 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        // 폼에 지정된 항목만 적용
+        /// <summary>
+        /// 폼에 지정된 항목만 FA에 적용한다(DefName → Def 조회, 색상 적용 시 DirtyFlag 갱신).
+        /// </summary>
         internal static void ApplyOverrides(Pawn pawn, ShapeshiftFormDef form)
         {
             if (!Active || pawn == null || form == null) return;
@@ -184,7 +206,9 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        // 백업 기준 원복
+        /// <summary>
+        /// 백업 기준으로 Pawn의 FA 상태를 복원한다(Def/색상, DirtyFlag 포함).
+        /// </summary>
         internal static void Restore(Pawn pawn, Backup src)
         {
             if (!Active || pawn == null || src == null || src.IsEmpty) return;
@@ -223,8 +247,9 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        // ── 내부 유틸 ────────────────────────────────────────────────────────────
+        #region helpers
 
+        /// <summary>Pawn에서 특정 FA 컨트롤러 컴프를 이름 규칙으로 찾는다.</summary>
         private static ThingComp FindFAControllerComp(Pawn pawn, string controllerSuffix)
         {
             if (pawn == null) return null;
@@ -243,6 +268,7 @@ namespace ShapeshifterFramework.Compat
             return null;
         }
 
+        /// <summary>현재 faceType/FaceType에서 Def를 읽어 defName을 반환.</summary>
         private static string GetFADefName(Pawn pawn, string controller)
         {
             var comp = FindFAControllerComp(pawn, controller);
@@ -255,6 +281,7 @@ namespace ShapeshifterFramework.Compat
             return cur != null ? cur.defName : null;
         }
 
+        /// <summary>컨트롤러명 → 대상 Def 타입 매핑.</summary>
         private static System.Type MapControllerToDefType(string controller)
         {
             string name = null;
@@ -267,6 +294,10 @@ namespace ShapeshifterFramework.Compat
             return string.IsNullOrEmpty(name) ? null : ShapeshiftReflectionCache.TryType(name);
         }
 
+        /// <summary>
+        /// DefName으로 대상 Def를 조회해 컨트롤러의 faceType에 적용하고, DirtyFlag를 세운다.
+        /// 실패/미존재/타입해석 실패는 동일 id 1회만 경고.
+        /// </summary>
         private static void ApplyDefByName(Pawn pawn, string controller, string defName)
         {
             if (string.IsNullOrEmpty(defName)) return;
@@ -308,6 +339,7 @@ namespace ShapeshifterFramework.Compat
             MarkDirty(comp);
         }
 
+        /// <summary>컨트롤러의 DirtyFlag를 true로 설정(필드/프로퍼티 폴백).</summary>
         private static void MarkDirty(object controllerComp)
         {
             if (controllerComp == null) return;
@@ -316,19 +348,30 @@ namespace ShapeshifterFramework.Compat
                 ShapeshiftReflectionCache.TrySetInstanceProperty(controllerComp, "DirtyFlag", true);
         }
 
-        // "한 번만 실패 보고" 도우미
+        /// <summary>동일 오류 id는 한 번만 Failed 로그를 남긴다.</summary>
         private static void ReportOnceFailed(string id, string reason)
         {
-            if (!ShapeshiftCompat.FA.HasFailed(id))
-                ShapeshiftCompat.FA.Failed(id, reason);
+            if (!CompatManager.FA.HasFailed(id))
+                CompatManager.FA.Failed(id, reason);
         }
+
+        #endregion
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // 백업 저장소(GameComponent) : Pawn → Backup
+    #endregion
+
+    #region Save store: Pawn → Backup (GameComponent)
+
+    /// <summary>
+    /// Pawn별 Facial Animation 백업 저장소.
+    /// - 딥세이브/로드 지원(Reference/Deep 혼합), PostLoadInit에 dangling 참조 정리.
+    /// </summary>
     internal sealed class FAStateStore : GameComponent
     {
+        /// <summary>게임 컴포넌트 생성자(싱글턴 할당).</summary>
         public FAStateStore(Game game) { Inst = this; }
+
+        /// <summary>싱글턴 인스턴스.</summary>
         public static FAStateStore Inst { get; private set; }
 
         private Dictionary<Pawn, FacialAnimationCompat.Backup> map =
@@ -338,6 +381,7 @@ namespace ShapeshifterFramework.Compat
         private List<Pawn> tmpKeys;
         private List<FacialAnimationCompat.Backup> tmpVals;
 
+        /// <summary>세이브/로드 구현. 로드 완료 후 정리(Cleanup).</summary>
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref map, "faBackups",
@@ -347,6 +391,7 @@ namespace ShapeshifterFramework.Compat
                 Cleanup();
         }
 
+        /// <summary>null/Destroyed Pawn 키 제거.</summary>
         private void Cleanup()
         {
             // null/Destroyed 참조 정리
@@ -356,6 +401,7 @@ namespace ShapeshifterFramework.Compat
             for (int i = 0; i < remove.Count; i++) map.Remove(remove[i]);
         }
 
+        /// <summary>백업을 가져오거나 새로 만든다.</summary>
         public FacialAnimationCompat.Backup GetOrCreate(Pawn p)
         {
             if (p == null) return null;
@@ -367,36 +413,51 @@ namespace ShapeshifterFramework.Compat
             return b;
         }
 
+        /// <summary>백업을 시도해 얻는다.</summary>
         public bool TryGet(Pawn p, out FacialAnimationCompat.Backup b)
         {
             if (p != null && map.TryGetValue(p, out b) && b != null) return true;
             b = null; return false;
         }
 
+        /// <summary>백업 제거.</summary>
         public void Remove(Pawn p)
         {
             if (p != null) map.Remove(p);
         }
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // Harmony 훅: CompShapeshifter ←→ FacialAnimationCompat 연결
+    #endregion
+
+    #region Harmony hooks: CompShapeshifter ↔ FacialAnimationCompat
+
+    /// <summary>
+    /// CompShapeshifter의 라이프사이클에 맞춰 FacialAnimationCompat을 호출하는 Harmony 훅들.
+    /// - ApplyForm(Postfix): 백업 → 폼 오버라이드 적용
+    /// - RemoveForm(Prefix): 백업 기준 원복 → 제거
+    /// - PostExposeData(Postfix): PostLoadInit & 변신 상태면 오버라이드 재적용
+    /// </summary>
     [HarmonyPatch]
     internal static class Compat_FacialAnimation_OverridesHook
     {
-        static bool counted;
+        private static bool counted;
 
-        // ApplyForm(ShapeshiftFormDef, string prev)
+        /// <summary>
+        /// 원본: <c>CompShapeshifter.ApplyForm(ShapeshiftFormDef, string)</c> — <b>Postfix</b>.
+        /// 처음 준비 시 한 번만 패치 카운트 기록.
+        /// </summary>
         [HarmonyPatch(typeof(CompShapeshifter), "ApplyForm", new System.Type[] { typeof(ShapeshiftFormDef), typeof(string) })]
         static class Patch_ApplyForm2
         {
+            /// <summary>FA 비활성 시 패치 비적용. 최초 1회 Patched 기록.</summary>
             static bool Prepare()
             {
-                if (!ShapeshiftCompat.FA.IsActive) return false;
-                if (!counted) { counted = true; ShapeshiftCompat.FA.Patched("OverridesHook"); }
+                if (!CompatManager.FA.IsActive) return false;
+                if (!counted) { counted = true; CompatManager.FA.Patched("OverridesHook"); }
                 return true;
             }
 
+            /// <summary>변신 직후: 현 상태 백업 후 폼 오버라이드 적용.</summary>
             static void Postfix(CompShapeshifter __instance, ShapeshiftFormDef form)
             {
                 try
@@ -413,18 +474,21 @@ namespace ShapeshifterFramework.Compat
                 }
                 catch (Exception e)
                 {
-                    // 훅 예외는 반복될 수 있으므로 동일 id로 1회만 보고
-                    if (!ShapeshiftCompat.FA.HasFailed("OverridesHook:ApplyForm2:Exception"))
-                        ShapeshiftCompat.FA.Failed("OverridesHook:ApplyForm2:Exception", e.Message);
+                    // [안전] 훅 예외는 동일 id로 1회만 보고
+                    if (!CompatManager.FA.HasFailed("OverridesHook:ApplyForm2:Exception"))
+                        CompatManager.FA.Failed("OverridesHook:ApplyForm2:Exception", e.Message);
                 }
             }
         }
 
-        // RemoveForm()
+        /// <summary>
+        /// 원본: <c>CompShapeshifter.RemoveForm()</c> — <b>Prefix</b>.
+        /// 제거 전 백업 기준으로 원복, 백업 제거.
+        /// </summary>
         [HarmonyPatch(typeof(CompShapeshifter), "RemoveForm")]
         static class Patch_RemoveForm
         {
-            static bool Prepare() => ShapeshiftCompat.FA.IsActive;
+            static bool Prepare() => CompatManager.FA.IsActive;
 
             static void Prefix(CompShapeshifter __instance)
             {
@@ -443,23 +507,26 @@ namespace ShapeshifterFramework.Compat
                 }
                 catch (Exception e)
                 {
-                    if (!ShapeshiftCompat.FA.HasFailed("OverridesHook:RemoveForm:Exception"))
-                        ShapeshiftCompat.FA.Failed("OverridesHook:RemoveForm:Exception", e.Message);
+                    if (!CompatManager.FA.HasFailed("OverridesHook:RemoveForm:Exception"))
+                        CompatManager.FA.Failed("OverridesHook:RemoveForm:Exception", e.Message);
                 }
             }
         }
 
-        // PostExposeData()
+        /// <summary>
+        /// 원본: <c>CompShapeshifter.PostExposeData()</c> — <b>Postfix</b>.
+        /// PostLoadInit 이후 이미 변신 상태면 폼 오버라이드를 재적용.
+        /// </summary>
         [HarmonyPatch(typeof(CompShapeshifter), "PostExposeData")]
         static class Patch_PostExposeData
         {
-            static bool Prepare() => ShapeshiftCompat.FA.IsActive;
+            static bool Prepare() => CompatManager.FA.IsActive;
 
             static void Postfix(CompShapeshifter __instance)
             {
                 try
                 {
-                    // 저장 불러온 뒤 이미 변신 상태면 재적용
+                    // [저장] 저장 불러온 뒤 이미 변신 상태면 재적용
                     if (Scribe.mode == LoadSaveMode.PostLoadInit && __instance != null && __instance.isTransformed && __instance.currentForm != null)
                     {
                         var pawn = __instance.parent as Pawn;
@@ -474,10 +541,12 @@ namespace ShapeshifterFramework.Compat
                 }
                 catch (Exception e)
                 {
-                    if (!ShapeshiftCompat.FA.HasFailed("OverridesHook:PostExposeData:Exception"))
-                        ShapeshiftCompat.FA.Failed("OverridesHook:PostExposeData:Exception", e.Message);
+                    if (!CompatManager.FA.HasFailed("OverridesHook:PostExposeData:Exception"))
+                        CompatManager.FA.Failed("OverridesHook:PostExposeData:Exception", e.Message);
                 }
             }
         }
     }
+
+    #endregion
 }

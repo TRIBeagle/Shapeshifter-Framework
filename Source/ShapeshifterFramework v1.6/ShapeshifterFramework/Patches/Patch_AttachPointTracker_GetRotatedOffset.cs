@@ -1,4 +1,8 @@
-﻿// Patch_AttachPointTracker_GetRotatedOffset.cs (C# 7.3)
+﻿// ShapeshifterFramework | Patches | Patch_AttachPointTracker_GetRotatedOffset.cs
+// 목적  : AttachPointTracker.GetRotatedOffset 결과를 변신 크기에 맞춰 보정.
+// 용도  : Pawn의 attach point(무기/장비 위치 등) 오프셋이 변신 크기에 맞도록 조정.
+// 변경  : 2025-09-23 v1.0 — 초기 작성.
+
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Utilities;

@@ -38,7 +38,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 var m = list[i];
                 if (m == null || m.hediff == null) continue;
-                if (!_mutantByHediff.ContainsKey(m.hediff))
+                if (!_mutantByHediff.TryGetValue(m.hediff, out _))
                     _mutantByHediff.Add(m.hediff, m);
             }
         }

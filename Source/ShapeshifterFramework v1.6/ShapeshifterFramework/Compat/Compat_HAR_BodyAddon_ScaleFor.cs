@@ -1,9 +1,11 @@
-﻿// Compat_HAR_BodyAddon_ScaleFor.cs
-// 목적:
-//  - HAR BodyAddon.ScaleFor(...) 결과에 "헤드 계열 애드온"일 때만 bodyDrawScale * headDrawScale 적용
-//    (바디 애드온은 추가 배율 X → 제곱 방지)
-//  - Portrait(정보창)에서는 옵션이 켜져 있으면 portraitDrawScale 추가 곱
-// 감지: packageId(erdelf.HumanoidAlienRaces) + 시그니처 동적 탐색
+﻿// ShapeshifterFramework | Compat | Compat_HAR_BodyAddon_ScaleFor.cs
+// 목적   : HAR BodyAddon.ScaleFor(...) 결과에서, "헤드 계열 애드온"에만 변신 폼 스케일(body * head)을 곱한다.
+// 용도   : AlienRace.AlienPawnRenderNodeWorker_BodyAddon.ScaleFor(Postfix)로 개입하여
+//          본체 스케일과의 일관성을 유지하되, 바디 애드온에 중복 배율이 적용되는 것을 방지한다.
+// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙 적용 및 리플렉션 접근을 ShapeshiftReflectionCache로 통일(기능 동일).
+// 주의   : 외부 모드/시그니처 변경 대비 — 정확 시그니처 우선, 반환형/파라미터 기반 폴백을 포함.
+// 성능   : FieldInfo/PropertyInfo 직접 보관 제거 → 캐시 헬퍼 사용으로 리플렉션 비용 및 중복 코드 축소.
+
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
 using System;
@@ -14,31 +16,32 @@ using Verse;
 
 namespace ShapeshifterFramework.Compat
 {
+    /// <summary>
+    /// HAR BodyAddon의 스케일 보정(Postfix).
+    /// - 원본: <c>AlienRace.AlienPawnRenderNodeWorker_BodyAddon.ScaleFor(PawnRenderNode, PawnDrawParms) : Vector3</c>
+    /// - 동작: "헤드 계열 애드온"으로 판정되면 <c>form.bodyDrawScale * form.headDrawScale</c>를 적용.
+    /// - 바디 애드온에는 추가 배율을 적용하지 않아 제곱 누적을 방지.
+    /// 전제:
+    /// - HAR 모드 활성( <c>CompatManager.HAR.IsActive</c> ) 및 변신 폼 유효.
+    /// 부작용:
+    /// - 없음(헤드 외에는 영향 없음).
+    /// </summary>
     [HarmonyPatch]
     internal static class Compat_HAR_BodyAddon_ScaleFor
     {
-        // ── HAR 리플렉션 캐시
-        static readonly Type T_Worker = ShapeshiftReflectionCache.TryType("AlienRace.AlienPawnRenderNodeWorker_BodyAddon");
-        static readonly Type T_Node = ShapeshiftReflectionCache.TryType("AlienRace.AlienPawnRenderNode_BodyAddon");
-        static readonly Type T_Props = ShapeshiftReflectionCache.TryType("AlienRace.AlienPawnRenderNodeProperties_BodyAddon");
-        static readonly Type T_Addon = ShapeshiftReflectionCache.TryType("AlienRace.AlienPartGenerator+BodyAddon");
-        static readonly Type T_CondBP = ShapeshiftReflectionCache.TryType("AlienRace.ExtendedGraphics.ConditionBodyPart");
+        // ── HAR 타입 핸들(존재 여부만 확인; 실제 멤버 접근은 캐시 헬퍼 사용)
+        private static readonly Type T_Worker = ShapeshiftReflectionCache.TryType("AlienRace.AlienPawnRenderNodeWorker_BodyAddon");
 
-        static readonly FieldInfo FI_Node_props = T_Node != null ? AccessTools.Field(T_Node, "props") : null;
-        static readonly FieldInfo FI_Props_addon = T_Props != null ? AccessTools.Field(T_Props, "addon") : null;
-        static readonly FieldInfo FI_Props_parentTagDef = T_Props != null ? AccessTools.Field(T_Props, "parentTagDef") : null;
-        static readonly FieldInfo FI_Addon_alignWithHead = T_Addon != null ? AccessTools.Field(T_Addon, "alignWithHead") : null;
-        static readonly FieldInfo FI_Addon_conditions = T_Addon != null ? AccessTools.Field(T_Addon, "conditions") : null;
-
-        static readonly FieldInfo FI_Cond_bodyPart = T_CondBP != null ? AccessTools.Field(T_CondBP, "bodyPart") : null; // BodyPartDef
-        static readonly FieldInfo FI_Cond_bodyPartLabel = T_CondBP != null ? AccessTools.Field(T_CondBP, "bodyPartLabel") : null; // string
-
+        /// <summary>패치 적용 가능 여부 점검.</summary>
         static bool Prepare()
         {
-            if (!ShapeshiftCompat.HAR.IsActive || T_Worker == null) return false;
+            if (!CompatManager.HAR.IsActive || T_Worker == null) return false;
             return true;
         }
 
+        /// <summary>
+        /// 대상 메서드: 정확 시그니처 우선, 불발 시 반환형/파라미터 기반 폴백.
+        /// </summary>
         [HarmonyTargetMethod]
         static MethodBase TargetMethod()
         {
@@ -46,9 +49,10 @@ namespace ShapeshifterFramework.Compat
             var exact = AccessTools.Method(T_Worker, "ScaleFor", new[] { typeof(PawnRenderNode), typeof(PawnDrawParms) });
             if (exact != null)
             {
-                ShapeshiftCompat.HAR.Patched("ScaleFor");
+                CompatManager.HAR.Patched("ScaleFor");
                 return exact;
             }
+
             // 폴백
             foreach (var mi in AccessTools.GetDeclaredMethods(T_Worker))
             {
@@ -57,16 +61,22 @@ namespace ShapeshifterFramework.Compat
                     var ps = mi.GetParameters();
                     if (ps.Length >= 2 && ps[0].ParameterType == typeof(PawnRenderNode) && ps[1].ParameterType == typeof(PawnDrawParms))
                     {
-                        ShapeshiftCompat.HAR.Patched("ScaleFor");
+                        CompatManager.HAR.Patched("ScaleFor");
                         return mi;
                     }
                 }
             }
-            ShapeshiftCompat.HAR.Failed("ScaleFor", "ScaleFor signature not found");
+
+            CompatManager.HAR.Failed("ScaleFor", "ScaleFor signature not found");
             return null;
         }
 
-        // Postfix: (PawnRenderNode node, PawnDrawParms parms)
+        /// <summary>
+        /// <b>Postfix</b> — 헤드 계열 애드온이면 (body * head) 배율을 적용.
+        /// </summary>
+        /// <param name="__result">원본 결과 스케일</param>
+        /// <param name="__0">node</param>
+        /// <param name="__1">parms</param>
         static void Postfix(ref Vector3 __result, PawnRenderNode __0, PawnDrawParms __1)
         {
             try
@@ -98,64 +108,83 @@ namespace ShapeshifterFramework.Compat
             }
             catch (Exception e)
             {
-                if (!ShapeshiftCompat.HAR.HasFailed("ScaleFor:PostfixException"))
-                    ShapeshiftCompat.HAR.Failed("ScaleFor:PostfixException", e.Message);
+                if (!CompatManager.HAR.HasFailed("ScaleFor:PostfixException"))
+                    CompatManager.HAR.Failed("ScaleFor:PostfixException", e.Message);
             }
         }
 
-        // 헤드 계열 판정: alignWithHead || parentTagDef==Head || conditions(BodyPart/label)이 Head 하위
-        static bool IsHeadAddon(PawnRenderNode node, Pawn pawn)
+        #region Head-addon 판정
+
+        /// <summary>
+        /// 헤드 계열 판정:
+        /// 1) props.addon.alignWithHead == true
+        /// 2) props.parentTagDef.defName == "Head"
+        /// 3) props.addon.conditions 안의 BodyPart/label이 Head 하위 트리에 속함
+        /// </summary>
+        private static bool IsHeadAddon(PawnRenderNode node, Pawn pawn)
         {
             if (node == null) return false;
 
-            object props = FI_Node_props?.GetValue(node);
-            object addon = (props != null && FI_Props_addon != null) ? FI_Props_addon.GetValue(props) : null;
+            // Verse.PawnRenderNode → Props(AlienPawnRenderNodeProperties_BodyAddon)
+            object props = ShapeshiftReflectionCache.TryGetPropsFromNode(node);
+            // props.addon (AlienPartGenerator.BodyAddon)
+            object addon = props != null
+                ? (ShapeshiftReflectionCache.GetInstanceField<object>(props, "addon")
+                   ?? ShapeshiftReflectionCache.GetInstanceProperty<object>(props, "addon"))
+                : null;
 
             // 1) alignWithHead
-            if (addon != null && FI_Addon_alignWithHead != null)
+            if (addon != null)
             {
-                try { if (Convert.ToBoolean(FI_Addon_alignWithHead.GetValue(addon))) return true; } catch { }
-            }
-
-            // 2) parentTagDef == Head
-            if (props != null && FI_Props_parentTagDef != null)
-            {
-                try
+                object v = ShapeshiftReflectionCache.GetInstanceField<object>(addon, "alignWithHead")
+                           ?? ShapeshiftReflectionCache.GetInstanceProperty<object>(addon, "alignWithHead");
+                if (v != null)
                 {
-                    var tag = FI_Props_parentTagDef.GetValue(props);
-                    var dn = GetDefName(tag);
-                    if (!string.IsNullOrEmpty(dn) && string.Equals(dn, "Head", StringComparison.OrdinalIgnoreCase))
-                        return true;
+                    try { if (Convert.ToBoolean(v)) return true; } catch { }
                 }
-                catch { }
             }
 
-            // 3) conditions → BodyPart/label이 Head 하위인지
-            if (addon != null && FI_Addon_conditions != null && pawn != null)
+            // 2) parentTagDef == "Head"
+            if (props != null)
             {
-                try
+                object parentTagDef = ShapeshiftReflectionCache.GetInstanceField<object>(props, "parentTagDef")
+                                     ?? ShapeshiftReflectionCache.GetInstanceProperty<object>(props, "parentTagDef");
+                var dn = GetDefName(parentTagDef);
+                if (!string.IsNullOrEmpty(dn) && string.Equals(dn, "Head", StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            // 3) conditions → BodyPart/label 검사
+            if (addon != null && pawn != null)
+            {
+                var list = (ShapeshiftReflectionCache.GetInstanceField<object>(addon, "conditions")
+                            ?? ShapeshiftReflectionCache.GetInstanceProperty<object>(addon, "conditions")) as IEnumerable;
+
+                if (list != null)
                 {
-                    var list = FI_Addon_conditions.GetValue(addon) as IEnumerable;
-                    if (list != null)
+                    foreach (var cond in list)
                     {
-                        foreach (var cond in list)
-                        {
-                            if (cond == null || T_CondBP == null || !T_CondBP.IsAssignableFrom(cond.GetType())) continue;
+                        if (cond == null) continue;
 
-                            var bpObj = FI_Cond_bodyPart?.GetValue(cond);
-                            if (bpObj is BodyPartDef bpDef && IsUnderHead(pawn, bpDef)) return true;
+                        // bodyPart (BodyPartDef)
+                        var bpObj = ShapeshiftReflectionCache.GetInstanceField<object>(cond, "bodyPart")
+                                   ?? ShapeshiftReflectionCache.GetInstanceProperty<object>(cond, "bodyPart");
+                        if (bpObj is BodyPartDef bpDef && IsUnderHead(pawn, bpDef)) return true;
 
-                            var label = FI_Cond_bodyPartLabel?.GetValue(cond) as string;
-                            if (!string.IsNullOrEmpty(label) && IsUnderHead(pawn, label)) return true;
-                        }
+                        // bodyPartLabel (string)
+                        var label = ShapeshiftReflectionCache.GetInstanceField<string>(cond, "bodyPartLabel");
+                        if (string.IsNullOrEmpty(label))
+                            label = ShapeshiftReflectionCache.GetInstanceProperty<string>(cond, "bodyPartLabel");
+                        if (!string.IsNullOrEmpty(label) && IsUnderHead(pawn, label)) return true;
                     }
                 }
-                catch { }
             }
+
             return false;
         }
 
-        static string GetDefName(object defObj)
+        /// <summary>Def 또는 Def 유사 객체에서 defName을 얻는다(필드→프로퍼티 폴백).</summary>
+        private static string GetDefName(object defObj)
         {
             if (defObj == null) return null;
             var dn = ShapeshiftReflectionCache.GetInstanceField<string>(defObj, "defName");
@@ -163,12 +192,15 @@ namespace ShapeshifterFramework.Compat
             return ShapeshiftReflectionCache.GetInstanceProperty<string>(defObj, "defName");
         }
 
-        static bool IsUnderHead(Pawn pawn, BodyPartDef def)
+        /// <summary>지정 BodyPartDef가 Head 트리 아래에 속하는지 검사.</summary>
+        private static bool IsUnderHead(Pawn pawn, BodyPartDef def)
         {
             if (pawn?.RaceProps?.body?.AllParts == null || def == null) return false;
-            foreach (var rec in pawn.RaceProps.body.AllParts)
+            for (int i = 0; i < pawn.RaceProps.body.AllParts.Count; i++)
             {
+                var rec = pawn.RaceProps.body.AllParts[i];
                 if (rec.def != def) continue;
+
                 var p = rec;
                 while (p != null)
                 {
@@ -181,11 +213,13 @@ namespace ShapeshifterFramework.Compat
             return false;
         }
 
-        static bool IsUnderHead(Pawn pawn, string partLabel)
+        /// <summary>라벨 일치 파트가 Head 트리 아래에 속하는지 검사.</summary>
+        private static bool IsUnderHead(Pawn pawn, string partLabel)
         {
             if (pawn?.RaceProps?.body?.AllParts == null || string.IsNullOrEmpty(partLabel)) return false;
-            foreach (var rec in pawn.RaceProps.body.AllParts)
+            for (int i = 0; i < pawn.RaceProps.body.AllParts.Count; i++)
             {
+                var rec = pawn.RaceProps.body.AllParts[i];
                 var lbl = rec.def?.label;
                 if (string.IsNullOrEmpty(lbl) || !string.Equals(lbl, partLabel, StringComparison.OrdinalIgnoreCase)) continue;
 
@@ -200,5 +234,7 @@ namespace ShapeshifterFramework.Compat
             }
             return false;
         }
+
+        #endregion
     }
 }

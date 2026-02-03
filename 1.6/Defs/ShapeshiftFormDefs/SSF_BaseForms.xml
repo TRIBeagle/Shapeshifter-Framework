@@ -21,6 +21,10 @@
     <headDrawScale>1.0</headDrawScale>
     <bodyOffset>(0,0)</bodyOffset>
     <headOffset>(0,0)</headOffset>
+	
+    <apparelOnTransform>Inventory</apparelOnTransform>
+    <weaponsOnTransform>Inventory</weaponsOnTransform>
+	
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- 휴머노이드 베이스: 사람 파츠 유지, 모자만 기본 숨김 -->
