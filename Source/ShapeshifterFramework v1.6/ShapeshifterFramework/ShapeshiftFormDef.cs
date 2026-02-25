@@ -69,8 +69,9 @@ namespace ShapeshifterFramework
     // AddedPart 정책
     public enum AddedPartPolicy
     {
-        ForceAdd,     // 조건 무시하고 강제 설치
-        OnlyIfMissing // 해당 파츠가 결손(Missing)일 때만 설치
+        ForceAdd,         // 완전히 덮어쓰기 (기계 파괴, 결손 복원 후 강제 부착)
+        StrictFleshOnly,  // 생살만 변신 (결손이거나 인공장기가 있으면 변신 안 함)
+        RegrowFleshOnly   // 재생하며 변신 (결손은 복원 후 부착하지만, 인공장기가 있으면 냅둠)
     }
 
     // Hediff 엔트리(부위/그룹/전신 + Severity + 정책)
@@ -80,7 +81,7 @@ namespace ShapeshifterFramework
         public BodyPartDef targetPart;              // 선택: 지정 시 그 BodyPartDef의 모든 파츠(좌우 포함)
         public List<BodyPartGroupDef> targetGroups; // 선택: 그룹들
         public float? severity;                     // 선택: 지정 시 SetSeverity
-        public AddedPartPolicy addedPartPolicy = AddedPartPolicy.OnlyIfMissing;
+        public AddedPartPolicy addedPartPolicy = AddedPartPolicy.ForceAdd;
     }
 
     /// <summary>

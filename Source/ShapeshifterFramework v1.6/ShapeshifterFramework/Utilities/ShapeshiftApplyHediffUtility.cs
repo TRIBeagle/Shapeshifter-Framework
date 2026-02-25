@@ -71,33 +71,42 @@ namespace ShapeshifterFramework.Utilities
 
                 if (isAddedPart)
                 {
-                    // 설치 전 원상태 기록
+                    // 레코드를 미리 리스트에 넣지 않고, 일단 변수만 생성
                     var record = new ShapeshiftPartRestoreRecord
                     {
                         Part = part,
                         WasMissingBefore = partMissing,
                         PreExistingAdded = CollectExistingAddedParts(pawn, part)
                     };
-                    if (outPartRestoreRecords != null) outPartRestoreRecords.Add(record);
+
+                    CheckChildIssues(pawn, part, out bool childMissing, out bool childArtificial);
+
+                    if (HasArtificialParentPart(pawn, part))
+                    {
+                        if (DebugLog) Log.Message($"[SSF] Skip addedPart (Parent is Artificial): {opt.hediff.defName} @ {part.Label}");
+                        return false;
+                    }
 
                     switch (opt.addedPartPolicy)
                     {
-                        case AddedPartPolicy.OnlyIfMissing:
-                            if (!partMissing)
-                            {
-                                if (DebugLog) Log.Message($"[SSF] Skip addedPart (OnlyIfMissing, not missing): {opt.hediff.defName} @ {part.Label}");
-                                return false;
-                            }
-                            // 결손 → 자연복원(무출혈) 후 설치
-                            try { pawn.health.RestorePart(part); } catch { }
+                        case AddedPartPolicy.StrictFleshOnly:
+                            if (partMissing || childMissing) return false;
+                            if ((record.PreExistingAdded != null && record.PreExistingAdded.Count > 0) || childArtificial) return false;
+                            break;
+
+                        case AddedPartPolicy.RegrowFleshOnly:
+                            if ((record.PreExistingAdded != null && record.PreExistingAdded.Count > 0) || childArtificial) return false;
+                            if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch { } }
                             break;
 
                         case AddedPartPolicy.ForceAdd:
-                            // 결손이면 먼저 복원(무출혈), 기존 AddedPart가 있으면 교체 취지로 제거
-                            if (partMissing) { try { pawn.health.RestorePart(part); } catch { } }
+                            if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch { } }
                             RemoveExistingAddedParts(pawn, part, CollectExistingAddedParts(pawn, part));
                             break;
                     }
+
+                    // 모든 정책 검사를 통과하고 "실제로 변신이 확정"된 순간에만 복원 레코드를 추가
+                    if (outPartRestoreRecords != null) outPartRestoreRecords.Add(record);
                 }
                 else
                 {
@@ -146,25 +155,36 @@ namespace ShapeshifterFramework.Utilities
             return false;
         }
 
-        // 변신 전 해당 파츠에 있던 AddedPart 목록 수집(복원용)
-        static List<ShapeshiftPartRestoreRecord.PreExistingAddedEntry> CollectExistingAddedParts(Pawn pawn, BodyPartRecord part)
+        // 변신 전 해당 파츠 및 모든 하위 파츠에 있던 AddedPart 목록 수집(복원용)
+        static List<ShapeshiftPartRestoreRecord.PreExistingAddedEntry> CollectExistingAddedParts(Pawn pawn, BodyPartRecord rootPart)
         {
-            var list = pawn.health.hediffSet.hediffs;
+            var hediffs = pawn.health.hediffSet.hediffs;
             List<ShapeshiftPartRestoreRecord.PreExistingAddedEntry> results = null;
 
-            for (int i = 0; i < list.Count; i++)
+            for (int i = 0; i < hediffs.Count; i++)
             {
-                Hediff h = list[i];
-                if (h?.def?.addedPartProps == null) continue;
-                if (h.Part != part) continue;
+                Hediff h = hediffs[i];
+                if (h?.def?.addedPartProps == null || h.Part == null) continue;
 
-                if (results == null) results = new List<ShapeshiftPartRestoreRecord.PreExistingAddedEntry>(1);
-                var rec = new ShapeshiftPartRestoreRecord.PreExistingAddedEntry
+                // 해당 Hediff가 붙은 부위가 rootPart(예: 팔)이거나 그 하위 부위인지 확인
+                BodyPartRecord current = h.Part;
+                bool isTargetOrChild = false;
+                while (current != null)
                 {
-                    Def = h.def,
-                    Severity = (h is HediffWithComps) ? (float?)h.Severity : null
-                };
-                results.Add(rec);
+                    if (current == rootPart) { isTargetOrChild = true; break; }
+                    current = current.parent;
+                }
+
+                if (isTargetOrChild)
+                {
+                    if (results == null) results = new List<ShapeshiftPartRestoreRecord.PreExistingAddedEntry>();
+                    results.Add(new ShapeshiftPartRestoreRecord.PreExistingAddedEntry
+                    {
+                        Def = h.def,
+                        Severity = (h is HediffWithComps) ? (float?)h.Severity : null,
+                        PartDef = h.Part.def
+                    });
+                }
             }
             return results;
         }
@@ -259,6 +279,64 @@ namespace ShapeshifterFramework.Utilities
                     catch { }
                 }
             }
+        }
+
+        // 타겟 파츠의 하위 파츠(손, 손가락 등)에 결손이나 인공장기가 있는지 각각 분리해서 딥스캔
+        static void CheckChildIssues(Pawn pawn, BodyPartRecord rootPart, out bool hasMissing, out bool hasArtificial)
+        {
+            hasMissing = false;
+            hasArtificial = false;
+            if (pawn?.health?.hediffSet == null || rootPart == null) return;
+
+            var hediffs = pawn.health.hediffSet.hediffs;
+            for (int i = 0; i < hediffs.Count; i++)
+            {
+                var h = hediffs[i];
+                if (h.Part == null || h.Part == rootPart) continue; // 본체는 제외
+
+                bool isMissing = h is Hediff_MissingPart;
+                bool isArtificial = h.def.addedPartProps != null;
+
+                if (isMissing || isArtificial)
+                {
+                    // 이 Hediff가 붙은 부위가 rootPart(예: 팔)의 하위 부위인지 역추적
+                    BodyPartRecord current = h.Part.parent;
+                    while (current != null)
+                    {
+                        if (current == rootPart)
+                        {
+                            if (isMissing) hasMissing = true;
+                            if (isArtificial) hasArtificial = true;
+                            break;
+                        }
+                        current = current.parent;
+                    }
+                }
+            }
+        }
+
+        // 타겟 파츠의 상위 파츠에 인공장기(기계팔 등)가 있는지 스캔하되, '몸통(Torso)' 같은 최상위 루트 노드는 제외
+        static bool HasArtificialParentPart(Pawn pawn, BodyPartRecord part)
+        {
+            if (pawn?.health?.hediffSet == null || part == null) return false;
+
+            var hediffs = pawn.health.hediffSet.hediffs;
+            BodyPartRecord current = part.parent;
+
+            // 현재 부위의 부모가 없다면(즉, 몸통이라면) 반복문을 즉시 중지
+            while (current != null && current.parent != null)
+            {
+                for (int i = 0; i < hediffs.Count; i++)
+                {
+                    // 상위 부위(어깨 등)에 기계 부품이 발견되면 true 반환
+                    if (hediffs[i].Part == current && hediffs[i].def.addedPartProps != null)
+                    {
+                        return true;
+                    }
+                }
+                current = current.parent; // 위로 한 칸 이동
+            }
+            return false;
         }
 
         static readonly List<BodyPartRecord> EmptyParts = new List<BodyPartRecord>(0);

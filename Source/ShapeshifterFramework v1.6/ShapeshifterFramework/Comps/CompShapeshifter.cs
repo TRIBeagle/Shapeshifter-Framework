@@ -16,6 +16,7 @@
 using RimWorld;
 using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 using Verse.AI;
 
@@ -520,10 +521,30 @@ namespace ShapeshifterFramework.Comps
                         {
                             var prev = rec.PreExistingAdded[k];
                             if (prev?.Def == null) continue;
-                            var reinst = pawn.health.AddHediff(prev.Def, rec.Part, null);
-                            if (reinst != null && prev.Severity.HasValue)
+
+                            BodyPartRecord targetPart = null;
+                            // 저장된 PartDef가 타겟 파츠와 같다면 본체에 부착
+                            if (prev.PartDef == null || prev.PartDef == rec.Part.def)
                             {
-                                try { reinst.Severity = prev.Severity.Value; } catch { }
+                                targetPart = rec.Part;
+                            }
+                            else
+                            {
+                                // 타겟 파츠(예: 팔) 하위의 모든 파츠 중 PartDef가 일치하는 부위 찾기
+                                // IsChildOf 대신 인라인으로 parent 체크 로직 포함
+                                targetPart = pawn.RaceProps.body.AllParts.FirstOrDefault(x =>
+                                    x.def == prev.PartDef &&
+                                    pawn.health.hediffSet.GetNotMissingParts().Contains(x) &&
+                                    IsPartChildOf(x, rec.Part)); // 아래 2번에서 만든 함수 사용
+                            }
+
+                            if (targetPart != null)
+                            {
+                                var reinst = pawn.health.AddHediff(prev.Def, targetPart, null);
+                                if (reinst != null && prev.Severity.HasValue)
+                                {
+                                    try { reinst.Severity = prev.Severity.Value; } catch { }
+                                }
                             }
                         }
                     }
@@ -567,6 +588,22 @@ namespace ShapeshifterFramework.Comps
 
             RefreshPawn(pawn);
             InvalidateGizmoCache();
+        }
+
+        /// <summary>
+        /// 특정 신체 부위가 대상 부위의 하위 부위인지 확인합니다.
+        /// </summary>
+        private bool IsPartChildOf(BodyPartRecord child, BodyPartRecord parent)
+        {
+            if (child == null || parent == null) return false;
+
+            BodyPartRecord current = child.parent;
+            while (current != null)
+            {
+                if (current == parent) return true;
+                current = current.parent;
+            }
+            return false;
         }
 
         #endregion
@@ -757,7 +794,9 @@ namespace ShapeshifterFramework.Comps
                         {
                             // 바닥에 있으면 잡 큐로 자연스런 장착
                             if (!allowGround) continue;
-                            if (w.Map == pawn.MapHeld)
+
+                            // 맵이 같고, 물리적으로 도달 가능한 경우에만 줍기
+                            if (w.Map == pawn.MapHeld && pawn.CanReach(w, PathEndMode.ClosestTouch, Danger.Deadly))
                             {
                                 if (w.IsForbidden(pawn)) w.SetForbidden(false);
                                 Job job = JobMaker.MakeJob(JobDefOf.Equip, w);
@@ -786,7 +825,8 @@ namespace ShapeshifterFramework.Comps
                         if (ap.Spawned)
                         {
                             if (!allowGround) continue;
-                            if (ap.Map == pawn.MapHeld)
+
+                            if (ap.Map == pawn.MapHeld && pawn.CanReach(ap, PathEndMode.ClosestTouch, Danger.Deadly))
                             {
                                 if (ap.IsForbidden(pawn)) ap.SetForbidden(false);
                                 Job job = JobMaker.MakeJob(JobDefOf.Wear, ap);
@@ -920,6 +960,24 @@ namespace ShapeshifterFramework.Comps
                 if (__tmpHediffDefs != null) tempAddedHediffsDefCache.AddRange(__tmpHediffDefs);
             }
 
+            // 부여한 Hediff 인스턴스 레퍼런스 저장/로드
+            List<Hediff> __tmpHediffs = null;
+            if (Scribe.mode == LoadSaveMode.Saving) __tmpHediffs = tempAddedHediffs;
+            // LookMode.Reference를 사용하여 폰이 원래 가진 다른 Hediff와 헷갈리지 않게 고유 번호표를 붙여 저장
+            Scribe_Collections.Look(ref __tmpHediffs, "tempAddedHediffs", LookMode.Reference);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                tempAddedHediffs.Clear();
+                if (__tmpHediffs != null)
+                {
+                    // 세이브를 불러오는 동안 외부 요인으로 삭제되어 null이 된 Hediff는 걸러내고 담기
+                    for (int i = 0; i < __tmpHediffs.Count; i++)
+                    {
+                        if (__tmpHediffs[i] != null) tempAddedHediffs.Add(__tmpHediffs[i]);
+                    }
+                }
+            }
+
             // 변신 전 장비 스냅샷(레퍼런스 저장)
             List<Apparel> __tmpPrevAp = null;
             if (Scribe.mode == LoadSaveMode.Saving) __tmpPrevAp = prevApparels;
@@ -939,7 +997,17 @@ namespace ShapeshifterFramework.Comps
                 if (__tmpPrevWp != null) prevWeapons.AddRange(__tmpPrevWp);
             }
 
-            // NEW: verbAutoToggle 저장/로드
+            // 파츠 복원 기록 저장/로드
+            List<ShapeshiftPartRestoreRecord> __tmpRestore = null;
+            if (Scribe.mode == LoadSaveMode.Saving) __tmpRestore = tempPartRestoreRecords;
+            Scribe_Collections.Look(ref __tmpRestore, "tempPartRestoreRecords", LookMode.Deep);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                tempPartRestoreRecords.Clear();
+                if (__tmpRestore != null) tempPartRestoreRecords.AddRange(__tmpRestore);
+            }
+
+            // verbAutoToggle 저장/로드
             if (Scribe.mode == LoadSaveMode.Saving)
             {
                 List<string> __keys = new List<string>(verbAutoToggle.Count);
@@ -960,7 +1028,6 @@ namespace ShapeshifterFramework.Comps
                 }
             }
             // BackCompatibility: 키가 없으면 기본값(On)으로 동작
-
             Pawn pawn = parent as Pawn;
             if (Scribe.mode == LoadSaveMode.PostLoadInit && pawn != null)
             {
