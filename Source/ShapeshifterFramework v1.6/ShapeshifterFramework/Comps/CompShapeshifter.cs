@@ -1087,7 +1087,8 @@ namespace ShapeshifterFramework.Comps
                             if (opts.Count == 0) opts.Add(new FloatMenuOption("None".Translate(), null));
                             Find.WindowStack.Add(new FloatMenu(opts));
                         },
-                        icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/Commands/SSF_Shift_Enter", true)
+                        // 메뉴 버튼 자체는 기본 아이콘 사용
+                        icon = ShapeshiftTextureUtility.DefaultEnterIcon
                     };
                 }
                 else
@@ -1095,14 +1096,14 @@ namespace ShapeshifterFramework.Comps
                     for (int i = 0; i < available.Count; i++)
                     {
                         var form = available[i]; if (form == null) continue;
-                        string path = form.gizmoIconPathEnter;
-                        if (string.IsNullOrEmpty(path)) path = "UI/Commands/SSF_Shift_Enter";
+
                         yield return new Command_Action
                         {
                             defaultLabel = "ShapeshiftCommandLabel".Translate(form.LabelCap),
                             defaultDesc = "ShapeshiftCommandDesc".Translate(form.description),
                             action = delegate { ApplyForm(form); },
-                            icon = ContentFinder<UnityEngine.Texture2D>.Get(path, true)
+                            // [최적화 완료] 경로 검사 없이 매니저에게 폼을 넘겨주고 즉시 받아옴
+                            icon = ShapeshiftTextureUtility.GetEnterIcon(form)
                         };
                     }
                 }
@@ -1110,8 +1111,6 @@ namespace ShapeshifterFramework.Comps
             else if (currentForm != null)
             {
                 // 해제
-                string path = currentForm.gizmoIconPathRevert;
-                if (string.IsNullOrEmpty(path)) path = "UI/Commands/SSF_Shift_Revert";
                 yield return new Command_Action
                 {
                     defaultLabel = "ShapeshiftRevertLabel".Translate(),
@@ -1119,7 +1118,8 @@ namespace ShapeshifterFramework.Comps
                         ? "ShapeshiftRevertDesc_WithTime".Translate((float)RemainingShapeshiftTicks / 60f)
                         : "ShapeshiftRevertDesc".Translate(),
                     action = delegate { RemoveForm(); },
-                    icon = ContentFinder<UnityEngine.Texture2D>.Get(path, true)
+                    // [최적화 완료] 현재 폼의 해제 아이콘을 즉시 받아옴
+                    icon = ShapeshiftTextureUtility.GetRevertIcon(currentForm)
                 };
 
                 // 전환
@@ -1142,7 +1142,7 @@ namespace ShapeshifterFramework.Comps
                             if (opts.Count == 0) opts.Add(new FloatMenuOption("None".Translate(), null));
                             Find.WindowStack.Add(new FloatMenu(opts));
                         },
-                        icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/Commands/SSF_Shift_Enter", true)
+                        icon = ShapeshiftTextureUtility.DefaultEnterIcon
                     };
                 }
                 else
@@ -1150,14 +1150,14 @@ namespace ShapeshifterFramework.Comps
                     for (int i = 0; i < available.Count; i++)
                     {
                         var form = available[i]; if (form == null) continue;
-                        string path2 = form.gizmoIconPathEnter;
-                        if (string.IsNullOrEmpty(path2)) path2 = "UI/Commands/SSF_Shift_Enter";
+
                         yield return new Command_Action
                         {
                             defaultLabel = "ShapeshiftSwitchLabel".Translate(form.LabelCap),
                             defaultDesc = "ShapeshiftSwitchDesc".Translate(form.description),
                             action = delegate { ApplyForm(form, prev); },
-                            icon = ContentFinder<UnityEngine.Texture2D>.Get(path2, true)
+                            // [최적화 완료]
+                            icon = ShapeshiftTextureUtility.GetEnterIcon(form)
                         };
                     }
                 }
@@ -1170,26 +1170,20 @@ namespace ShapeshifterFramework.Comps
                     defaultLabel = "ShapeshiftRevertLabel".Translate(),
                     defaultDesc = "ShapeshiftRevertDesc".Translate(),
                     action = delegate { RemoveForm(); },
-                    icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/Commands/SSF_Shift_Revert", true)
+                    icon = ShapeshiftTextureUtility.DefaultRevertIcon
                 };
             }
 
             // (2) 폼 전용 verb 토글/공격 — 바닐라 공격 지즈모 뒤에 배치
-            //     (바닐라: PawnAttackGizmoUtility → CompGetGizmosExtra 순서로 호출)
+            //     (이하 기존 코드와 동일. Verb의 UIIcon은 바닐라에서 이미 최적화되어 있으므로 건드리지 않아도 됩니다.)
 
-            // 드래프트시에만 노출(바닐라 규칙 유지)
             if (!pawn.Drafted) yield break;
 
             var vt = ShapeshiftVerbTracker;
             if (vt == null) yield break;
 
-            // 비폭력 Pawn: 버튼은 노출되지만 Disabled
             bool canViolent = !pawn.WorkTagIsDisabled(WorkTags.Violent);
-
-            // 모드 설정: 토글 노출 여부 (Off면 자동공격 강제 On)
             bool showToggle = ShapeshifterFrameworkMod.Settings?.showVerbAutoToggle ?? true;
-
-            // 같은 프레임 UI 중복 방지: 동일 verb 중복 생성 회피
             var seen = new HashSet<Verb>();
 
             var verbs = vt.AllVerbs;
@@ -1197,24 +1191,20 @@ namespace ShapeshifterFramework.Comps
             {
                 var v = verbs[i];
                 if (v == null || v.verbProps == null) continue;
-                if (!v.verbProps.Ranged) continue; // 원거리만 기즈모 생성
+                if (!v.verbProps.Ranged) continue;
 
-                // 캐스터 보정
                 if (v.caster == null) v.caster = pawn;
-
-                // 같은 Verb 인스턴스 중복 방지
                 if (!seen.Add(v)) continue;
 
-                int idx = i; // 클로저 안전 복사
+                int idx = i;
 
-                // ── 자동공격 토글(옵션 허용 시에만 표시)
                 if (showToggle)
                 {
                     var tgl = new Command_Toggle
                     {
                         defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: true),
                         defaultDesc = GetVerbDesc(idx, v, forToggle: true),
-                        icon = v.UIIcon,
+                        icon = v.UIIcon, // 바닐라 캐싱 이용
                         isActive = () => IsAutoAttackEnabled(idx, v),
                         toggleAction = () => ToggleAutoAttack(idx, v),
                         groupable = false,
@@ -1225,20 +1215,18 @@ namespace ShapeshifterFramework.Comps
                 }
                 else
                 {
-                    // 토글 숨김이면 자동공격은 항상 On
                     ForceAutoAttackOn(idx, v);
                 }
 
-                // LaunchProjectile은 defaultProjectile 없으면 클릭 금지
                 bool projectileOk = !(v is Verb_LaunchProjectile) || v.verbProps.defaultProjectile != null;
 
                 var cmd = new Command_VerbTarget
                 {
                     defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: false),
                     defaultDesc = GetVerbDesc(idx, v, forToggle: false),
-                    icon = v.UIIcon,
+                    icon = v.UIIcon, // 바닐라 캐싱 이용
                     verb = v,
-                    groupable = false, // 중복 병합 방지
+                    groupable = false,
                 };
                 if (!projectileOk)
                     cmd.Disable("ShapeshiftNoProjectileForVerb".Translate());
