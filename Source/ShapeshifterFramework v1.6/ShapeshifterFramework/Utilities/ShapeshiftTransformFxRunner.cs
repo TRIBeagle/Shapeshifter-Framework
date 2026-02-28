@@ -30,13 +30,24 @@ namespace ShapeshifterFramework.Utilities
         // 쿨다운: key = (pawn, phase) 해시
         private static readonly Dictionary<int, int> _cooldowns = new Dictionary<int, int>(64);
 
+        // 매번 리스트를 새로 만들지 않기 위한 재활용 리스트 추가
+        private static readonly List<int> _removeBuffer = new List<int>(32);
+
         // ──────────────────────────────────────────────────────────────
         // Configurable values
         private const int CooldownExpiryTicks = 60000; // 1게임일 후 자동 정리
         private const int MaxFleckCount = 50;          // Fleck 안전상한
         // ──────────────────────────────────────────────────────────────
 
-        public ShapeshiftTransformFxRunner(Game game) { _inst = this; }
+        public ShapeshiftTransformFxRunner(Game game)
+        {
+            _inst = this;
+
+            // 게임을 새로 불러올 때마다 이전 게임의 유령 데이터 청소
+            _queue.Clear();
+            _cooldowns.Clear();
+            _removeBuffer.Clear();
+        }
 
         public static ShapeshiftTransformFxRunner Instance
         {
@@ -66,14 +77,15 @@ namespace ShapeshifterFramework.Utilities
             // ── 오래된 쿨다운 엔트리 정리 ──
             if (_cooldowns.Count > 0 && (now % 250 == 0)) // 250틱(약4초)마다 점검
             {
-                var toRemove = new List<int>();
+                // var toRemove = new List<int>() 대신 재활용 리스트 사용
+                _removeBuffer.Clear();
                 foreach (var kv in _cooldowns)
                 {
                     if (now - kv.Value > CooldownExpiryTicks)
-                        toRemove.Add(kv.Key);
+                        _removeBuffer.Add(kv.Key);
                 }
-                for (int i = 0; i < toRemove.Count; i++)
-                    _cooldowns.Remove(toRemove[i]);
+                for (int i = 0; i < _removeBuffer.Count; i++)
+                    _cooldowns.Remove(_removeBuffer[i]);
             }
         }
 

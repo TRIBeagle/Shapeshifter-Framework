@@ -167,10 +167,11 @@ namespace ShapeshifterFramework.Comps
         #region Verb 자동공격 토글 유틸/라벨·설명 헬퍼
 
         /// <summary>자동공격 토글용 내부 키 생성(formDefName#index).</summary>
-        string AutoKey(int index)
+        string AutoKey(Verb v)
         {
             var f = currentForm?.defName ?? "None";
-            return f + "#" + index.ToString();
+            string vName = v?.verbProps?.label ?? v?.GetType().Name ?? "UnknownVerb";
+            return f + "#" + vName;
         }
 
         /// <summary>폼 옵션의 기본 자동공격 상태를 반환(없으면 true).</summary>
@@ -190,7 +191,7 @@ namespace ShapeshifterFramework.Comps
         {
             if (v == null) return true;
             bool val;
-            if (verbAutoToggle.TryGetValue(AutoKey(index), out val)) return val;
+            if (verbAutoToggle.TryGetValue(AutoKey(v), out val)) return val;
             return DefaultAutoOn(index);
         }
 
@@ -198,13 +199,13 @@ namespace ShapeshifterFramework.Comps
         public void ToggleAutoAttack(int index, Verb v)
         {
             bool now = IsAutoAttackEnabled(index, v);
-            verbAutoToggle[AutoKey(index)] = !now;
+            verbAutoToggle[AutoKey(v)] = !now;
         }
 
         /// <summary>자동공격 강제 On.</summary>
         public void ForceAutoAttackOn(int index, Verb v)
         {
-            verbAutoToggle[AutoKey(index)] = true;
+            verbAutoToggle[AutoKey(v)] = true;
         }
 
         /// <summary>verb 명령 라벨(Def verbGizmoOptions 우선, 없으면 verbProps.label/기본 Attack).</summary>
