@@ -124,6 +124,10 @@ namespace ShapeshifterFramework
         public List<string> renderShowGeneExclusionTags;
         public List<string> renderShowGeneDefNames;
 
+        // ▼ 헤디프 그래픽 숨김: defName 목록 (특수값: "All")
+        public List<string> renderHideHediffDefNames;
+        public List<string> renderShowHediffDefNames;
+
         // 변신 시 기존 장비 처리(폼별): 의복/무기 각각
         public GearHandling apparelOnTransform = GearHandling.None;
         public GearHandling weaponsOnTransform = GearHandling.None;

@@ -16,6 +16,7 @@
     <renderHideWeaponDefNames><li>All</li></renderHideWeaponDefNames>
     <renderHideGeneExclusionTags><li>All</li></renderHideGeneExclusionTags>
     <renderHideGeneDefNames><li>All</li></renderHideGeneDefNames>
+    <renderHideHediffDefNames><li>All</li></renderHideHediffDefNames>
 
     <bodyDrawScale>1.0</bodyDrawScale>
     <headDrawScale>1.0</headDrawScale>

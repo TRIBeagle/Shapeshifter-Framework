@@ -80,7 +80,19 @@ namespace ShapeshifterFramework.Patches
                 return;
             }
 
-            // (필요하면 여기서 Hediff/Ideo 등 다른 owner 타입도 분기 추가 가능)
+            // ── Hediff 소유 노드
+            Hediff hediff = owner as Hediff;
+            if (hediff == null)
+            {
+                hediff = ShapeshiftReflectionCache.TryScanFieldsForType<Hediff>(node, __instance);
+            }
+
+            if (hediff != null)
+            {
+                if (ShapeshiftVisualFilter.ShouldHideHediffGraphic(pawn, hediff))
+                    __result = null;
+                return;
+            }
         }
     }
 }

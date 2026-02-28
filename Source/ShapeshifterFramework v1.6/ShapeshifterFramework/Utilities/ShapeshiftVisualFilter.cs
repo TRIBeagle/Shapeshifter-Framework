@@ -1,8 +1,7 @@
-﻿// ShapeshiftVisualFilter.cs
-// 목적: 폼 기반 시각 필터(의상/유전자/무기) 공통 판정.
-// 정책: allowed(화이트리스트) 매치 시 "항상 표시" (블랙리스트 예외). 그 외 hidden(블랙리스트) 매치 시 숨김.
-// 특수: "All" 지원, '*' 와일드카드(부분 매치) 지원.
-// 메모: C# 7.3 호환.
+﻿// ShapeshifterFramework | Utilities | ShapeshiftVisualFilter.cs
+// 목적   : 폼 기반 시각 필터(의상/유전자/무기/헤디프) 공통 판정 및 일관성 강화.
+// 정책   : 화이트리스트(Show) 매치 시 항상 표시(블랙리스트 예외). 그 외 블랙리스트(Hide) 매치 시 숨김.
+// 특징   : "All" 키워드 및 '*' 와일드카드 지원. 데이터가 없는 파츠도 "All" 정책 시 필터링됨.
 
 using RimWorld;
 using ShapeshifterFramework.Comps;
@@ -21,7 +20,7 @@ namespace ShapeshifterFramework.Utilities
             return (comp != null && comp.isTransformed) ? comp.currentForm : null;
         }
 
-        // ─── 공통 유틸 ───
+        // ─── 공통 유틸리티 ───
 
         private static bool WildcardMatch(string value, string pattern)
         {
@@ -60,135 +59,125 @@ namespace ShapeshifterFramework.Utilities
             return false;
         }
 
-        private static bool AnyMatchFromList(IList<string> values, List<string> patterns)
-        {
-            if (values == null || values.Count == 0) return false;
-            if (patterns == null || patterns.Count == 0) return false;
-            for (int i = 0; i < values.Count; i++)
-                if (MatchesAny(values[i], patterns)) return true;
-            return false;
-        }
-
-        // ─── 의상 ───
+        // ─── 의상 (Apparel) ───
 
         internal static bool ShouldHideApparelGraphic(Pawn pawn, Apparel apparel)
         {
             var form = CurForm(pawn);
-            if (form == null || apparel == null) return false;
+            if (form == null || apparel == null || apparel.def == null) return false;
 
             var def = apparel.def;
-            if (def == null) return false;
+            var layers = def.apparel?.layers;
 
-            // 1) 화이트리스트 예외(매치 시 항상 표시)
-            if (MatchesAny(def.defName, form.renderShowApparelDefNames))
-                return false;
-
-            var layers = def.apparel != null ? def.apparel.layers : null;
-            if (layers != null && layers.Count > 0)
+            // 1) 화이트리스트 (Show)
+            if (MatchesAny(def.defName, form.renderShowApparelDefNames)) return false;
+            if (layers != null)
             {
                 for (int i = 0; i < layers.Count; i++)
-                {
-                    var l = layers[i];
-                    if (l != null && MatchesAny(l.defName, form.renderShowApparelLayers))
-                        return false;
-                }
+                    if (MatchesAny(layers[i].defName, form.renderShowApparelLayers)) return false;
             }
 
-            // 2) 블랙리스트
-            if (MatchesAny(def.defName, form.renderHideApparelDefNames))
-                return true;
+            // 2) 블랙리스트 - 이름/전체 (Hide Defs)
+            var hideDefs = form.renderHideApparelDefNames;
+            if (ListHasAll(hideDefs) || MatchesAny(def.defName, hideDefs)) return true;
 
-            var wantedLayers = form.renderHideApparelLayers;
-            if (ListHasAll(wantedLayers))
-                return true;
-
-            if (layers != null && wantedLayers != null && wantedLayers.Count > 0)
+            // 3) 블랙리스트 - 레이어 (Hide Layers)
+            var hideLayers = form.renderHideApparelLayers;
+            if (ListHasAll(hideLayers)) return true; // 레이어 정보가 없어도 All이면 숨김
+            if (layers != null)
             {
                 for (int i = 0; i < layers.Count; i++)
-                {
-                    var l = layers[i];
-                    if (l != null && MatchesAny(l.defName, wantedLayers))
-                        return true;
-                }
+                    if (MatchesAny(layers[i].defName, hideLayers)) return true;
             }
 
             return false;
         }
 
-        // ─── 무기 ───
+        // ─── 무기 (Equipment) ───
 
         internal static bool ShouldHideEquipmentGraphic(Pawn pawn, Thing eq)
         {
             var form = CurForm(pawn);
-            if (form == null || eq == null) return false;
+            if (form == null || eq == null || eq.def == null) return false;
 
             var def = eq.def;
-            if (def == null) return false;
+            var tags = def.weaponTags;
 
-            // 1) 화이트리스트 예외
-            if (MatchesAny(def.defName, form.renderShowWeaponDefNames))
-                return false;
-
-            if (def.weaponTags != null && def.weaponTags.Count > 0)
+            // 1) 화이트리스트 (Show)
+            if (MatchesAny(def.defName, form.renderShowWeaponDefNames)) return false;
+            if (tags != null)
             {
-                for (int i = 0; i < def.weaponTags.Count; i++)
-                    if (MatchesAny(def.weaponTags[i], form.renderShowWeaponTags))
-                        return false;
+                for (int i = 0; i < tags.Count; i++)
+                    if (MatchesAny(tags[i], form.renderShowWeaponTags)) return false;
             }
 
-            // 2) 블랙리스트
-            if (MatchesAny(def.defName, form.renderHideWeaponDefNames))
-                return true;
+            // 2) 블랙리스트 - 이름/전체 (Hide Defs)
+            var hideDefs = form.renderHideWeaponDefNames;
+            if (ListHasAll(hideDefs) || MatchesAny(def.defName, hideDefs)) return true;
 
-            if (def.weaponTags != null && def.weaponTags.Count > 0 && form.renderHideWeaponTags != null && form.renderHideWeaponTags.Count > 0)
+            // 3) 블랙리스트 - 태그 (Hide Tags)
+            var hideTags = form.renderHideWeaponTags;
+            if (ListHasAll(hideTags)) return true; // 태그가 없는 무기도 All이면 숨김
+            if (tags != null)
             {
-                for (int i = 0; i < def.weaponTags.Count; i++)
-                    if (MatchesAny(def.weaponTags[i], form.renderHideWeaponTags))
-                        return true;
+                for (int i = 0; i < tags.Count; i++)
+                    if (MatchesAny(tags[i], hideTags)) return true;
             }
 
             return false;
         }
 
-        // ─── 유전자 ───
+        // ─── 유전자 (Gene) ───
 
         internal static bool ShouldHideGeneByDefOrTags(Pawn pawn, Gene gene, IList<string> tagsFromNodeOrDef)
         {
             var form = CurForm(pawn);
             if (form == null || gene == null || gene.def == null) return false;
 
-            // 1) 화이트리스트 예외
-            if (MatchesAny(gene.def.defName, form.renderShowGeneDefNames))
-                return false;
-
-            if (tagsFromNodeOrDef != null && tagsFromNodeOrDef.Count > 0)
+            // 1) 화이트리스트 (Show)
+            if (MatchesAny(gene.def.defName, form.renderShowGeneDefNames)) return false;
+            if (tagsFromNodeOrDef != null)
             {
                 for (int i = 0; i < tagsFromNodeOrDef.Count; i++)
-                    if (MatchesAny(tagsFromNodeOrDef[i], form.renderShowGeneExclusionTags))
-                        return false;
+                    if (MatchesAny(tagsFromNodeOrDef[i], form.renderShowGeneExclusionTags)) return false;
             }
 
-            // 2) 블랙리스트
-            if (MatchesAny(gene.def.defName, form.renderHideGeneDefNames))
-                return true;
+            // 2) 블랙리스트 - 이름/전체 (Hide Defs)
+            var hideDefs = form.renderHideGeneDefNames;
+            if (ListHasAll(hideDefs) || MatchesAny(gene.def.defName, hideDefs)) return true;
 
-            var wanted = form.renderHideGeneExclusionTags;
-            if (ListHasAll(wanted))
-                return true;
-
-            if (tagsFromNodeOrDef != null && wanted != null && wanted.Count > 0)
+            // 3) 블랙리스트 - 태그 (Hide Tags)
+            var hideTags = form.renderHideGeneExclusionTags;
+            if (ListHasAll(hideTags)) return true;
+            if (tagsFromNodeOrDef != null)
             {
                 for (int i = 0; i < tagsFromNodeOrDef.Count; i++)
-                    if (MatchesAny(tagsFromNodeOrDef[i], wanted))
-                        return true;
+                    if (MatchesAny(tagsFromNodeOrDef[i], hideTags)) return true;
             }
+
+            return false;
+        }
+
+        // ─── 헤디프/변이 (Hediff) ───
+
+        internal static bool ShouldHideHediffGraphic(Pawn pawn, Hediff hediff)
+        {
+            var form = CurForm(pawn);
+            if (form == null || hediff == null || hediff.def == null) return false;
+
+            // 1) 화이트리스트 (Show)
+            if (MatchesAny(hediff.def.defName, form.renderShowHediffDefNames)) return false;
+
+            // 2) 블랙리스트 - 이름/전체 (Hide Defs)
+            var hideDefs = form.renderHideHediffDefNames;
+            if (ListHasAll(hideDefs) || MatchesAny(hediff.def.defName, hideDefs)) return true;
 
             return false;
         }
 
         internal static bool ShouldHideGeneForUI(Pawn pawn, Gene gene)
         {
-            var tags = (gene != null && gene.def != null) ? (IList<string>)gene.def.exclusionTags : null;
+            var tags = (gene?.def != null) ? (IList<string>)gene.def.exclusionTags : null;
             return ShouldHideGeneByDefOrTags(pawn, gene, tags);
         }
     }

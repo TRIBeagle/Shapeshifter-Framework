@@ -75,6 +75,10 @@
     <Compile Include="Comps\CompAbilityEffect_ShiftTarget.cs" />
     <Compile Include="Debugs\Shapeshifter_DebugActions.cs" />
     <Compile Include="Patches\Patch_PawnRenderer_DrawShadowInternal.cs" />
+    <Compile Include="Patches\Patch_PawnRenderNodeWorker_HediffEye_OffsetFor.cs" />
+    <Compile Include="Patches\Patch_PawnRenderNodeWorker_Eye_OffsetFor.cs" />
+    <Compile Include="Patches\Patch_PawnRenderNodeWorker_Spastic_OffsetFor.cs" />
+    <Compile Include="Patches\Patch_PawnRenderNodeWorker_Spastic_ScaleFor.cs" />
     <Compile Include="Patches\Patch_Pawn_PathFollower_TryEnterNextPathCell.cs" />
     <Compile Include="Patches\Patch_Toils_Ingest_ChewIngestible.cs" />
     <Compile Include="Patches\Patch_Verb_MeleeAttack_Sounds.cs" />
@@ -106,6 +110,7 @@
     <Compile Include="Patches\Patch_GeneUtility_SortGenes.cs" />
     <Compile Include="Patches\Patch_Verb_ShootBeam_EquipmentSafe.cs" />
     <Compile Include="Patches\Patch_TooltipUtility_ShotCalculationTipString.cs" />
+    <Compile Include="Utilities\ShapeshiftRenderUtility.cs" />
     <Compile Include="Utilities\ShapeshiftPartRestoreRecord.cs" />
     <Compile Include="Utilities\ShapeshiftApplyHediffUtility.cs" />
     <Compile Include="Utilities\ShapeshiftPatchStatus.cs" />
@@ -125,7 +130,6 @@
     <Compile Include="Utilities\ShapeshiftVerbShootProvider.cs" />
     <Compile Include="Utilities\ShapeshiftFormDynamicPawnRenderNodeSetup.cs" />
     <Compile Include="Patches\Patch_PawnRenderNodeWorker_Overlay_ScaleFor.cs" />
-    <Compile Include="Patches\Patch_PawnRenderNodeWorker_Eye_ScaleFor.cs" />
     <Compile Include="Patches\Patch_PawnRenderNodeWorker_AttachmentBody_ScaleFor.cs" />
     <Compile Include="Patches\Patch_PawnRenderNodeWorker_GetFinalizedMaterial_FilterByOwner.cs" />
     <Compile Include="Patches\Patch_PawnRenderUtility_DrawEquipmentAiming_Hide.cs" />

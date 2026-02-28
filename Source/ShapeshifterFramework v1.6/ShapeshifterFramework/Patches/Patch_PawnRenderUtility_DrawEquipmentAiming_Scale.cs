@@ -45,13 +45,8 @@ namespace ShapeshifterFramework.Patches
             Pawn pawn = ShapeshiftReflectionCache.TryGetHolderPawn(eq);
             if (pawn == null) return originalScale;
 
-            // 바닐라 기준과 "효과값" 비교
-            var ls = pawn.ageTracker != null ? pawn.ageTracker.CurLifeStage : null;
-            float vanillaBody = (ls != null && ls.bodyWidth.HasValue) ? ls.bodyWidth.Value : 1.5f;
-            float targetBody = ShapeshiftSizeFactorResolver.Effective(pawn).bodyWidth;
+            float s = ShapeshiftRenderUtility.GetShapeScale(pawn, useHeadScale: false);
 
-            if (Mathf.Approximately(vanillaBody, 0f)) return originalScale;
-            float s = targetBody / vanillaBody;
             if (Mathf.Approximately(s, 1f)) return originalScale;
 
             // 무기는 등방 스케일이 자연스러움 (x/z 동일 배율)
