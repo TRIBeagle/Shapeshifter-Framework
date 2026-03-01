@@ -64,8 +64,18 @@ namespace ShapeshifterFramework.Utilities
             Factors f;
             if (TryGetOverrides(pawn, out f)) return f;
 
-            var ls = pawn.ageTracker.CurLifeStage;
             Factors r;
+
+            if (pawn.ageTracker == null)
+            {
+                r.bodyWidth = 1.5f;
+                r.headSizeFactor = 1f;
+                r.attachPointScaleFactor = 1f;
+                r.bodySizeFactor = 1f;
+                return r;
+            }
+
+            var ls = pawn.ageTracker.CurLifeStage;
             r.bodyWidth = ls.bodyWidth.HasValue ? ls.bodyWidth.Value : 1.5f;
             r.headSizeFactor = ls.headSizeFactor.HasValue ? ls.headSizeFactor.Value : 1f;
             r.attachPointScaleFactor = ls.attachPointScaleFactor;

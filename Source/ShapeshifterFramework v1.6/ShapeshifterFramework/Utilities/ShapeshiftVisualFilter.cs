@@ -13,11 +13,17 @@ namespace ShapeshifterFramework.Utilities
 {
     internal static class ShapeshiftVisualFilter
     {
-        private static ShapeshiftFormDef CurForm(Pawn pawn)
+        // comp와 form을 한 번에 가져오는 내부 헬퍼 — 렌더 경로에서 TryGetComp 중복 호출 방지
+        private static bool TryGetFormAndComp(Pawn pawn, out CompShapeshifter comp, out ShapeshiftFormDef form)
         {
-            if (pawn == null) return null;
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            return (comp != null && comp.isTransformed) ? comp.currentForm : null;
+            comp = pawn != null ? pawn.TryGetComp<CompShapeshifter>() : null;
+            if (comp != null && comp.isTransformed && comp.currentForm != null)
+            {
+                form = comp.currentForm;
+                return true;
+            }
+            form = null;
+            return false;
         }
 
         // ─── 공통 유틸리티 ───
@@ -63,8 +69,8 @@ namespace ShapeshifterFramework.Utilities
 
         internal static bool ShouldHideApparelGraphic(Pawn pawn, Apparel apparel)
         {
-            var form = CurForm(pawn);
-            if (form == null || apparel == null || apparel.def == null) return false;
+            if (apparel == null || apparel.def == null) return false;
+            if (!TryGetFormAndComp(pawn, out _, out var form)) return false;
 
             var def = apparel.def;
             var layers = def.apparel?.layers;
@@ -97,8 +103,8 @@ namespace ShapeshifterFramework.Utilities
 
         internal static bool ShouldHideEquipmentGraphic(Pawn pawn, Thing eq)
         {
-            var form = CurForm(pawn);
-            if (form == null || eq == null || eq.def == null) return false;
+            if (eq == null || eq.def == null) return false;
+            if (!TryGetFormAndComp(pawn, out _, out var form)) return false;
 
             var def = eq.def;
             var tags = def.weaponTags;
@@ -131,8 +137,8 @@ namespace ShapeshifterFramework.Utilities
 
         internal static bool ShouldHideGeneByDefOrTags(Pawn pawn, Gene gene, IList<string> tagsFromNodeOrDef)
         {
-            var form = CurForm(pawn);
-            if (form == null || gene == null || gene.def == null) return false;
+            if (gene == null || gene.def == null) return false;
+            if (!TryGetFormAndComp(pawn, out _, out var form)) return false;
 
             // 1) 화이트리스트 (Show)
             if (MatchesAny(gene.def.defName, form.renderShowGeneDefNames)) return false;
@@ -162,8 +168,8 @@ namespace ShapeshifterFramework.Utilities
 
         internal static bool ShouldHideHediffGraphic(Pawn pawn, Hediff hediff)
         {
-            var form = CurForm(pawn);
-            if (form == null || hediff == null || hediff.def == null) return false;
+            if (hediff == null || hediff.def == null) return false;
+            if (!TryGetFormAndComp(pawn, out _, out var form)) return false;
 
             // 1) 화이트리스트 (Show)
             if (MatchesAny(hediff.def.defName, form.renderShowHediffDefNames)) return false;

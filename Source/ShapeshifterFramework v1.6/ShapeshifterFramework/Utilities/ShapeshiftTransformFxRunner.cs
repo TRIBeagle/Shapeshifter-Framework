@@ -24,7 +24,14 @@ namespace ShapeshifterFramework.Utilities
             public int fireTick;
         }
 
-        private static ShapeshiftTransformFxRunner _inst;
+        public static ShapeshiftTransformFxRunner Instance
+        {
+            get
+            {
+                return Current.Game?.GetComponent<ShapeshiftTransformFxRunner>();
+            }
+        }
+
         private static readonly List<ScheduledFx> _queue = new List<ScheduledFx>(16);
 
         // 쿨다운: key = (pawn, phase) 해시
@@ -41,21 +48,10 @@ namespace ShapeshifterFramework.Utilities
 
         public ShapeshiftTransformFxRunner(Game game)
         {
-            _inst = this;
-
-            // 게임을 새로 불러올 때마다 이전 게임의 유령 데이터 청소
+            // 게임을 새로 불러올 때마다 스태틱 리스트의 유령 데이터 청소
             _queue.Clear();
             _cooldowns.Clear();
             _removeBuffer.Clear();
-        }
-
-        public static ShapeshiftTransformFxRunner Instance
-        {
-            get
-            {
-                if (_inst == null) _inst = Current.Game.GetComponent<ShapeshiftTransformFxRunner>();
-                return _inst;
-            }
         }
 
         public override void GameComponentTick()

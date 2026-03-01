@@ -39,14 +39,18 @@ namespace ShapeshifterFramework.Patches
             float factor = 1f, offset = 0f;
 
             if (form.statFactors != null)
-                foreach (var f in form.statFactors)
-                    if (f?.stat == stat)
-                        factor *= f.value;
+                for (int i = 0; i < form.statFactors.Count; i++)
+                {
+                    var f = form.statFactors[i];
+                    if (f?.stat == stat) factor *= f.value;
+                }
 
             if (form.statOffsets != null)
-                foreach (var o in form.statOffsets)
-                    if (o?.stat == stat)
-                        offset += o.value;
+                for (int i = 0; i < form.statOffsets.Count; i++)
+                {
+                    var o = form.statOffsets[i];
+                    if (o?.stat == stat) offset += o.value;
+                }
 
             // 변화 없으면 종료
             if (factor == 1f && offset == 0f) return;

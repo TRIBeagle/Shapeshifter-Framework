@@ -35,7 +35,7 @@ namespace ShapeshifterFramework.Projectiles
             {
                 foreach (var t in GenRadial.RadialDistinctThingsAround(Position, Map, ext.aoeRadius, true))
                 {
-                    if (t is Pawn pp && !pp.Dead)
+                    if (t != hitThing && t is Pawn pp && !pp.Dead)
                         ShapeshiftTargetUtility.TryShiftPawn(pp, ext.formDefName, ext.successChance);
                 }
             }

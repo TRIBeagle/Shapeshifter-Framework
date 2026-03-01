@@ -631,13 +631,21 @@ namespace ShapeshifterFramework.Comps
             var pawn = parent as Pawn;
             if (pawn == null) return;
 
+            // 해제되기 전 변신 상태였는지 기억
+            bool wasTransformed = isTransformed;
+
             if (isTransformed)
             {
                 RemoveForm();
             }
 
             ShapeshiftRuntimeCaches.ClearFor(pawn);
-            Log.Message($"[SSF] {pawn} killed, shapeshift forcibly deactivated.");
+
+            // 원래 변신 상태였던 폰 + 모드 설정에서 디버그 로그를 켰을 때만 출력
+            if (wasTransformed && ShapeshifterFrameworkMod.Settings != null && ShapeshifterFrameworkMod.Settings.enableDebugLog)
+            {
+                Log.Message($"[SSF] {pawn.LabelShort} killed, shapeshift forcibly deactivated.");
+            }
         }
 
         #endregion
@@ -1112,7 +1120,6 @@ namespace ShapeshifterFramework.Comps
                             defaultLabel = "ShapeshiftCommandLabel".Translate(form.LabelCap),
                             defaultDesc = "ShapeshiftCommandDesc".Translate(form.description),
                             action = delegate { ApplyForm(form); },
-                            // [최적화 완료] 경로 검사 없이 매니저에게 폼을 넘겨주고 즉시 받아옴
                             icon = ShapeshiftTextureUtility.GetEnterIcon(form)
                         };
                     }
@@ -1128,7 +1135,6 @@ namespace ShapeshifterFramework.Comps
                         ? "ShapeshiftRevertDesc_WithTime".Translate((float)RemainingShapeshiftTicks / 60f)
                         : "ShapeshiftRevertDesc".Translate(),
                     action = delegate { RemoveForm(); },
-                    // [최적화 완료] 현재 폼의 해제 아이콘을 즉시 받아옴
                     icon = ShapeshiftTextureUtility.GetRevertIcon(currentForm)
                 };
 
