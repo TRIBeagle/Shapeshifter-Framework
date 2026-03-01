@@ -410,7 +410,7 @@ namespace ShapeshifterFramework.Compat
             // null/Destroyed 참조 정리
             var remove = new List<Pawn>();
             foreach (var kv in map)
-                if (kv.Key == null || kv.Key.Destroyed) remove.Add(kv.Key);
+                if (kv.Key == null || kv.Key.Destroyed || kv.Value == null) remove.Add(kv.Key);
             for (int i = 0; i < remove.Count; i++) map.Remove(remove[i]);
         }
 

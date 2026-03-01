@@ -14,12 +14,15 @@ namespace ShapeshifterFramework.Utilities
             List<HediffAddEntry> entries,
             List<Hediff> outTempAddedHediffs,
             List<HediffDef> outTempAddedHediffsDefCache,
-            List<ShapeshiftPartRestoreRecord> outPartRestoreRecords)
+            List<ShapeshiftPartRestoreRecord> outPartRestoreRecords,
+            List<HediffDef> prevDefCache = null)
         {
             if (pawn == null || pawn.health == null) return;
             if (entries == null || entries.Count == 0) return;
 
-            CleanupNullPartHediffs(pawn);
+            // prevDefCache: 이전 변신에서 우리가 추가한 헤디프 목록
+            // null이면 우리가 추가한 것을 알 수 없으므로 정리 스킵
+            CleanupNullPartHediffs(pawn, prevDefCache);
 
             int applied = 0;
 
@@ -251,7 +254,7 @@ namespace ShapeshifterFramework.Utilities
             return null;
         }
 
-        static void CleanupNullPartHediffs(Pawn pawn)
+        static void CleanupNullPartHediffs(Pawn pawn, List<HediffDef> prevDefCache)
         {
             var list = pawn.health?.hediffSet?.hediffs;
             if (list == null || list.Count == 0) return;
@@ -262,6 +265,9 @@ namespace ShapeshifterFramework.Utilities
                 if (h == null) { list.RemoveAt(i); continue; }
                 if ((h.def?.addedPartProps != null || h is Hediff_MissingPart) && h.Part == null)
                 {
+                    // prevDefCache가 null이면 우리가 추가한 것인지 알 수 없으므로 스킵
+                    // prevDefCache가 있으면 우리가 추가한 것으로 알려진 것만 제거
+                    if (prevDefCache == null || !prevDefCache.Contains(h.def)) continue;
                     try
                     {
                         pawn.health.RemoveHediff(h);

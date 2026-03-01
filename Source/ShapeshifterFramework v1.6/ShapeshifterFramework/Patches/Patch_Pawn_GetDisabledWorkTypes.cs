@@ -1,17 +1,19 @@
 ﻿// .NET 4.8 / C# 7.3
 // 변신 중, 폼에 지정된 작업을 "추가로" 불가 처리
-//  - 대상: Pawn의 컴파일러 생성 GetDisabledWorkTypes(List<WorkTypeDef>) 메서드
+//  - 대상: Pawn.GetDisabledWorkTypes 직접 패치 (Postfix)
+//  - 기존: 컴파일러 생성 FillList 로컬 함수를 HarmonyTargetMethod로 탐색 → RimWorld 업데이트 시 취약
+//  - 변경: GetDisabledWorkTypes 자체를 Postfix로 패치 → 반환된 리스트에 폼 작업 추가
+//          cachedDisabledWorkTypes가 이미 채워진 경우도 올바르게 처리됨
 
 using HarmonyLib;
+using RimWorld;
 using ShapeshifterFramework.Comps;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
-    // 게임 로드/시작 시 캐시를 비워주는 초기화 클래스 추가
+    // 게임 로드/시작 시 캐시를 비워주는 초기화 클래스
     [StaticConstructorOnStartup]
     public static class Patch_Pawn_GetDisabledWorkTypes_CacheClearer
     {
@@ -21,36 +23,20 @@ namespace ShapeshifterFramework.Patches
         }
     }
 
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(Pawn), "GetDisabledWorkTypes")]
     public static class Patch_Pawn_GetDisabledWorkTypes
     {
         private static readonly Dictionary<WorkTags, List<WorkTypeDef>> _workTypesByTagsCache
             = new Dictionary<WorkTags, List<WorkTypeDef>>(16);
 
-        // 캐시 청소용 메서드
         public static void ClearCache()
         {
             _workTypesByTagsCache.Clear();
         }
 
-        [HarmonyTargetMethod]
-        public static MethodBase TargetMethod()
+        static void Postfix(Pawn __instance, ref List<WorkTypeDef> __result)
         {
-            var methods = AccessTools.GetDeclaredMethods(typeof(Pawn));
-            for (int i = 0; i < methods.Count; i++)
-            {
-                var m = methods[i];
-                if (m == null) continue;
-                if (!m.HasAttribute<CompilerGeneratedAttribute>()) continue;
-                if (m.Name != null && m.Name.Contains("GetDisabledWorkTypes")) return m;
-            }
-            Log.Error("[ShapeshifterFramework] Critical: 'GetDisabledWorkTypes' hidden method not found! The patch will be ignored. RimWorld might have been updated.");
-            return null;
-        }
-
-        static void Prefix(Pawn __instance, List<WorkTypeDef> list)
-        {
-            if (__instance == null || list == null) return;
+            if (__instance == null || __result == null) return;
 
             var comp = __instance.TryGetComp<CompShapeshifter>();
             var form = (comp != null && comp.isTransformed) ? comp.currentForm as ShapeshiftFormDef : null;
@@ -62,7 +48,7 @@ namespace ShapeshifterFramework.Patches
                 for (int i = 0; i < extra.Count; i++)
                 {
                     var w = extra[i];
-                    if (w != null && !list.Contains(w)) list.Add(w);
+                    if (w != null && !__result.Contains(w)) __result.Add(w);
                 }
             }
 
@@ -86,8 +72,8 @@ namespace ShapeshifterFramework.Patches
                 for (int i = 0; i < matched.Count; i++)
                 {
                     var wt = matched[i];
-                    if (wt != null && !list.Contains(wt))
-                        list.Add(wt);
+                    if (wt != null && !__result.Contains(wt))
+                        __result.Add(wt);
                 }
             }
         }

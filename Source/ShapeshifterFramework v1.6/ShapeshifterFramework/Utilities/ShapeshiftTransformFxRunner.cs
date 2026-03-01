@@ -32,13 +32,13 @@ namespace ShapeshifterFramework.Utilities
             }
         }
 
-        private static readonly List<ScheduledFx> _queue = new List<ScheduledFx>(16);
+        private readonly List<ScheduledFx> _queue = new List<ScheduledFx>(16);
 
         // 쿨다운: key = (pawn, phase) 해시
-        private static readonly Dictionary<int, int> _cooldowns = new Dictionary<int, int>(64);
+        private readonly Dictionary<int, int> _cooldowns = new Dictionary<int, int>(64);
 
         // 매번 리스트를 새로 만들지 않기 위한 재활용 리스트 추가
-        private static readonly List<int> _removeBuffer = new List<int>(32);
+        private readonly List<int> _removeBuffer = new List<int>(32);
 
         // ──────────────────────────────────────────────────────────────
         // Configurable values
@@ -46,13 +46,7 @@ namespace ShapeshifterFramework.Utilities
         private const int MaxFleckCount = 50;          // Fleck 안전상한
         // ──────────────────────────────────────────────────────────────
 
-        public ShapeshiftTransformFxRunner(Game game)
-        {
-            // 게임을 새로 불러올 때마다 스태틱 리스트의 유령 데이터 청소
-            _queue.Clear();
-            _cooldowns.Clear();
-            _removeBuffer.Clear();
-        }
+        public ShapeshiftTransformFxRunner(Game game) { }
 
         public override void GameComponentTick()
         {
@@ -88,7 +82,13 @@ namespace ShapeshifterFramework.Utilities
         public static void Enqueue(Pawn pawn, ShapeshiftFormDef form, bool isEnter, int delayTicks, int cooldownTicks)
         {
             if (pawn == null || form == null) return;
+            var inst = Instance;
+            if (inst == null) return;
+            inst.EnqueueInternal(pawn, form, isEnter, delayTicks, cooldownTicks);
+        }
 
+        private void EnqueueInternal(Pawn pawn, ShapeshiftFormDef form, bool isEnter, int delayTicks, int cooldownTicks)
+        {
             int now = Find.TickManager.TicksGame;
             int key = MakeKey(pawn, isEnter);
             int last;
@@ -113,7 +113,7 @@ namespace ShapeshifterFramework.Utilities
             }
         }
 
-        private static void TryPlayNow(Pawn pawn, ShapeshiftFormDef form, bool isEnter)
+        private void TryPlayNow(Pawn pawn, ShapeshiftFormDef form, bool isEnter)
         {
             try
             {

@@ -133,6 +133,9 @@ namespace ShapeshifterFramework.Patches
             return add;
         }
 
+        // 생성 실패한 verbClass 캐시 — 같은 타입을 매번 재시도하지 않도록
+        private static readonly HashSet<Type> FailedVerbClasses = new HashSet<Type>();
+
         private static Verb CreateVerb(VerbTracker tracker, IVerbOwner owner, VerbProperties vp, Pawn ownerPawn)
         {
             try
@@ -140,6 +143,10 @@ namespace ShapeshifterFramework.Patches
                 if (tracker == null || owner == null || vp == null || ownerPawn == null) return null;
 
                 var cls = vp.verbClass != null ? vp.verbClass : typeof(Verb);
+
+                // 이전에 실패한 타입은 재시도하지 않음
+                if (FailedVerbClasses.Contains(cls)) return null;
+
                 var verb = (Verb)Activator.CreateInstance(cls);
 
                 verb.verbProps = vp;
@@ -153,6 +160,8 @@ namespace ShapeshifterFramework.Patches
             }
             catch (Exception e)
             {
+                var cls = vp?.verbClass;
+                if (cls != null) FailedVerbClasses.Add(cls);
                 Log.Warning("[ShapeshifterFramework] CreateVerb failed for " + (vp != null ? vp.ToString() : "null") + " : " + e);
                 return null;
             }

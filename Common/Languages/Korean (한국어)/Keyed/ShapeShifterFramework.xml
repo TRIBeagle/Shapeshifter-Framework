@@ -17,6 +17,9 @@
 
   <!-- 변신 실패 메시지(allowedFromForms 등 조건 불충족) -->
   <Shapeshift_CannotTransform>{0} 형태로 변신할 수 없습니다.</Shapeshift_CannotTransform>
+  
+  <!-- 변신 폼으로 인한 작업 결격 사유 (작업 탭 툴팁 / 캐릭터 창) -->
+  <Shapeshift_WorkDisabled>{0} 변신 때문에 비활성</Shapeshift_WorkDisabled>
 
   <!-- Gene overlay -->
   <ShapeshiftGeneAppearanceHidden>변신({0}) 효과: 외형만 숨김</ShapeshiftGeneAppearanceHidden>

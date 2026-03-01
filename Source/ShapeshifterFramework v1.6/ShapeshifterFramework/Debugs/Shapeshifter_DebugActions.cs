@@ -175,7 +175,17 @@ namespace ShapeshifterFramework.Debugs
             {
                 try
                 {
-                    def.PlayOneShot(new TargetInfo(pawn.Position, pawn.Map));
+                    var target = new TargetInfo(pawn.Position, pawn.Map);
+                    if (def.sustain)
+                    {
+                        // Sustainer(지속음)은 짧게 스폰 후 즉시 종료
+                        var sustainer = def.TrySpawnSustainer(SoundInfo.InMap(target, MaintenanceType.None));
+                        sustainer?.End();
+                    }
+                    else
+                    {
+                        def.PlayOneShot(target);
+                    }
                 }
                 catch (Exception e)
                 {

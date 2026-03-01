@@ -19,30 +19,41 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPriority(Priority.Last)] // 마지막에 오버레이
     public static class Patch_DrawGeneOverlay
     {
+        // Rect/Gene 파라미터 인덱스 캐시 (TargetMethod에서 탐색 후 저장)
+        private static int _rectArgIndex = -1;
+        private static int _geneArgIndex = -1;
+
         // 대상: DrawGene(Rect, Gene, ...) 오버로드 동적 탐색
         [HarmonyTargetMethod]
         static MethodBase TargetMethod()
         {
-            return AccessTools.GetDeclaredMethods(typeof(GeneUIUtility)).FirstOrDefault(m =>
+            var method = AccessTools.GetDeclaredMethods(typeof(GeneUIUtility)).FirstOrDefault(m =>
             {
                 if (m.Name != "DrawGene") return false;
                 var ps = m.GetParameters();
                 return ps.Any(p => p.ParameterType == typeof(Rect))
                     && ps.Any(p => p.ParameterType == typeof(Gene));
             }) ?? throw new MissingMethodException("[SSF] GeneUIUtility.DrawGene not found.");
+
+            // Rect/Gene 파라미터 인덱스 미리 탐색해 캐시
+            var parameters = method.GetParameters();
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                if (_rectArgIndex < 0 && parameters[i].ParameterType == typeof(Rect)) _rectArgIndex = i;
+                if (_geneArgIndex < 0 && parameters[i].ParameterType == typeof(Gene)) _geneArgIndex = i;
+            }
+            return method;
         }
 
         // 후처리: 억제 대상일 때 디밍 + 레드 슬래시 + 얇은 외곽선 + 툴팁
         static void Postfix(object[] __args)
         {
-            Rect rect = default(Rect);
-            Gene gene = null;
+            if (__args == null) return;
+            if (_rectArgIndex < 0 || _geneArgIndex < 0) return;
+            if (_rectArgIndex >= __args.Length || _geneArgIndex >= __args.Length) return;
 
-            for (int i = 0; i < __args.Length; i++)
-            {
-                if (__args[i] is Rect) rect = (Rect)__args[i];
-                else if (__args[i] is Gene) gene = (Gene)__args[i];
-            }
+            var rect = __args[_rectArgIndex] is Rect r ? r : default(Rect);
+            var gene = __args[_geneArgIndex] as Gene;
             if (gene == null) return;
             var pawn = gene.pawn;
             if (pawn == null) return;

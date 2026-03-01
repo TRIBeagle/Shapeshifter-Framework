@@ -32,7 +32,40 @@ namespace ShapeshifterFramework.Patches
             var helperMethod = AccessTools.Method(typeof(ShapeshiftOverlayHelper), nameof(ShapeshiftOverlayHelper.GetEffectiveFleshType));
             var parmsPawnFld = AccessTools.Field(typeof(PawnDrawParms), nameof(PawnDrawParms.pawn));
 
-            // args: this(0), key(1), parms(2), writeTarget(3)
+            // PawnDrawParms 파라미터 위치를 동적으로 탐색 (시그니처 변경에 대비)
+            // +1: this(인스턴스 메서드의 arg 0은 this)
+            int parmsArgIndex = -1;
+            var writeCache = AccessTools.Method(typeof(PawnWoundDrawer), "WriteCache");
+            if (writeCache != null)
+            {
+                var parameters = writeCache.GetParameters();
+                for (int p = 0; p < parameters.Length; p++)
+                {
+                    if (parameters[p].ParameterType == typeof(PawnDrawParms))
+                    {
+                        parmsArgIndex = p + 1; // +1: this
+                        break;
+                    }
+                }
+            }
+
+            if (parmsArgIndex < 0)
+            {
+                ShapeshiftDiagnostics.Warn("PawnWoundDrawer transpiler: PawnDrawParms parameter not found. Falling back to vanilla wound overlays.");
+                ShapeshiftPatchStatus.WoundDrawerTranspiled = false;
+                return list;
+            }
+
+            // parmsArgIndex에 맞는 Ldarg 명령 생성
+            CodeInstruction MakeLdarg(int index)
+            {
+                if (index == 0) return new CodeInstruction(OpCodes.Ldarg_0);
+                if (index == 1) return new CodeInstruction(OpCodes.Ldarg_1);
+                if (index == 2) return new CodeInstruction(OpCodes.Ldarg_2);
+                if (index == 3) return new CodeInstruction(OpCodes.Ldarg_3);
+                return new CodeInstruction(OpCodes.Ldarg_S, (byte)index);
+            }
+
             int replaceCount = 0;
 
             for (int i = 0; i < list.Count; i++)
@@ -45,14 +78,14 @@ namespace ShapeshifterFramework.Patches
                     // 스택: ... [RaceProperties]
                     // 바꾸기:
                     //   Pop (RaceProperties 제거)
-                    //   Ldarg_2 (parms)
+                    //   Ldarg (parms — 동적으로 탐색한 인덱스)
                     //   Ldfld PawnDrawParms.pawn
                     //   Call GetEffectiveFleshType(pawn)
 
-                    list[i] = new CodeInstruction(OpCodes.Pop);              // Pop RaceProperties
-                    list.Insert(++i, new CodeInstruction(OpCodes.Ldarg_2));  // parms
+                    list[i] = new CodeInstruction(OpCodes.Pop);                        // Pop RaceProperties
+                    list.Insert(++i, MakeLdarg(parmsArgIndex));                        // parms
                     list.Insert(++i, new CodeInstruction(OpCodes.Ldfld, parmsPawnFld)); // parms.pawn
-                    list.Insert(++i, new CodeInstruction(OpCodes.Call, helperMethod));   // helper(pawn)
+                    list.Insert(++i, new CodeInstruction(OpCodes.Call, helperMethod));  // helper(pawn)
 
                     replaceCount++;
                 }

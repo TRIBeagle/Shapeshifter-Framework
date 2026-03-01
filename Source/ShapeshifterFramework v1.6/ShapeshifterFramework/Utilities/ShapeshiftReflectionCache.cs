@@ -410,6 +410,29 @@ namespace ShapeshifterFramework.Utilities
 
         #region 타입 스캔/패턴 헬퍼
 
+        // 타입별 FieldInfo[]/PropertyInfo[] 캐시 — 렌더 핫패스에서 매 프레임 GetFields() 호출 방지
+        private static readonly ConcurrentDictionary<Type, FieldInfo[]> FieldArrayCache =
+            new ConcurrentDictionary<Type, FieldInfo[]>();
+
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertyArrayCache =
+            new ConcurrentDictionary<Type, PropertyInfo[]>();
+
+        private static FieldInfo[] GetFieldsCached(Type t)
+        {
+            FieldInfo[] fs;
+            if (!FieldArrayCache.TryGetValue(t, out fs))
+                FieldArrayCache[t] = fs = t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            return fs;
+        }
+
+        private static PropertyInfo[] GetPropertiesCached(Type t)
+        {
+            PropertyInfo[] ps;
+            if (!PropertyArrayCache.TryGetValue(t, out ps))
+                PropertyArrayCache[t] = ps = t.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            return ps;
+        }
+
         /// <summary>
         /// 객체 a/b의 인스턴스 필드에서 특정 타입의 값을 탐색하여 반환한다(첫 일치).
         /// </summary>
@@ -424,7 +447,7 @@ namespace ShapeshifterFramework.Utilities
         private static T TryScanFieldsOne<T>(object obj, Type target) where T : class
         {
             if (obj == null) return null;
-            var fs = obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var fs = GetFieldsCached(obj.GetType());
             for (int i = 0; i < fs.Length; i++)
             {
                 var ft = fs[i].FieldType;
@@ -449,7 +472,7 @@ namespace ShapeshifterFramework.Utilities
             if (obj == null) return null;
 
             // 필드 우선
-            var fs = obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var fs = GetFieldsCached(obj.GetType());
             for (int i = 0; i < fs.Length; i++)
             {
                 if (string.Equals(fs[i].Name, "exclusionTags", StringComparison.OrdinalIgnoreCase)
@@ -460,7 +483,7 @@ namespace ShapeshifterFramework.Utilities
             }
 
             // 프로퍼티 폴백
-            var ps = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var ps = GetPropertiesCached(obj.GetType());
             for (int i = 0; i < ps.Length; i++)
             {
                 if (ps[i].CanRead

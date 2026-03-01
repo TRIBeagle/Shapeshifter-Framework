@@ -18,6 +18,9 @@
   <!-- Fail message used when a form cannot be entered (allowedFromForms etc.) -->
   <Shapeshift_CannotTransform>Cannot transform to {0}.</Shapeshift_CannotTransform>
 
+  <!-- Work disabled reason (work tab tooltip / character sheet) -->
+  <Shapeshift_WorkDisabled>Disabled by {0} transformation</Shapeshift_WorkDisabled>
+  
   <!-- Gene overlay -->
   <ShapeshiftGeneAppearanceHidden>Appearance only, hidden by shapeshift ({0})</ShapeshiftGeneAppearanceHidden>
 

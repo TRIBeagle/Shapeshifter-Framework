@@ -74,6 +74,7 @@
     <Compile Include="Comps\CompProperties_AbilityShiftTarget.cs" />
     <Compile Include="Comps\CompAbilityEffect_ShiftTarget.cs" />
     <Compile Include="Debugs\Shapeshifter_DebugActions.cs" />
+    <Compile Include="Patches\Patch_Pawn_GetReasonsForDisabledWorkType.cs" />
     <Compile Include="Patches\Patch_PawnRenderer_DrawShadowInternal.cs" />
     <Compile Include="Patches\Patch_PawnRenderNodeWorker_HediffEye_OffsetFor.cs" />
     <Compile Include="Patches\Patch_PawnRenderNodeWorker_Eye_OffsetFor.cs" />

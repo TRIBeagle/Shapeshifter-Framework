@@ -68,6 +68,11 @@ namespace ShapeshifterFramework.Comps
         /// <summary>변신 복귀 중 내부 재장착 허용 플래그(세이브 불필요, 런타임 전용).</summary>
         public bool suppressEquipLock = false;
 
+        // PostLoadInit에서 Reference 연결 완료 후 AddRange하기 위한 임시 보관 필드
+        private List<Hediff> __tmpHediffsLoad = null;
+        private List<Apparel> __tmpPrevApLoad = null;
+        private List<ThingWithComps> __tmpPrevWpLoad = null;
+
         // 우리가 추가한 헤디프(인스턴스) 추적은 기존 tempAddedHediffs 사용
         private readonly List<ShapeshifterFramework.Utilities.ShapeshiftPartRestoreRecord> tempPartRestoreRecords
             = new List<ShapeshifterFramework.Utilities.ShapeshiftPartRestoreRecord>(8);
@@ -411,7 +416,8 @@ namespace ShapeshifterFramework.Comps
                     form.addHediffs,
                     tempAddedHediffs,
                     tempAddedHediffsDefCache,
-                    tempPartRestoreRecords
+                    tempPartRestoreRecords,
+                    prevDefCache: tempAddedHediffsDefCache  // 이전 변신에서 우리가 추가한 것만 정리
                 );
             }
 
@@ -428,18 +434,8 @@ namespace ShapeshifterFramework.Comps
                 if (form.headType != null) pawn.story.headType = form.headType;
             }
 
-            // 보이스 캐시 등록
-            if (form.soundCall != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.CallByPawn, pawn, form.soundCall);
-            if (form.soundWounded != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.WoundedByPawn, pawn, form.soundWounded);
-            if (form.soundDeath != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.DeathByPawn, pawn, form.soundDeath);
-            if (form.soundAngry != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.AngryByPawn, pawn, form.soundAngry);
-
-            // 혈흔, 스미어 캐시 등록
-            if (form.bloodDef != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.BloodByPawn, pawn, form.bloodDef);
-            if (form.bloodSmearDef != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.SmearByPawn, pawn, form.bloodSmearDef);
-
-            // FleshType 캐시 등록
-            if (form.fleshType != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.FleshTypeByPawn, pawn, form.fleshType);
+            // 런타임 캐시 등록
+            ApplyRuntimeCaches(pawn, form);
 
             // 전용 VerbTracker는 프로퍼티 접근 시 생성 → Refresh에서 Verb 리셋 포함
             shapeshiftVerbTracker = null;
@@ -883,6 +879,29 @@ namespace ShapeshifterFramework.Comps
         #region 캐시/그래픽/버브 재초기화
 
         /// <summary>
+        /// 폼의 런타임 캐시(사운드/혈흔/FleshType)를 등록한다.
+        /// ApplyForm 시, 그리고 세이브 로드 후 PostLoadInit에서 재등록 시 공통 호출.
+        /// ConditionalWeakTable은 세이브되지 않으므로 로드 후 반드시 재등록이 필요하다.
+        /// </summary>
+        private static void ApplyRuntimeCaches(Pawn pawn, ShapeshiftFormDef form)
+        {
+            if (pawn == null || form == null) return;
+
+            // 보이스 캐시
+            if (form.soundCall != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.CallByPawn, pawn, form.soundCall);
+            if (form.soundWounded != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.WoundedByPawn, pawn, form.soundWounded);
+            if (form.soundDeath != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.DeathByPawn, pawn, form.soundDeath);
+            if (form.soundAngry != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.AngryByPawn, pawn, form.soundAngry);
+
+            // 혈흔/스미어 캐시
+            if (form.bloodDef != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.BloodByPawn, pawn, form.bloodDef);
+            if (form.bloodSmearDef != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.SmearByPawn, pawn, form.bloodSmearDef);
+
+            // FleshType 캐시
+            if (form.fleshType != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.FleshTypeByPawn, pawn, form.fleshType);
+        }
+
+        /// <summary>
         /// 변신 후 각종 캐시/그래픽/버브 재초기화까지 한 번에 정리.
         /// - pawn.verbTracker는 VerbsNeedReinitOnLoad()로 무효화 → AllVerbs 접근으로 즉시 재빌드
         /// - 이 컴포넌트 전용 shapeshiftVerbTracker는 null로 지워서 폼 기준으로 재빌드
@@ -987,7 +1006,7 @@ namespace ShapeshifterFramework.Comps
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 tempAddedHediffs.Clear();
-                if (__tmpHediffs != null) tempAddedHediffs.AddRange(__tmpHediffs);
+                __tmpHediffsLoad = __tmpHediffs; // PostLoadInit에서 AddRange
             }
 
             List<Apparel> __tmpPrevAp = null;
@@ -996,7 +1015,7 @@ namespace ShapeshifterFramework.Comps
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 prevApparels.Clear();
-                if (__tmpPrevAp != null) prevApparels.AddRange(__tmpPrevAp);
+                __tmpPrevApLoad = __tmpPrevAp; // PostLoadInit에서 AddRange
             }
 
             List<ThingWithComps> __tmpPrevWp = null;
@@ -1005,7 +1024,7 @@ namespace ShapeshifterFramework.Comps
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 prevWeapons.Clear();
-                if (__tmpPrevWp != null) prevWeapons.AddRange(__tmpPrevWp);
+                __tmpPrevWpLoad = __tmpPrevWp; // PostLoadInit에서 AddRange
             }
 
             List<ShapeshiftPartRestoreRecord> __tmpRestore = null;
@@ -1041,14 +1060,37 @@ namespace ShapeshifterFramework.Comps
             // 여기서 유실된(null) 데이터들을 최종적으로 청소
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                tempAddedHediffs.RemoveAll(x => x == null);
-                prevApparels.RemoveAll(x => x == null);
-                prevWeapons.RemoveAll(x => x == null);
+                // Reference 연결이 완료된 이후 AddRange (null 항목 자동 제외)
+                if (__tmpHediffsLoad != null)
+                {
+                    tempAddedHediffs.AddRange(__tmpHediffsLoad.Where(x => x != null));
+                    __tmpHediffsLoad = null;
+                }
+                else tempAddedHediffs.RemoveAll(x => x == null);
+
+                if (__tmpPrevApLoad != null)
+                {
+                    prevApparels.AddRange(__tmpPrevApLoad.Where(x => x != null));
+                    __tmpPrevApLoad = null;
+                }
+                else prevApparels.RemoveAll(x => x == null);
+
+                if (__tmpPrevWpLoad != null)
+                {
+                    prevWeapons.AddRange(__tmpPrevWpLoad.Where(x => x != null));
+                    __tmpPrevWpLoad = null;
+                }
+                else prevWeapons.RemoveAll(x => x == null);
 
                 Pawn pawn = parent as Pawn;
                 if (pawn != null && pawn.Dead && isTransformed)
                 {
                     RemoveForm();
+                }
+                else if (isTransformed && currentForm != null && pawn != null)
+                {
+                    // ConditionalWeakTable은 세이브되지 않으므로 로드 후 재등록 필요
+                    ApplyRuntimeCaches(pawn, currentForm);
                 }
             }
         }
