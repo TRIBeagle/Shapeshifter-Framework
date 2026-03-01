@@ -546,9 +546,13 @@ namespace ShapeshifterFramework.Compat
                         if (pawn == null) return;
 
                         var store = Current.Game?.GetComponent<FAStateStore>();
-                        var backup = store?.GetOrCreate(pawn);
-                        if (backup == null) return;
+                        // GetOrCreate를 쓰면 빈 백업이 생성될 수 있으므로, 없으면 아무것도 하지 않거나 경고만 띄움
+                        if (store == null || !store.TryGet(pawn, out var backup) || backup == null || backup.IsEmpty)
+                        {
+                            Log.Warning($"[SSF] FA backup missing for transformed pawn {pawn.Name}. Facial revert might fail later.");
+                        }
 
+                        // 오버라이드는 안전하게 덮어씌움
                         FacialAnimationCompat.ApplyOverrides(pawn, __instance.currentForm);
                     }
                 }

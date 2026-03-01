@@ -10,6 +10,7 @@ using HarmonyLib;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Verse;
 using Verse.AI;
@@ -294,10 +295,13 @@ namespace ShapeshifterFramework.Utilities
         private static readonly ConcurrentDictionary<string, MethodInfo> MethodCache =
             new ConcurrentDictionary<string, MethodInfo>();
 
-        private static MethodInfo GetMethodCached(Type t, string name, int argc, bool isStatic)
+        private static MethodInfo GetMethodCached(Type t, string name, Type[] paramTypes, bool isStatic)
         {
             if (t == null || string.IsNullOrEmpty(name)) return null;
-            string key = t.FullName + "::M::" + (isStatic ? "S" : "I") + "::" + name + "#" + argc;
+
+            int argc = paramTypes?.Length ?? 0;
+            string typeStr = paramTypes == null || paramTypes.Length == 0 ? "0" : string.Join("_", paramTypes.Select(p => p != null ? p.Name : "any"));
+            string key = $"{t.FullName}::M::{(isStatic ? "S" : "I")}::{name}#{typeStr}";
 
             MethodInfo mi;
             if (!MethodCache.TryGetValue(key, out mi) || mi == null)
@@ -306,16 +310,35 @@ namespace ShapeshifterFramework.Utilities
                             | BindingFlags.Public | BindingFlags.NonPublic;
 
                 var methods = t.GetMethods(flags);
-                // [정책] 인자 수로 1차 필터 후, 가장 보편적인 시그니처를 선택
                 MethodInfo candidate = null;
                 for (int i = 0; i < methods.Length; i++)
                 {
                     var m = methods[i];
                     if (!string.Equals(m.Name, name, StringComparison.Ordinal)) continue;
+
                     var ps = m.GetParameters();
                     if (ps == null || ps.Length != argc) continue;
-                    candidate = m;
-                    break;
+
+                    // [추가] 파라미터 타입 교차 검증
+                    bool match = true;
+                    if (paramTypes != null)
+                    {
+                        for (int j = 0; j < argc; j++)
+                        {
+                            // 전달된 인자가 null이 아니면 타입 호환성(상속 관계 포함) 검사
+                            if (paramTypes[j] != null && !ps[j].ParameterType.IsAssignableFrom(paramTypes[j]))
+                            {
+                                match = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (match)
+                    {
+                        candidate = m;
+                        break;
+                    }
                 }
                 MethodCache[key] = candidate;
                 mi = candidate;
@@ -341,8 +364,18 @@ namespace ShapeshifterFramework.Utilities
             result = null;
             if (obj == null || string.IsNullOrEmpty(name)) return false;
 
-            int argc = (args == null) ? 0 : args.Length;
-            var mi = GetMethodCached(obj.GetType(), name, argc, false);
+            // 넘겨받은 args 배열에서 실제 타입들을 추출
+            Type[] paramTypes = null;
+            if (args != null)
+            {
+                paramTypes = new Type[args.Length];
+                for (int i = 0; i < args.Length; i++)
+                {
+                    paramTypes[i] = args[i]?.GetType(); // null인 경우 null 저장 (GetMethodCached에서 처리)
+                }
+            }
+
+            var mi = GetMethodCached(obj.GetType(), name, paramTypes, false);
             if (mi == null) return false;
 
             try { result = mi.Invoke(obj, args); return true; } catch { return false; }
@@ -359,8 +392,18 @@ namespace ShapeshifterFramework.Utilities
             result = null;
             if (t == null || string.IsNullOrEmpty(name)) return false;
 
-            int argc = (args == null) ? 0 : args.Length;
-            var mi = GetMethodCached(t, name, argc, true);
+            // 넘겨받은 args 배열에서 실제 타입들을 추출
+            Type[] paramTypes = null;
+            if (args != null)
+            {
+                paramTypes = new Type[args.Length];
+                for (int i = 0; i < args.Length; i++)
+                {
+                    paramTypes[i] = args[i]?.GetType();
+                }
+            }
+
+            var mi = GetMethodCached(t, name, paramTypes, true);
             if (mi == null) return false;
 
             try { result = mi.Invoke(null, args); return true; } catch { return false; }

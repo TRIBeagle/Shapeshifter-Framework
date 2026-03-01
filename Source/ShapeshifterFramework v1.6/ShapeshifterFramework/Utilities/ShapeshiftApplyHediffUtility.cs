@@ -6,9 +6,6 @@ namespace ShapeshifterFramework.Utilities
 {
     public static class ShapeshiftApplyHediffUtility
     {
-        // 모드 설정 창의 토글과 연동
-        public static bool DebugLog => ShapeshifterFrameworkMod.Settings != null && ShapeshifterFrameworkMod.Settings.enableDebugLog;
-
         public static void ApplyHediffEntries(
             Pawn pawn,
             List<HediffAddEntry> entries,
@@ -37,7 +34,7 @@ namespace ShapeshifterFramework.Utilities
                 // 전신(null)에 AddedPart는 불가
                 if (isAddedPart && (targets == null || targets.Count == 0))
                 {
-                    if (DebugLog) Log.Message($"[SSF] Skip addedPart on FullBody: {opt.hediff.defName}");
+                    ShapeshiftDiagnostics.Info($"Skip addedPart on FullBody: {opt.hediff.defName}");
                     continue;
                 }
 
@@ -56,7 +53,7 @@ namespace ShapeshifterFramework.Utilities
                 }
             }
 
-            if (DebugLog) Log.Message($"SSF Apply: +{applied} hediff(s)");
+            ShapeshiftDiagnostics.Info($"Apply: +{applied} hediff(s)");
         }
 
         static bool TryAddOrUpdateSingle(
@@ -86,7 +83,7 @@ namespace ShapeshifterFramework.Utilities
 
                     if (HasArtificialParentPart(pawn, part))
                     {
-                        if (DebugLog) Log.Message($"[SSF] Skip addedPart (Parent is Artificial): {opt.hediff.defName} @ {part.Label}");
+                        ShapeshiftDiagnostics.Info($"Skip addedPart (Parent is Artificial): {opt.hediff.defName} @ {part.Label}");
                         return false;
                     }
 
@@ -104,7 +101,7 @@ namespace ShapeshifterFramework.Utilities
 
                         case AddedPartPolicy.ForceAdd:
                             if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch { } }
-                            RemoveExistingAddedParts(pawn, part, CollectExistingAddedParts(pawn, part));
+                            RemoveExistingAddedParts(pawn, part, record.PreExistingAdded);
                             break;
                     }
 
@@ -114,7 +111,7 @@ namespace ShapeshifterFramework.Utilities
                 {
                     if (partMissing)
                     {
-                        if (DebugLog) Log.Message($"[SSF] Skip non-added on missing part: {opt.hediff.defName} @ {part.Label}");
+                        ShapeshiftDiagnostics.Info($"Skip non-added on missing part: {opt.hediff.defName} @ {part.Label}");
                         return false;
                     }
                 }
@@ -123,7 +120,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 if (isAddedPart)
                 {
-                    if (DebugLog) Log.Message($"[SSF] Skip addedPart on FullBody: {opt.hediff.defName}");
+                    ShapeshiftDiagnostics.Info($"Skip addedPart on FullBody: {opt.hediff.defName}");
                     return false;
                 }
             }
@@ -135,7 +132,7 @@ namespace ShapeshifterFramework.Utilities
                 {
                     try { existing.Severity = opt.severity.Value; } catch { }
                 }
-                if (DebugLog) Log.Message($"[SSF] Update existing: {opt.hediff.defName} {(part?.Label ?? "FullBody")}");
+                ShapeshiftDiagnostics.Info($"Update existing: {opt.hediff.defName} {(part?.Label ?? "FullBody")}");
                 return false;
             }
 
@@ -271,7 +268,7 @@ namespace ShapeshifterFramework.Utilities
                     try
                     {
                         pawn.health.RemoveHediff(h);
-                        if (DebugLog) Log.Message($"[SSF] Cleanup null-part hediff: {h.def?.defName ?? "null"}");
+                        ShapeshiftDiagnostics.Info($"Cleanup null-part hediff: {h.def?.defName ?? "null"}");
                     }
                     catch { }
                 }

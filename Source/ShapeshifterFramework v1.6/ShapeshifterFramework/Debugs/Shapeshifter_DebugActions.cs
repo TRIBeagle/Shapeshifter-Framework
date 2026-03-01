@@ -189,7 +189,7 @@ namespace ShapeshifterFramework.Debugs
                 }
                 catch (Exception e)
                 {
-                    Log.Warning($"[Shapeshifter] Failed to play {label}: {e}");
+                    Log.Warning($"[SSF] Failed to play {label}: {e}");
                 }
             }));
         }

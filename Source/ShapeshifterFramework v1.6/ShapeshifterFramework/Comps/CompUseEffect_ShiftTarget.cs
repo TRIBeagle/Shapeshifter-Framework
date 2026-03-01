@@ -31,12 +31,16 @@ namespace ShapeshifterFramework.Comps
         {
             base.DoEffect(user);
 
-            // 예시 구현:
-            // - 사용자 앞 셀에 Pawn이 있으면 그 Pawn을 대상
-            // - 없으면 자기 자신을 대상
             var map = user.Map;
-            var c = user.Position;
-            var pawn = (c.GetFirstPawn(map) ?? user);
+            // [수정] user.Position이 아닌 '사용자가 바라보는 앞 칸(FacingCell)'을 확인
+            IntVec3 targetCell = user.Position + user.Rotation.FacingCell;
+
+            // 앞 칸에 폰이 있으면 그 폰을, 없으면 자기 자신을 대상으로 지정
+            Pawn pawn = targetCell.InBounds(map) ? targetCell.GetFirstPawn(map) : null;
+            if (pawn == null)
+            {
+                pawn = user;
+            }
 
             ShapeshiftTargetUtility.TryShiftPawn(pawn, Props.formDefName, Props.successChance);
         }

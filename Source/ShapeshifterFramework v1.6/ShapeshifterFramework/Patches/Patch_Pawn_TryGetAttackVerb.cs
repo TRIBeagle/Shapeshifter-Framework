@@ -62,7 +62,7 @@ namespace ShapeshifterFramework.Patches
             }
             catch (Exception e)
             {
-                Log.Warning($"[Shapeshifter] TryGetAttackVerb Prefix failed: {e}");
+                Log.Warning($"[SSF] TryGetAttackVerb Prefix failed: {e}");
             }
             return true; // 기본 원본 실행
         }

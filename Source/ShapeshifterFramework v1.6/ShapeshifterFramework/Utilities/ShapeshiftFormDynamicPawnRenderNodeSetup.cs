@@ -46,9 +46,7 @@ namespace ShapeshifterFramework.Utilities
             }
 
             // ── Dev 모드 로그
-            bool showLog = ShapeshifterFrameworkMod.Settings != null && ShapeshifterFrameworkMod.Settings.enableDebugLog;
-
-            if (showLog && outList.Count > 0)
+            if (ShapeshiftDiagnostics.DebugLog && outList.Count > 0)
             {
                 int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
                 int id = pawn.thingIDNumber;
@@ -59,14 +57,16 @@ namespace ShapeshifterFramework.Utilities
                     lastLogTick[id] = tick;
                     try
                     {
-                        Log.Message($"[SSF] DynamicSetup_ShapeshifterForm: +{outList.Count} node(s) for {pawn.LabelShortCap} ({pawn.thingIDNumber})");
+                        ShapeshiftDiagnostics.Info($"DynamicSetup_ShapeshifterForm: +{outList.Count} node(s) for {pawn.LabelShortCap} ({pawn.thingIDNumber})");
+
                         for (int i = 0; i < extras.Count; i++)
                         {
                             var p = extras[i];
                             if (p == null) continue;
                             var parentTag = p.parentTagDef != null ? p.parentTagDef.defName : "null";
                             var tag = p.tagDef != null ? p.tagDef.defName : "null";
-                            Log.Message($"[SSF]   - {p.nodeClass?.Name}  parentTag={parentTag}  tag={tag}  tex={p.texPath ?? "(none)"}");
+
+                            ShapeshiftDiagnostics.Info($"  - {p.nodeClass?.Name}  parentTag={parentTag}  tag={tag}  tex={p.texPath ?? "(none)"}");
                         }
                     }
                     catch { /* 로그 실패 무시 */ }

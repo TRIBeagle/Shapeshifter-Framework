@@ -47,103 +47,34 @@ namespace ShapeshifterFramework.Patches
         {
             try
             {
-                if (__instance == null) return true; // 원본
-                if (thing == null) return false;     // 바닐라도 바로 return
-
-                var caster = __instance.Caster;
-                if (caster == null) return true;
-
-                var map = caster.Map;
-                if (map == null) return true;
-
-                var verbProps = __instance.verbProps;
-                if (verbProps == null || verbProps.beamDamageDef == null) return false;
-
-                // 바닐라 동일: LOS 마지막 셀 보정
-                IntVec3 intVec = __instance.InterpolatedPosition.Yto0().ToIntVec3();
-                IntVec3 intVec2 = GenSight.LastPointOnLineOfSight(
-                    sourceCell,
-                    intVec,
-                    (IntVec3 c) => c.InBounds(map) && c.CanBeSeenOverFast(map),
-                    skipFirstCell: true
-                );
-                if (intVec2.IsValid) intVec = intVec2;
-
-                // NRE 핵심: EquipmentSource가 null일 수 있음
-                ThingDef equipmentDef = __instance.EquipmentSource != null ? __instance.EquipmentSource.def : null;
-
-                float angleFlat = (__instance.CurrentTarget.Cell - caster.Position).AngleFlat;
-                var log = new BattleLogEntry_RangedImpact(caster, thing, __instance.CurrentTarget.Thing, equipmentDef, null, null);
-
-                int cellCount = 1;
-                HashSet<IntVec3> pathCells = null;
-
-                if (PathCellsRef != null)
+                // 바닐라의 ApplyDamage 내부에서 EquipmentSource.def를 참조하므로,
+                // EquipmentSource가 null이면 NRE가 발생합니다.
+                // 원본 코드를 통째로 복제하지 않고, 해당 상황에서만 실행을 안전하게 취소(또는 커스텀 데미지 적용 후 취소)합니다.
+                if (__instance != null && __instance.EquipmentSource == null)
                 {
-                    try { pathCells = PathCellsRef(__instance); } catch { pathCells = null; }
-                }
-                if (pathCells == null && PathCellsFI != null)
-                {
-                    try { pathCells = PathCellsFI.GetValue(__instance) as HashSet<IntVec3>; } catch { pathCells = null; }
+                    // EquipmentSource가 없는 변신 폼의 빔 공격인 경우, 바닐라 로그(BattleLog) 생성을 생략하고
+                    // 직접 데미지만 입힌 뒤 원본 실행을 막습니다. (바닐라 전체 복제보다 훨씬 안전함)
+                    if (thing != null && __instance.verbProps != null && __instance.verbProps.beamDamageDef != null)
+                    {
+                        float damage = __instance.verbProps.beamTotalDamage > 0
+                                        ? __instance.verbProps.beamTotalDamage * damageFactor
+                                        : __instance.verbProps.beamDamageDef.defaultDamage * damageFactor;
+
+                        DamageInfo dinfo = new DamageInfo(__instance.verbProps.beamDamageDef, damage,
+                                                          __instance.verbProps.beamDamageDef.defaultArmorPenetration,
+                                                          -1f, __instance.Caster, null, null,
+                                                          DamageInfo.SourceCategory.ThingOrUnknown, thing);
+                        thing.TakeDamage(dinfo);
+                    }
+                    return false; // 데미지만 주고 원본 스킵 (NRE 방지)
                 }
 
-                if (pathCells != null && pathCells.Count > 0) cellCount = pathCells.Count;
-
-                DamageInfo dinfo;
-                if (verbProps.beamTotalDamage > 0f)
-                {
-                    float num = verbProps.beamTotalDamage / (float)cellCount;
-                    num *= damageFactor;
-                    dinfo = new DamageInfo(
-                        verbProps.beamDamageDef,
-                        num,
-                        verbProps.beamDamageDef.defaultArmorPenetration,
-                        angleFlat,
-                        caster,
-                        null,
-                        equipmentDef,
-                        DamageInfo.SourceCategory.ThingOrUnknown,
-                        __instance.CurrentTarget.Thing
-                    );
-                }
-                else
-                {
-                    float amount = (float)verbProps.beamDamageDef.defaultDamage * damageFactor;
-                    dinfo = new DamageInfo(
-                        verbProps.beamDamageDef,
-                        amount,
-                        verbProps.beamDamageDef.defaultArmorPenetration,
-                        angleFlat,
-                        caster,
-                        null,
-                        equipmentDef,
-                        DamageInfo.SourceCategory.ThingOrUnknown,
-                        __instance.CurrentTarget.Thing
-                    );
-                }
-
-                thing.TakeDamage(dinfo).AssociateWithLog(log);
-
-                if (thing.CanEverAttachFire())
-                {
-                    float chance = (verbProps.flammabilityAttachFireChanceCurve == null)
-                        ? verbProps.beamChanceToAttachFire
-                        : verbProps.flammabilityAttachFireChanceCurve.Evaluate(thing.GetStatValue(StatDefOf.Flammability));
-
-                    if (Rand.Chance(chance))
-                        thing.TryAttachFire(verbProps.beamFireSizeRange.RandomInRange, caster);
-                }
-                else if (Rand.Chance(verbProps.beamChanceToStartFire))
-                {
-                    FireUtility.TryStartFireIn(intVec, map, verbProps.beamFireSizeRange.RandomInRange, caster, verbProps.flammabilityAttachFireChanceCurve);
-                }
-
-                return false; // 원본 스킵
+                return true; // 정상적인 경우 원본 그대로 실행 (타 모드 호환성 보장)
             }
             catch (Exception e)
             {
                 Log.Error($"[SSF] Patch_Verb_ShootBeam_EquipmentSafe failed: {e}");
-                return true; // 예외 시 원본으로 폴백
+                return true;
             }
         }
     }

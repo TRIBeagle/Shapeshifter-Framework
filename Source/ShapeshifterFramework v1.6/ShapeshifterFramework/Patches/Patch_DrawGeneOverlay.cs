@@ -46,14 +46,8 @@ namespace ShapeshifterFramework.Patches
         }
 
         // 후처리: 억제 대상일 때 디밍 + 레드 슬래시 + 얇은 외곽선 + 툴팁
-        static void Postfix(object[] __args)
+        static void Postfix(Rect geneRect, Gene gene)
         {
-            if (__args == null) return;
-            if (_rectArgIndex < 0 || _geneArgIndex < 0) return;
-            if (_rectArgIndex >= __args.Length || _geneArgIndex >= __args.Length) return;
-
-            var rect = __args[_rectArgIndex] is Rect r ? r : default(Rect);
-            var gene = __args[_geneArgIndex] as Gene;
             if (gene == null) return;
             var pawn = gene.pawn;
             if (pawn == null) return;
@@ -63,18 +57,18 @@ namespace ShapeshifterFramework.Patches
             // ── 디밍(아주 옅음)
             var prevCol = GUI.color;
             GUI.color = new Color(0f, 0f, 0f, 0.28f);
-            Widgets.DrawTextureFitted(rect, BaseContent.BlackTex, 1f);
+            Widgets.DrawTextureFitted(geneRect, BaseContent.BlackTex, 1f);
 
             // ── 얇은 외곽선(매우 옅은 그레이)
             GUI.color = new Color(1f, 1f, 1f, 0.12f);
-            Widgets.DrawBox(rect, 1);
+            Widgets.DrawBox(geneRect, 1);
 
             // ── 툴팁
             var comp = pawn.TryGetComp<CompShapeshifter>();
             string formLabel = (comp != null && comp.isTransformed && comp.currentForm != null && !string.IsNullOrEmpty(comp.currentForm.label))
                 ? comp.currentForm.label
                 : "Shapeshift".Translate().ToString();
-            TooltipHandler.TipRegion(rect, "ShapeshiftGeneAppearanceHidden".Translate(formLabel));
+            TooltipHandler.TipRegion(geneRect, "ShapeshiftGeneAppearanceHidden".Translate(formLabel));
 
             GUI.color = prevCol;
         }

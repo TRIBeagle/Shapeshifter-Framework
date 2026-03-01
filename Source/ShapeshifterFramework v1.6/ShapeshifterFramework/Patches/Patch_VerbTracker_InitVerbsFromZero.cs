@@ -102,7 +102,7 @@ namespace ShapeshifterFramework.Patches
             }
             catch (Exception e)
             {
-                Log.Error("[ShapeshifterFramework] InitVerbsFromZero Postfix failed: " + e);
+                Log.Error("[SSF] InitVerbsFromZero Postfix failed: " + e);
             }
         }
 
@@ -162,7 +162,7 @@ namespace ShapeshifterFramework.Patches
             {
                 var cls = vp?.verbClass;
                 if (cls != null) FailedVerbClasses.Add(cls);
-                Log.Warning("[ShapeshifterFramework] CreateVerb failed for " + (vp != null ? vp.ToString() : "null") + " : " + e);
+                Log.Warning("[SSF] CreateVerb failed for " + (vp != null ? vp.ToString() : "null") + " : " + e);
                 return null;
             }
         }

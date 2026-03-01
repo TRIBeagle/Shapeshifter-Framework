@@ -51,7 +51,7 @@ namespace ShapeshifterFramework.Patches
 
             if (parmsArgIndex < 0)
             {
-                ShapeshiftDiagnostics.Warn("PawnWoundDrawer transpiler: PawnDrawParms parameter not found. Falling back to vanilla wound overlays.");
+                Log.Warning("[SSF] PawnWoundDrawer transpiler: PawnDrawParms parameter not found. Falling back to vanilla wound overlays.");
                 ShapeshiftPatchStatus.WoundDrawerTranspiled = false;
                 return list;
             }
@@ -94,7 +94,7 @@ namespace ShapeshifterFramework.Patches
             // 진단: 치환 실패 시 경고만 (호환성)
             if (replaceCount == 0)
             {
-                ShapeshiftDiagnostics.Warn("PawnWoundDrawer transpiler pattern not found. Falling back to vanilla wound overlays.");
+                Log.Warning("[SSF] PawnWoundDrawer transpiler pattern not found. Falling back to vanilla wound overlays.");
                 ShapeshiftPatchStatus.WoundDrawerTranspiled = false;
             }
             else

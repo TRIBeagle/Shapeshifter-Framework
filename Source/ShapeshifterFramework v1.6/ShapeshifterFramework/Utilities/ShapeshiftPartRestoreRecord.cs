@@ -32,6 +32,7 @@ namespace ShapeshifterFramework.Utilities
             public void ExposeData()
             {
                 Scribe_Defs.Look(ref Def, "def");
+                Scribe_Defs.Look(ref PartDef, "partDef");
 
                 // Nullable float(float?) 처리 트릭
                 if (Scribe.mode == LoadSaveMode.Saving)

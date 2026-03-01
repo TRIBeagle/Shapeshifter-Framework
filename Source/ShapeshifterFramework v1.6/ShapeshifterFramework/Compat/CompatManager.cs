@@ -172,7 +172,7 @@ namespace ShapeshifterFramework.Compat
             if (FA.IsActive) { anyActive = true; FA.ReportOnce(); allOk &= (FA.FailCount == 0); }
 
             if (anyActive && allOk)
-                Log.Message("[Shapeshift] all compatibility patches active.");
+                Log.Message("[SSF] all compatibility patches active.");
         }
     }
 }

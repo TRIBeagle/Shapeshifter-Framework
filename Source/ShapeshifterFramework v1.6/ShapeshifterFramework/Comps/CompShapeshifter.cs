@@ -15,6 +15,7 @@
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -73,7 +74,7 @@ namespace ShapeshifterFramework.Comps
         private List<Apparel> __tmpPrevApLoad = null;
         private List<ThingWithComps> __tmpPrevWpLoad = null;
 
-        // 우리가 추가한 헤디프(인스턴스) 추적은 기존 tempAddedHediffs 사용
+        // 추가한 헤디프(인스턴스) 추적은 기존 tempAddedHediffs 사용
         private readonly List<ShapeshifterFramework.Utilities.ShapeshiftPartRestoreRecord> tempPartRestoreRecords
             = new List<ShapeshifterFramework.Utilities.ShapeshiftPartRestoreRecord>(8);
 
@@ -160,7 +161,7 @@ namespace ShapeshifterFramework.Comps
                                 if (v != null) v.caster = pawn;
                             }
                         }
-                        catch { }
+                        catch (System.Exception ex) { Log.Error($"[SSF] VerbTracker init error: {ex}"); }
                     }
                 }
                 return shapeshiftVerbTracker;
@@ -267,7 +268,8 @@ namespace ShapeshifterFramework.Comps
                 }
 
                 // 전용 VerbTracker 틱 업데이트
-                try { ShapeshiftVerbTracker?.VerbsTick(); } catch { }
+                try { ShapeshiftVerbTracker?.VerbsTick(); }
+                catch (System.Exception ex) { Log.Error($"[SSF] VerbsTick error: {ex}"); }
             }
         }
 
@@ -381,7 +383,16 @@ namespace ShapeshifterFramework.Comps
             CaptureCurrentGear(pawn);
 
             // 변신 시 장비 처리(폼 설정 기반)
-            HandleGearOnTransform(pawn, form);
+            try
+            {
+                HandleGearOnTransform(pawn, form);
+            }
+            catch (Exception ex)
+            {
+                // 장비 드랍/인벤토리 이동 중 타 모드 충돌 등으로 에러 발생 시 로그 출력 및 진행 강행
+                // (이 과정에서 크래시가 나도 변신 자체는 진행되도록 보호)
+                Log.Error($"[SSF] Error handling gear during transform for {pawn.Name}: {ex}");
+            }
 
             // 최초 변신이면 체형 백업
             if (!isTransformed && pawn.story != null)
@@ -514,7 +525,8 @@ namespace ShapeshifterFramework.Comps
                     // 변신 전 결손이 아니었다면 자연 파츠 복원
                     if (!rec.WasMissingBefore)
                     {
-                        try { pawn.health.RestorePart(rec.Part); } catch { }
+                        try { pawn.health.RestorePart(rec.Part); }
+                        catch (System.Exception ex) { Log.Warning($"[SSF] RestorePart failed for '{rec.Part.Label}': {ex}"); }
                     }
 
                     // 변신 전 설치되어 있던 AddedPart들을 다시 설치(복구)
@@ -552,7 +564,8 @@ namespace ShapeshifterFramework.Comps
                                 var reinst = pawn.health.AddHediff(prev.Def, targetPart, null);
                                 if (reinst != null && prev.Severity.HasValue)
                                 {
-                                    try { reinst.Severity = prev.Severity.Value; } catch { }
+                                    try { reinst.Severity = prev.Severity.Value; }
+                                    catch (System.Exception ex) { Log.Warning($"[SSF] Restore Severity failed for '{prev.Def.defName}': {ex}"); }
                                 }
                             }
                         }
@@ -563,8 +576,7 @@ namespace ShapeshifterFramework.Comps
                     }
                 }
 
-                if (ShapeshifterFramework.Utilities.ShapeshiftApplyHediffUtility.DebugLog)
-                    Log.Message($"SSF Revert: restored {tempPartRestoreRecords.Count} part(s)");
+                ShapeshiftDiagnostics.Info($"Revert: restored {tempPartRestoreRecords.Count} part(s)");
 
                 tempAddedHediffs.Clear();
                 tempAddedHediffsDefCache.Clear();
@@ -637,10 +649,10 @@ namespace ShapeshifterFramework.Comps
 
             ShapeshiftRuntimeCaches.ClearFor(pawn);
 
-            // 원래 변신 상태였던 폰 + 모드 설정에서 디버그 로그를 켰을 때만 출력
-            if (wasTransformed && ShapeshifterFrameworkMod.Settings != null && ShapeshifterFrameworkMod.Settings.enableDebugLog)
+            // 원래 변신 상태였던 폰일 때만 디버그 로그 출력 (설정 체크는 Info 내부에서 자동 처리)
+            if (wasTransformed)
             {
-                Log.Message($"[SSF] {pawn.LabelShort} killed, shapeshift forcibly deactivated.");
+                ShapeshiftDiagnostics.Info($"{pawn.LabelShort} killed, shapeshift forcibly deactivated.");
             }
         }
 
@@ -782,7 +794,10 @@ namespace ShapeshifterFramework.Comps
                     if (owner != null) owner.Remove(t);
                 }
             }
-            catch { }
+            catch (System.Exception ex)
+            {
+                Log.Error($"[SSF] TryDropThing failed for '{t.Label}': {ex}");
+            }
         }
 
         /// <summary>해제 후 이전 장비 재착용(인벤/바닥, 설정값에 따름).</summary>
@@ -912,12 +927,12 @@ namespace ShapeshifterFramework.Comps
             if (pawn == null) return;
 
             // 능력/헤디프/그래픽/초상화/아틀라스/작업종류 캐시 더럽히기
-            try { pawn.health?.capacities?.Notify_CapacityLevelsDirty(); } catch { }
-            try { pawn.health?.hediffSet?.DirtyCache(); } catch { }
-            try { pawn.Drawer?.renderer?.SetAllGraphicsDirty(); } catch { }
-            try { PortraitsCache.SetDirty(pawn); } catch { }
-            try { GlobalTextureAtlasManager.TryMarkPawnFrameSetDirty(pawn); } catch { }
-            try { pawn.Notify_DisabledWorkTypesChanged(); } catch { }
+            try { pawn.health?.capacities?.Notify_CapacityLevelsDirty(); } catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Capacity) error: {ex}"); }
+            try { pawn.health?.hediffSet?.DirtyCache(); } catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Hediff) error: {ex}"); }
+            try { pawn.Drawer?.renderer?.SetAllGraphicsDirty(); } catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Graphics) error: {ex}"); }
+            try { PortraitsCache.SetDirty(pawn); } catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Portrait) error: {ex}"); }
+            try { GlobalTextureAtlasManager.TryMarkPawnFrameSetDirty(pawn); } catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Atlas) error: {ex}"); }
+            try { pawn.Notify_DisabledWorkTypesChanged(); } catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (WorkTypes) error: {ex}"); }
 
             // 1) 바닐라 쪽 VerbTracker 재초기화
             //    VerbsNeedReinitOnLoad()가 내부 verbs를 null로 만들어 다음 접근에서 재구성되게 함.
@@ -930,7 +945,7 @@ namespace ShapeshifterFramework.Comps
                     var _ = pawn.verbTracker?.AllVerbs;
                 }
             }
-            catch { }
+            catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Vanilla Verbs) error: {ex}"); }
 
             // 2) 변신 폼 전용 VerbTracker 재초기화
             try
@@ -949,7 +964,7 @@ namespace ShapeshifterFramework.Comps
                     }
                 }
             }
-            catch { }
+            catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Shapeshift Verbs) error: {ex}"); }
 
             // 3) UI 갱신: 선택 토글로 지즈모 강제 새로고침
             try
@@ -961,7 +976,7 @@ namespace ShapeshifterFramework.Comps
                     Find.Selector.Select(pawn, playSound: false, forceDesignatorDeselect: false);
                 }
             }
-            catch { }
+            catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (UI Selection) error: {ex}"); }
         }
 
         #endregion

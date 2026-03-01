@@ -78,7 +78,7 @@ namespace ShapeshifterFramework.Utilities
                     }
                     catch (Exception e)
                     {
-                        Log.Error($"[Shapeshifter] Shoot provider exec failed (verb={v?.ToString() ?? "null"}): {e}");
+                        Log.Error($"[SSF] Shoot provider exec failed (verb={v?.ToString() ?? "null"}): {e}");
                     }
                 })
                 {
