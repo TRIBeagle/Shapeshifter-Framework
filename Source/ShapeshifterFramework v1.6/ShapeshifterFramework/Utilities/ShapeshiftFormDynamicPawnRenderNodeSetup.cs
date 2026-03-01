@@ -45,8 +45,10 @@ namespace ShapeshifterFramework.Utilities
                 outList.Add(new ValueTuple<PawnRenderNode, PawnRenderNode>(node, null));
             }
 
-            // ── Dev 모드 로그 (과다 출력 방지)
-            if (Prefs.DevMode && outList.Count > 0)
+            // ── Dev 모드 로그
+            bool showLog = ShapeshifterFrameworkMod.Settings != null && ShapeshifterFrameworkMod.Settings.enableDebugLog;
+
+            if (showLog && outList.Count > 0)
             {
                 int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
                 int id = pawn.thingIDNumber;
