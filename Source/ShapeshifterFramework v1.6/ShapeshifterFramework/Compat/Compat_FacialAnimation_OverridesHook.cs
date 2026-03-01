@@ -111,8 +111,11 @@ namespace ShapeshifterFramework.Compat
                 Scribe_Values.Look(ref c1, "faEyeColor");
                 Scribe_Values.Look(ref c2, "faEyeColor2");
 
-                eyeColor = eyeColorSet ? (Color?)c1 : null;
-                eyeColor2 = eyeColor2Set ? (Color?)c2 : null;
+                if (Scribe.mode != LoadSaveMode.Saving)
+                {
+                    eyeColor = eyeColorSet ? (Color?)c1 : null;
+                    eyeColor2 = eyeColor2Set ? (Color?)c2 : null;
+                }
             }
 
             /// <summary>백업 내용이 비었는지 여부.</summary>
@@ -389,6 +392,16 @@ namespace ShapeshifterFramework.Compat
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
                 Cleanup();
+        }
+
+        // 게임 중에도 60,000틱(1일)마다 죽은 폰 찌꺼기 청소
+        public override void GameComponentTick()
+        {
+            base.GameComponentTick();
+            if (Find.TickManager.TicksGame % 60000 == 0)
+            {
+                Cleanup();
+            }
         }
 
         /// <summary>null/Destroyed Pawn 키 제거.</summary>

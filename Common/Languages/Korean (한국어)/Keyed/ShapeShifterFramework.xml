@@ -42,6 +42,8 @@
   <forbidDroppedItemsOnTransform_desc>변신 과정에서 떨어진 아이템을 일시적으로 금지 상태로 표시합니다.</forbidDroppedItemsOnTransform_desc>
   <ShowVerbAutoToggle_title>자동 공격 토글 표시</ShowVerbAutoToggle_title>
   <ShowVerbAutoToggle_desc>공격 명령에 자동 공격 토글을 표시합니다.</ShowVerbAutoToggle_desc>
+  <EnableDebugLog_title>개발자 디버그 로그 출력</EnableDebugLog_title>
+  <EnableDebugLog_desc>변신 프레임워크의 상세한 내부 연산(헤디프 부여 등)을 림월드 로그 창에 출력합니다. 모드 개발자나 버그 제보를 할 때만 켜주세요.</EnableDebugLog_desc>
   <resetAllSetting_title>모두 기본값으로</resetAllSetting_title>
 
   <!-- Fallback (일부 코드에서 폴백으로 사용) -->

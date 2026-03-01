@@ -429,24 +429,17 @@ namespace ShapeshifterFramework.Comps
             }
 
             // 보이스 캐시 등록
-            if (form.soundCall != null)
-                ShapeshiftRuntimeCaches.CallByPawn[pawn] = form.soundCall;
-            if (form.soundWounded != null)
-                ShapeshiftRuntimeCaches.WoundedByPawn[pawn] = form.soundWounded;
-            if (form.soundDeath != null)
-                ShapeshiftRuntimeCaches.DeathByPawn[pawn] = form.soundDeath;
-            if (form.soundAngry != null)
-                ShapeshiftRuntimeCaches.AngryByPawn[pawn] = form.soundAngry;
+            if (form.soundCall != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.CallByPawn, pawn, form.soundCall);
+            if (form.soundWounded != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.WoundedByPawn, pawn, form.soundWounded);
+            if (form.soundDeath != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.DeathByPawn, pawn, form.soundDeath);
+            if (form.soundAngry != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.AngryByPawn, pawn, form.soundAngry);
 
             // 혈흔, 스미어 캐시 등록
-            if (form.bloodDef != null)
-                ShapeshiftRuntimeCaches.BloodByPawn[pawn] = form.bloodDef;
-            if (form.bloodSmearDef != null)
-                ShapeshiftRuntimeCaches.SmearByPawn[pawn] = form.bloodSmearDef;
+            if (form.bloodDef != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.BloodByPawn, pawn, form.bloodDef);
+            if (form.bloodSmearDef != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.SmearByPawn, pawn, form.bloodSmearDef);
 
             // FleshType 캐시 등록
-            if (form.fleshType != null)
-                ShapeshiftRuntimeCaches.FleshTypeByPawn[pawn] = form.fleshType;
+            if (form.fleshType != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.FleshTypeByPawn, pawn, form.fleshType);
 
             // 전용 VerbTracker는 프로퍼티 접근 시 생성 → Refresh에서 Verb 리셋 포함
             shapeshiftVerbTracker = null;
@@ -481,23 +474,36 @@ namespace ShapeshifterFramework.Comps
             // 헤디프 회수 + 원상 복원
             if (pawn.health != null)
             {
-                // 1) 우리가 추가한 헤디프 제거
+                // 1) 인스턴스로 기억하고 있는 헤디프를 먼저 안전하게 제거
                 for (int i = 0; i < tempAddedHediffs.Count; i++)
                 {
                     Hediff h = tempAddedHediffs[i];
                     if (h != null && pawn.health.hediffSet.hediffs.Contains(h))
+                    {
                         pawn.health.RemoveHediff(h);
+                        // 정상적으로 지운 녀석은 2단계 순회에서 제외
+                        if (h.def != null) tempAddedHediffsDefCache.Remove(h.def);
+                    }
                 }
 
-                // 2) Def 캐시 기반 방어적 정리 (혹시 남은 동일 Def)
+                // 2) 세이브 로드 등의 이유로 인스턴스가 꼬였으나 Def 기록은 남은 경우에만 작동하는 방어적 정리
                 if (tempAddedHediffsDefCache != null && tempAddedHediffsDefCache.Count > 0)
                 {
                     List<Hediff> list = pawn.health.hediffSet.hediffs;
                     for (int i = 0; i < tempAddedHediffsDefCache.Count; i++)
                     {
-                        HediffDef def = tempAddedHediffsDefCache[i]; if (def == null) continue;
+                        HediffDef def = tempAddedHediffsDefCache[i];
+                        if (def == null) continue;
+
+                        // 뒤에서부터 순회하며 1개만 지우고 중단
                         for (int j = list.Count - 1; j >= 0; j--)
-                            if (list[j].def == def) pawn.health.RemoveHediff(list[j]);
+                        {
+                            if (list[j].def == def)
+                            {
+                                pawn.health.RemoveHediff(list[j]);
+                                break;
+                            }
+                        }
                     }
                 }
 
@@ -531,12 +537,18 @@ namespace ShapeshifterFramework.Comps
                             }
                             else
                             {
-                                // 타겟 파츠(예: 팔) 하위의 모든 파츠 중 PartDef가 일치하는 부위 찾기
-                                // IsChildOf 대신 인라인으로 parent 체크 로직 포함
-                                targetPart = pawn.RaceProps.body.AllParts.FirstOrDefault(x =>
-                                    x.def == prev.PartDef &&
-                                    pawn.health.hediffSet.GetNotMissingParts().Contains(x) &&
-                                    IsPartChildOf(x, rec.Part)); // 아래 2번에서 만든 함수 사용
+                                // 타겟 파츠 하위의 모든 파츠 중 PartDef가 일치하는 부위 찾기
+                                var allParts = pawn.RaceProps.body.AllParts;
+                                var notMissing = pawn.health.hediffSet.GetNotMissingParts();
+                                for (int pIdx = 0; pIdx < allParts.Count; pIdx++)
+                                {
+                                    var x = allParts[pIdx];
+                                    if (x.def == prev.PartDef && notMissing.Contains(x) && IsPartChildOf(x, rec.Part))
+                                    {
+                                        targetPart = x;
+                                        break;
+                                    }
+                                }
                             }
 
                             if (targetPart != null)
@@ -942,7 +954,7 @@ namespace ShapeshifterFramework.Comps
             Scribe_Defs.Look(ref originalBodyType, "originalBodyType");
             Scribe_Defs.Look(ref originalHeadType, "originalHeadType");
 
-            // readonly 리스트 ref 불가 → 임시 변수 경유
+            // 1. LoadingVars 단계에서는 일단 리스트에 추가
             List<AbilityDef> __tmpAbilities = null;
             if (Scribe.mode == LoadSaveMode.Saving) __tmpAbilities = tempAddedAbilities;
             Scribe_Collections.Look(ref __tmpAbilities, "tempAddedAbilities", LookMode.Def);
@@ -961,25 +973,15 @@ namespace ShapeshifterFramework.Comps
                 if (__tmpHediffDefs != null) tempAddedHediffsDefCache.AddRange(__tmpHediffDefs);
             }
 
-            // 부여한 Hediff 인스턴스 레퍼런스 저장/로드
             List<Hediff> __tmpHediffs = null;
             if (Scribe.mode == LoadSaveMode.Saving) __tmpHediffs = tempAddedHediffs;
-            // LookMode.Reference를 사용하여 폰이 원래 가진 다른 Hediff와 헷갈리지 않게 고유 번호표를 붙여 저장
             Scribe_Collections.Look(ref __tmpHediffs, "tempAddedHediffs", LookMode.Reference);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 tempAddedHediffs.Clear();
-                if (__tmpHediffs != null)
-                {
-                    // 세이브를 불러오는 동안 외부 요인으로 삭제되어 null이 된 Hediff는 걸러내고 담기
-                    for (int i = 0; i < __tmpHediffs.Count; i++)
-                    {
-                        if (__tmpHediffs[i] != null) tempAddedHediffs.Add(__tmpHediffs[i]);
-                    }
-                }
+                if (__tmpHediffs != null) tempAddedHediffs.AddRange(__tmpHediffs);
             }
 
-            // 변신 전 장비 스냅샷(레퍼런스 저장)
             List<Apparel> __tmpPrevAp = null;
             if (Scribe.mode == LoadSaveMode.Saving) __tmpPrevAp = prevApparels;
             Scribe_Collections.Look(ref __tmpPrevAp, "prevApparels", LookMode.Reference);
@@ -998,7 +1000,6 @@ namespace ShapeshifterFramework.Comps
                 if (__tmpPrevWp != null) prevWeapons.AddRange(__tmpPrevWp);
             }
 
-            // 파츠 복원 기록 저장/로드
             List<ShapeshiftPartRestoreRecord> __tmpRestore = null;
             if (Scribe.mode == LoadSaveMode.Saving) __tmpRestore = tempPartRestoreRecords;
             Scribe_Collections.Look(ref __tmpRestore, "tempPartRestoreRecords", LookMode.Deep);
@@ -1008,7 +1009,6 @@ namespace ShapeshifterFramework.Comps
                 if (__tmpRestore != null) tempPartRestoreRecords.AddRange(__tmpRestore);
             }
 
-            // verbAutoToggle 저장/로드
             if (Scribe.mode == LoadSaveMode.Saving)
             {
                 List<string> __keys = new List<string>(verbAutoToggle.Count);
@@ -1028,11 +1028,20 @@ namespace ShapeshifterFramework.Comps
                     for (int i = 0; i < __keys.Count; i++) verbAutoToggle[__keys[i]] = __vals[i];
                 }
             }
-            // BackCompatibility: 키가 없으면 기본값(On)으로 동작
-            Pawn pawn = parent as Pawn;
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && pawn != null)
+
+            // 2. PostLoadInit 단계: 게임이 모든 참조(Reference) 연결 완료 타이밍
+            // 여기서 유실된(null) 데이터들을 최종적으로 청소
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                if (pawn.Dead && isTransformed) RemoveForm();
+                tempAddedHediffs.RemoveAll(x => x == null);
+                prevApparels.RemoveAll(x => x == null);
+                prevWeapons.RemoveAll(x => x == null);
+
+                Pawn pawn = parent as Pawn;
+                if (pawn != null && pawn.Dead && isTransformed)
+                {
+                    RemoveForm();
+                }
             }
         }
 

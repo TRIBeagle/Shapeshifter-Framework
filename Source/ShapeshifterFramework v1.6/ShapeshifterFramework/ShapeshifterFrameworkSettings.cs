@@ -15,9 +15,9 @@ namespace ShapeshifterFramework
         public bool autoReequipFromGround = true;
 
         public bool forbidDroppedItemsOnTransform = true;
-
-        // ── NEW: verb 자동공격 토글 버튼 노출
         public bool showVerbAutoToggle = true;
+
+        public bool enableDebugLog = false;
 
         public override void ExposeData()
         {
@@ -30,60 +30,57 @@ namespace ShapeshifterFramework
             Scribe_Values.Look(ref autoReequipFromGround, "autoReequipFromGround", true);
 
             Scribe_Values.Look(ref forbidDroppedItemsOnTransform, "forbidDroppedItemsOnTransform", true);
-
-            // NEW
             Scribe_Values.Look(ref showVerbAutoToggle, "showVerbAutoToggle", true);
+
+            Scribe_Values.Look(ref enableDebugLog, "enableDebugLog", false);
 
             maxInlineGizmoCount = Mathf.Clamp(maxInlineGizmoCount, 1, 24);
         }
 
         public void DoSettingsWindowContents(Rect inRect)
         {
-            var list = new Listing_Standard();
+            Listing_Standard list = new Listing_Standard();
             list.Begin(inRect);
 
-            list.Label("MaxInlineGizmoCountSetting_title".Translate() + $" : {maxInlineGizmoCount}");
-            list.Label("MaxInlineGizmoCountSetting_Desc".Translate());
-            float giz = maxInlineGizmoCount;
-            giz = list.Slider(giz, 1f, 24f);
-            maxInlineGizmoCount = Mathf.Clamp(Mathf.RoundToInt(giz), 1, 24);
-            list.Gap(8f);
+            string buf = maxInlineGizmoCount.ToString();
+            list.TextFieldNumericLabeled("MaxInlineGizmoCount_title".Translate(), ref maxInlineGizmoCount, ref buf, 1f, 24f);
+            list.Gap(10f);
 
-            bool enPortrait = enablePortraitScale;
-            list.CheckboxLabeled("EnablePortraitScaleSetting_title".Translate(),
-                ref enPortrait, "EnablePortraitScaleSetting_desc".Translate());
-            enablePortraitScale = enPortrait;
-            list.Gap(4f);
+            bool tmpWeapons = scaleHeldWeapons;
+            list.CheckboxLabeled("ScaleHeldWeapons_title".Translate(), ref tmpWeapons, "ScaleHeldWeapons_desc".Translate());
+            scaleHeldWeapons = tmpWeapons;
 
-            bool tmpScaleHeld = scaleHeldWeapons;
-            list.CheckboxLabeled("ScaleHeldWeaponsSetting_title".Translate(),
-                ref tmpScaleHeld, "ScaleHeldWeaponsSetting_desc".Translate());
-            scaleHeldWeapons = tmpScaleHeld;
+            bool tmpPortrait = enablePortraitScale;
+            list.CheckboxLabeled("EnablePortraitScale_title".Translate(), ref tmpPortrait, "EnablePortraitScale_desc".Translate());
+            enablePortraitScale = tmpPortrait;
+
             list.Gap(10f);
 
             bool tmpInv = autoReequipFromInventory;
-            list.CheckboxLabeled("AutoReequipFromInventory_title".Translate(),
-                ref tmpInv, "AutoReequipFromInventory_desc".Translate());
+            list.CheckboxLabeled("AutoReequipFromInventory_title".Translate(), ref tmpInv, "AutoReequipFromInventory_desc".Translate());
             autoReequipFromInventory = tmpInv;
 
             bool tmpGround = autoReequipFromGround;
-            list.CheckboxLabeled("AutoReequipFromGround_title".Translate(),
-                ref tmpGround, "AutoReequipFromGround_desc".Translate());
+            list.CheckboxLabeled("AutoReequipFromGround_title".Translate(), ref tmpGround, "AutoReequipFromGround_desc".Translate());
             autoReequipFromGround = tmpGround;
 
             list.Gap(10f);
 
             bool tmpForbid = forbidDroppedItemsOnTransform;
-            list.CheckboxLabeled("forbidDroppedItemsOnTransform_title".Translate(),
-                ref tmpForbid, "forbidDroppedItemsOnTransform_desc".Translate());
+            list.CheckboxLabeled("forbidDroppedItemsOnTransform_title".Translate(), ref tmpForbid, "forbidDroppedItemsOnTransform_desc".Translate());
             forbidDroppedItemsOnTransform = tmpForbid;
 
             list.Gap(10f);
 
             bool tmpShowToggle = showVerbAutoToggle;
-            list.CheckboxLabeled("ShowVerbAutoToggle_title".Translate(),
-                ref tmpShowToggle, "ShowVerbAutoToggle_desc".Translate());
+            list.CheckboxLabeled("ShowVerbAutoToggle_title".Translate(), ref tmpShowToggle, "ShowVerbAutoToggle_desc".Translate());
             showVerbAutoToggle = tmpShowToggle;
+
+            list.Gap(10f);
+
+            bool tmpDebug = enableDebugLog;
+            list.CheckboxLabeled("EnableDebugLog_title".Translate(), ref tmpDebug, "EnableDebugLog_desc".Translate());
+            enableDebugLog = tmpDebug;
 
             list.Gap(12f);
 
@@ -95,7 +92,8 @@ namespace ShapeshifterFramework
                 autoReequipFromInventory = true;
                 autoReequipFromGround = true;
                 forbidDroppedItemsOnTransform = true;
-                showVerbAutoToggle = true; // NEW
+                showVerbAutoToggle = true;
+                enableDebugLog = false;
             }
 
             list.End();

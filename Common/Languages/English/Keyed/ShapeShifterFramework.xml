@@ -42,6 +42,8 @@
   <forbidDroppedItemsOnTransform_desc>Temporarily mark items dropped during transformation as forbidden.</forbidDroppedItemsOnTransform_desc>
   <ShowVerbAutoToggle_title>Show auto-attack toggle</ShowVerbAutoToggle_title>
   <ShowVerbAutoToggle_desc>Display an auto-attack toggle on attack commands.</ShowVerbAutoToggle_desc>
+  <EnableDebugLog_title>Enable Developer Debug Logs</EnableDebugLog_title>
+  <EnableDebugLog_desc>Prints detailed internal framework operations (like hediff application) to the RimWorld debug log. Only enable this for mod development or bug reporting.</EnableDebugLog_desc>
   <resetAllSetting_title>Reset to defaults</resetAllSetting_title>
 
   <!-- Fallback -->

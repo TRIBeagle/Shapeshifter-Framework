@@ -6,7 +6,8 @@ namespace ShapeshifterFramework.Utilities
 {
     public static class ShapeshiftApplyHediffUtility
     {
-        public static bool DebugLog = true; // 디버그 토글
+        // 모드 설정 창의 토글과 연동
+        public static bool DebugLog => ShapeshifterFrameworkMod.Settings != null && ShapeshifterFrameworkMod.Settings.enableDebugLog;
 
         public static void ApplyHediffEntries(
             Pawn pawn,
@@ -71,7 +72,6 @@ namespace ShapeshifterFramework.Utilities
 
                 if (isAddedPart)
                 {
-                    // 레코드를 미리 리스트에 넣지 않고, 일단 변수만 생성
                     var record = new ShapeshiftPartRestoreRecord
                     {
                         Part = part,
@@ -105,12 +105,10 @@ namespace ShapeshifterFramework.Utilities
                             break;
                     }
 
-                    // 모든 정책 검사를 통과하고 "실제로 변신이 확정"된 순간에만 복원 레코드를 추가
                     if (outPartRestoreRecords != null) outPartRestoreRecords.Add(record);
                 }
                 else
                 {
-                    // 비대체형은 결손 파츠에 부착 불가
                     if (partMissing)
                     {
                         if (DebugLog) Log.Message($"[SSF] Skip non-added on missing part: {opt.hediff.defName} @ {part.Label}");
@@ -120,7 +118,6 @@ namespace ShapeshifterFramework.Utilities
             }
             else
             {
-                // 전신인데 AddedPart면 불가
                 if (isAddedPart)
                 {
                     if (DebugLog) Log.Message($"[SSF] Skip addedPart on FullBody: {opt.hediff.defName}");
@@ -128,7 +125,6 @@ namespace ShapeshifterFramework.Utilities
                 }
             }
 
-            // 중복 검사
             Hediff existing = FindExisting(pawn, opt.hediff, part);
             if (existing != null)
             {
@@ -140,7 +136,6 @@ namespace ShapeshifterFramework.Utilities
                 return false;
             }
 
-            // 추가
             Hediff created = pawn.health.AddHediff(opt.hediff, part, null);
             if (created != null)
             {
@@ -155,7 +150,6 @@ namespace ShapeshifterFramework.Utilities
             return false;
         }
 
-        // 변신 전 해당 파츠 및 모든 하위 파츠에 있던 AddedPart 목록 수집(복원용)
         static List<ShapeshiftPartRestoreRecord.PreExistingAddedEntry> CollectExistingAddedParts(Pawn pawn, BodyPartRecord rootPart)
         {
             var hediffs = pawn.health.hediffSet.hediffs;
@@ -166,7 +160,6 @@ namespace ShapeshifterFramework.Utilities
                 Hediff h = hediffs[i];
                 if (h?.def?.addedPartProps == null || h.Part == null) continue;
 
-                // 해당 Hediff가 붙은 부위가 rootPart(예: 팔)이거나 그 하위 부위인지 확인
                 BodyPartRecord current = h.Part;
                 bool isTargetOrChild = false;
                 while (current != null)
@@ -189,7 +182,6 @@ namespace ShapeshifterFramework.Utilities
             return results;
         }
 
-        // 기존 AddedPart 제거(교체 설치 시)
         static void RemoveExistingAddedParts(Pawn pawn, BodyPartRecord part, List<ShapeshiftPartRestoreRecord.PreExistingAddedEntry> cache)
         {
             if (cache == null || cache.Count == 0) return;
@@ -211,8 +203,8 @@ namespace ShapeshifterFramework.Utilities
             {
                 var h = list[i];
                 if (h == null || h.def != def) continue;
-                if (part == null) return h;      // 전신
-                if (h.Part == part) return h;    // 동일 파츠
+                if (part == null) return h;
+                if (h.Part == part) return h;
             }
             return null;
         }
@@ -256,10 +248,9 @@ namespace ShapeshifterFramework.Utilities
                 return (set.Count == 0) ? EmptyParts : new List<BodyPartRecord>(set);
             }
 
-            return null; // 전신
+            return null;
         }
 
-        // 방어적 정리: null-Part hediff 제거
         static void CleanupNullPartHediffs(Pawn pawn)
         {
             var list = pawn.health?.hediffSet?.hediffs;
@@ -281,7 +272,6 @@ namespace ShapeshifterFramework.Utilities
             }
         }
 
-        // 타겟 파츠의 하위 파츠(손, 손가락 등)에 결손이나 인공장기가 있는지 각각 분리해서 딥스캔
         static void CheckChildIssues(Pawn pawn, BodyPartRecord rootPart, out bool hasMissing, out bool hasArtificial)
         {
             hasMissing = false;
@@ -292,14 +282,13 @@ namespace ShapeshifterFramework.Utilities
             for (int i = 0; i < hediffs.Count; i++)
             {
                 var h = hediffs[i];
-                if (h.Part == null || h.Part == rootPart) continue; // 본체는 제외
+                if (h.Part == null || h.Part == rootPart) continue;
 
                 bool isMissing = h is Hediff_MissingPart;
                 bool isArtificial = h.def.addedPartProps != null;
 
                 if (isMissing || isArtificial)
                 {
-                    // 이 Hediff가 붙은 부위가 rootPart(예: 팔)의 하위 부위인지 역추적
                     BodyPartRecord current = h.Part.parent;
                     while (current != null)
                     {
@@ -315,7 +304,6 @@ namespace ShapeshifterFramework.Utilities
             }
         }
 
-        // 타겟 파츠의 상위 파츠에 인공장기(기계팔 등)가 있는지 스캔하되, '몸통(Torso)' 같은 최상위 루트 노드는 제외
         static bool HasArtificialParentPart(Pawn pawn, BodyPartRecord part)
         {
             if (pawn?.health?.hediffSet == null || part == null) return false;
@@ -323,18 +311,16 @@ namespace ShapeshifterFramework.Utilities
             var hediffs = pawn.health.hediffSet.hediffs;
             BodyPartRecord current = part.parent;
 
-            // 현재 부위의 부모가 없다면(즉, 몸통이라면) 반복문을 즉시 중지
             while (current != null && current.parent != null)
             {
                 for (int i = 0; i < hediffs.Count; i++)
                 {
-                    // 상위 부위(어깨 등)에 기계 부품이 발견되면 true 반환
                     if (hediffs[i].Part == current && hediffs[i].def.addedPartProps != null)
                     {
                         return true;
                     }
                 }
-                current = current.parent; // 위로 한 칸 이동
+                current = current.parent;
             }
             return false;
         }

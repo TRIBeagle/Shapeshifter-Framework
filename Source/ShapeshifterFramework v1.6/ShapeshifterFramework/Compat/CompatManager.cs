@@ -146,12 +146,14 @@ namespace ShapeshifterFramework.Compat
             // HAR: AddComp 실행 보장(요약 메트릭 준비)
             if (HAR.IsActive)
             {
-                try { Compat_HAR_AddComp.EnsureInitialized(); } catch { }
+                try { Compat_HAR_AddComp.EnsureInitialized(); }
+                catch (System.Exception e) { Log.Warning($"{HAR.LogPrefix} Compatibility failed to load: {e.Message}"); }
             }
             // FA: 시작 시 폼 유효성 검증(잘못된 TypeDef 이름을 시작 로그에 누적)
             if (FA.IsActive)
             {
-                try { FacialAnimationCompat.ValidateAllForms(); } catch { }
+                try { FacialAnimationCompat.ValidateAllForms(); }
+                catch (System.Exception e) { Log.Warning($"{FA.LogPrefix} Compatibility failed to load: {e.Message}"); }
             }
         }
 

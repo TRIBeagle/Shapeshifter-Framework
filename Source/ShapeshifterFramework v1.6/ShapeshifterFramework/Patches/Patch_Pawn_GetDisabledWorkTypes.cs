@@ -1,8 +1,6 @@
 ﻿// .NET 4.8 / C# 7.3
 // 변신 중, 폼에 지정된 작업을 "추가로" 불가 처리
 //  - 대상: Pawn의 컴파일러 생성 GetDisabledWorkTypes(List<WorkTypeDef>) 메서드
-//  - 방식: 바닐라가 채워주는 list에 추가로 WorkTypeDef들을 넣는다(원래 비활성은 유지).
-// 성능: TargetMethod는 로딩 1회 탐색. LINQ 없이 루프로 처리.
 
 using HarmonyLib;
 using ShapeshifterFramework.Comps;
@@ -13,17 +11,31 @@ using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
+    // 게임 로드/시작 시 캐시를 비워주는 초기화 클래스 추가
+    [StaticConstructorOnStartup]
+    public static class Patch_Pawn_GetDisabledWorkTypes_CacheClearer
+    {
+        static Patch_Pawn_GetDisabledWorkTypes_CacheClearer()
+        {
+            Patch_Pawn_GetDisabledWorkTypes.ClearCache();
+        }
+    }
+
     [HarmonyPatch]
     public static class Patch_Pawn_GetDisabledWorkTypes
     {
-        // [성능] WorkTags → WorkTypeDef 매칭 캐시(초기화 후 재사용)
         private static readonly Dictionary<WorkTags, List<WorkTypeDef>> _workTypesByTagsCache
             = new Dictionary<WorkTags, List<WorkTypeDef>>(16);
+
+        // 캐시 청소용 메서드
+        public static void ClearCache()
+        {
+            _workTypesByTagsCache.Clear();
+        }
 
         [HarmonyTargetMethod]
         public static MethodBase TargetMethod()
         {
-            // Pawn 내부의 컴파일러 생성 메서드 중 이름에 "GetDisabledWorkTypes"가 포함된 것을 선택.
             var methods = AccessTools.GetDeclaredMethods(typeof(Pawn));
             for (int i = 0; i < methods.Count; i++)
             {
@@ -32,6 +44,7 @@ namespace ShapeshifterFramework.Patches
                 if (!m.HasAttribute<CompilerGeneratedAttribute>()) continue;
                 if (m.Name != null && m.Name.Contains("GetDisabledWorkTypes")) return m;
             }
+            Log.Error("[ShapeshifterFramework] Critical: 'GetDisabledWorkTypes' hidden method not found! The patch will be ignored. RimWorld might have been updated.");
             return null;
         }
 
@@ -43,7 +56,6 @@ namespace ShapeshifterFramework.Patches
             var form = (comp != null && comp.isTransformed) ? comp.currentForm as ShapeshiftFormDef : null;
             if (form == null) return;
 
-            // 1) 폼 지정 WorkTypeDef들을 추가
             var extra = form.disabledWorkTypesOnTransform;
             if (extra != null)
             {
@@ -54,7 +66,6 @@ namespace ShapeshifterFramework.Patches
                 }
             }
 
-            // 2) 폼 지정 WorkTags로 태그 매칭되는 WorkType들을 추가
             var tags = form.disabledWorkTagsOnTransform;
             if (tags != WorkTags.None)
             {
