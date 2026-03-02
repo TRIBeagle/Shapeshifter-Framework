@@ -28,7 +28,7 @@ namespace ShapeshifterFramework.Patches
             Pawn pawn = diffSet.pawn;
             if (pawn == null) return;
 
-            var comp = pawn.GetComp<CompShapeshifter>();
+            var comp = pawn.TryGetComp<CompShapeshifter>();
             if (comp == null || !comp.isTransformed) return;
 
             var form = comp.currentForm;

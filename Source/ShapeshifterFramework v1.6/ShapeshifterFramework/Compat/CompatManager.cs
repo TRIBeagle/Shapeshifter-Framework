@@ -172,7 +172,12 @@ namespace ShapeshifterFramework.Compat
             if (FA.IsActive) { anyActive = true; FA.ReportOnce(); allOk &= (FA.FailCount == 0); }
 
             if (anyActive && allOk)
-                Log.Message("[SSF] all compatibility patches active.");
+            {
+                var mods = new System.Collections.Generic.List<string>();
+                if (HAR.IsActive) mods.Add("HAR");
+                if (FA.IsActive) mods.Add("FA");
+                Log.Message($"[SSF] all compatibility patches active ({string.Join(", ", mods)}).");
+            }
         }
     }
 }

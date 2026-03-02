@@ -16,7 +16,7 @@ namespace ShapeshifterFramework.Patches
         {
             if (__instance == null) return;
 
-            var comp = __instance.GetComp<CompShapeshifter>();
+            var comp = __instance.TryGetComp<CompShapeshifter>();
             comp?.Notify_Killed(dinfo, exactCulprit);
         }
     }

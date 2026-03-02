@@ -23,7 +23,7 @@ namespace ShapeshifterFramework.Utilities
             if (pawn == null) return null;
 
             // 변신 중이 아니면 설명 없음
-            var comp = pawn.GetComp<CompShapeshifter>();
+            var comp = pawn.TryGetComp<CompShapeshifter>();
             if (comp == null || !comp.isTransformed) return null;
 
             var form = comp.currentForm;

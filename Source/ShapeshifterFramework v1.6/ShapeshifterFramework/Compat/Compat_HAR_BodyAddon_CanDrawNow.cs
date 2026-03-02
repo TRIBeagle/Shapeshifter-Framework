@@ -85,19 +85,18 @@ namespace ShapeshifterFramework.Compat
         /// <param name="__0">PawnRenderNode (unused)</param>
         /// <param name="__1">PawnDrawParms (object로 수신, 리플렉션으로 pawn 취득)</param>
         /// <returns>원본 실행 여부</returns>
-        static bool Prefix(ref bool __result, object __0, object __1)
+        static bool Prefix(ref bool __result, object __0, PawnDrawParms __1)
         {
             try
             {
-                // [안전] __1: PawnDrawParms.pawn 을 리플렉션 캐시로 획득
-                Pawn pawn = ShapeshiftReflectionCache.GetInstanceField<Pawn>(__1, "pawn");
+                Pawn pawn = __1.pawn;
                 if (pawn == null) return true;
 
                 var comp = ShapeshiftUtility.GetShapeShiftComp(pawn);
                 if (comp?.currentForm != null && !comp.currentForm.showHarAddons)
                 {
                     __result = false;
-                    return false; // 원본 스킵
+                    return false;
                 }
             }
             catch (Exception e)
@@ -105,7 +104,7 @@ namespace ShapeshifterFramework.Compat
                 if (!CompatManager.HAR.HasFailed("CanDrawNow:PrefixException"))
                     CompatManager.HAR.Failed("CanDrawNow:PrefixException", e.Message);
             }
-            return true; // 원본 실행
+            return true;
         }
     }
 }

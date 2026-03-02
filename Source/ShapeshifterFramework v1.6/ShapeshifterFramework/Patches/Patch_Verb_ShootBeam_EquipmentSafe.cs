@@ -52,13 +52,24 @@ namespace ShapeshifterFramework.Patches
                 // 원본 코드를 통째로 복제하지 않고, 해당 상황에서만 실행을 안전하게 취소(또는 커스텀 데미지 적용 후 취소)합니다.
                 if (__instance != null && __instance.EquipmentSource == null)
                 {
-                    // EquipmentSource가 없는 변신 폼의 빔 공격인 경우, 바닐라 로그(BattleLog) 생성을 생략하고
-                    // 직접 데미지만 입힌 뒤 원본 실행을 막습니다. (바닐라 전체 복제보다 훨씬 안전함)
                     if (thing != null && __instance.verbProps != null && __instance.verbProps.beamDamageDef != null)
                     {
+                        // pathCells 카운트 획득 시도
+                        int cellCount = 1;
+                        if (PathCellsRef != null)
+                        {
+                            var cells = PathCellsRef(__instance);
+                            if (cells != null && cells.Count > 0) cellCount = cells.Count;
+                        }
+                        else if (PathCellsFI != null)
+                        {
+                            var cells = PathCellsFI.GetValue(__instance) as HashSet<IntVec3>;
+                            if (cells != null && cells.Count > 0) cellCount = cells.Count;
+                        }
+
                         float damage = __instance.verbProps.beamTotalDamage > 0
-                                        ? __instance.verbProps.beamTotalDamage * damageFactor
-                                        : __instance.verbProps.beamDamageDef.defaultDamage * damageFactor;
+                            ? (__instance.verbProps.beamTotalDamage / cellCount) * damageFactor
+                            : __instance.verbProps.beamDamageDef.defaultDamage * damageFactor;
 
                         DamageInfo dinfo = new DamageInfo(__instance.verbProps.beamDamageDef, damage,
                                                           __instance.verbProps.beamDamageDef.defaultArmorPenetration,

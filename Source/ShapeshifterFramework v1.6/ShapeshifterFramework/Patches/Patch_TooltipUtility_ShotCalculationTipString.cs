@@ -6,6 +6,8 @@
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
+using System;
 using System.Text;
 using Verse;
 
@@ -78,9 +80,9 @@ namespace ShapeshifterFramework.Patches
 
                 __result = sb.ToString();
             }
-            catch
+            catch (Exception e)
             {
-                // 안전 폴백
+                ShapeshiftDiagnostics.Info($"ShotCalcTip exception: {e.Message}");
             }
         }
     }

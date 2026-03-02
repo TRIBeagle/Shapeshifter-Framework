@@ -59,28 +59,21 @@ namespace ShapeshifterFramework.Utilities
             return true;
         }
 
+        private static int _cacheFrame = -1;
+        private static Pawn _cachePawn;
+        private static Factors _cacheFactors;
+
         internal static Factors Effective(Pawn pawn)
         {
-            Factors f;
-            if (TryGetOverrides(pawn, out f)) return f;
+            int frame = Time.frameCount;
+            if (frame == _cacheFrame && pawn == _cachePawn)
+                return _cacheFactors;
 
-            Factors r;
+            _cacheFrame = frame;
+            _cachePawn = pawn;
 
-            if (pawn.ageTracker == null)
-            {
-                r.bodyWidth = 1.5f;
-                r.headSizeFactor = 1f;
-                r.attachPointScaleFactor = 1f;
-                r.bodySizeFactor = 1f;
-                return r;
-            }
-
-            var ls = pawn.ageTracker.CurLifeStage;
-            r.bodyWidth = ls.bodyWidth.HasValue ? ls.bodyWidth.Value : 1.5f;
-            r.headSizeFactor = ls.headSizeFactor.HasValue ? ls.headSizeFactor.Value : 1f;
-            r.attachPointScaleFactor = ls.attachPointScaleFactor;
-            r.bodySizeFactor = ls.bodySizeFactor;
-            return r;
+            TryGetOverrides(pawn, out _cacheFactors);
+            return _cacheFactors;
         }
     }
 }

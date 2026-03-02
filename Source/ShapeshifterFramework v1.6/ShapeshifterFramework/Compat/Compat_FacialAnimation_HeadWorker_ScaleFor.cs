@@ -157,9 +157,10 @@ namespace ShapeshifterFramework.Compat
                         return true;
                 }
             }
-            catch
+            catch (Exception e)
             {
-                // [안전] 예외 무시(존재하지 않으면 false)
+                if (!CompatManager.FA.HasFailed("HasFAComp:Exception"))
+                    CompatManager.FA.Failed("HasFAComp:Exception", e.Message);
             }
             return false;
         }

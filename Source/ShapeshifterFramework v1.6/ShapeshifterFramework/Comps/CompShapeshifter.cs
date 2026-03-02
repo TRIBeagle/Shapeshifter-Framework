@@ -18,6 +18,8 @@ using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Xml;
 using Verse;
 using Verse.AI;
 
@@ -71,8 +73,9 @@ namespace ShapeshifterFramework.Comps
 
         // PostLoadInit에서 Reference 연결 완료 후 AddRange하기 위한 임시 보관 필드
         private List<Hediff> __tmpHediffsLoad = null;
-        private List<Apparel> __tmpPrevApLoad = null;
-        private List<ThingWithComps> __tmpPrevWpLoad = null;
+        private List<string> __tmpPrevApIds = null;
+        private List<string> __tmpPrevWpIds = null;
+        private bool needsGearResolve = false;
 
         // 추가한 헤디프(인스턴스) 추적은 기존 tempAddedHediffs 사용
         private readonly List<ShapeshifterFramework.Utilities.ShapeshiftPartRestoreRecord> tempPartRestoreRecords
@@ -253,7 +256,34 @@ namespace ShapeshifterFramework.Comps
         public override void CompTick()
         {
             base.CompTick();
-            var pawn = parent as Pawn;
+            Pawn pawn = parent as Pawn;
+
+            if (needsGearResolve)
+            {
+                needsGearResolve = false;
+                if (pawn?.Map != null)
+                {
+                    if (__tmpPrevApIds != null)
+                    {
+                        foreach (string id in __tmpPrevApIds)
+                        {
+                            Thing t = pawn.Map.listerThings.AllThings.FirstOrDefault(x => x.ThingID == id);
+                            if (t is Apparel ap) prevApparels.Add(ap);
+                        }
+                        __tmpPrevApIds = null;
+                    }
+                    if (__tmpPrevWpIds != null)
+                    {
+                        foreach (string id in __tmpPrevWpIds)
+                        {
+                            Thing t = pawn.Map.listerThings.AllThings.FirstOrDefault(x => x.ThingID == id);
+                            if (t is ThingWithComps twc) prevWeapons.Add(twc);
+                        }
+                        __tmpPrevWpIds = null;
+                    }
+                }
+            }
+
             if (isTransformed && currentForm != null)
             {
                 if (pawn != null && pawn.Dead)
@@ -266,8 +296,6 @@ namespace ShapeshifterFramework.Comps
                     transformTimer--;
                     if (transformTimer <= 0) RemoveForm();
                 }
-
-                // 전용 VerbTracker 틱 업데이트
                 try { ShapeshiftVerbTracker?.VerbsTick(); }
                 catch (System.Exception ex) { Log.Error($"[SSF] VerbsTick error: {ex}"); }
             }
@@ -803,6 +831,7 @@ namespace ShapeshifterFramework.Comps
         /// <summary>해제 후 이전 장비 재착용(인벤/바닥, 설정값에 따름).</summary>
         void TryReequipPreviousGear(Pawn pawn)
         {
+            ShapeshiftDiagnostics.Info($"TryReequip: weapons={prevWeapons.Count}, apparels={prevApparels.Count}");
             if (pawn == null || pawn.Dead) return;
 
             ShapeshifterFrameworkSettings st = ShapeshifterFrameworkMod.Settings;
@@ -996,7 +1025,8 @@ namespace ShapeshifterFramework.Comps
             Scribe_Defs.Look(ref originalBodyType, "originalBodyType");
             Scribe_Defs.Look(ref originalHeadType, "originalHeadType");
 
-            // 1. LoadingVars 단계에서는 일단 리스트에 추가
+            // === Def 리스트 (LoadingVars에서 즉시 사용 가능) ===
+
             List<AbilityDef> __tmpAbilities = null;
             if (Scribe.mode == LoadSaveMode.Saving) __tmpAbilities = tempAddedAbilities;
             Scribe_Collections.Look(ref __tmpAbilities, "tempAddedAbilities", LookMode.Def);
@@ -1015,32 +1045,48 @@ namespace ShapeshifterFramework.Comps
                 if (__tmpHediffDefs != null) tempAddedHediffsDefCache.AddRange(__tmpHediffDefs);
             }
 
+            // === Reference 리스트 - hediff (폰 내부 객체라 Reference 정상 작동) ===
+
             List<Hediff> __tmpHediffs = null;
             if (Scribe.mode == LoadSaveMode.Saving) __tmpHediffs = tempAddedHediffs;
             Scribe_Collections.Look(ref __tmpHediffs, "tempAddedHediffs", LookMode.Reference);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 tempAddedHediffs.Clear();
-                __tmpHediffsLoad = __tmpHediffs; // PostLoadInit에서 AddRange
+                __tmpHediffsLoad = __tmpHediffs;
             }
 
-            List<Apparel> __tmpPrevAp = null;
-            if (Scribe.mode == LoadSaveMode.Saving) __tmpPrevAp = prevApparels;
-            Scribe_Collections.Look(ref __tmpPrevAp, "prevApparels", LookMode.Reference);
+            // === prevApparels - ThingID 문자열로 저장, CompTick에서 맵 검색으로 복원 ===
+
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                List<string> apIds = prevApparels.Select(a => a.ThingID).ToList();
+                Scribe_Collections.Look(ref apIds, "prevApparelIds", LookMode.Value);
+            }
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
+                List<string> apIds = null;
+                Scribe_Collections.Look(ref apIds, "prevApparelIds", LookMode.Value);
                 prevApparels.Clear();
-                __tmpPrevApLoad = __tmpPrevAp; // PostLoadInit에서 AddRange
+                __tmpPrevApIds = apIds;
             }
 
-            List<ThingWithComps> __tmpPrevWp = null;
-            if (Scribe.mode == LoadSaveMode.Saving) __tmpPrevWp = prevWeapons;
-            Scribe_Collections.Look(ref __tmpPrevWp, "prevWeapons", LookMode.Reference);
+            // === prevWeapons - 동일 방식 ===
+
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                List<string> wpIds = prevWeapons.Select(w => w.ThingID).ToList();
+                Scribe_Collections.Look(ref wpIds, "prevWeaponIds", LookMode.Value);
+            }
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
+                List<string> wpIds = null;
+                Scribe_Collections.Look(ref wpIds, "prevWeaponIds", LookMode.Value);
                 prevWeapons.Clear();
-                __tmpPrevWpLoad = __tmpPrevWp; // PostLoadInit에서 AddRange
+                __tmpPrevWpIds = wpIds;
             }
+
+            // === Deep 리스트 (LoadingVars에서 즉시 사용 가능) ===
 
             List<ShapeshiftPartRestoreRecord> __tmpRestore = null;
             if (Scribe.mode == LoadSaveMode.Saving) __tmpRestore = tempPartRestoreRecords;
@@ -1050,6 +1096,8 @@ namespace ShapeshifterFramework.Comps
                 tempPartRestoreRecords.Clear();
                 if (__tmpRestore != null) tempPartRestoreRecords.AddRange(__tmpRestore);
             }
+
+            // === verbAutoToggle 딕셔너리 ===
 
             if (Scribe.mode == LoadSaveMode.Saving)
             {
@@ -1071,11 +1119,10 @@ namespace ShapeshifterFramework.Comps
                 }
             }
 
-            // 2. PostLoadInit 단계: 게임이 모든 참조(Reference) 연결 완료 타이밍
-            // 여기서 유실된(null) 데이터들을 최종적으로 청소
+            // === PostLoadInit ===
+
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                // Reference 연결이 완료된 이후 AddRange (null 항목 자동 제외)
                 if (__tmpHediffsLoad != null)
                 {
                     tempAddedHediffs.AddRange(__tmpHediffsLoad.Where(x => x != null));
@@ -1083,19 +1130,7 @@ namespace ShapeshifterFramework.Comps
                 }
                 else tempAddedHediffs.RemoveAll(x => x == null);
 
-                if (__tmpPrevApLoad != null)
-                {
-                    prevApparels.AddRange(__tmpPrevApLoad.Where(x => x != null));
-                    __tmpPrevApLoad = null;
-                }
-                else prevApparels.RemoveAll(x => x == null);
-
-                if (__tmpPrevWpLoad != null)
-                {
-                    prevWeapons.AddRange(__tmpPrevWpLoad.Where(x => x != null));
-                    __tmpPrevWpLoad = null;
-                }
-                else prevWeapons.RemoveAll(x => x == null);
+                needsGearResolve = true;
 
                 Pawn pawn = parent as Pawn;
                 if (pawn != null && pawn.Dead && isTransformed)
@@ -1104,7 +1139,6 @@ namespace ShapeshifterFramework.Comps
                 }
                 else if (isTransformed && currentForm != null && pawn != null)
                 {
-                    // ConditionalWeakTable은 세이브되지 않으므로 로드 후 재등록 필요
                     ApplyRuntimeCaches(pawn, currentForm);
                 }
             }
@@ -1134,17 +1168,11 @@ namespace ShapeshifterFramework.Comps
                 ? ShapeshifterFrameworkMod.Settings.maxInlineGizmoCount
                 : 8;
 
-            // 사용 가능 폼 캐시 가져오기
-            List<ShapeshiftFormDef> available;
-            {
-                var cached = GetAvailableFormsCached(pawn);
-                available = new List<ShapeshiftFormDef>();
-                foreach (var f in cached) if (f != null) available.Add(f);
-            }
+            GetAvailableFormsCached(pawn);
 
             if (!isTransformed)
             {
-                if (available.Count > threshold)
+                if (gizmoFormsCache.Count > threshold)
                 {
                     yield return new Command_Action
                     {
@@ -1152,10 +1180,10 @@ namespace ShapeshifterFramework.Comps
                         defaultDesc = "ShapeshiftMenuChooseDesc".Translate(),
                         action = delegate
                         {
-                            var opts = new List<FloatMenuOption>(available.Count);
-                            for (int i = 0; i < available.Count; i++)
+                            var opts = new List<FloatMenuOption>(gizmoFormsCache.Count);
+                            for (int i = 0; i < gizmoFormsCache.Count; i++)
                             {
-                                var f = available[i]; if (f == null) continue;
+                                var f = gizmoFormsCache[i]; if (f == null) continue;
                                 var cap = f; // capture
                                 opts.Add(new FloatMenuOption(f.LabelCap, delegate { ApplyForm(cap); }));
                             }
@@ -1168,9 +1196,9 @@ namespace ShapeshifterFramework.Comps
                 }
                 else
                 {
-                    for (int i = 0; i < available.Count; i++)
+                    for (int i = 0; i < gizmoFormsCache.Count; i++)
                     {
-                        var form = available[i]; if (form == null) continue;
+                        var form = gizmoFormsCache[i]; if (form == null) continue;
 
                         yield return new Command_Action
                         {
@@ -1197,7 +1225,7 @@ namespace ShapeshifterFramework.Comps
 
                 // 전환
                 string prev = currentForm.defName;
-                if (available.Count > threshold)
+                if (gizmoFormsCache.Count > threshold)
                 {
                     yield return new Command_Action
                     {
@@ -1205,10 +1233,10 @@ namespace ShapeshifterFramework.Comps
                         defaultDesc = "ShapeshiftMenuSwitchDesc".Translate(),
                         action = delegate
                         {
-                            var opts = new List<FloatMenuOption>(available.Count);
-                            for (int i = 0; i < available.Count; i++)
+                            var opts = new List<FloatMenuOption>(gizmoFormsCache.Count);
+                            for (int i = 0; i < gizmoFormsCache.Count; i++)
                             {
-                                var f = available[i]; if (f == null) continue;
+                                var f = gizmoFormsCache[i]; if (f == null) continue;
                                 var cap = f;
                                 opts.Add(new FloatMenuOption(f.LabelCap, delegate { ApplyForm(cap, prev); }));
                             }
@@ -1220,9 +1248,9 @@ namespace ShapeshifterFramework.Comps
                 }
                 else
                 {
-                    for (int i = 0; i < available.Count; i++)
+                    for (int i = 0; i < gizmoFormsCache.Count; i++)
                     {
-                        var form = available[i]; if (form == null) continue;
+                        var form = gizmoFormsCache[i]; if (form == null) continue;
 
                         yield return new Command_Action
                         {
