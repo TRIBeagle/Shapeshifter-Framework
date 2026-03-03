@@ -8,7 +8,6 @@ using RimWorld;
 using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using System;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Verse;
@@ -19,11 +18,8 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPriority(Priority.Last)] // 마지막에 오버레이
     public static class Patch_DrawGeneOverlay
     {
-        // Rect/Gene 파라미터 인덱스 캐시 (TargetMethod에서 탐색 후 저장)
-        private static int _rectArgIndex = -1;
-        private static int _geneArgIndex = -1;
-
         // 대상: DrawGene(Rect, Gene, ...) 오버로드 동적 탐색
+        [HarmonyTargetMethod]
         static MethodBase TargetMethod()
         {
             MethodBase target = null;
@@ -56,13 +52,6 @@ namespace ShapeshifterFramework.Patches
                 throw new MissingMethodException("[SSF] GeneUIUtility.DrawGene not found.");
             }
 
-            // Rect/Gene 파라미터 인덱스 미리 탐색해 캐시
-            var parameters = target.GetParameters();
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                if (_rectArgIndex < 0 && parameters[i].ParameterType == typeof(Rect)) _rectArgIndex = i;
-                if (_geneArgIndex < 0 && parameters[i].ParameterType == typeof(Gene)) _geneArgIndex = i;
-            }
             return target;
         }
 

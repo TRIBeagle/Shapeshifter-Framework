@@ -410,7 +410,6 @@ namespace ShapeshifterFramework.Compat
         /// <summary>null/Destroyed Pawn 키 제거.</summary>
         private void Cleanup()
         {
-            // [수정됨] 매번 new List를 생성하지 않고 _removeBuffer를 재사용
             _removeBuffer.Clear();
             foreach (var kv in map)
             {
@@ -420,9 +419,13 @@ namespace ShapeshifterFramework.Compat
 
             for (int i = 0; i < _removeBuffer.Count; i++)
             {
-                map.Remove(_removeBuffer[i]);
+                var key = _removeBuffer[i];
+                if (key != null)
+                {
+                    map.Remove(key);
+                }
             }
-            _removeBuffer.Clear(); // 사용 후 깔끔하게 비워줌
+            _removeBuffer.Clear();
         }
 
         /// <summary>백업을 가져오거나 새로 만든다.</summary>

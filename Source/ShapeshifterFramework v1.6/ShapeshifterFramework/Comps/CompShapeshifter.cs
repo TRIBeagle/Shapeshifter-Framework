@@ -73,8 +73,8 @@ namespace ShapeshifterFramework.Comps
 
         // PostLoadInit에서 Reference 연결 완료 후 AddRange하기 위한 임시 보관 필드
         private List<Hediff> __tmpHediffsLoad = null;
-        private List<string> __tmpPrevApIds = null;
-        private List<string> __tmpPrevWpIds = null;
+        private HashSet<string> __tmpPrevApIds = null;
+        private HashSet<string> __tmpPrevWpIds = null;
         private bool needsGearResolve = false;
 
         // 추가한 헤디프(인스턴스) 추적은 기존 tempAddedHediffs 사용
@@ -258,26 +258,49 @@ namespace ShapeshifterFramework.Comps
             base.CompTick();
             Pawn pawn = parent as Pawn;
 
-            // [B-3 최적화됨] AllThings 다중 순회를 단일 순회로 변경하여 로딩 직후 틱 스파이크 방지
+            // [A-2 수정됨] 인벤토리 내부 우선 검색 추가 + HashSet 기반 O(1) 단일 순회
             if (needsGearResolve)
             {
                 needsGearResolve = false;
-                if (pawn?.Map != null && (__tmpPrevApIds != null || __tmpPrevWpIds != null))
+                if (pawn != null && (__tmpPrevApIds != null || __tmpPrevWpIds != null))
                 {
-                    var allThings = pawn.Map.listerThings.AllThings;
-                    for (int i = 0; i < allThings.Count; i++)
+                    // 1. 폰의 인벤토리 우선 검색 (GearHandling.Inventory로 들어간 장비 복구용)
+                    if (pawn.inventory?.innerContainer != null)
                     {
-                        var t = allThings[i];
-
-                        // 의복 ID 목록에 있는지 확인
-                        if (__tmpPrevApIds != null && __tmpPrevApIds.Contains(t.ThingID))
+                        for (int i = 0; i < pawn.inventory.innerContainer.Count; i++)
                         {
-                            if (t is Apparel ap) prevApparels.Add(ap);
+                            var t = pawn.inventory.innerContainer[i];
+                            if (__tmpPrevApIds != null && __tmpPrevApIds.Contains(t.ThingID) && t is Apparel ap)
+                            {
+                                prevApparels.Add(ap);
+                                __tmpPrevApIds.Remove(t.ThingID);
+                            }
+                            else if (__tmpPrevWpIds != null && __tmpPrevWpIds.Contains(t.ThingID) && t is ThingWithComps twc)
+                            {
+                                prevWeapons.Add(twc);
+                                __tmpPrevWpIds.Remove(t.ThingID);
+                            }
                         }
-                        // 무기 ID 목록에 있는지 확인
-                        else if (__tmpPrevWpIds != null && __tmpPrevWpIds.Contains(t.ThingID))
+                    }
+
+                    // 2. 맵 바닥 검색 (GearHandling.Drop으로 떨어진 장비 복구용)
+                    if (pawn.Map != null)
+                    {
+                        var allThings = pawn.Map.listerThings.AllThings;
+                        for (int i = 0; i < allThings.Count; i++)
                         {
-                            if (t is ThingWithComps twc) prevWeapons.Add(twc);
+                            var t = allThings[i];
+                            // [수정됨] 인벤토리에서 찾은 ID는 이미 HashSet에서 지워졌으므로 Contains(ap) 체크 불필요
+                            if (__tmpPrevApIds != null && __tmpPrevApIds.Contains(t.ThingID) && t is Apparel ap)
+                            {
+                                prevApparels.Add(ap);
+                                __tmpPrevApIds.Remove(t.ThingID);
+                            }
+                            else if (__tmpPrevWpIds != null && __tmpPrevWpIds.Contains(t.ThingID) && t is ThingWithComps twc)
+                            {
+                                prevWeapons.Add(twc);
+                                __tmpPrevWpIds.Remove(t.ThingID);
+                            }
                         }
                     }
 
@@ -1062,11 +1085,15 @@ namespace ShapeshifterFramework.Comps
                 __tmpHediffsLoad = __tmpHediffs;
             }
 
-            // === prevApparels - ThingID 문자열로 저장, CompTick에서 맵 검색으로 복원 ===
+            // === prevApparels - ThingID 문자열 저장, CompTick에서 인벤토리 및 맵 검색으로 복원 (HashSet 최적화) ===
 
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                List<string> apIds = prevApparels.Select(a => a.ThingID).ToList();
+                List<string> apIds = new List<string>(prevApparels.Count);
+                for (int i = 0; i < prevApparels.Count; i++)
+                {
+                    if (prevApparels[i] != null) apIds.Add(prevApparels[i].ThingID);
+                }
                 Scribe_Collections.Look(ref apIds, "prevApparelIds", LookMode.Value);
             }
             if (Scribe.mode == LoadSaveMode.LoadingVars)
@@ -1074,14 +1101,19 @@ namespace ShapeshifterFramework.Comps
                 List<string> apIds = null;
                 Scribe_Collections.Look(ref apIds, "prevApparelIds", LookMode.Value);
                 prevApparels.Clear();
-                __tmpPrevApIds = apIds;
+                // List를 HashSet으로 변환하여 O(1) 검색 캐싱
+                __tmpPrevApIds = apIds != null ? new HashSet<string>(apIds) : null;
             }
 
-            // === prevWeapons - 동일 방식 ===
+            // === prevWeapons - 위와 동일 방식 (인벤토리 및 맵 검색) ===
 
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                List<string> wpIds = prevWeapons.Select(w => w.ThingID).ToList();
+                List<string> wpIds = new List<string>(prevWeapons.Count);
+                for (int i = 0; i < prevWeapons.Count; i++)
+                {
+                    if (prevWeapons[i] != null) wpIds.Add(prevWeapons[i].ThingID);
+                }
                 Scribe_Collections.Look(ref wpIds, "prevWeaponIds", LookMode.Value);
             }
             if (Scribe.mode == LoadSaveMode.LoadingVars)
@@ -1089,7 +1121,8 @@ namespace ShapeshifterFramework.Comps
                 List<string> wpIds = null;
                 Scribe_Collections.Look(ref wpIds, "prevWeaponIds", LookMode.Value);
                 prevWeapons.Clear();
-                __tmpPrevWpIds = wpIds;
+                // List를 HashSet으로 변환하여 O(1) 검색 캐싱
+                __tmpPrevWpIds = wpIds != null ? new HashSet<string>(wpIds) : null;
             }
 
             // === Deep 리스트 (LoadingVars에서 즉시 사용 가능) ===

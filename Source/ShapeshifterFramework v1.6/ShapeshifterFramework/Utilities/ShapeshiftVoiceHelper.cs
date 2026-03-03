@@ -46,8 +46,20 @@ namespace ShapeshifterFramework.Utilities
         {
             if (pawn == null || def == null) return;
             var info = SoundInfo.InMap(new TargetInfo(pawn.PositionHeld, pawn.MapHeld));
-            info.pitchFactor = pawn.ageTracker.CurLifeStage.voxPitch;
-            info.volumeFactor = pawn.ageTracker.CurLifeStage.voxVolume * volumeFactor;
+
+            // CurLifeStage가 null일 수 있는 엣지 케이스 방어
+            if (pawn.ageTracker != null)
+            {
+                var ls = pawn.ageTracker.CurLifeStage;
+                info.pitchFactor = ls != null ? ls.voxPitch : 1f;
+                info.volumeFactor = (ls != null ? ls.voxVolume : 1f) * volumeFactor;
+            }
+            else
+            {
+                info.pitchFactor = 1f;
+                info.volumeFactor = volumeFactor;
+            }
+
             def.PlayOneShot(info);
         }
     }
