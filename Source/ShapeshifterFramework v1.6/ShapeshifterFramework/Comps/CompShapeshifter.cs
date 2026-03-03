@@ -64,6 +64,9 @@ namespace ShapeshifterFramework.Comps
         private int gizmoCacheTick = -9999;
         private List<ShapeshiftFormDef> gizmoFormsCache = new List<ShapeshiftFormDef>();
 
+        // 틱(Tick) 에러 스팸 방지용 플래그
+        private bool verbTickErrorLogged = false;
+
         // verb 자동공격 토글 상태 (키: formDefName#index)
         private readonly Dictionary<string, bool> verbAutoToggle = new Dictionary<string, bool>();
 
@@ -321,8 +324,18 @@ namespace ShapeshifterFramework.Comps
                     transformTimer--;
                     if (transformTimer <= 0) RemoveForm();
                 }
-                try { ShapeshiftVerbTracker?.VerbsTick(); }
-                catch (System.Exception ex) { Log.Error($"[SSF] VerbsTick error: {ex}"); }
+                try
+                {
+                    ShapeshiftVerbTracker?.VerbsTick();
+                }
+                catch (System.Exception ex)
+                {
+                    if (!verbTickErrorLogged)
+                    {
+                        Log.Error($"[SSF] VerbsTick error on pawn {pawn?.Name} (Logging once to prevent spam): {ex}");
+                        verbTickErrorLogged = true;
+                    }
+                }
             }
         }
 
@@ -1034,6 +1047,17 @@ namespace ShapeshifterFramework.Comps
                 }
             }
             catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (UI Selection) error: {ex}"); }
+
+            // 4) 에러 로그 스팸 방지 플래그 초기화
+            try
+            {
+                var comp = pawn.TryGetComp<CompShapeshifter>();
+                if (comp != null)
+                {
+                    comp.verbTickErrorLogged = false;
+                }
+            }
+            catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Error Reset) error: {ex}"); }
         }
 
         #endregion
