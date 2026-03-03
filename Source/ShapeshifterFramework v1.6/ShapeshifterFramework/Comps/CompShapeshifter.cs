@@ -17,7 +17,6 @@ using RimWorld;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Verse;
@@ -601,11 +600,11 @@ namespace ShapeshifterFramework.Comps
                             {
                                 // 타겟 파츠 하위의 모든 파츠 중 PartDef가 일치하는 부위 찾기
                                 var allParts = pawn.RaceProps.body.AllParts;
-                                var notMissing = pawn.health.hediffSet.GetNotMissingParts();
                                 for (int pIdx = 0; pIdx < allParts.Count; pIdx++)
                                 {
                                     var x = allParts[pIdx];
-                                    if (x.def == prev.PartDef && notMissing.Contains(x) && IsPartChildOf(x, rec.Part))
+                                    // notMissing.Contains(x)를 !pawn.health.hediffSet.PartIsMissing(x)로 교체
+                                    if (x.def == prev.PartDef && !pawn.health.hediffSet.PartIsMissing(x) && IsPartChildOf(x, rec.Part))
                                     {
                                         targetPart = x;
                                         break;
@@ -1164,10 +1163,21 @@ namespace ShapeshifterFramework.Comps
             {
                 if (__tmpHediffsLoad != null)
                 {
-                    tempAddedHediffs.AddRange(__tmpHediffsLoad.Where(x => x != null));
+                    for (int i = 0; i < __tmpHediffsLoad.Count; i++)
+                    {
+                        if (__tmpHediffsLoad[i] != null)
+                            tempAddedHediffs.Add(__tmpHediffsLoad[i]);
+                    }
                     __tmpHediffsLoad = null;
                 }
-                else tempAddedHediffs.RemoveAll(x => x == null);
+                else
+                {
+                    for (int i = tempAddedHediffs.Count - 1; i >= 0; i--)
+                    {
+                        if (tempAddedHediffs[i] == null)
+                            tempAddedHediffs.RemoveAt(i);
+                    }
+                }
 
                 needsGearResolve = true;
 

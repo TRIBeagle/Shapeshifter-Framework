@@ -30,13 +30,6 @@ namespace ShapeshifterFramework.Debugs
     /// </summary>
     public static class Shapeshifter_DebugActions
     {
-        #region 상수/필드
-
-        // (미사용) 라벨 컬러 예시 — 필요 시 UI 그리기에서 활용
-        private static readonly Color LabelColor = new Color(0.9f, 0.95f, 1f);
-
-        #endregion
-
         #region 1) 활성 폼 요약 확인(Inspect)
 
         [DebugAction(
