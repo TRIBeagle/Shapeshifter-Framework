@@ -1,4 +1,4 @@
-﻿// Patch_DrawGeneOverlay.cs
+﻿// Patch_GeneUIUtility_DrawGene.cs
 // 목적: 유전자 UI에 폼으로 억제되는 유전자 표시(딤/슬래시/툴팁).
 // 용도: GeneUIUtility.DrawGene 후처리로 억제 상태 시각 피드백 추가.
 // 주의: Priority.Last로 다른 모드 오버레이 위에 덮어씀. 판정 로직은 전담 유틸로 위임.
@@ -16,7 +16,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(GeneUIUtility))]
     [HarmonyPriority(Priority.Last)] // 마지막에 오버레이
-    public static class Patch_DrawGeneOverlay
+    public static class Patch_GeneUIUtility_DrawGene
     {
         // 대상: DrawGene(Rect, Gene, ...) 오버로드 동적 탐색
         [HarmonyTargetMethod]

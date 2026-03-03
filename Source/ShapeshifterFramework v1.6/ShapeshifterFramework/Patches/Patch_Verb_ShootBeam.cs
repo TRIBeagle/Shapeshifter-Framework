@@ -12,12 +12,12 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch]
-    internal static class Patch_Verb_ShootBeam_EquipmentSafe
+    internal static class Patch_Verb_ShootBeam
     {
         private static readonly FieldInfo PathCellsFI;
         private static readonly AccessTools.FieldRef<Verb_ShootBeam, HashSet<IntVec3>> PathCellsRef;
 
-        static Patch_Verb_ShootBeam_EquipmentSafe()
+        static Patch_Verb_ShootBeam()
         {
             // FieldInfo는 항상 확보 시도
             PathCellsFI = AccessTools.Field(typeof(Verb_ShootBeam), "pathCells");

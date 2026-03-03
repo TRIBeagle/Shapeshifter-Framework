@@ -32,10 +32,10 @@ namespace ShapeshifterFramework.Patches
             if (pawn == null) return true;
 
             SoundDef formWounded;
-            if (ShapeshiftVoiceHelper.TryGetWounded(pawn, out formWounded))
+            if (ShapeshiftVoiceUtility.TryGetWounded(pawn, out formWounded))
             {
                 // 바닐라 LifeStageUtility와 동일하게 CurLifeStage pitch/vol 적용 처리
-                ShapeshiftVoiceHelper.PlayOneShotAt(pawn, formWounded, volumeFactor: 1f);
+                ShapeshiftVoiceUtility.PlayOneShotAt(pawn, formWounded, volumeFactor: 1f);
                 return false; // 원본 사운드 스킵
             }
 

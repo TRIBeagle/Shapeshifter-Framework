@@ -22,9 +22,9 @@ namespace ShapeshifterFramework.Patches
             if (forceAggressive)
             {
                 SoundDef formAngry;
-                if (ShapeshiftVoiceHelper.TryGetAngry(pawn, out formAngry))
+                if (ShapeshiftVoiceUtility.TryGetAngry(pawn, out formAngry))
                 {
-                    ShapeshiftVoiceHelper.PlayOneShotAt(pawn, formAngry, volumeFactor: 1f);
+                    ShapeshiftVoiceUtility.PlayOneShotAt(pawn, formAngry, volumeFactor: 1f);
                     return false; // 원본 skip
                 }
                 return true; // 캐시 없음 → 바닐라 실행
@@ -32,9 +32,9 @@ namespace ShapeshifterFramework.Patches
 
             // ── 일반 콜(call) 처리 ──
             SoundDef formCall;
-            if (ShapeshiftVoiceHelper.TryGetCall(pawn, out formCall))
+            if (ShapeshiftVoiceUtility.TryGetCall(pawn, out formCall))
             {
-                ShapeshiftVoiceHelper.PlayOneShotAt(pawn, formCall, volumeFactor: 1f);
+                ShapeshiftVoiceUtility.PlayOneShotAt(pawn, formCall, volumeFactor: 1f);
                 return false; // 원본 skip
             }
 

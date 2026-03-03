@@ -4,7 +4,7 @@ using Verse;
 
 namespace ShapeshifterFramework.Utilities
 {
-    internal static class ShapeshiftOverlayHelper
+    internal static class ShapeshiftOverlayUtility
     {
         /// <summary>
         /// FleshTypeDef 조회(안전 가드 강화)

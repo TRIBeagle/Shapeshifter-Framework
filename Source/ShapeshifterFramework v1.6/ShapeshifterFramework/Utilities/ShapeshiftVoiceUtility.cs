@@ -9,7 +9,7 @@ namespace ShapeshifterFramework.Utilities
     /// - 변신 중일 때만 폼 값을 반환.
     /// - 변신 해제/Despawn/사망 시 캐시는 Comp에서 정리(별도 구현).
     /// </summary>
-    internal static class ShapeshiftVoiceHelper
+    internal static class ShapeshiftVoiceUtility
     {
         public static bool TryGetCall(Pawn pawn, out SoundDef def)
         {

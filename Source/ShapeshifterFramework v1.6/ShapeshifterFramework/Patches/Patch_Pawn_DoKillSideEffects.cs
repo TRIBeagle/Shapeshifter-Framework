@@ -9,7 +9,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(Pawn), "DoKillSideEffects")]
-    public static class Patch_Pawn_DoKillSideEffects_PlayDeathVoiceSound
+    public static class Patch_Pawn_DoKillSideEffects
     {
         private static bool _reported = false;
 
@@ -17,7 +17,7 @@ namespace ShapeshifterFramework.Patches
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             MethodInfo vanillaPlaySoundMethod = AccessTools.Method(typeof(LifeStageUtility), "PlayNearestLifestageSound");
-            MethodInfo ourWrapperMethod = AccessTools.Method(typeof(Patch_Pawn_DoKillSideEffects_PlayDeathVoiceSound), nameof(PlayNearestLifestageSoundWrapper));
+            MethodInfo ourWrapperMethod = AccessTools.Method(typeof(Patch_Pawn_DoKillSideEffects), nameof(PlayNearestLifestageSoundWrapper));
 
             // 타겟 메서드 시그니처가 변했거나 로드 순서 문제 발생 시 원본 유지 (Fail-safe)
             if (vanillaPlaySoundMethod == null || ourWrapperMethod == null)
@@ -38,9 +38,9 @@ namespace ShapeshifterFramework.Patches
         public static void PlayNearestLifestageSoundWrapper(Pawn pawn, Func<LifeStageAge, SoundDef> lifestageGetter, Func<GeneDef, SoundDef> geneGetter, Func<MutantDef, SoundDef> mutantGetter, float volumeFactor)
         {
             // 1. 변신 폰이라면 커스텀 사운드를 재생하고 즉시 종료 (바닐라 소리는 나지 않음)
-            if (ShapeshiftVoiceHelper.TryGetDeath(pawn, out var customSound))
+            if (ShapeshiftVoiceUtility.TryGetDeath(pawn, out var customSound))
             {
-                ShapeshiftVoiceHelper.PlayOneShotAt(pawn, customSound, 1f);
+                ShapeshiftVoiceUtility.PlayOneShotAt(pawn, customSound, 1f);
                 return;
             }
 

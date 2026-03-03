@@ -29,7 +29,7 @@ namespace ShapeshifterFramework.Patches
             var list = new List<CodeInstruction>(instructions);
 
             var fleshGetter = AccessTools.PropertyGetter(typeof(RaceProperties), nameof(RaceProperties.FleshType));
-            var helperMethod = AccessTools.Method(typeof(ShapeshiftOverlayHelper), nameof(ShapeshiftOverlayHelper.GetEffectiveFleshType));
+            var helperMethod = AccessTools.Method(typeof(ShapeshiftOverlayUtility), nameof(ShapeshiftOverlayUtility.GetEffectiveFleshType));
             var parmsPawnFld = AccessTools.Field(typeof(PawnDrawParms), nameof(PawnDrawParms.pawn));
 
             // PawnDrawParms 파라미터 위치를 동적으로 탐색 (시그니처 변경에 대비)
