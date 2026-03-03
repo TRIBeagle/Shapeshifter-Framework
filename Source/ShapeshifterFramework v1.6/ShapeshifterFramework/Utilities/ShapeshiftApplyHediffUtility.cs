@@ -256,22 +256,36 @@ namespace ShapeshifterFramework.Utilities
             var list = pawn.health?.hediffSet?.hediffs;
             if (list == null || list.Count == 0) return;
 
+            bool requiresDirtyCache = false; // 캐시 갱신이 필요한지 추적하는 플래그
+
             for (int i = list.Count - 1; i >= 0; i--)
             {
                 var h = list[i];
-                if (h == null) { list.RemoveAt(i); continue; }
+                if (h == null)
+                {
+                    list.RemoveAt(i);
+                    requiresDirtyCache = true; // 리스트를 직접 건드렸으므로 마킹
+                    continue;
+                }
+
                 if ((h.def?.addedPartProps != null || h is Hediff_MissingPart) && h.Part == null)
                 {
-                    // prevDefCache가 null이면 우리가 추가한 것인지 알 수 없으므로 스킵
-                    // prevDefCache가 있으면 우리가 추가한 것으로 알려진 것만 제거
                     if (prevDefCache == null || !prevDefCache.Contains(h.def)) continue;
                     try
                     {
+                        // RemoveHediff는 내부적으로 DirtyCache를 알아서 호출하므로 마킹 불필요
                         pawn.health.RemoveHediff(h);
                         ShapeshiftDiagnostics.Info($"Cleanup null-part hediff: {h.def?.defName ?? "null"}");
                     }
                     catch { }
                 }
+            }
+
+            // 추가된 핵심 로직: RemoveAt이 실행되었다면 수동으로 캐시 갱신
+            if (requiresDirtyCache)
+            {
+                pawn.health.hediffSet.DirtyCache();
+                ShapeshiftDiagnostics.Info("Cleaned up literal null hediffs and dirtied cache.");
             }
         }
 
@@ -314,7 +328,7 @@ namespace ShapeshifterFramework.Utilities
             var hediffs = pawn.health.hediffSet.hediffs;
             BodyPartRecord current = part.parent;
 
-            while (current != null && current.parent != null)
+            while (current != null)
             {
                 for (int i = 0; i < hediffs.Count; i++)
                 {

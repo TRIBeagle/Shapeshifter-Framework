@@ -259,18 +259,30 @@ namespace ShapeshifterFramework.Utilities
 
         private static readonly ConcurrentDictionary<string, FieldInfo> FieldCache =
             new ConcurrentDictionary<string, FieldInfo>();
+        // 필드 탐색 실패 기록
+        private static readonly ConcurrentDictionary<string, bool> FieldNotFound =
+            new ConcurrentDictionary<string, bool>();
+
         private static readonly ConcurrentDictionary<string, PropertyInfo> PropCache =
             new ConcurrentDictionary<string, PropertyInfo>();
+        // 프로퍼티 탐색 실패 기록
+        private static readonly ConcurrentDictionary<string, bool> PropNotFound =
+            new ConcurrentDictionary<string, bool>();
 
         private static FieldInfo GetFieldCached(Type t, string name)
         {
             if (t == null || string.IsNullOrEmpty(name)) return null;
             string key = t.FullName + "::F::" + name;
-            FieldInfo fi;
-            if (!FieldCache.TryGetValue(key, out fi) || fi == null)
+
+            if (FieldNotFound.ContainsKey(key)) return null; // 이미 없다고 판명났으면 즉시 탈출
+
+            if (!FieldCache.TryGetValue(key, out FieldInfo fi))
             {
                 fi = t.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-                FieldCache[key] = fi;
+                if (fi != null)
+                    FieldCache[key] = fi;
+                else
+                    FieldNotFound[key] = true; // 실패 기록
             }
             return fi;
         }
@@ -279,11 +291,16 @@ namespace ShapeshifterFramework.Utilities
         {
             if (t == null || string.IsNullOrEmpty(name)) return null;
             string key = t.FullName + "::P::" + name;
-            PropertyInfo pi;
-            if (!PropCache.TryGetValue(key, out pi) || pi == null)
+
+            if (PropNotFound.ContainsKey(key)) return null;
+
+            if (!PropCache.TryGetValue(key, out PropertyInfo pi))
             {
                 pi = t.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-                PropCache[key] = pi;
+                if (pi != null)
+                    PropCache[key] = pi;
+                else
+                    PropNotFound[key] = true;
             }
             return pi;
         }
@@ -294,6 +311,9 @@ namespace ShapeshifterFramework.Utilities
 
         private static readonly ConcurrentDictionary<string, MethodInfo> MethodCache =
             new ConcurrentDictionary<string, MethodInfo>();
+        // 메서드 탐색 실패 기록
+        private static readonly ConcurrentDictionary<string, bool> MethodNotFound =
+            new ConcurrentDictionary<string, bool>();
 
         private static MethodInfo GetMethodCached(Type t, string name, Type[] paramTypes, bool isStatic)
         {
@@ -303,8 +323,9 @@ namespace ShapeshifterFramework.Utilities
             string typeStr = paramTypes == null || paramTypes.Length == 0 ? "0" : string.Join("_", paramTypes.Select(p => p != null ? p.Name : "any"));
             string key = $"{t.FullName}::M::{(isStatic ? "S" : "I")}::{name}#{typeStr}";
 
-            MethodInfo mi;
-            if (!MethodCache.TryGetValue(key, out mi) || mi == null)
+            if (MethodNotFound.ContainsKey(key)) return null; // 실패 기록 확인
+
+            if (!MethodCache.TryGetValue(key, out MethodInfo mi))
             {
                 var flags = (isStatic ? BindingFlags.Static : BindingFlags.Instance)
                             | BindingFlags.Public | BindingFlags.NonPublic;
@@ -319,13 +340,11 @@ namespace ShapeshifterFramework.Utilities
                     var ps = m.GetParameters();
                     if (ps == null || ps.Length != argc) continue;
 
-                    // [추가] 파라미터 타입 교차 검증
                     bool match = true;
                     if (paramTypes != null)
                     {
                         for (int j = 0; j < argc; j++)
                         {
-                            // 전달된 인자가 null이 아니면 타입 호환성(상속 관계 포함) 검사
                             if (paramTypes[j] != null && !ps[j].ParameterType.IsAssignableFrom(paramTypes[j]))
                             {
                                 match = false;
@@ -340,8 +359,16 @@ namespace ShapeshifterFramework.Utilities
                         break;
                     }
                 }
-                MethodCache[key] = candidate;
-                mi = candidate;
+
+                if (candidate != null)
+                {
+                    MethodCache[key] = candidate;
+                    mi = candidate;
+                }
+                else
+                {
+                    MethodNotFound[key] = true; // 실패 기록
+                }
             }
             return mi;
         }
@@ -546,8 +573,11 @@ namespace ShapeshifterFramework.Utilities
         internal static void ClearCaches()
         {
             FieldCache.Clear();
+            FieldNotFound.Clear();
             PropCache.Clear();
+            PropNotFound.Clear();
             MethodCache.Clear();
+            MethodNotFound.Clear();
             OwnerFieldByWorker.Clear();
             HolderPawnField.Clear();
             PreRenderParmsFieldByResultsType.Clear();

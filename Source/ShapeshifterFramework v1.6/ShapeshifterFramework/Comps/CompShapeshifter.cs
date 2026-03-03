@@ -258,29 +258,32 @@ namespace ShapeshifterFramework.Comps
             base.CompTick();
             Pawn pawn = parent as Pawn;
 
+            // [B-3 최적화됨] AllThings 다중 순회를 단일 순회로 변경하여 로딩 직후 틱 스파이크 방지
             if (needsGearResolve)
             {
                 needsGearResolve = false;
-                if (pawn?.Map != null)
+                if (pawn?.Map != null && (__tmpPrevApIds != null || __tmpPrevWpIds != null))
                 {
-                    if (__tmpPrevApIds != null)
+                    var allThings = pawn.Map.listerThings.AllThings;
+                    for (int i = 0; i < allThings.Count; i++)
                     {
-                        foreach (string id in __tmpPrevApIds)
+                        var t = allThings[i];
+
+                        // 의복 ID 목록에 있는지 확인
+                        if (__tmpPrevApIds != null && __tmpPrevApIds.Contains(t.ThingID))
                         {
-                            Thing t = pawn.Map.listerThings.AllThings.FirstOrDefault(x => x.ThingID == id);
                             if (t is Apparel ap) prevApparels.Add(ap);
                         }
-                        __tmpPrevApIds = null;
-                    }
-                    if (__tmpPrevWpIds != null)
-                    {
-                        foreach (string id in __tmpPrevWpIds)
+                        // 무기 ID 목록에 있는지 확인
+                        else if (__tmpPrevWpIds != null && __tmpPrevWpIds.Contains(t.ThingID))
                         {
-                            Thing t = pawn.Map.listerThings.AllThings.FirstOrDefault(x => x.ThingID == id);
                             if (t is ThingWithComps twc) prevWeapons.Add(twc);
                         }
-                        __tmpPrevWpIds = null;
                     }
+
+                    // 찾기 완료 후 임시 리스트 비우기
+                    __tmpPrevApIds = null;
+                    __tmpPrevWpIds = null;
                 }
             }
 
@@ -675,6 +678,9 @@ namespace ShapeshifterFramework.Comps
                 RemoveForm();
             }
 
+            // 변신 중이 아니었더라도(isTransformed == false) 알 수 없는 이유로 캐시에 찌꺼기가 
+            // 남아있을 수 있으므로, 폰이 사망할 때는 무조건 캐시를 한 번 더 날려서 
+            // 메모리 누수와 폰 부활 시 발생할 수 있는 유령 데이터 버그를 원천 차단함.
             ShapeshiftRuntimeCaches.ClearFor(pawn);
 
             // 원래 변신 상태였던 폰일 때만 디버그 로그 출력 (설정 체크는 Info 내부에서 자동 처리)

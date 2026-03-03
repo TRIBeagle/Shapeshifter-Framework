@@ -24,25 +24,46 @@ namespace ShapeshifterFramework.Patches
         private static int _geneArgIndex = -1;
 
         // 대상: DrawGene(Rect, Gene, ...) 오버로드 동적 탐색
-        [HarmonyTargetMethod]
         static MethodBase TargetMethod()
         {
-            var method = AccessTools.GetDeclaredMethods(typeof(GeneUIUtility)).FirstOrDefault(m =>
+            MethodBase target = null;
+            var methods = AccessTools.GetDeclaredMethods(typeof(GeneUIUtility));
+
+            for (int i = 0; i < methods.Count; i++)
             {
-                if (m.Name != "DrawGene") return false;
+                var m = methods[i];
+                if (m.Name != "DrawGene") continue;
+
                 var ps = m.GetParameters();
-                return ps.Any(p => p.ParameterType == typeof(Rect))
-                    && ps.Any(p => p.ParameterType == typeof(Gene));
-            }) ?? throw new MissingMethodException("[SSF] GeneUIUtility.DrawGene not found.");
+                bool hasRect = false;
+                bool hasGene = false;
+
+                for (int j = 0; j < ps.Length; j++)
+                {
+                    if (ps[j].ParameterType == typeof(Rect)) hasRect = true;
+                    if (ps[j].ParameterType == typeof(Gene)) hasGene = true;
+                }
+
+                if (hasRect && hasGene)
+                {
+                    target = m;
+                    break;
+                }
+            }
+
+            if (target == null)
+            {
+                throw new MissingMethodException("[SSF] GeneUIUtility.DrawGene not found.");
+            }
 
             // Rect/Gene 파라미터 인덱스 미리 탐색해 캐시
-            var parameters = method.GetParameters();
+            var parameters = target.GetParameters();
             for (int i = 0; i < parameters.Length; i++)
             {
                 if (_rectArgIndex < 0 && parameters[i].ParameterType == typeof(Rect)) _rectArgIndex = i;
                 if (_geneArgIndex < 0 && parameters[i].ParameterType == typeof(Gene)) _geneArgIndex = i;
             }
-            return method;
+            return target;
         }
 
         // 후처리: 억제 대상일 때 디밍 + 레드 슬래시 + 얇은 외곽선 + 툴팁

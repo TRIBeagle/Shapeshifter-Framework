@@ -60,20 +60,28 @@ namespace ShapeshifterFramework.Utilities
         }
 
         private static int _cacheFrame = -1;
-        private static Pawn _cachePawn;
-        private static Factors _cacheFactors;
+        private static System.Collections.Generic.Dictionary<Pawn, Factors> _frameCache = new System.Collections.Generic.Dictionary<Pawn, Factors>();
 
         internal static Factors Effective(Pawn pawn)
         {
+            if (pawn == null) return default(Factors);
+
             int frame = Time.frameCount;
-            if (frame == _cacheFrame && pawn == _cachePawn)
-                return _cacheFactors;
+            if (frame != _cacheFrame)
+            {
+                _cacheFrame = frame;
+                _frameCache.Clear(); // 새 프레임이 시작되면 캐시 일괄 비우기
+            }
 
-            _cacheFrame = frame;
-            _cachePawn = pawn;
+            // 이번 프레임에 이미 계산이 끝난 폰이면 저장된 값을 즉시 반환
+            if (_frameCache.TryGetValue(pawn, out Factors cached))
+            {
+                return cached;
+            }
 
-            TryGetOverrides(pawn, out _cacheFactors);
-            return _cacheFactors;
+            TryGetOverrides(pawn, out Factors f);
+            _frameCache[pawn] = f;
+            return f;
         }
     }
 }

@@ -384,6 +384,9 @@ namespace ShapeshifterFramework.Compat
         private List<Pawn> tmpKeys;
         private List<FacialAnimationCompat.Backup> tmpVals;
 
+        // [추가됨] GC(가비지 콜렉션) 할당을 막기 위한 재활용 버퍼 리스트
+        private List<Pawn> _removeBuffer = new List<Pawn>();
+
         /// <summary>세이브/로드 구현. 로드 완료 후 정리(Cleanup).</summary>
         public override void ExposeData()
         {
@@ -407,11 +410,19 @@ namespace ShapeshifterFramework.Compat
         /// <summary>null/Destroyed Pawn 키 제거.</summary>
         private void Cleanup()
         {
-            // null/Destroyed 참조 정리
-            var remove = new List<Pawn>();
+            // [수정됨] 매번 new List를 생성하지 않고 _removeBuffer를 재사용
+            _removeBuffer.Clear();
             foreach (var kv in map)
-                if (kv.Key == null || kv.Key.Destroyed || kv.Value == null) remove.Add(kv.Key);
-            for (int i = 0; i < remove.Count; i++) map.Remove(remove[i]);
+            {
+                if (kv.Key == null || kv.Key.Destroyed || kv.Value == null)
+                    _removeBuffer.Add(kv.Key);
+            }
+
+            for (int i = 0; i < _removeBuffer.Count; i++)
+            {
+                map.Remove(_removeBuffer[i]);
+            }
+            _removeBuffer.Clear(); // 사용 후 깔끔하게 비워줌
         }
 
         /// <summary>백업을 가져오거나 새로 만든다.</summary>
