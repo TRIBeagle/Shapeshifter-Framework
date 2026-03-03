@@ -1,59 +1,50 @@
 ﻿using HarmonyLib;
 using RimWorld;
-using Verse;
 using ShapeshifterFramework.Utilities;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-using System.Reflection;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(Pawn), "DoKillSideEffects")]
     public static class Patch_Pawn_DoKillSideEffects_PlayDeathVoiceSound
     {
-        // 1. Prefix: 변신 폰의 커스텀 사망 사운드를 먼저 재생 (바닐라 흐름은 방해하지 않음)
-        static void Prefix(Pawn __instance, DamageInfo? dinfo, Hediff exactCulprit, bool spawned)
-        {
-            if (!spawned) return;
+        private static bool _reported = false;
 
-            if (ShapeshiftVoiceHelper.TryGetDeath(__instance, out SoundDef sound))
-            {
-                ShapeshiftVoiceHelper.PlayOneShotAt(__instance, sound, 1f);
-            }
-        }
-
-        // 2. Transpiler: 바닐라 사운드 재생 함수를 우리 Wrapper 함수로 바꿔치기
+        [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             MethodInfo vanillaPlaySoundMethod = AccessTools.Method(typeof(LifeStageUtility), "PlayNearestLifestageSound");
-            MethodInfo ourWrapperMethod = AccessTools.Method(typeof(Patch_Pawn_DoKillSideEffects_PlayDeathVoiceSound), "PlayNearestLifestageSoundWrapper");
+            MethodInfo ourWrapperMethod = AccessTools.Method(typeof(Patch_Pawn_DoKillSideEffects_PlayDeathVoiceSound), nameof(PlayNearestLifestageSoundWrapper));
 
-            foreach (var code in instructions)
+            // 타겟 메서드 시그니처가 변했거나 로드 순서 문제 발생 시 원본 유지 (Fail-safe)
+            if (vanillaPlaySoundMethod == null || ourWrapperMethod == null)
             {
-                // 바닐라가 사운드를 재생하려고 하면
-                if (code.Calls(vanillaPlaySoundMethod))
+                if (!_reported)
                 {
-                    // 우리가 만든 Wrapper 함수를 대신 호출하도록 목적지 변경!
-                    yield return new CodeInstruction(OpCodes.Call, ourWrapperMethod);
+                    Log.Warning("[SSF] DoKillSideEffects patch failed: cannot resolve sound method. Keeping vanilla.");
+                    _reported = true;
                 }
-                else
-                {
-                    yield return code;
-                }
+                return instructions;
             }
+
+            // Harmony 제공 유틸: 동일 시그니처 메서드 호출을 안전하게 치환
+            return instructions.MethodReplacer(vanillaPlaySoundMethod, ourWrapperMethod);
         }
 
-        // 3. Wrapper 함수: 바닐라 사운드를 진짜로 틀지 말지 결정하는 수문장
+        // 바닐라 사운드 대신 호출될 Wrapper 함수
         public static void PlayNearestLifestageSoundWrapper(Pawn pawn, Func<LifeStageAge, SoundDef> lifestageGetter, Func<GeneDef, SoundDef> geneGetter, Func<MutantDef, SoundDef> mutantGetter, float volumeFactor)
         {
-            // 만약 변신 폰이라서 이미 Prefix에서 소리를 틀었다면? -> 바닐라 소리는 무시(Mute)!
-            if (ShapeshiftVoiceHelper.TryGetDeath(pawn, out _))
+            // 1. 변신 폰이라면 커스텀 사운드를 재생하고 즉시 종료 (바닐라 소리는 나지 않음)
+            if (ShapeshiftVoiceHelper.TryGetDeath(pawn, out var customSound))
             {
+                ShapeshiftVoiceHelper.PlayOneShotAt(pawn, customSound, 1f);
                 return;
             }
 
-            // 변신 폰이 아니라면 원래 바닐라 함수를 정상적으로 실행
+            // 2. 변신 폰이 아니라면 원래 바닐라 함수를 정상적으로 실행
             LifeStageUtility.PlayNearestLifestageSound(pawn, lifestageGetter, geneGetter, mutantGetter, volumeFactor);
         }
     }

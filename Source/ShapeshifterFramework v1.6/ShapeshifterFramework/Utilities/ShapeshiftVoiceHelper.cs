@@ -45,9 +45,16 @@ namespace ShapeshifterFramework.Utilities
         public static void PlayOneShotAt(Pawn pawn, SoundDef def, float volumeFactor)
         {
             if (pawn == null || def == null) return;
-            var info = SoundInfo.InMap(new TargetInfo(pawn.PositionHeld, pawn.MapHeld));
 
-            // CurLifeStage가 null일 수 있는 엣지 케이스 방어
+            // 맵/좌표 방어: 월드폰/드랍팟/디스폰 타이밍 NRE 방지
+            var map = pawn.MapHeld;
+            if (map == null) return;
+            var pos = pawn.PositionHeld;
+            if (!pos.IsValid) return;
+
+            var info = SoundInfo.InMap(new TargetInfo(pos, map));
+
+            // CurLifeStage가 null일 수 있는 엣지 케이스 방어 (이전 최적화 유지)
             if (pawn.ageTracker != null)
             {
                 var ls = pawn.ageTracker.CurLifeStage;
