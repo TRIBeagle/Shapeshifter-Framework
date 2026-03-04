@@ -1,9 +1,6 @@
-﻿// .NET 4.8 / C# 7.3
-// 변신 중, 폼에 지정된 작업을 "추가로" 불가 처리
-//  - 대상: Pawn.GetDisabledWorkTypes 직접 패치 (Postfix)
-//  - 기존: 컴파일러 생성 FillList 로컬 함수를 HarmonyTargetMethod로 탐색 → RimWorld 업데이트 시 취약
-//  - 변경: GetDisabledWorkTypes 자체를 Postfix로 패치 → 반환된 리스트에 폼 작업 추가
-//          cachedDisabledWorkTypes가 이미 채워진 경우도 올바르게 처리됨
+﻿// ShapeshifterFramework | Patches | Patch_Pawn_GetDisabledWorkTypes.cs
+// 목적 : 변신 중일 때만 특정 작업(WorkType)이나 작업 태그(예: 운반 불가, 요리 불가)를 동적으로 결격 사유로 추가.
+// 용도 : GetDisabledWorkTypes에 Postfix로 개입하여 폼에 지정된 불가 작업을 결과 리스트(__result)에 밀어 넣으며, 태그 기반 파싱은 성능을 위해 Dictionary에 런타임 캐싱됨.
 
 using HarmonyLib;
 using RimWorld;

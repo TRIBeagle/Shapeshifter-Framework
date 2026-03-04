@@ -1,4 +1,7 @@
-﻿// .NET Framework 4.8 / C# 7.3
+﻿// ShapeshifterFramework | Utilities | ShapeshiftRuntimeCaches.cs
+// 목적 : 프레임워크 전역에서 폰 별(Pawn) 전용 데이터(사운드, 혈흔, 살점 타입)를 O(1) 속도로 즉시 조회하기 위한 런타임 저장소.
+// 용도 : 일반 Dictionary 대신 ConditionalWeakTable을 사용하여, 폰이 파괴되고 가비지 컬렉터(GC)에 의해 수거될 때 캐시 데이터도 자동으로 함께 소멸하게 만들어 메모리 누수(Memory Leak)를 원천 차단함.
+
 using RimWorld;
 using System.Runtime.CompilerServices;
 using Verse;

@@ -1,7 +1,6 @@
-﻿// .NET 4.8 / C# 7.3
-// 목적: 변신 중 착용/장착 관련 플로트메뉴 항목을 "보이되 비활성(Disabled)" 처리
-// 대상: FloatMenuMakerMap.GetOptions(...) Postfix에서 __result 후처리
-// 주의: WorldObject는 Thing이 아니므로 캐스팅하지 않음(월드 타겟 무시)
+﻿// ShapeshifterFramework | Patches | Patch_FloatMenuMakerMap_GetOptions.cs
+// 목적 : 변신 중 장비 잠금(EquipLock) 설정이 켜져 있을 때, 유저가 우클릭으로 아이템을 착용/해제하려는 시도를 방지.
+// 용도 : 플로트 메뉴 생성(GetOptions) 직후 Postfix로 개입하여, 대상이 의복이나 무기일 경우 해당 메뉴 항목을 비활성화(Disabled)하고 라벨 끝에 '장착 불가' 안내 문구를 덧붙임.
 
 using HarmonyLib;
 using RimWorld;

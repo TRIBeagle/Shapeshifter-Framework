@@ -1,4 +1,8 @@
-﻿using RimWorld;
+﻿// ShapeshifterFramework | Utilities | ShapeshiftTargetUtility.cs
+// 목적 : 특정 타겟 폰에게 폼 변신을 시도할 때 호출되는 안전한 프런트 API.
+// 용도 : 대상의 상태(사망 여부, Comp 유무, 조건 충족 여부)를 검증하고 성공 확률(successChance)을 굴려 변신을 확정하며, 실패 시 알맞은 인게임 메시지(토스트)를 출력함.
+
+using RimWorld;
 using Verse;
 
 namespace ShapeshifterFramework.Utilities

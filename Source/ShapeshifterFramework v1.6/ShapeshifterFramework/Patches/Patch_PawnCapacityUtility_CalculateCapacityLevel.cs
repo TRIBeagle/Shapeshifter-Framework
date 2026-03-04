@@ -1,7 +1,6 @@
-﻿// Patch_PawnCapacityUtility_CalculateCapacityLevel.cs
-// 목적: 캐퍼시티 계산에 폼 capMods(가산/배수)를 반영.
-// 용도: Postfix에서 offset 누적 후 factor 곱. 이후 바닐라 클램프 흐름 유지.
-// 주의: 변신 중 아닐 때/대상 capMods 없을 때는 스킵.
+﻿// ShapeshifterFramework | Patches | Patch_PawnCapacityUtility_CalculateCapacityLevel.cs
+// 목적 : 폰의 실제 신체 능력(Capacity: 조작, 이동, 시각 등) 수치를 계산할 때 변신 폼의 보정치(capMods)를 반영.
+// 용도 : 바닐라 계산이 완료된 직후(Postfix), 폼에 설정된 가산(Offset)을 먼저 더하고 배수(Factor)를 곱하여 최종 수치(__result)를 변조함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Comps;

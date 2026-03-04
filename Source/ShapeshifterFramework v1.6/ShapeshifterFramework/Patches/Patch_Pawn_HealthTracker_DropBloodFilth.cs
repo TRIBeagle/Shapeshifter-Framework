@@ -1,4 +1,8 @@
-﻿using HarmonyLib;
+﻿// ShapeshifterFramework | Patches | Patch_Pawn_HealthTracker_DropBloodFilth.cs
+// 목적 : 피를 흘릴 때 바닥에 생기는 오물(Filth)을 변신 폼에 맞는 혈흔으로 교체하기 위한 우회 연결(Hook).
+// 용도 : 바닐라 FilthMaker 파라미터에는 Pawn 정보가 누락되어 있으므로, 이 패치에서 Prefix로 스레드 스코프(ShapeshiftFilthScope)에 현재 폰을 담아두고 Postfix에서 비워줌.
+
+using HarmonyLib;
 using ShapeshifterFramework.Utilities;
 using Verse;
 

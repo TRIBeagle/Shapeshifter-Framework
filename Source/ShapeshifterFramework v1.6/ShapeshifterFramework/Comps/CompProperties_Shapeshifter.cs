@@ -1,8 +1,6 @@
 ﻿// ShapeshifterFramework | Comps | CompProperties_Shapeshifter.cs
-// 목적   : 변신 로직 컴포넌트(CompShapeshifter)와 연결되는 설정 컨테이너.
-// 용도   : ThingDef에 compClass로 지정하여 CompShapeshifter를 활성화.
-// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙에 따라 정리 (주석만 수정, 로직 변경 없음).
-// 주의   : 실제 동작은 CompShapeshifter에 구현됨. Def 수정 시 재로드 필요.
+// 목적 : Pawn(또는 ThingDef)에 변신 능력을 부여하기 위한 XML 연결용 속성 클래스.
+// 용도 : XML의 <comps> 리스트에 이 클래스가 포함되면, 게임 시작 시 해당 개체에 CompShapeshifter 컴포넌트 인스턴스가 생성되어 부착됨.
 
 using Verse;
 

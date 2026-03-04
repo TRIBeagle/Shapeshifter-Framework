@@ -1,7 +1,6 @@
-﻿// Patch_HealthCardUtility_GetPawnCapacityTip.cs
-// 목적: 건강 카드 능력치 툴팁 끝에 폼 보정 한 줄을 추가.
-// 용도: Postfix에서 폼 capMods를 요약하여 __result에 덧붙임.
-// 주의: 설명이 없으면 무변경. 줄바꿈 처리 중복에 주의.
+﻿// ShapeshifterFramework | Patches | Patch_HealthCardUtility_GetPawnCapacityTip.cs
+// 목적 : 인게임 건강(Health) 탭에서 의식, 조작 등의 능력치에 마우스를 올렸을 때 뜨는 툴팁에 변신 폼이 주는 스탯 보정치를 추가.
+// 용도 : GetPawnCapacityTip에 Postfix로 개입하여, ShapeshiftCapacityExplainUtility가 생성한 한 줄(예: "늑대인간 가산: +20%")을 바닐라 툴팁 문자열 맨 밑에 덧붙임.
 
 using HarmonyLib;
 using RimWorld;

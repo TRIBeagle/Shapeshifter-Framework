@@ -1,4 +1,7 @@
-﻿// .NET 4.8 / C# 7.3
+﻿// ShapeshifterFramework | Utilities | ShapeshiftEquipLockScope.cs
+// 목적 : 변신 해제 시 프레임워크가 폰의 장비를 강제로 재착용시킬 때, 모드 자체의 장비 장착 금지 락(Equip Lock)을 임시로 우회하기 위한 C# 스코프.
+// 용도 : using (new ShapeshiftEquipLockScope(comp)) { ... } 블록 내에서만 컴포넌트의 suppressEquipLock을 true로 만들어 착용을 허용하고, 블록이 끝나면 안전하게 원래 상태(Dispose)로 복구함.
+
 using ShapeshifterFramework.Comps;
 using System;
 

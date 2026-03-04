@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// ShapeshifterFramework | Utilities | ShapeshiftTextureUtility.cs
+// 목적 : 폼(FormDef)에 지정된 커스텀 UI 지즈모(Gizmo) 아이콘의 로드 및 캐싱을 담당.
+// 용도 : ContentFinder를 통해 아이콘을 로드하되, 매 틱 호출되는 지즈모 렌더링의 부담을 없애기 위해 1회 찾은 텍스처는 Dictionary에 영구 보관하며, 파일이 없을 경우 안전하게 기본 아이콘(Fallback)을 반환함.
+
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 

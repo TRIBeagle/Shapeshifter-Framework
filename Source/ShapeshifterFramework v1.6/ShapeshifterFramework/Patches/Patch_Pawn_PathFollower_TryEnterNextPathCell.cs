@@ -1,6 +1,6 @@
-﻿// Patches/Patch_Pawn_PathFollower_TryEnterNextPathCell.cs
-// 목적: 이동 1칸 시점에 물 타일(IsWater) 진입/이탈 감지 → SetAllGraphicsDirty()
-// 핵심: SelectByGender 제거. 유틸의 merge 기반 TryGetBodySwimmingReplacementPath 사용.
+﻿// ShapeshifterFramework | Patches | Patch_Pawn_PathFollower_TryEnterNextPathCell.cs
+// 목적 : 폰이 이동(Pathing)하여 한 칸 전진할 때마다 물(Water) 타일 진입/이탈 여부를 정밀 감지하여 그래픽을 갱신.
+// 용도 : 이동 전(Prefix)과 후(Postfix)의 바닥 타일 IsWater 상태(__state)를 비교하여, 상태가 변했고 수영 텍스처가 있는 폼이라면 SetAllGraphicsDirty를 호출해 즉각적인 수영 그래픽 전환을 유도함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;

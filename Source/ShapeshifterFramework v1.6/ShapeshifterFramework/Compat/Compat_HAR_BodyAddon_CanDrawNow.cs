@@ -1,9 +1,7 @@
 ﻿// ShapeshifterFramework | Compat | Compat_HAR_BodyAddon_CanDrawNow.cs
-// 목적   : HAR BodyAddon의 CanDrawNow(...) 직전에서, 변신 폼 설정이 showHarAddons=false이면 렌더를 차단한다.
-// 용도   : AlienRace.AlienPawnRenderNodeWorker_BodyAddon의 CanDrawNow에 Harmony Prefix를 부착하여
-//          PawnDrawParms.pawn의 현재 폼을 검사하고, 필요 시 __result=false로 원본 실행을 스킵한다.
-// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙 적용(주석만 정리, 로직 변경 없음).
-// 주의   : 외부 모드/시그니처 변경에 대비해 타입/메서드 탐색은 동적 폴백을 포함한다(정확 시그니처 → 반환형/파라미터 기반).
+// 목적 : 변신 폼 설정(showHarAddons = false)에 따라, HAR 종족 고유의 신체 부착물(뿔, 꼬리 등 BodyAddon) 렌더링을 차단함.
+// 용도 : HAR의 AlienPawnRenderNodeWorker_BodyAddon.CanDrawNow 메서드에 Harmony Prefix로 개입하여, 렌더링 조건이 불만족일 경우 원본 메서드 실행을 강제로 스킵(__result = false) 처리함.
+// 주의 : 외부 모드의 시그니처 변경에 대비해 타겟 메서드 탐색 시 정확한 시그니처를 우선 검사하고, 실패 시 반환형과 파라미터 기반의 동적 폴백(Fallback) 탐색을 수행하도록 설계됨.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;

@@ -1,4 +1,8 @@
-﻿using ShapeshifterFramework.Comps;
+﻿// ShapeshifterFramework | Utilities | ShapeshiftRenderUtility.cs
+// 목적 : 렌더링 루프 내부에서 PawnDrawParms에 폼의 스케일 배수 및 오프셋을 적용.
+// 용도 : ShapeshiftSizeFactorResolver에서 계산된 배율(bodyWidth, headSizeFactor 등)을 가져와 바닐라 렌더 파라미터(Scale, Offset) 연산에 직접 곱해줌.
+
+using ShapeshifterFramework.Comps;
 using UnityEngine;
 using Verse;
 

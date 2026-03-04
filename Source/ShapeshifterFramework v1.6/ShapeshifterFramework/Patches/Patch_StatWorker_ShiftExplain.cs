@@ -1,7 +1,6 @@
-﻿// Patch_StatWorker_ShiftExplain.cs
-// 목적: 스탯 설명 하단에 “변신 폼 보정(배수/가산)”을 요약 추가.
-// 용도: Postfix에서 현재 StatDef에 해당하는 factor/offset 합산 후 문자열 빌드.
-// 주의: 영향 0이면 출력 생략. 번역 키 사용 시 키 미존재 대비.
+﻿// ShapeshifterFramework | Patches | Patch_StatWorker_ShiftExplain.cs
+// 목적 : 인게임 정보 창(Info Card)에서 특정 스탯(Stat)의 세부 계산식 툴팁 하단에 변신 폼으로 인한 보정 수치를 표시.
+// 용도 : GetExplanationUnfinalized에 Postfix로 개입하여, 폼 설정(statFactors, statOffsets)이 적용된 경우 번역된 요약 문자열을 StringBuilder로 깔끔하게 덧붙임.
 
 using HarmonyLib;
 using RimWorld;

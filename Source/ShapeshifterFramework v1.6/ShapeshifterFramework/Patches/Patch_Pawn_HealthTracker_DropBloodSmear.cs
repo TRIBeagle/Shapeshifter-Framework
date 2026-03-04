@@ -1,4 +1,7 @@
-﻿// .NET Framework 4.8 / C# 7.3
+﻿// ShapeshifterFramework | Patches | Patch_Pawn_HealthTracker_DropBloodSmear.cs
+// 목적 : 폰이 이동하며 바닥에 피를 묻힐 때(Smear), 바닐라 붉은 피 대신 변신 폼의 전용 혈흔을 생성하기 위한 컨텍스트 주입.
+// 용도 : DropBloodFilth 패치와 동일하게 Prefix/Postfix로 개입하여, FilthMaker가 호출되는 찰나의 순간에만 ShapeshiftFilthScope에 현재 폰을 캐싱해 둠.
+
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
 using Verse;

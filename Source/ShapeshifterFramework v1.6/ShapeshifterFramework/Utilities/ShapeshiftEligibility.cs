@@ -1,18 +1,7 @@
-﻿// .NET Framework 4.8 / C# 7.3
-// ShapeshiftConditions.cs
-// 목적: 변신 가능 여부 판정 전담(게이트 + required* 집계)
-// 규칙 요약:
-//  1) 게이트(집계 제외): allowed/disallowed(종족/뮤턴트/제노타입), allowedFromForms
-//     - 전부 미지정 → 전부 허용
-//     - allow만 있음 → allow만 허용
-//     - disallow만 있음 → 전체에서 disallow만 제외하고 허용
-//     - 둘다 있음 → allow 집합에서 disallow를 뺀 집합만 허용
-//     - DLC 미설치 시: allowed 목록이 있으면 '판별불가 → 불허', disallow만 있으면 무시(=허용)
-//  2) required* 카테고리(Genes/Items/Apparels/Weapons/Abilities/Hediffs)만 requirementsMode로 집계
-//     - 카테고리 내부 기준: **모두 보유(ALL-of)** (Weapons도 ALL-of)
-//     - requirementsMode=All → 활성 카테고리 모두 통과
-//       requirementsMode=Any → 활성 카테고리 중 하나 이상 통과
-//       활성 카테고리 없음 → 통과(true)
+﻿// ShapeshifterFramework | Utilities | ShapeshiftEligibility.cs
+// 목적 : 특정 폰(Pawn)이 지정된 폼(Form)으로 변신할 수 있는 자격(Eligibility)이 되는지 판정.
+// 용도 : 1단계 게이트 검사(종족, 뮤턴트, 제노타입, 이전 폼 제한)와 2단계 조건 집계(유전자, 아이템, 장비, 능력, 헤디프 보유 여부)를 requirementsMode(All/Any)에 맞춰 철저하게 검증함.
+// 주의 : Anomaly DLC의 뮤턴트 판정은 성능을 위해 HediffDef 기준의 내부 캐시(Dictionary)를 구축하여 O(1) 속도로 탐색하도록 최적화됨.
 
 using RimWorld;
 using System;

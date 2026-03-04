@@ -1,8 +1,6 @@
-﻿// .NET 4.8 / C# 7.3
-// 변신 중 의복 착용 금지(직접 시그니처 지정)
-// - 대상 메서드: RimWorld.Pawn_ApparelTracker.Wear(Apparel newApparel, bool dropReplacedApparel = true, bool locked = false)
-// - 이유: 최종 장착 지점 차단이 가장 안전. 메뉴/AI/타 모드 호출 모두 커버.
-// - 성능: 리플렉션/Traverse 미사용.
+﻿// ShapeshifterFramework | Patches | Patch_Pawn_ApparelTracker_Wear.cs
+// 목적 : 변신 중 옷을 갈아입거나 입지 못하게 막는 장착 잠금(EquipLock) 기능.
+// 용도 : ApparelTracker.Wear 최하단 관문에 Prefix로 개입하여, 내부 스크립트 복구 목적(suppressEquipLock)이 아닌 일반적인 착용 시도를 완전히 취소(return false)시키고 유저에게 거부 메시지를 띄움.
 
 using HarmonyLib;
 using RimWorld;

@@ -1,8 +1,8 @@
 ﻿// ShapeshifterFramework | Compat | CompatManager.cs
-// 목적   : 외부 모드(HAR/FA)별 호환 패치 상태를 집계·보고하는 경량 매니저(구 ShapeshiftCompat).
-// 용도   : 패치 성공/실패/메트릭을 누적하고, ReportAllOnce에서 1회 요약을 출력한다.
-// 변경   : 2025-09-22 v1.1 — ShapeshiftCompat → CompatManager로 리네이밍(주석 규칙 적용, 로직 변경 없음).
-// 주의   : Report 이전에는 Failed 집계만 수행하고, Report 이후 런타임에는 동일 id에 대해 1회 경고를 즉시 출력.
+// 목적 : 외부 모드(HAR, Facial Animation) 호환 패치의 초기화 상태와 에러를 집계하고 보고하는 경량 매니저.
+// 용도 : - ModLister를 이용해 타겟 모드의 활성화 여부를 안전하게 판별 (IsActive).
+//        - 패치 성공/실패 횟수 및 메트릭(added, deduped)을 캐싱해 두었다가, ReportAllOnce()를 통해 단 1회만 로그로 요약 출력.
+// 주의 : Report 이전에는 내부 Dictionary에 실패 사유만 누적(집계)하며, Report 이후 런타임에 발생하는 에러는 동일 id당 1회씩만 즉시 경고(Warning)를 출력하여 로그 도배를 막음.
 
 using System.Collections.Generic;
 using Verse;

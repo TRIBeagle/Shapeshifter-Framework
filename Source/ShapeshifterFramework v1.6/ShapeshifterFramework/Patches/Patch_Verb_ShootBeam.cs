@@ -1,6 +1,6 @@
-﻿// 목적: EquipmentSource가 null인 Verb_ShootBeam에서 NRE 방지 (base.EquipmentSource.def 접근)
-// 근거: 바닐라 1.6 Verb_ShootBeam.pathCells는 HashSet<IntVec3>
-// 최적화: pathCells 접근은 FieldRef 우선, 실패 시 FieldInfo 폴백(핫패스에서 예외로 모드 로딩 죽는 것 방지)
+﻿// ShapeshifterFramework | Patches | Patch_Verb_ShootBeam.cs
+// 목적 : 무기 없이 맨몸(변신 폼)에서 광선(Beam) 공격을 발사할 때 발생하는 바닐라의 치명적 크래시(NRE)를 방지.
+// 용도 : 바닐라 광선 로직은 무조건 무기(EquipmentSource.def)를 참조하려 하므로, 무기가 없을 경우 이를 Prefix로 가로채어 직접 데미지 계산을 수행하고 원본 로직을 스킵(return false)시켜 게임 멈춤을 완벽히 방어함.
 
 using HarmonyLib;
 using RimWorld;

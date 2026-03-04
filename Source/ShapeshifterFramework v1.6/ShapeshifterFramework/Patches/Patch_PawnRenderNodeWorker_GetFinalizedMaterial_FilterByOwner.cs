@@ -1,7 +1,6 @@
-﻿// Patch_PawnRenderNodeWorker_GetFinalizedMaterial_FilterByOwner.cs
-// 목적: 렌더 노드의 owner(Apparel/Gene 등)에 따라 폼 필터로 숨김 처리.
-// 정책: Gene → 태그(def + node.props) 수집 후 필터 / Apparel → 레이어·defName 기반 필터.
-// 메모: C# 7.3, 모든 리플렉션은 ShapeshiftReflectionCache로 일원화.
+﻿// ShapeshifterFramework | Patches | Patch_PawnRenderNodeWorker_GetFinalizedMaterial_FilterByOwner.cs
+// 목적 : 폼의 시각적 필터 규칙(renderShow/Hide)에 따라 옷, 유전자, 헤디프의 렌더링 텍스처(Material)를 강제로 투명하게(null) 만듦.
+// 용도 : 노드의 소유자(Owner)가 누군지 리플렉션 캐시를 이용해 안전하게 추적한 뒤, ShapeshiftVisualFilter의 차단 로직에 걸리면 결과값(__result)을 null로 반환해 렌더링을 완전히 스킵시킴.
 
 using HarmonyLib;
 using RimWorld;

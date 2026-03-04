@@ -1,7 +1,7 @@
 ﻿// ShapeshifterFramework | Patches | Patch_PawnRenderNode_GraphicFor_Parts.cs
-// 목적   : 변신 폼(ShapeshiftFormDef)의 파츠 제어(Default/Hidden/Replace) 적용
-// 용도   : PawnRenderNode_*::GraphicFor 결과를 후처리(Postfix)로 교체/숨김
-// 성능   : 렌더 핫패스. LINQ/할당 없음. 조건 충족 시에만 GraphicDatabase 조회.
+// 목적 : 폰의 각 신체 부위(머리, 몸통, 수염, 머리카락, 문신 등) 그래픽 렌더링에 폼 설정(Default/Hidden/Replace)을 강제 적용.
+// 용도 : 각종 PawnRenderNode_* 클래스의 GraphicFor 메서드 결과값(__result)을 후처리(Postfix)로 가로채어, 투명화시키거나 지정된 커스텀 텍스처(Graphic)로 완전히 교체함.
+// 주의 : 1초에 수십 번 도는 렌더링 핫패스이므로 LINQ를 전혀 사용하지 않고 성능을 극대화함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;

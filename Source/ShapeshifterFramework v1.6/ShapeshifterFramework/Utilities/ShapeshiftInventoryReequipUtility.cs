@@ -1,4 +1,8 @@
-﻿// ShapeshifterFramework/Utilities/ShapeshiftInventoryReequipUtility.cs
+﻿// ShapeshifterFramework | Utilities | ShapeshiftInventoryReequipUtility.cs
+// 목적 : 인벤토리에 보관된 장비/무기를 안전하게 꺼내어 착용시키고, 실패 시 복구하는 로직.
+// 용도 : 착용(Wear/AddEquipment) 시도 후 실패하면 다시 인벤토리로 되돌리며, 인벤토리 용량 초과 시 맵 바닥에 안전하게 드랍(TryPlaceThing)함.
+// 주의 : 카라반(월드맵)이나 수송 포드 등 폰이 맵에 존재하지 않는(Off-map) 예외 상황에서 아이템이 허공으로 증발하는 것(Void)을 막기 위해, 인벤토리 강제 삽입(Force) 및 크리티컬 에러 로그 방어가 적용됨.
+
 using RimWorld;
 using Verse;
 

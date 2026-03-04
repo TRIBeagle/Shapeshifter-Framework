@@ -1,7 +1,7 @@
-﻿// ShapeshiftFormDef.cs
-// 목적: 변신 폼(스케일/오프셋/부위 제어/숨김 규칙/스탯·캐퍼 보정/노드 추가) Def.
-// 용도: XML에서 각 폼별 동작을 한 곳에서 정의.
-// 주의: renderHideApparel*/renderHideGene* 특수값 "All" 지원. renderNodeProperties는 폼 활성 시에만 추가.
+﻿// ShapeshifterFramework | Root | ShapeshiftFormDef.cs
+// 목적 : 변신 폼(Form)의 모든 동작을 정의하는 최상위 XML 데이터 구조체(Schema).
+// 용도 : 외형 스케일/오프셋, 렌더링 숨김/대체 규칙, 스탯 및 능력치 보정, 변신 요구 조건, 부가 효과(능력/헤디프/FX/사운드), 타 모드(HAR/FA) 호환성 등 폼에 관한 모든 정적(Static) 데이터를 보관함.
+// 주의 : 이 클래스의 데이터는 XML 로드 시 확정되며, 런타임 게임 플레이 도중 수정(오염)되지 않도록 철저히 읽기 전용(Read-only) 데이터로 취급해야 함.
 
 using RimWorld;
 using System.Collections.Generic;

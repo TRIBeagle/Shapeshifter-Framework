@@ -1,7 +1,7 @@
-﻿// ShapeshiftCapacityExplainUtility.cs
-// 목적: 건강 카드 툴팁에 붙일 “폼 영향” 한 줄(배수/가산) 문자열 생성.
-// 용도: capMods에서 대상 capacity의 postFactor/offset을 집계해 포맷 반환.
-// 주의: 변화 없으면 null 반환(비침습).
+﻿// ShapeshifterFramework | Utilities | ShapeshiftCapacityExplainUtility.cs
+// 목적 : 인게임 건강 탭(Health Card) 툴팁에 변신 폼이 신체 능력(Capacity)에 미치는 영향을 표시.
+// 용도 : 폼의 capMods에 정의된 특정 능력치의 배수(postFactor)와 가산(offset) 수치를 집계하여 툴팁 문자열을 생성함.
+// 주의 : 변화량이 없는 경우(배수 1f, 가산 0f) null을 반환하여 바닐라 UI에 불필요한 빈 줄이 생기지 않도록 비침습적(Non-invasive)으로 설계됨.
 
 using RimWorld;
 using ShapeshifterFramework.Comps;

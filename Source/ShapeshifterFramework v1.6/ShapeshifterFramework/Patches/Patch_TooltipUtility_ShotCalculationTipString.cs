@@ -1,7 +1,6 @@
-﻿// .NET Framework 4.8 / C# 7.3
-// Patch_TooltipUtility_ShotCalculationTipString.cs
-// 목적: 총이 없어도 변신 폼의 원거리 Verb가 있으면 사격 명중률 툴팁을 표시
-// 수정: 비폭력 Pawn일 때는 계산을 스킵해 오류 방지
+﻿// ShapeshifterFramework | Patches | Patch_TooltipUtility_ShotCalculationTipString.cs
+// 목적 : 손에 든 무기가 없더라도 변신 폼 자체가 원거리 공격(Verb)을 가졌다면, 타겟에 마우스를 올렸을 때 명중률 툴팁이 정상적으로 출력되도록 수정.
+// 용도 : Postfix에서 폼의 원거리 Verb를 탐색하여 명중률(ShotReport)을 계산해 텍스트에 추가하며, 비폭력(Non-violent) 결격 폰일 경우 계산 중 발생하는 에러를 막기 위해 조기 종료(return)함.
 
 using HarmonyLib;
 using RimWorld;

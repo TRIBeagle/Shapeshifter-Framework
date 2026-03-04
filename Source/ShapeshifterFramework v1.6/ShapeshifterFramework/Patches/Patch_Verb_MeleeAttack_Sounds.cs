@@ -1,4 +1,8 @@
-﻿using HarmonyLib;
+﻿// ShapeshifterFramework | Patches | Patch_Verb_MeleeAttack_Sounds.cs
+// 목적 : 폰이 무기 없이 맨손(또는 폼의 무기)으로 근접 공격을 할 때 발생하는 타격음/빗나감 소리를 폼 전용 사운드로 교체.
+// 용도 : HitPawn, HitBuilding, Miss 3가지 바닐라 메서드에 개입하며, 폰이 실제 장비(EquipmentSource)를 들고 타격할 때는 바닐라 무기 소리를 존중하여 개입하지 않음.
+
+using HarmonyLib;
 using RimWorld;
 using Verse;
 

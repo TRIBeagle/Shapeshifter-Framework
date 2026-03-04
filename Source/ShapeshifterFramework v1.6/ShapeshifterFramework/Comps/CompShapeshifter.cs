@@ -1,17 +1,9 @@
 ﻿// ShapeshifterFramework | Comps | CompShapeshifter.cs
-// 목적  : Pawn의 변신 상태를 관리하는 핵심 컴포넌트.
-// 용도  : - 변신 상태(폼) 전환/해제 관리
-//         - 변신 시 의복/무기 처리(Inventory/Drop/None), 해제 시 자동 재착용
-//         - 폼 verbs/tools 제공 및 전용 공격 지즈모 노출(폼 전용 VerbTracker)
-//         - 남은 시간 표기 등 인스펙트 문자열 제공
-// 변경  : 2025-09-22 v1.0 — 프로젝트 주석 규칙 적용(주석/구조만 정리, 로직 변경 없음).
-// 주의  : - 열거형 충돌 방지: 루트 네임스페이스의 GearHandling/MergeMode 사용
-//         - RenderTickOnGUI 등 고빈도 경로에 LINQ/박싱 회피, 반복 값은 캐싱
-//         - <see cref="IExposable"/> 변경 시 BackCompatibility 주석 유지
-//         - Verb 재초기화는 <see cref="RefreshPawn(Verse.Pawn, bool, bool, bool)"/> 경로에서 처리
-// 성능  : - Dictionary 조회는 TryGetValue 활용
-//         - 전용 VerbTracker 지연 생성 후 캐싱
-// 저장호환: - IExposable: 값/레퍼런스 분리 저장, 키 신규 추가 시 기본값으로 동작(BackCompatibility 주석 참조)
+// 목적 : Pawn의 변신(Shapeshift) 라이프사이클 전체를 런타임에서 관장하는 최상위 핵심 컴포넌트.
+// 용도 : - 폼 적용/해제 : 조건 검증 후 능력(Ability), 헤디프, 체형(BodyType) 부여 및 원상 복원, 남은 시간 카운트다운 처리.
+//        - 장비/파츠 관리 : 변신 시 설정된 규칙(드랍/인벤토리)에 따라 의복과 무기를 처리하고, 해제 시 저장된 스냅샷(HashSet)과 JobQueue를 이용해 자동 재착용 및 신체 결손 상태 완벽 복원.
+//        - VerbTracker 지원 : 폼에 정의된 특수 공격(verbs/tools)을 전용 VerbTracker로 구성하여 드래프트 시 공격 토글/명령 지즈모(Gizmo) 노출.
+// 주의 : 방대한 데이터를 세이브/로드(IExposable)하며, 고빈도 틱(CompTick) 내에서 LINQ를 배제하고 HashSet 기반 O(1) 탐색을 사용하여 대규모 전투 시 프레임 드랍을 원천 차단함.
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;

@@ -1,7 +1,6 @@
-﻿// Patch_StatWorker_ShiftMods.cs
-// 목적: 스탯 실값 계산에 폼 statFactors/Offsets를 반영.
-// 용도: Postfix에서 현재 StatDef에 한해 __result에 가산/배수 적용.
-// 최적화: StatWorker.stat 접근을 FieldInfo.GetValue(리플렉션) → FieldRef(델리게이트)로 변경 (핫패스)
+﻿// ShapeshifterFramework | Patches | Patch_StatWorker_ShiftMods.cs
+// 목적 : 폰의 실제 스탯(Stat) 값을 계산할 때 폼에 지정된 가산치(Offset)와 배수(Factor)를 수학적으로 적용.
+// 용도 : 1초에 수천 번 호출되는 핫패스(Hot-path)이므로 리플렉션 대신 AccessTools.FieldRef를 사용하여 성능 저하 없이 바닐라 계산 결과(__result)에 보정치를 곱하고 더함.
 
 using HarmonyLib;
 using RimWorld;

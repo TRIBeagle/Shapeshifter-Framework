@@ -1,7 +1,7 @@
-﻿// ShapeshiftFormIndex.cs
-// 목적: 모든 폼의 renderNodeProperties 화이트리스트 인덱스.
-// 용도: “폼이 추가한 노드인지” 빠른 판정에 사용(참조 비교 기반).
-// 주의: 게임 로드시 1회 빌드. Def 변경 반영에는 재로드 필요.
+﻿// ShapeshifterFramework | Root | ShapeshiftFormIndex.cs
+// 목적 : 게임 내에 로드된 모든 변신 폼이 추가한 렌더 노드(PawnRenderNodeProperties)들을 빠르게 식별하기 위한 글로벌 인덱스.
+// 용도 : 게임 로드(StaticConstructorOnStartup) 시 모든 FormDef를 순회하여 노드 속성들의 참조(Reference)를 하나의 HashSet(AllFormProps)에 모아둠.
+// 주의 : 폰 렌더링(Draw) 루프처럼 1초에 수십 번 호출되는 핫루프(Hot-loop) 구간에서 "이 노드가 폼 전용 노드인지" O(1) 속도로 판별하기 위한 핵심 최적화 장치임.
 
 using System.Collections.Generic;
 using Verse;

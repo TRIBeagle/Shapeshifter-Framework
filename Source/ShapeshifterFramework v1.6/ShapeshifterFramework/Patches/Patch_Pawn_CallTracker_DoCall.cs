@@ -1,4 +1,7 @@
-﻿// .NET Framework 4.8 / C# 7.3
+﻿// ShapeshifterFramework | Patches | Patch_Pawn_CallTracker_DoCall.cs
+// 목적 : 폰이 무작위로 내거나 전투 중 내뱉는 소리(Call, Angry Call)를 바닐라 종족음에서 변신 폼의 짐승/기계음 등으로 교체.
+// 용도 : DoCall 메서드에 Prefix로 개입하여, 캐싱된 폼 전용 사운드가 존재하면 이를 재생하고 원본 바닐라 로직을 스킵함.
+
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
 using Verse;

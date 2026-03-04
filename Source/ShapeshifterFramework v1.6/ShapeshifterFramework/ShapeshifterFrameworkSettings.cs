@@ -1,4 +1,6 @@
-﻿// ShapeshifterFrameworkSettings.cs
+﻿// ShapeshifterFramework | Root | ShapeshifterFrameworkSettings.cs
+// 목적 : 인게임 환경 설정(Mod Settings)의 실제 데이터 보관 및 세이브/로드(IExposable) 처리.
+// 용도 : 기즈모 최대 표시 개수, 초상화/무기 스케일 동기화, 장비 자동 재착용 옵션, 디버그 로그 활성화 등의 유저 설정값을 변수로 관리함.
 
 using UnityEngine;
 using Verse;

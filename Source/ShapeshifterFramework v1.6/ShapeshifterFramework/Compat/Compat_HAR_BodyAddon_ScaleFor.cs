@@ -1,10 +1,7 @@
 ﻿// ShapeshifterFramework | Compat | Compat_HAR_BodyAddon_ScaleFor.cs
-// 목적   : HAR BodyAddon.ScaleFor(...) 결과에서, "헤드 계열 애드온"에만 변신 폼 스케일(body * head)을 곱한다.
-// 용도   : AlienRace.AlienPawnRenderNodeWorker_BodyAddon.ScaleFor(Postfix)로 개입하여
-//          본체 스케일과의 일관성을 유지하되, 바디 애드온에 중복 배율이 적용되는 것을 방지한다.
-// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙 적용 및 리플렉션 접근을 ShapeshiftReflectionCache로 통일(기능 동일).
-// 주의   : 외부 모드/시그니처 변경 대비 — 정확 시그니처 우선, 반환형/파라미터 기반 폴백을 포함.
-// 성능   : FieldInfo/PropertyInfo 직접 보관 제거 → 캐시 헬퍼 사용으로 리플렉션 비용 및 중복 코드 축소.
+// 목적 : 변신 시 숨기지 않고 렌더링되는 HAR 신체 부착물 중, '머리(Head)'에 부착된 애드온에 한정하여 변신 폼의 머리 스케일을 동기화함.
+// 용도 : HAR BodyAddon의 ScaleFor 메서드 결과값(Postfix)에 개입. 대상 부착물이 헤드 계열인지(alignWithHead, parentTagDef, BodyPart 구조 등)를 리플렉션으로 정밀 판정하여 배율을 적용.
+// 주의 : 머리가 아닌 바디 애드온(꼬리 등)에는 추가 배율을 곱하지 않음으로써, 본체 스케일과 중복 누적되어 크기가 기형적으로 변하는 부작용을 원천 방지함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;

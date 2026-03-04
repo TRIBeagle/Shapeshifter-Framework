@@ -1,11 +1,6 @@
-﻿// .NET Framework 4.8 / C# 7.3
-// Patch_VerbTracker_InitVerbsFromZero.cs
-// 목적: 변신 폼의 Tool을 바탕으로 "근접" Verb만 런타임 주입(Def.tools는 건드리지 않음)
-// 보강: 
-//  - 오너가 네이티브(NativeVerb)일 때만 처리(장비/헤디프 트래커 무시)
-//  - Replace 모드라도 "실제 추가될 Verb 개수 > 0"일 때만 네이티브 근접 Verb 제거
-//  - 그렇지 않으면 제거하지 않아 "근접 Verb 0개" 상태 방지
-// 성능: LINQ 미사용, null 가드 강화
+﻿// ShapeshifterFramework | Patches | Patch_VerbTracker_InitVerbsFromZero.cs
+// 목적 : 폼에 지정된 근접 공격(Tools) 데이터를 런타임에 폰의 기본 공격 목록(NativeVerb)에 동적으로 주입.
+// 용도 : 장비나 헤디프가 아닌 순수 폰(NativeVerb) 소유일 때만 작동하며, replaceNativeTools 옵션에 따라 기존 종족의 맨손 공격을 지우고 폼 전용 발톱/이빨 공격 등을 주입함 (근접 공격이 0개가 되는 상황을 철저히 방어).
 
 using HarmonyLib;
 using RimWorld;

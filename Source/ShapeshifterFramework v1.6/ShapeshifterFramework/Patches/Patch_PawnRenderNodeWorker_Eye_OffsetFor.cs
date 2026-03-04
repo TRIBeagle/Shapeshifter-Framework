@@ -1,4 +1,8 @@
-﻿using HarmonyLib;
+﻿// ShapeshifterFramework | Patches | Patch_PawnRenderNodeWorker_Eye_OffsetFor.cs
+// 목적 : 머리가 커지거나 작아질 때, 바닐라 '눈(Eye)' 그래픽의 위치 오프셋을 머리 스케일에 맞춰 동기화.
+// 용도 : 이중 스케일링(HediffEye와의 충돌)을 막기 위해 현재 워커의 실제 타입이 PawnRenderNodeWorker_Eye일 때만 보정을 수행함.
+
+using HarmonyLib;
 using ShapeshifterFramework.Utilities;
 using UnityEngine;
 using Verse;

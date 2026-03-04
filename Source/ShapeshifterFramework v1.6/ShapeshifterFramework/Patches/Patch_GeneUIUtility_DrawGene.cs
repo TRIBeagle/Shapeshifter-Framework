@@ -1,7 +1,6 @@
-﻿// Patch_GeneUIUtility_DrawGene.cs
-// 목적: 유전자 UI에 폼으로 억제되는 유전자 표시(딤/슬래시/툴팁).
-// 용도: GeneUIUtility.DrawGene 후처리로 억제 상태 시각 피드백 추가.
-// 주의: Priority.Last로 다른 모드 오버레이 위에 덮어씀. 판정 로직은 전담 유틸로 위임.
+﻿// ShapeshifterFramework | Patches | Patch_GeneUIUtility_DrawGene.cs
+// 목적 : 인게임 유전자(Gene) UI 탭에서, 현재 변신 폼에 의해 외형 렌더링이 강제로 억제된(숨겨진) 유전자를 시각적으로 구별.
+// 용도 : DrawGene 메서드에 Postfix로 개입하여 억제된 유전자 아이콘 위에 반투명한 검은색 디밍 박스와 얇은 외곽선을 덧그리고 마우스 오버 툴팁을 추가함.
 
 using HarmonyLib;
 using RimWorld;

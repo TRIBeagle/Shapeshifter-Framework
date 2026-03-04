@@ -1,6 +1,6 @@
-﻿// 변신 중 무기/장비 장착 금지(직접 시그니처 지정)
-// - 대상 메서드: Verse.Pawn_EquipmentTracker.AddEquipment(ThingWithComps newEq)
-// - 주의: 1.6 바닐라엔 TryAddEquipment가 없고 AddEquipment가 최종 관문.
+﻿// ShapeshifterFramework | Patches | Patch_Pawn_EquipmentTracker_AddEquipment.cs
+// 목적 : 변신 중 무기 장착을 막는 장착 잠금(EquipLock) 기능.
+// 용도 : AddEquipment 메서드에 Prefix로 개입하여, 내부 시스템에 의한 자동 복구(suppressEquipLock)가 아닌 플레이어/AI의 강제 무기 장착 시도를 철저히 차단(return false)함.
 
 using HarmonyLib;
 using RimWorld;

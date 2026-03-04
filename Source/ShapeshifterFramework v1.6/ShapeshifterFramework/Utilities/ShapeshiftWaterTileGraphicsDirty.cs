@@ -1,8 +1,6 @@
-﻿// Utilities/ShapeshiftWaterTileGraphicsDirty.cs
-// 목적: (보험) 이동 훅이 안 잡히는 케이스에서 물 타일(IsWater) 진입/이탈 감지 → SetAllGraphicsDirty()
-// 주기: 60틱(약 1초)
-// 핵심: SelectByGender 제거. 유틸의 merge 기반 TryGetBodySwimmingReplacementPath 사용.
-// 최적화: TryGetValue 1회 조회.
+﻿// ShapeshifterFramework | Utilities | ShapeshiftWaterTileGraphicsDirty.cs
+// 목적 : 변신 중인 폰이 물(Water) 타일로 들어가거나 나올 때 렌더링을 갱신(Dirty)하여 수영 전용 텍스처가 적용되도록 유도하는 보조 맵 컴포넌트(MapComponent).
+// 용도 : 바닐라 이동 훅이 잡히지 않는 엣지 케이스(예: 순간이동 등)를 대비해 60틱(약 1초)마다 폰의 바닥 타일 속성을 검사하여 상태가 변경되었을 때만 그래픽 갱신 루프를 호출함.
 
 using System.Collections.Generic;
 using Verse;

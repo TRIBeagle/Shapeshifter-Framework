@@ -1,4 +1,7 @@
-﻿// Patch_PawnRenderer_BaseHeadOffsetAt.cs  (C# 7.3)
+﻿// ShapeshifterFramework | Patches | Patch_PawnRenderer_BaseHeadOffsetAt.cs
+// 목적 : 변신 시 목(Neck) 위치가 바뀌어 머리가 붕 뜨거나 파묻히는 것을 방지하기 위한 정밀 위치(Offset) 조정.
+// 용도 : Postfix에서 바닐라의 bodySizeFactor 제곱근 비율 계산식을 재현한 뒤, 폼에 지정된 커스텀 헤드 오프셋(headOffset)을 폰이 바라보는 방향(Rotation)에 맞춰 적용함.
+
 using HarmonyLib;
 using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;

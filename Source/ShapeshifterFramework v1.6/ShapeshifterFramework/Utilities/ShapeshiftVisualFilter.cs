@@ -1,7 +1,6 @@
 ﻿// ShapeshifterFramework | Utilities | ShapeshiftVisualFilter.cs
-// 목적   : 폼 기반 시각 필터(의상/유전자/무기/헤디프) 공통 판정 및 일관성 강화.
-// 정책   : 화이트리스트(Show) 매치 시 항상 표시(블랙리스트 예외). 그 외 블랙리스트(Hide) 매치 시 숨김.
-// 특징   : "All" 키워드 및 '*' 와일드카드 지원. 데이터가 없는 파츠도 "All" 정책 시 필터링됨.
+// 목적 : 변신 폼의 렌더링 설정(renderShow/Hide)에 따라 바닐라 의상, 무기, 유전자, 헤디프 그래픽의 노출 여부를 판정.
+// 용도 : 와일드카드('*') 및 "All" 키워드를 지원하여 특정 레이어나 태그(Tag)를 정밀하게 차단/허용하며, 렌더 루프 내부에서 컴포넌트를 중복 탐색하지 않도록 최적화된 내부 헬퍼를 사용함.
 
 using RimWorld;
 using ShapeshifterFramework.Comps;

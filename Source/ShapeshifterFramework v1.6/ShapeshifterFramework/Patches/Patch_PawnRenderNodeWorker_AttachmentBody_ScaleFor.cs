@@ -1,4 +1,8 @@
-﻿using HarmonyLib;
+﻿// ShapeshifterFramework | Patches | Patch_PawnRenderNodeWorker_AttachmentBody_ScaleFor.cs
+// 목적 : 바디 애드온(Body Attachment)의 크기를 변신 폼의 스케일에 맞춰 확대/축소.
+// 용도 : ScaleFor에 Postfix로 개입해 ShapeshiftRenderUtility.ApplyDrawScale(useHeadScale: false)을 호출함.
+
+using HarmonyLib;
 using ShapeshifterFramework.Utilities;
 using UnityEngine;
 using Verse;

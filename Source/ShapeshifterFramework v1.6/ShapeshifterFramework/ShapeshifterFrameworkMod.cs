@@ -1,5 +1,6 @@
-﻿// ShapeshifterFrameworkMod.cs
-// 목적: 모드 엔트리. Settings 인스턴스 보관 및 설정창 연결.
+﻿// ShapeshifterFramework | Root | ShapeshifterFrameworkMod.cs
+// 목적 : 모드의 메인 진입점(Entry Point) 및 환경 설정 창(Mod Settings) UI 렌더링.
+// 용도 : 림월드 엔진 로드 시 가장 먼저 인스턴스화되어 설정 데이터(Settings)를 전역 공간에 할당하며, 유저가 인게임 '모드 설정' 메뉴를 열었을 때 DoSettingsWindowContents를 통해 UI를 그림.
 
 using UnityEngine;
 using Verse;

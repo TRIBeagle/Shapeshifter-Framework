@@ -1,4 +1,7 @@
-﻿// .NET Framework 4.8 / C# 7.3
+﻿// ShapeshifterFramework | Utilities | ShapeshiftVoiceUtility.cs
+// 목적 : 변신 중인 폰이 내는 소리(콜, 피격, 사망, 분노음)를 가로채어 폼 전용 사운드로 재생하기 위한 유틸리티.
+// 용도 : 런타임 캐시에서 사운드 Def를 즉각적으로 가져와 바닐라의 연령대(CurLifeStage) 피치/볼륨 계수를 보정하여 출력하며, 월드폰이나 드랍팟 탑승 등 폰의 좌표(Position)가 유효하지 않은 예외 상황의 에러를 방어함.
+
 using Verse;
 using Verse.Sound;
 

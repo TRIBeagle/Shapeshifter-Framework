@@ -1,10 +1,8 @@
 ﻿// ShapeshifterFramework | Compat | Compat_FacialAnimation_OverridesHook.cs
-// 목적   : Facial Animation과의 연동을 Harmony 훅으로 처리하여 변신/해제/로드 시점에만 개입,
-//          폼에 지정된 FA FaceTypeDef와 눈 색상(Color)을 적용·복원한다.
-// 용도   : CompShapeshifter의 ApplyForm/RemoveForm/PostExposeData를 후킹해 백업-오버라이드-원복을 수행.
-// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙 적용(주석만 정리, 로직 변경 없음).
-// 저장   : GameComponent(FAStateStore)에 Pawn별 Backup을 딥세이브. PostLoadInit에 정리(Cleanup).
-// 주의   : *TypeDef는 defName만 사용(백호환 미사용). 동일 오류(id)는 한 번만 경고(중복 억제).
+// 목적 : 변신 시 Facial Animation의 얼굴(FaceTypeDef)과 눈 색상(Color)을 폼(Form)에 정의된 데이터로 안전하게 덮어씌우고 해제 시 원복함.
+// 용도 : - FAStateStore (GameComponent) : Pawn별 원래 FA 상태를 딥세이브(Deep Save)하여 보관하며, 주기적으로 파괴된 폰의 데이터를 청소(Cleanup).
+//        - Harmony Hooks : CompShapeshifter의 ApplyForm(백업 및 적용), RemoveForm(원복), PostExposeData(로드 후 재적용) 시점에 개입하여 컴포넌트 간 직접적인 코드 의존성을 분리함.
+// 주의 : 외부 모드의 Def를 리플렉션으로 조작하므로, 찾을 수 없는 DefName이나 타입 오류 발생 시 동일 id당 1회만 경고를 출력하여 틱(Tick) 스팸을 억제함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Comps;

@@ -1,7 +1,7 @@
 ﻿// ShapeshifterFramework | Comps | CompUseEffect_ShiftTarget.cs
-// 목적   : 아이템 사용 시 Pawn을 변신시키는 실행 컴포넌트.
-// 용도   : <see cref="CompProperties_UseEffect_ShiftTarget"/> 설정을 참조하여 대상 Pawn을 변신 처리한다.
-// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙 적용(주석만 정리, 로직 변경 없음).
+// 목적 : 물약, 아티팩트 등 아이템(Use/Ingest) 사용 시 대상 폰을 변신시키는 실행 로직.
+// 용도 : 아이템 사용(DoEffect) 시점의 위치와 방향(Rotation)을 계산하여, '사용자가 바라보는 바로 앞 칸(FacingCell)'에 다른 폰이 있다면 해당 대상을, 없다면 사용자 자신을 타겟으로 지정하여 TryShiftPawn을 호출함.
+// 주의 : 단순 자가 버프가 아니라 방향 기반의 타겟팅 로직이 포함되어 있으므로, 아이템 사용 시 폰의 위치와 바라보는 방향이 중요하게 작용함.
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;

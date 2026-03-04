@@ -1,12 +1,7 @@
 ﻿// ShapeshifterFramework | Compat | Compat_FacialAnimation_HeadWorker_ScaleFor.cs
-// 목적   : Facial Animation 사용 시, NLFacialAnimationHeadNodeWorker가 그리는 "헤드" 노드에만
-//          변신 폼 스케일( form.bodyDrawScale * form.headDrawScale )을 반영하여 크기를 일치시킨다.
-// 용도   : Verse.PawnRenderNodeWorker.ScaleFor(...)에 Harmony Postfix를 부착하여, 대상 노드의 실제 worker가
-//          FacialAnimation의 헤드 워커일 때에만 배율을 곱해준다. (초상화/월드/맵 공통 경로 보호)
-// 변경   : 2025-09-22 v1.0 — 주석 규칙(Project Commenting Rules) 적용. 코드 로직 변경 없음.
-// 주의   : Facial Animation이 비활성/미탐지되면 패치 비적용(Prepare)로 빠져 안전운영.
-// 성능   : 리플렉션 접근은 최소화(캐시 타입/필드/프로퍼티 사용). 불필요한 연산은 조기 return으로 회피.
-// 비고   : 초상화 배율(portraitDrawScale)을 별도 고려하려면 본 파일이 아닌, 렌더 파라미터 확장부에서 일괄처리 권장.
+// 목적 : Facial Animation 모드 사용 시, 폰이 변신했을 때 FA의 '머리(Head)' 그래픽 크기가 변신 폼의 몸통 크기에 맞춰 정상적으로 확대/축소되도록 동기화.
+// 용도 : Verse.PawnRenderNodeWorker.ScaleFor 메서드에 Harmony Postfix로 개입하여, 대상 노드의 실제 Worker가 FA의 HeadWorker(NLFacialAnimationHeadNodeWorker)인 경우에만 폼의 스케일 배율을 적용.
+// 주의 : 리플렉션 비용 절감을 위해 대상 타입들을 ShapeshiftReflectionCache로 사전 캐싱함. 초상화나 월드맵 등 공통 렌더 경로를 보호하기 위해 대상 워커가 정확히 일치할 때만 작동함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;

@@ -1,7 +1,7 @@
-﻿// DynamicPawnRenderNodeSetup_ShapeshifterForm.cs
-// 목적: 활성 폼의 renderNodeProperties를 바닐라 렌더 트리에 동적으로 주입.
-// 용도: 폼별 추가 파츠를 Pawn 렌더 파이프라인에 합류시킴.
-// 주의: 폼 미활성/목록 비면 무시. 노드 생성 시 예외 방지(널가드) 필수.
+﻿// ShapeshifterFramework | Utilities | ShapeshiftFormDynamicPawnRenderNodeSetup.cs
+// 목적 : 활성화된 폼에 정의된 커스텀 렌더 노드(PawnRenderNodeProperties)를 바닐라 폰 렌더링 파이프라인(RenderTree)에 동적으로 주입.
+// 용도 : 폼에 지정된 nodeClass의 타입 정보를 리플렉션으로 분석해 알맞은 생성자(Constructor)를 동적으로 호출하여 노드 인스턴스를 생성함.
+// 주의 : 노드 생성 실패(예외) 시 게임이 터지는 것을 막기 위한 5단계 폴백(Fallback)이 적용되어 있으며, 디버그 로그는 120틱 쿨타임을 두어 스팸을 억제함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Comps;

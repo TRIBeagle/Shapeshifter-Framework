@@ -1,4 +1,8 @@
-﻿using HarmonyLib;
+﻿// ShapeshifterFramework | Patches | Patch_PawnRenderNodeWorker_Overlay_ScaleFor.cs
+// 목적 : 폰 위에 덧그려지는 상태 이상 오버레이 그래픽의 크기를 변신 스케일에 맞춤.
+// 용도 : 대상이 머리 레이어(OverlayLayer.Head)인지 판별하여 몸통과 머리의 각기 다른 배율을 정확히 구분하여 적용함.
+
+using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Utilities;
 using UnityEngine;

@@ -1,10 +1,7 @@
 ﻿// ShapeshifterFramework | Compat | Compat_HAR_AddComp.cs
-// 목적   : HAR(AlienRace) 계열 ThingDef에 CompProperties_Shapeshifter를 자동 주입한다.
-// 용도   : 게임 시작 시(StaticConstructorOnStartup) HAR 활성 여부를 확인하고,
-//          AlienRace.ThingDef_AlienRace 파생 ThingDef 중 Human을 제외한 대상에 컴프를 주입한다.
-// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙 적용(주석 정리만, 로직 변경 없음).
-// 주의   : 모드 비활성 시 무동작/무로그. 동일 경고는 CompatManager.HAR.ReportOnce 계열로 억제.
-// 비고   : 즉시 로그 대신 메트릭 적재 후 ReportOnce() 시점에서 요약 출력(added/deduped).
+// 목적 : Humanoid Alien Races (HAR) 기반의 커스텀 외계 종족들에게도 변신 능력을 부여하기 위한 컴포넌트 자동 주입.
+// 용도 : 게임 로딩(StaticConstructorOnStartup) 시점에 HAR이 활성화되어 있다면, XML에 정의된 모든 ThingDef_AlienRace (Human 제외)의 comps 리스트에 CompProperties_Shapeshifter를 동적으로 추가.
+// 주의 : 이미 컴포넌트가 추가되어 있을 경우를 대비해 중복을 제거(deduped)하는 로직이 포함되어 있으며, 주입 결과는 CompatManager를 통해 메트릭으로 보고됨.
 
 using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;

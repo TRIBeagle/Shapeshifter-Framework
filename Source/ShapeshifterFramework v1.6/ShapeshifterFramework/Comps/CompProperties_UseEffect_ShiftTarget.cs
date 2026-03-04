@@ -1,7 +1,6 @@
 ﻿// ShapeshifterFramework | Comps | CompProperties_UseEffect_ShiftTarget.cs
-// 목적   : 아이템 사용 효과로 Pawn을 변신시키는 속성 정의 컨테이너.
-// 용도   : <see cref="CompUseEffect_ShiftTarget"/> 와 연결되어 대상 Pawn을 Props에 지정된 폼으로 변신시킨다.
-// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙에 맞춰 정리 (주석만 수정, 로직 변경 없음).
+// 목적 : 소비형 아이템(Use/Ingest)을 사용했을 때 발생하는 변신 효과를 XML에 정의하기 위한 속성 클래스.
+// 용도 : 적용할 폼(formDefName)과 성공 확률(successChance)을 보관하며, CompUseEffect_ShiftTarget과 연결됨.
 
 using RimWorld;
 

@@ -1,7 +1,6 @@
-﻿// .NET Framework 4.8 / C# 7.3
-// 목적: 외부(CompShapeshifter 등)에서 간단히 호출하는 프런트 API.
-// - 폼 설정의 딜레이/쿨다운을 읽어 TransformFxRunner에 enqueue.
-// - 기존 PlayEnterFx/PlayExitFx 시그니처 그대로 유지(내부가 큐로 변경).
+﻿// ShapeshifterFramework | Utilities | ShapeshiftTransformFxUtility.cs
+// 목적 : CompShapeshifter 등에서 FX 재생을 요청할 때 사용하는 간편한 정적(Static) API.
+// 용도 : 대상 폼의 설정(Delay, Cooldown)을 읽어와 ShapeshiftTransformFxRunner의 실행 큐(Enqueue)에 이펙트 발동을 스케줄링함.
 
 using Verse;
 

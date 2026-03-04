@@ -1,7 +1,6 @@
-﻿// .NET Framework 4.8 / C# 7.3
-// ShapeshiftVerbShootProvider.cs
-// 목적: 변신 폼 원거리 verb 우클릭 강제 사격 메뉴 생성(토글 OFF 무시)
-// 변경: LaunchProjectile 계열은 defaultProjectile이 없으면 메뉴에서 제외(발사체 NRE 방지)
+﻿// ShapeshifterFramework | Utilities | ShapeshiftVerbShootProvider.cs
+// 목적 : 드래프트된(Drafted) 변신 폰이 타겟을 우클릭했을 때 나타나는 '플로트 메뉴(Float Menu)'에 폼 전용 원거리 공격 명령을 추가.
+// 용도 : 자동공격 토글(Auto-Attack)이 꺼져 있더라도 플레이어가 강제로 특정 Verb를 사용해 사격(AttackStatic Job)하도록 명령을 생성하며, 발사체가 없는 버그 무기 사용 시도(NRE)를 방어함.
 
 using RimWorld;
 using System;

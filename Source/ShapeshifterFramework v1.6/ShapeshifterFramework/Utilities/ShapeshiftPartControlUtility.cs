@@ -1,8 +1,7 @@
-﻿// Utilities/ShapeshiftPartControlUtility.cs
-// 목적   : 변신 폼 파츠 제어(Default/Hidden/Replace) 공용 유틸
-// 핵심   : SelectByGender 제거. male/female는 "mode만" 우선, 나머지 필드는 null이면 base 값 유지(merge).
-// 수영   : 바디 수영 replacement가 선택되면, swimmingShaderTypeDefName -> shaderTypeDefName -> (바디면 Transparent) 순으로 셰이더 결정.
-// 성능   : 렌더 핫패스. LINQ/할당 없음. ShaderTypeDefName -> Shader 캐시로 DefDatabase 조회 최소화.
+﻿// ShapeshifterFramework | Utilities | ShapeshiftPartControlUtility.cs
+// 목적 : 변신 폼의 각 렌더 노드 파츠(머리, 몸통, 수염 등)에 대한 렌더링 제어(Default, Hidden, Replace)를 수행하는 헬퍼.
+// 용도 : 폰의 성별(Gender) 설정과 폼의 기본 설정을 병합(Merge)하여 최우선 규칙을 판별하며, 수영 타일(Water) 진입 시 전용 텍스처와 셰이더(Shader)로 교체하는 로직을 담당함.
+// 주의 : 렌더 핫패스(Hot-path)에서 실행되므로 LINQ를 배제하고, 동적 셰이더 탐색 결과를 Dictionary에 캐싱하여 성능 저하를 막음.
 
 using System.Collections.Generic;
 using UnityEngine;

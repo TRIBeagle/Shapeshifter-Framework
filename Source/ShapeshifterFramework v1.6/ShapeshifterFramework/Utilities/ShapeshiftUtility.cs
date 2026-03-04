@@ -1,6 +1,7 @@
-﻿// ShapeshiftUtility.cs
-// 목적: 변신 관련 보조 유틸(컴포 조회/상태 판정/안전한 Def 조회).
-// 기준: RimWorld 1.6 / .NET 4.8 / C# 7.3
+﻿// ShapeshifterFramework | Utilities | ShapeshiftUtility.cs
+// 목적 : 프레임워크 내에서 가장 자주 사용되는 기본 판정 및 조회 기능들을 모아둔 공용 유틸.
+// 용도 : 폰의 CompShapeshifter 획득, 변신 중인지 여부(IsShapeShifting) 판정, 특정 Def의 존재 유무를 예외 없이 확인하는 안전한 조회(GetDefSafe) 기능을 제공함.
+
 using ShapeshifterFramework.Comps;
 using Verse;
 

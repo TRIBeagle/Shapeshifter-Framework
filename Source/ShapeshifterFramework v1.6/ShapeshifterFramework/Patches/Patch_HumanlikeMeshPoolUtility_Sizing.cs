@@ -1,7 +1,6 @@
-﻿// Patch_HumanlikeMeshPoolUtility_Sizing.cs
-// 목적: 바닐라 머리/몸 메쉬 크기 산출값을 폼 스케일로 치환.
-// 용도: Postfix에서 Effective(...)로 얻은 target 값으로 __result 교체.
-// 주의: MeshSet 캐시 구조 특성상 “대입” 방식 필요(곱셈 불가).
+﻿// ShapeshifterFramework | Patches | Patch_HumanlikeMeshPoolUtility_Sizing.cs
+// 목적 : 폰의 몸통, 머리, 머리카락, 수염의 '실제 렌더링 메쉬(Mesh) 크기'를 변신 폼의 스케일 배율에 맞춰 동적으로 생성.
+// 용도 : GraphicMeshSet을 가져오는 4개의 바닐라 메서드에 Postfix로 개입하여, ShapeshiftSizeFactorResolver에서 계산된 배수(Width, SizeFactor)를 적용한 새로운 크기의 메쉬 셋을 반환함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;

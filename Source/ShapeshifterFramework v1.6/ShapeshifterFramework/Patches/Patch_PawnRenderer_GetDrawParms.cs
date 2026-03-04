@@ -1,7 +1,6 @@
-﻿// Patch_PawnRenderer_GetDrawParms.cs
-// 목적: 폼 오프셋 + (포트레잇 전용) 전체 스케일 적용 + (수영) NoBody 플래그 조건부 해제
-// 조건: C# 7.3 호환
-// 비고: 수영 NoBody 해제는 ParallelPreRenderPawnAt Postfix로는 늦어서 효과 없음(PreDraw 이후).
+﻿// ShapeshifterFramework | Patches | Patch_PawnRenderer_GetDrawParms.cs
+// 목적 : 변신 폼의 바디 오프셋, UI 초상화 전용 스케일 배율을 적용하고 수영 관련 치명적 렌더링 버그를 수정.
+// 용도 : GetDrawParms 결과 매트릭스에 폼 오프셋 및 UI(Portrait) 스케일을 주입. 머리가 없는(Hidden) 폼이 수영할 때 폰 전체가 투명화되는 바닐라 NoBody 플래그 버그를 조건부로 해제함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;

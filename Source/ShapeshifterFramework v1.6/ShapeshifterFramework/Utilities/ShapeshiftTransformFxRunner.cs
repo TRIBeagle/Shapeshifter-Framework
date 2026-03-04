@@ -1,9 +1,6 @@
-﻿// .NET Framework 4.8 / C# 7.3
-// 목적: 변신 FX(Enter/Exit) 실행을 안전하게 스케줄(딜레이/쿨다운)하고, 맵 상태를 재검사한 뒤 원샷 실행.
-// - GameComponent로 한 틱마다 큐를 확인. (세이브 불필요 — 런타임 전용)
-// - Dictionary TryGetValue로 가볍게 쿨다운 관리.
-// - 예외/NRE 방지 가드 다수.
-// - 추가 최적화: 오래된 쿨다운 엔트리 정리, Fleck 생성 상한 적용.
+﻿// ShapeshifterFramework | Utilities | ShapeshiftTransformFxRunner.cs
+// 목적 : 변신/해제 시 발생하는 시각/청각 이펙트(FX)의 딜레이, 쿨다운 스케줄링 및 실행을 관리하는 GameComponent.
+// 용도 : 이펙트 다중 호출로 인한 소음 스팸과 과부하를 막기 위해 큐(Queue)와 쿨다운을 적용하며, 매 프레임 발생하는 가비지(GC) 할당을 막기 위해 List 기반의 재사용 버퍼(_removeBuffer)를 활용함.
 
 using RimWorld;
 using System;

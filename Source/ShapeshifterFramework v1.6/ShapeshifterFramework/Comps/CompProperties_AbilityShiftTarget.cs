@@ -1,7 +1,6 @@
 ﻿// ShapeshifterFramework | Comps | CompProperties_AbilityShiftTarget.cs
-// 목적   : 대상 Pawn을 지정된 폼(defName)으로 변신시키는 Ability 속성 정의
-// 용도   : CompAbilityEffect_ShiftTarget에서 참조하여 변신 로직 실행
-// 변경   : 2025-09-22 신규 작성 (주석 규칙 일원화 적용)
+// 목적 : XML에서 Ability(초능력/마법)의 변신 효과를 정의하기 위한 속성(Properties) 클래스.
+// 용도 : 대상에게 적용할 폼의 defName(formDefName)과 변신 성공 확률(successChance, 기본값 1.0)을 설정값으로 보관하며, CompAbilityEffect_ShiftTarget과 연결(compClass)됨.
 
 using RimWorld;
 

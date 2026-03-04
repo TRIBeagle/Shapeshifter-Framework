@@ -1,8 +1,8 @@
 ﻿// ShapeshifterFramework | Comps | CompAbilityEffect_ShiftTarget.cs
-// 목적   : 지정 대상 Pawn을 변신시키는 능력(Ability) 효과 컴포넌트.
-// 용도   : RimWorld.CompAbilityEffect를 상속하여 대상의 Pawn을 추출하고,
-//          ShapeshiftTargetUtility.TryShiftPawn(pawn, formDefName, successChance)을 호출한다.
-// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙 적용(주석만 정리, 로직 변경 없음).
+// 목적 : 초능력이나 마법(Ability)을 사용하여 지정한 대상(Pawn)을 강제로 변신시키는 효과(Effect) 컴포넌트.
+// 용도 : - CanApplyOn: 대상이 유효한 폰(Pawn)이고 살아있는지(Dead == false) 1차로 판별.
+//        - Apply: ShapeshiftTargetUtility.TryShiftPawn을 호출하여 폼(formDefName)과 확률(successChance)을 기반으로 실제 변신을 시도.
+// 주의 : 능력 자체의 타겟팅 조건 외에, 대상이 변신 가능한지(Eligibility)에 대한 정밀한 검증은 유틸리티 내부의 엔진 게이트에 완전히 위임함.
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;

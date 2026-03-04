@@ -1,10 +1,6 @@
 ﻿// ShapeshifterFramework | Utilities | ShapeshiftReflectionCache.cs
-// 목적   : 리플렉션(필드/프로퍼티/메서드) 접근을 일원화·캐싱하여 성능/안정성을 확보한다.
-// 용도   : HAR/AlienRace/FA 등 외부 모드와 바닐라의 비공개 멤버 접근을 공통 헬퍼로 제공(Setter 포함).
-// 변경   : 2025-09-22 v1.0 — 프로젝트 주석 규칙 적용(주석만 정리, 로직 변경 없음).
-//        : 2026-02-02 v1.1 — Pawn_PathFollower.pawn + PawnRenderer PreRenderResults.parms 헬퍼 추가.
-// 성능   : Field/Property/Method 단위 ConcurrentDictionary 캐시. AccessTools.FieldRef 우선 사용 후 폴백.
-// 비고   : .NET Framework 4.8 / C# 7.3 호환. 예외는 원칙적으로 삼켜서 호출부 안전성 보장.
+// 목적 : 바닐라 및 타 모드의 비공개 멤버(Field, Property, Method)에 접근하는 리플렉션 연산 비용과 충돌 위험을 최소화하는 중앙 집중식 캐시 매니저.
+// 용도 : ConcurrentDictionary와 AccessTools.FieldRef를 혼용해 읽기/쓰기 속도를 극대화하며, 외부 모드가 없거나 버전이 달라 멤버 탐색에 실패할 경우 예외(Exception)를 삼키고 null/false를 반환해 게임 크래시를 완벽히 방어함.
 
 using HarmonyLib;
 using System;

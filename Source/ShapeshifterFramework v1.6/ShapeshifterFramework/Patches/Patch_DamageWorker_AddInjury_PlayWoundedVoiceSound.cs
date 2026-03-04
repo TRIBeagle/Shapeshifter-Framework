@@ -1,8 +1,6 @@
 ﻿// ShapeshifterFramework | Patches | Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound.cs
-// 목적  : Pawn 부상음 재생을 변신 폼의 soundWounded로 대체.
-// 용도  : DamageWorker_AddInjury.ApplyToPawn(...) 경로에서 호출되는 private 메서드
-//         PlayWoundedVoiceSound를 후킹하여, 변신 중이면 폼 고유 사운드를 재생.
-// 변경  : 2025-09-23 v1.0 — 프로젝트 주석 규칙 적용.
+// 목적 : 폰이 데미지를 입었을 때 바닐라의 종족 부상음 대신 폼 전용 피격음(Wounded)을 재생.
+// 용도 : 데미지 적용 자체는 건드리지 않고, private 사운드 재생 메서드인 PlayWoundedVoiceSound에만 Prefix로 개입하여 폼 사운드가 있으면 원본 사운드 재생을 스킵(return false)함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;

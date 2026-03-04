@@ -1,4 +1,8 @@
-﻿// .NET 4.8 / C# 7.3
+﻿// ShapeshifterFramework | Utilities | ShapeshiftApplyHediffUtility.cs
+// 목적 : 변신 시 폼에 정의된 헤디프(Hediff)와 인공 신체(AddedPart)를 폰에게 안전하게 부여하고 관리하는 전담 유틸리티.
+// 용도 : 대상 부위(전신, 특정 파츠, 그룹)를 탐색하여 헤디프를 추가하며, 인공 장기의 경우 정책(StrictFleshOnly, RegrowFleshOnly, ForceAdd)에 따라 기존 결손/인공 부위와의 충돌을 정밀하게 제어함.
+// 주의 : 원상 복구를 위해 추가/교체된 파츠의 원래 상태(WasMissingBefore, PreExistingAdded)를 ShapeshiftPartRestoreRecord에 기록하며, 헤디프 삭제 시 불필요한 캐시 갱신(DirtyCache)이 발생하지 않도록 최적화됨.
+
 using System.Collections.Generic;
 using Verse;
 

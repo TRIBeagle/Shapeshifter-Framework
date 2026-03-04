@@ -1,4 +1,8 @@
-﻿using HarmonyLib;
+﻿// ShapeshifterFramework | Patches | Patch_Pawn_DoKillSideEffects.cs
+// 목적 : 폰이 사망할 때 출력되는 바닐라 종족 사망음 대신 폼에 지정된 전용 사망음(DeathVoice)을 재생.
+// 용도 : Harmony MethodReplacer를 사용하여 바닐라 LifeStageUtility 사운드 호출부를 모드 전용 Wrapper 메서드로 통째로 치환하며, 타 모드와의 충돌을 막는 Fail-safe 구조를 갖춤.
+
+using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Utilities;
 using System;

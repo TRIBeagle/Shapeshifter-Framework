@@ -1,8 +1,6 @@
 ﻿// ShapeshifterFramework | Extensions | PolymorphProjectileExtension.cs
-// 목적  : 투사체(Projectile) Def에 “명중 시 폴리모프” 동작을 부여하기 위한 확장 데이터 컨테이너.
-// 용도  : ThingDef(Projectile) 혹은 Verb/Ability의 Def에 <modExtensions>로 붙여서
-//         명중 대상에게 폼 적용(확률/범위 설정)을 지시한다.
-// 변경  : 2025-09-23 v1.0 — 프로젝트 주석 규칙 적용(주석만 정리, 로직 변경 없음).
+// 목적 : 총알이나 마법 등 투사체(Projectile) 명중 시 대상을 변신시키기 위한 속성(Data Container) 확장 클래스.
+// 용도 : ThingDef의 <modExtensions>에 부착되어, 타겟에게 적용할 폼(formDefName), 변신 성공 확률(successChance), 그리고 광역 적용을 위한 반경(aoeRadius) 설정값을 제공함.
 
 using Verse;
 

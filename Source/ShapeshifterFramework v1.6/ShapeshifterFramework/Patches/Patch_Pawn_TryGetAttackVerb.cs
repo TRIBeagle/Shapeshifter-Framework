@@ -1,9 +1,6 @@
-﻿// .NET Framework 4.8 / C# 7.3
-// Patch_Pawn_TryGetAttackVerb.cs
-// 목적:
-//  - 플레이어 강제 사격(AttackStatic + playerForced) 중에는 해당 Job의 verbToUse만 사용하도록 고정.
-//    → 수동 사격 시 다른 shapeshift verb가 동시에 발사되는 현상 방지
-//  - (옵션) 자동사격 경로에서는 우리 토글을 반영(원거리 verb만 토글 적용)
+﻿// ShapeshifterFramework | Patches | Patch_Pawn_TryGetAttackVerb.cs
+// 목적 : 유저가 강제 공격을 지시하거나 자동 사격(Auto-attack)이 발동할 때, 변신 폼의 무기가 의도대로 선택되도록 통제.
+// 용도 : 유저가 특정 Verb로 강제 공격 중일 때는 다른 Verb가 섞여 나가지 않도록 고정하며, 자동 사격 시에는 UI 지즈모에서 꺼둔(Toggle OFF) Verb가 발사되지 않도록 필터링함.
 
 using HarmonyLib;
 using RimWorld;

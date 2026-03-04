@@ -1,4 +1,7 @@
-﻿// Patch_PawnRenderer_GetBodyPos.cs (C# 7.3)
+﻿// ShapeshifterFramework | Patches | Patch_PawnRenderer_GetBodyPos.cs
+// 목적 : 변신 폼의 거대한 몸집(또는 특수 외형)이 침대나 이불 밑에 렌더링되어 사라지는 시각적 어색함을 해결.
+// 용도 : 플레이어 소속 폰이 침대에 누워있을 때, 바닐라가 바디 렌더링을 끄려는 것을 후처리(Postfix)로 무시하고 showBody를 강제로 true로 덮어씌움.
+
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Utilities;

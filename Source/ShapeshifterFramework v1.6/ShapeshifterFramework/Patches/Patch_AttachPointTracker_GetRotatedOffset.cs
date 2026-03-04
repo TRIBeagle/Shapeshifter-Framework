@@ -1,7 +1,7 @@
 ﻿// ShapeshifterFramework | Patches | Patch_AttachPointTracker_GetRotatedOffset.cs
-// 목적  : AttachPointTracker.GetRotatedOffset 결과를 변신 크기에 맞춰 보정.
-// 용도  : Pawn의 attach point(무기/장비 위치 등) 오프셋이 변신 크기에 맞도록 조정.
-// 변경  : 2025-09-23 v1.0 — 초기 작성.
+// 목적 : 폰이 무기나 장비를 들고 있을 때, 손(Attach Point)의 위치를 변신 폼의 크기에 맞춰 보정.
+// 용도 : Postfix를 통해 바닐라의 attachPointScaleFactor와 폼의 타겟 배율을 비교하여 무기가 공중에 붕 뜨거나 파묻히지 않도록 Offset(Vector3)에 배수(Multiplier)를 곱해줌.
+// 주의 : Priority.Last를 적용하여 다른 애니메이션 모드의 오프셋 연산이 끝난 후 최종적으로 크기를 뻥튀기함.
 
 using HarmonyLib;
 using RimWorld;

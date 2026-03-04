@@ -1,4 +1,7 @@
-﻿// .NET Framework 4.8 / C# 7.3
+﻿// ShapeshifterFramework | Patches | Patch_PawnWoundDrawer_WriteCache.cs
+// 목적 : 상처(Wound) 오버레이를 그릴 때, 폰의 피/살점 타입(FleshType)을 바닐라 종족이 아닌 폼에 지정된 타입(기계, 곤충 등)으로 치환.
+// 용도 : Transpiler를 이용해 get_FleshType 호출을 ShapeshiftOverlayUtility 헬퍼 호출로 교체함. 바닐라 시그니처 변경 시 크래시를 방지하기 위해 파라미터 인덱스를 동적으로 탐색하는 초고도 안전망이 설계됨.
+
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Utilities;

@@ -1,9 +1,6 @@
-﻿// Patch_PawnRenderer_DrawShadowInternal.cs
-// 목적   : 변신 폼이 큰 형태로 바뀔 때 바닥 그림자(ellipse)도 같이 바뀌게 함.
-// 추가   : "수영 텍스처를 사용 중"이면(물 타일 + swimmingReplacementTexPath 선택 상태)
-//          바닐라 동물 수영과 동일하게 그림자 자체를 스킵한다.
-// 이유   : 변신 Pawn은 pawn.Swimming 플래그가 false여도 수영 텍스처를 사용할 수 있어,
-//          바닐라 조건(pawn.Swimming)만으로는 그림자 스킵이 보장되지 않음.
+﻿// ShapeshifterFramework | Patches | Patch_PawnRenderer_DrawShadowInternal.cs
+// 목적 : 폰의 바닥 그림자(Shadow) 크기와 오프셋을 변신 폼의 거대한 덩치에 맞게 보정.
+// 용도 : Graphic_Shadow를 커스텀 데이터로 생성해 캐싱하여 렌더링함. 특히, 육지 타일이지만 물속 전용 텍스처(SwimmingReplacement)가 적용 중일 때는 바닐라 수영처럼 그림자 자체를 스킵(return false)하는 디테일이 포함됨.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;

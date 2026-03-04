@@ -1,10 +1,9 @@
 ﻿// ShapeshifterFramework | Debugs | Shapeshifter_DebugActions.cs
-// 목적  : Debug(Action) 탭에 ‘Shapeshifter Framework’ 카테고리를 추가하여
-//         - 현재 폼 주요 효과를 한눈에 확인(Inspect)
-//         - 폼 사운드 즉시 재생(Play)
-//         - 활성 폼 전체 요약을 로그로 덤프(Dump)
-//         를 지원한다.
-// 변경  : 2025-09-23 v1.0 — 프로젝트 주석 규칙 적용(주석·구분만 정리, 로직 무변경)
+// 목적 : 림월드 개발자 모드(Dev Mode)에서 폼(Form) 설정값이 인게임에 정상 적용되는지 실시간으로 검증하기 위한 디버그 도구 모음.
+// 용도 : - Inspect Active Form : 현재 폰에 적용된 폼의 핵심 효과(그래픽, 파츠, 스탯 보정치 등)를 플로트 메뉴로 요약 표시.
+//        - Play Form Sounds : 폼에 정의된 각종 사운드(보이스, 피격, 사망, 섭취음 등)를 즉시 테스트 재생.
+//        - Dump Active Form to Log : 폼의 모든 세부 데이터(렌더 필터, Verb, Tool 등)를 콘솔 로그로 전문 덤프(Dump).
+// 주의 : 바닐라 DebugAction 패턴을 준수하며, 인게임 실제 플레이 로직에는 관여하지 않고 오직 모더의 FormDef 세팅 검증 및 디버깅 편의를 위해서만 작동함.
 
 using LudeonTK;
 using RimWorld;
