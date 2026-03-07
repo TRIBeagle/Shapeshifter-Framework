@@ -11,27 +11,27 @@ namespace ShapeshifterFramework.Utilities
     [StaticConstructorOnStartup]
     public static class ShapeshiftTextureUtility
     {
-        // 1. 기본 아이콘 고정 캐시 (게임 시작 시 미리 메모리에 올려둠)
+        // 기본 아이콘 고정 캐시
         public static readonly Texture2D DefaultEnterIcon = ContentFinder<Texture2D>.Get("UI/Commands/SSF_Shift_Enter", true);
         public static readonly Texture2D DefaultRevertIcon = ContentFinder<Texture2D>.Get("UI/Commands/SSF_Shift_Revert", true);
 
-        // 2. 폼(Def)별 커스텀 아이콘을 기억해둘 메모리 장부(Dictionary)
+        // 폼별 커스텀 아이콘 캐시
         private static Dictionary<ShapeshiftFormDef, Texture2D> enterIconCache = new Dictionary<ShapeshiftFormDef, Texture2D>();
         private static Dictionary<ShapeshiftFormDef, Texture2D> revertIconCache = new Dictionary<ShapeshiftFormDef, Texture2D>();
 
-        // 변신 아이콘 호출기
+        // 변신 아이콘 조회
         public static Texture2D GetEnterIcon(ShapeshiftFormDef form)
         {
             if (form == null) return DefaultEnterIcon;
 
-            // 장부에 이미 찾아둔 아이콘이 있으면 0.0001초 만에 바로 반환
+            // 캐시 히트 시 즉시 반환
             if (enterIconCache.TryGetValue(form, out Texture2D tex))
                 return tex;
 
-            // 장부에 없으면 (최초 1회만 여기로 들어옴)
+            // 최초 1회 로드
             if (!string.IsNullOrEmpty(form.gizmoIconPathEnter))
             {
-                // XML에 적힌 경로로 찾되, 만약 해당 경로에 이미지가 없으면 기본 아이콘으로 안전하게 폴백
+                // 경로 탐색, 실패 시 기본 아이콘 폴백
                 tex = ContentFinder<Texture2D>.Get(form.gizmoIconPathEnter, false) ?? DefaultEnterIcon;
             }
             else
@@ -39,12 +39,12 @@ namespace ShapeshifterFramework.Utilities
                 tex = DefaultEnterIcon;
             }
 
-            // 찾은 아이콘을 장부에 기록하고 반환
+            // 캐시에 기록 후 반환
             enterIconCache[form] = tex;
             return tex;
         }
 
-        // 해제 아이콘 호출기
+        // 해제 아이콘 조회
         public static Texture2D GetRevertIcon(ShapeshiftFormDef form)
         {
             if (form == null) return DefaultRevertIcon;

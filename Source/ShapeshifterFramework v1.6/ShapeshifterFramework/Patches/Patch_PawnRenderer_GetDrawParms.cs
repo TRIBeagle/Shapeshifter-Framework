@@ -27,9 +27,7 @@ namespace ShapeshifterFramework.Patches
             if (comp == null || !comp.isTransformed || comp.currentForm == null) return;
             var form = comp.currentForm;
 
-            // ── A) 수영 중 NoBody 해제(헤드 숨김 폼이 완전 투명 되는 문제 방지)
-            // 원인: 바닐라가 swimming일 때 PawnRenderFlags.NoBody를 켬.
-            // 해결: GetDrawParms 단계에서 __result.flags에서 NoBody를 조건부로 빼야 PreDraw에 반영됨.
+            // A) 수영 중 NoBody 해제 (헤드 숨김 폼 투명화 방지)
             if (pawn.Swimming && (flags & PawnRenderFlags.NoBody) != 0)
             {
                 ShapeshiftFormDef runForm;
@@ -42,7 +40,7 @@ namespace ShapeshifterFramework.Patches
                 }
             }
 
-            // ── B) 공통: 바디 오프셋(맵/포트레잇 동일)
+            // B) 바디 오프셋
             Vector2 add2 = form.bodyOffset.HasValue ? form.bodyOffset.Value : Vector2.zero;
             if (add2 != Vector2.zero)
             {
@@ -55,7 +53,7 @@ namespace ShapeshifterFramework.Patches
                 __result.matrix = m;
             }
 
-            // ── C) 포트레잇 전용: 전체 균등 스케일 (옵션 허용 시)
+            // C) 포트레잇 전용 스케일
             if ((flags & PawnRenderFlags.Portrait) != 0)
             {
                 var settings = ShapeshifterFrameworkMod.Settings;
@@ -65,7 +63,7 @@ namespace ShapeshifterFramework.Patches
                     if (!Mathf.Approximately(s, 1f))
                     {
                         Matrix4x4 m = __result.matrix;
-                        // 루트 TRS 기저 벡터에 배수 곱 (HAR는 별도 패치에서 동기화)
+                        // TRS 기저 벡터에 배수 곱
                         m.m00 *= s; // X
                         m.m11 *= s; // Y
                         m.m22 *= s; // Z

@@ -7,11 +7,7 @@ using Verse.Sound;
 
 namespace ShapeshifterFramework.Utilities
 {
-    /// <summary>
-    /// 보이스 재생 시 폼/캐시를 우선적으로 선택하는 헬퍼.
-    /// - 변신 중일 때만 폼 값을 반환.
-    /// - 변신 해제/Despawn/사망 시 캐시는 Comp에서 정리(별도 구현).
-    /// </summary>
+    /// <summary>보이스 재생 시 폼/캐시 우선 선택 헬퍼.</summary>
     internal static class ShapeshiftVoiceUtility
     {
         public static bool TryGetCall(Pawn pawn, out SoundDef def)
@@ -41,10 +37,7 @@ namespace ShapeshifterFramework.Utilities
             return ShapeshiftRuntimeCaches.AngryByPawn.TryGetValue(pawn, out def) && def != null;
         }
 
-        /// <summary>
-        /// 바닐라가 유전자/뮤턴트 오버라이드 시 pitch/volume을 CurLifeStage 기준으로 리셋하므로
-        /// 폼 사운드도 동일 규칙을 적용: pitch/volume = CurLifeStage 값 × 외부 volumeFactor.
-        /// </summary>
+        /// <summary>CurLifeStage 기준 pitch/volume 적용 후 사운드 재생.</summary>
         public static void PlayOneShotAt(Pawn pawn, SoundDef def, float volumeFactor)
         {
             if (pawn == null || def == null) return;

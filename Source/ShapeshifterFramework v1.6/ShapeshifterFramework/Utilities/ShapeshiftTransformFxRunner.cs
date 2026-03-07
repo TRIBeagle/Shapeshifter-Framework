@@ -57,7 +57,7 @@ namespace ShapeshifterFramework.Utilities
                 var item = _queue[i];
                 if (item.fireTick > now) continue;
 
-                // [수정] TryPlayNow를 먼저 실행하고 RemoveAt을 나중에 — 예외 시에도 큐 아이템 유실 방지
+                // TryPlayNow 먼저 실행, RemoveAt 후처리 (예외 시 유실 방지)
                 TryPlayNow(item.pawn, item.form, item.isEnter);
                 _queue.RemoveAt(i);
             }
@@ -65,7 +65,7 @@ namespace ShapeshifterFramework.Utilities
             // ── 오래된 쿨다운 엔트리 정리 ──
             if (_cooldowns.Count > 0 && (now % 250 == 0)) // 250틱(약4초)마다 점검
             {
-                // var toRemove = new List<int>() 대신 재활용 리스트 사용
+                // 재활용 리스트로 GC 할당 방지
                 _removeBuffer.Clear();
                 foreach (var kv in _cooldowns)
                 {

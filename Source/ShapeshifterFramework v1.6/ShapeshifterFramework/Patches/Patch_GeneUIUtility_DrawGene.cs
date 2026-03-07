@@ -54,7 +54,7 @@ namespace ShapeshifterFramework.Patches
             return target;
         }
 
-        // 후처리: 억제 대상일 때 디밍 + 레드 슬래시 + 얇은 외곽선 + 툴팁
+        // 억제 대상: 디밍 + 외곽선 + 툴팁
         static void Postfix(Rect geneRect, Gene gene)
         {
             if (gene == null) return;
@@ -63,16 +63,16 @@ namespace ShapeshifterFramework.Patches
 
             if (!ShapeshiftVisualFilter.ShouldHideGeneForUI(pawn, gene)) return;
 
-            // ── 디밍(아주 옅음)
+            // 디밍
             var prevCol = GUI.color;
             GUI.color = new Color(0f, 0f, 0f, 0.28f);
             Widgets.DrawTextureFitted(geneRect, BaseContent.BlackTex, 1f);
 
-            // ── 얇은 외곽선(매우 옅은 그레이)
+            // 외곽선
             GUI.color = new Color(1f, 1f, 1f, 0.12f);
             Widgets.DrawBox(geneRect, 1);
 
-            // ── 툴팁
+            // 툴팁
             var comp = pawn.TryGetComp<CompShapeshifter>();
             string formLabel = (comp != null && comp.isTransformed && comp.currentForm != null && !string.IsNullOrEmpty(comp.currentForm.label))
                 ? comp.currentForm.label

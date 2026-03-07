@@ -15,7 +15,7 @@ namespace ShapeshifterFramework.Patches
     {
         public static void Postfix(PawnDrawParms parms, ref Vector3 __result)
         {
-            // 몸통(Body) 기준이므로 useHeadScale을 false로 설정하여 전체 크기(Scale) 팽창
+            // 몸통 기준 스케일 적용
             ShapeshiftRenderUtility.ApplyDrawScale(parms, ref __result, useHeadScale: false);
         }
     }

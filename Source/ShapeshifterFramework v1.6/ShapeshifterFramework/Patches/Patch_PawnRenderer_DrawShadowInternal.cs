@@ -48,13 +48,13 @@ namespace ShapeshifterFramework.Patches
             Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
             if (pawn == null) return true;
 
-            // 비행은 바닐라 전용 처리(FlightShadowMaterial 등) 쓰므로 건드리지 않음
+            // 비행 시 바닐라 처리
             if (pawn.Flying) return true;
 
-            // 바닐라: 수영 관련 상태면 그림자 자체를 안 그림
+            // 수영 시 그림자 스킵
             if (pawn.Swimming || pawn.DrawNonHumanlikeSwimmingGraphic) return true;
 
-            // 변신 폼에서 수영 텍스처 사용 시 그림자 스킵
+            // 폼 수영 텍스처 시 그림자 스킵
             ShapeshiftFormDef form;
             if (ShapeshiftPartControlUtility.ShouldRun(pawn, out form) && form != null)
             {
@@ -66,14 +66,14 @@ namespace ShapeshifterFramework.Patches
                         string swimPath;
                         if (ShapeshiftPartControlUtility.TryGetBodySwimmingReplacementPath(pawn, form, out swimPath))
                         {
-                            // 수영 텍스처 조건을 충족하면: 원본도, 오버라이드도 그리지 않음
+                            // 수영 텍스처 충족 시 그림자 생략
                             return false;
                         }
                     }
                 }
             }
 
-            // 변신 아니거나, 수영 텍스처를 쓰는 상태가 아니면: 기존 오버라이드(육지용)만 적용
+            // 육지용 그림자 오버라이드
             if (form == null)
                 return true;
 

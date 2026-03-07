@@ -16,12 +16,12 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPriority(Priority.Last)]
     public static class Patch_FloatMenuMakerMap_GetOptions
     {
-        // 원형: public static List<FloatMenuOption> GetOptions(List<Pawn> selectedPawns, Vector3 clickPos, out FloatMenuContext context)
+        // GetOptions Postfix
         static void Postfix(List<Pawn> selectedPawns, Vector3 clickPos, ref FloatMenuContext context, ref List<FloatMenuOption> __result)
         {
             if (__result == null || __result.Count == 0) return;
 
-            // 기준 Pawn
+            // 대상 Pawn 확인
             Pawn pawn = null;
             if (context != null && context.FirstSelectedPawn != null) pawn = context.FirstSelectedPawn;
             else if (selectedPawns != null && selectedPawns.Count > 0) pawn = selectedPawns[0];
@@ -43,13 +43,13 @@ namespace ShapeshifterFramework.Patches
                 if (opt == null) continue;
                 if (opt.Disabled) continue;
 
-                // 후보 대상 Thing만 안전하게 추출(월드타겟은 무시)
+                // 대상 Thing 추출
                 Thing target = opt.iconThing;
                 if (target == null)
                 {
                     var ct = opt.revalidateClickTarget as Thing;
                     if (ct != null) target = ct;
-                    // opt.revalidateWorldClickTarget는 WorldObject일 수 있으므로 캐스팅하지 않음
+                    // WorldObject 제외
                 }
 
                 if (target == null) continue;
@@ -61,7 +61,7 @@ namespace ShapeshifterFramework.Patches
 
                 if ((isApparel && lockApparel) || (isWeaponThing && lockWeapon))
                 {
-                    // 간단 생성자만 사용(1.6 호환)
+                    // 비활성 메뉴 생성
                     var disabled = new FloatMenuOption(opt.Label + blockedSuffix, null)
                     {
                         Disabled = true,

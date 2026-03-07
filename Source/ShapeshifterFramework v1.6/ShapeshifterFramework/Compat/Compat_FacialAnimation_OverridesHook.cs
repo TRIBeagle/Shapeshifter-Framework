@@ -1,8 +1,7 @@
 ﻿// ShapeshifterFramework | Compat | Compat_FacialAnimation_OverridesHook.cs
-// 목적 : 변신 시 Facial Animation의 얼굴(FaceTypeDef)과 눈 색상(Color)을 폼(Form)에 정의된 데이터로 안전하게 덮어씌우고 해제 시 원복함.
-// 용도 : - FAStateStore (GameComponent) : Pawn별 원래 FA 상태를 딥세이브(Deep Save)하여 보관하며, 주기적으로 파괴된 폰의 데이터를 청소(Cleanup).
-//        - Harmony Hooks : CompShapeshifter의 ApplyForm(백업 및 적용), RemoveForm(원복), PostExposeData(로드 후 재적용) 시점에 개입하여 컴포넌트 간 직접적인 코드 의존성을 분리함.
-// 주의 : 외부 모드의 Def를 리플렉션으로 조작하므로, 찾을 수 없는 DefName이나 타입 오류 발생 시 동일 id당 1회만 경고를 출력하여 틱(Tick) 스팸을 억제함.
+// 변신 시 FA FaceTypeDef/눈 색상을 폼 데이터로 덮어씌우고 해제 시 원복.
+// FAStateStore: Pawn별 원본 FA 상태 딥세이브, 주기 청소.
+// Harmony Hooks: ApplyForm/RemoveForm/PostExposeData에 개입. 오류는 동일 id당 1회만 경고.
 
 using HarmonyLib;
 using ShapeshifterFramework.Comps;
@@ -16,21 +15,13 @@ namespace ShapeshifterFramework.Compat
 {
     #region Facial Animation Overrides (validation/backup/apply/restore)
 
-    /// <summary>
-    /// Facial Animation 유틸리티:
-    /// - 시작 시 전체 폼 유효성 검증(존재하지 않는 FaceTypeDef defName 감지, 동일 오류 1회 보고)
-    /// - 현재 Pawn의 FA 상태 백업/적용/원복(눈 색상 포함, DirtyFlag 갱신)
-    /// - 변신 시점에만 Harmony 훅으로 개입(CompShapeshifter와 코드 의존 분리)
-    /// </summary>
+    /// <summary>FA 유틸리티: 폼 유효성 검증, FA 상태 백업/적용/원복.</summary>
     internal static class FacialAnimationCompat
     {
-        /// <summary>외부 모드 활성/감지 상태.</summary>
+        /// <summary>FA 활성 여부.</summary>
         internal static bool Active => CompatManager.FA.IsActive;
 
-        /// <summary>
-        /// [시작 단계] 모든 ShapeshiftFormDef에 대해 FA 타입 defName 유효성을 검증한다.
-        /// 동일한 문제는 한 번만 Report(중복 경고 억제).
-        /// </summary>
+        /// <summary>모든 ShapeshiftFormDef의 FA defName 유효성 검증.</summary>
         internal static void ValidateAllForms()
         {
             if (!Active) return;
@@ -52,10 +43,7 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        /// <summary>
-        /// 컨트롤러 별 대상 Def 타입을 추론하여 defName을 검증한다.
-        /// 실패 시 동일 id에 대해 한 번만 경고.
-        /// </summary>
+        /// <summary>컨트롤러별 Def 타입 추론 후 defName 검증.</summary>
         private static void ValidateDefField(string controller, string defName, ShapeshiftFormDef owner)
         {
             if (string.IsNullOrEmpty(defName)) return;
@@ -71,27 +59,24 @@ namespace ShapeshifterFramework.Compat
             var target = GenDefDatabase.GetDef(defType, defName, false);
             if (target == null)
             {
-                // 시작 로그용: 폼명 포함, id는 컨트롤러+defName으로 고정
+                // id는 컨트롤러+defName으로 고정
                 ReportOnceFailed("InvalidFA:" + controller + ":" + defName,
                     $"def '{defName}' not found for {defType.Name} (in form {owner.defName})");
             }
         }
 
-        /// <summary>
-        /// Pawn의 현재 FA 상태를 Backup에 저장한다(Def 선택 + 눈 색상).
-        /// </summary>
+        /// <summary>Pawn의 FA 상태 백업(Def + 눈 색상).</summary>
         public sealed class Backup : IExposable
         {
-            // face type defName
             public string head, eyeball, lid, brow, mouth, skin;
 
-            // colors + 존재 플래그(완전투명 보존)
+            // 눈 색상 + 존재 플래그
             public Color? eyeColor;     // FaceColor
             public Color? eyeColor2;    // FaceSecondColor
             internal bool eyeColorSet;
             internal bool eyeColor2Set;
 
-            /// <summary>세이브/로드. 색상 존재 여부 플래그를 별도로 보존.</summary>
+            /// <summary>세이브/로드.</summary>
             public void ExposeData()
             {
                 Scribe_Values.Look(ref head, "faHead");
@@ -116,13 +101,11 @@ namespace ShapeshifterFramework.Compat
                 }
             }
 
-            /// <summary>백업 내용이 비었는지 여부.</summary>
             public bool IsEmpty =>
                 head == null && eyeball == null && lid == null &&
                 brow == null && mouth == null && skin == null &&
                 !eyeColor.HasValue && !eyeColor2.HasValue;
 
-            /// <summary>백업 초기화.</summary>
             public void Clear()
             {
                 head = eyeball = lid = brow = mouth = skin = null;
@@ -131,11 +114,7 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        /// <summary>
-        /// Pawn의 현재 FA 타입/색상을 Backup에 저장한다.
-        /// </summary>
-        /// <param name="pawn">대상 Pawn</param>
-        /// <param name="dst">목적지 백업</param>
+        /// <summary>Pawn의 현재 FA 타입/색상을 백업.</summary>
         internal static void BackupCurrent(Pawn pawn, Backup dst)
         {
             if (!Active || pawn == null || dst == null) return;
@@ -157,9 +136,7 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        /// <summary>
-        /// 폼에 지정된 항목만 FA에 적용한다(DefName → Def 조회, 색상 적용 시 DirtyFlag 갱신).
-        /// </summary>
+        /// <summary>폼 지정 항목을 FA에 적용(Def 조회 + 색상 + DirtyFlag).</summary>
         internal static void ApplyOverrides(Pawn pawn, ShapeshiftFormDef form)
         {
             if (!Active || pawn == null || form == null) return;
@@ -171,7 +148,7 @@ namespace ShapeshifterFramework.Compat
             ApplyDefByName(pawn, "MouthControllerComp", form.faMouthTypeDef);
             ApplyDefByName(pawn, "SkinControllerComp", form.faSkinTypeDef);
 
-            // 눈 색상 (ColorInt? → Color)
+            // 눈 색상 적용
             if (form.faEyeColor.HasValue || form.faEyeColor2.HasValue)
             {
                 var eyeComp = FindFAControllerComp(pawn, "EyeballControllerComp");
@@ -207,9 +184,7 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        /// <summary>
-        /// 백업 기준으로 Pawn의 FA 상태를 복원한다(Def/색상, DirtyFlag 포함).
-        /// </summary>
+        /// <summary>백업 기준으로 FA 상태 복원.</summary>
         internal static void Restore(Pawn pawn, Backup src)
         {
             if (!Active || pawn == null || src == null || src.IsEmpty) return;
@@ -250,7 +225,7 @@ namespace ShapeshifterFramework.Compat
 
         #region helpers
 
-        /// <summary>Pawn에서 특정 FA 컨트롤러 컴프를 이름 규칙으로 찾는다.</summary>
+        /// <summary>Pawn에서 FA 컨트롤러 컴프를 이름으로 탐색.</summary>
         private static ThingComp FindFAControllerComp(Pawn pawn, string controllerSuffix)
         {
             if (pawn == null) return null;
@@ -269,7 +244,7 @@ namespace ShapeshifterFramework.Compat
             return null;
         }
 
-        /// <summary>현재 faceType/FaceType에서 Def를 읽어 defName을 반환.</summary>
+        /// <summary>faceType에서 defName 반환.</summary>
         private static string GetFADefName(Pawn pawn, string controller)
         {
             var comp = FindFAControllerComp(pawn, controller);
@@ -282,7 +257,7 @@ namespace ShapeshifterFramework.Compat
             return cur != null ? cur.defName : null;
         }
 
-        /// <summary>컨트롤러명 → 대상 Def 타입 매핑.</summary>
+        /// <summary>컨트롤러명에서 Def 타입 매핑.</summary>
         private static System.Type MapControllerToDefType(string controller)
         {
             string name = null;
@@ -295,10 +270,7 @@ namespace ShapeshifterFramework.Compat
             return string.IsNullOrEmpty(name) ? null : ShapeshiftReflectionCache.TryType(name);
         }
 
-        /// <summary>
-        /// DefName으로 대상 Def를 조회해 컨트롤러의 faceType에 적용하고, DirtyFlag를 세운다.
-        /// 실패/미존재/타입해석 실패는 동일 id 1회만 경고.
-        /// </summary>
+        /// <summary>DefName으로 Def 조회 후 faceType에 적용.</summary>
         private static void ApplyDefByName(Pawn pawn, string controller, string defName)
         {
             if (string.IsNullOrEmpty(defName)) return;
@@ -310,7 +282,7 @@ namespace ShapeshifterFramework.Compat
                 return;
             }
 
-            // target Def 타입: 현재 faceType 우선, 없으면 매핑
+            // Def 타입: faceType 우선, 없으면 매핑
             var defType = (System.Type)null;
             Def cur = ShapeshiftReflectionCache.GetInstanceField<Def>(comp, "faceType");
             if (cur != null) defType = cur.GetType();
@@ -324,7 +296,7 @@ namespace ShapeshifterFramework.Compat
             var target = GenDefDatabase.GetDef(defType, defName, false);
             if (target == null)
             {
-                // 변신 시: 시작에 이미 보고된 동일 오류면 다시 찍지 않음
+                // 동일 오류 중복 보고 방지
                 ReportOnceFailed("InvalidFA:" + controller + ":" + defName,
                     $"def '{defName}' not found for {defType.Name}");
                 return;
@@ -340,7 +312,7 @@ namespace ShapeshifterFramework.Compat
             MarkDirty(comp);
         }
 
-        /// <summary>컨트롤러의 DirtyFlag를 true로 설정(필드/프로퍼티 폴백).</summary>
+        /// <summary>DirtyFlag를 true로 설정.</summary>
         private static void MarkDirty(object controllerComp)
         {
             if (controllerComp == null) return;
@@ -349,7 +321,7 @@ namespace ShapeshifterFramework.Compat
                 ShapeshiftReflectionCache.TrySetInstanceProperty(controllerComp, "DirtyFlag", true);
         }
 
-        /// <summary>동일 오류 id는 한 번만 Failed 로그를 남긴다.</summary>
+        /// <summary>동일 id 1회만 Failed 기록.</summary>
         private static void ReportOnceFailed(string id, string reason)
         {
             if (!CompatManager.FA.HasFailed(id))
@@ -363,26 +335,21 @@ namespace ShapeshifterFramework.Compat
 
     #region Save store: Pawn → Backup (GameComponent)
 
-    /// <summary>
-    /// Pawn별 Facial Animation 백업 저장소.
-    /// - 딥세이브/로드 지원(Reference/Deep 혼합), PostLoadInit에 dangling 참조 정리.
-    /// </summary>
+    /// <summary>Pawn별 FA 백업 저장소. 딥세이브/로드 지원.</summary>
     internal sealed class FAStateStore : GameComponent
     {
-        /// <summary>게임 컴포넌트 생성자(싱글턴 할당).</summary>
         public FAStateStore(Game game) { Inst = this; }
 
-        /// <summary>싱글턴 인스턴스.</summary>
         public static FAStateStore Inst { get; private set; }
 
         private Dictionary<Pawn, FacialAnimationCompat.Backup> map =
             new Dictionary<Pawn, FacialAnimationCompat.Backup>();
 
-        // Scribe가 Dict<ref, deep>를 처리할 수 있도록 tmp 리스트 필요
+        // Scribe Dict<ref, deep> 처리용 tmp
         private List<Pawn> tmpKeys;
         private List<FacialAnimationCompat.Backup> tmpVals;
 
-        // [추가됨] GC(가비지 콜렉션) 할당을 막기 위한 재활용 버퍼 리스트
+        // GC 할당 방지용 재활용 버퍼
         private List<Pawn> _removeBuffer = new List<Pawn>();
 
         /// <summary>세이브/로드 구현. 로드 완료 후 정리(Cleanup).</summary>

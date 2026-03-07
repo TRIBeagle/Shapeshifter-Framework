@@ -9,10 +9,7 @@ namespace ShapeshifterFramework.Utilities
 {
     public static class ShapeshiftTargetUtility
     {
-        /// <summary>
-        /// 대상 Pawn에 폼 적용을 시도한다. (성공확률/폼 필터/토스트 처리 포함)
-        /// 성공 시 true, 실패(저항/조건불충족/컴프없음/폼누락) 시 false.
-        /// </summary>
+        /// <summary>대상 Pawn에 폼 적용 시도. 성공 시 true.</summary>
         public static bool TryShiftPawn(Pawn target, string formDefName, float successChance = 1f)
         {
             if (target == null || target.Dead) return false;

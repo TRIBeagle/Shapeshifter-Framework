@@ -14,7 +14,7 @@ namespace ShapeshifterFramework.Patches
     {
         public static void Postfix(PawnRenderNodeWorker __instance, PawnDrawParms parms, ref Vector3 __result)
         {
-            // 이중 실행 방지 (HediffEye가 부를 때는 무시)
+            // HediffEye 경유 시 무시
             if (__instance.GetType() != typeof(PawnRenderNodeWorker_Eye)) return;
 
             // 머리 배율 적용

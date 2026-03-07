@@ -32,8 +32,7 @@ namespace ShapeshifterFramework.Patches
                     var vt = comp.ShapeshiftVerbTracker;
                     if (vt != null)
                     {
-                        // [수정] 라운드 로빈: 마지막 선택 인덱스 다음부터 순회하여 모든 verb에 공평한 발사 기회 부여
-                        // 기존 코드는 항상 인덱스 0부터 시작해서 첫 번째 Available한 verb만 반복 선택되었음
+                        // 라운드 로빈: 마지막 인덱스 다음부터 순회
                         var verbs = vt.AllVerbs;
                         int count = verbs.Count;
                         if (count > 0)
