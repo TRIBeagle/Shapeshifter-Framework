@@ -92,7 +92,7 @@ namespace ShapeshifterFramework.Patches
 
             formShadow.Draw(drawLoc, Rot4.North, pawn);
 
-            // 원본이 그리던 BodyGraphic.ShadowGraphic은 스킵(중복 방지)
+            // 원본 그림자 스킵
             return false;
         }
     }

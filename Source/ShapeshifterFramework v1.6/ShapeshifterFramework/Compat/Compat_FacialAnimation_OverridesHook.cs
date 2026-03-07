@@ -352,7 +352,7 @@ namespace ShapeshifterFramework.Compat
         // GC 할당 방지용 재활용 버퍼
         private List<Pawn> _removeBuffer = new List<Pawn>();
 
-        /// <summary>세이브/로드 구현. 로드 완료 후 정리(Cleanup).</summary>
+        /// <summary>세이브/로드. 로드 완료 후 Cleanup.</summary>
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref map, "faBackups",
@@ -362,7 +362,7 @@ namespace ShapeshifterFramework.Compat
                 Cleanup();
         }
 
-        // 게임 중에도 60,000틱(1일)마다 죽은 폰 찌꺼기 청소
+        // 60,000틱(1일)마다 죽은 폰 청소
         public override void GameComponentTick()
         {
             base.GameComponentTick();
@@ -372,7 +372,7 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        /// <summary>null/Destroyed Pawn 키 제거.</summary>
+        /// <summary>null/Destroyed Pawn 제거.</summary>
         private void Cleanup()
         {
             _removeBuffer.Clear();
@@ -393,7 +393,7 @@ namespace ShapeshifterFramework.Compat
             _removeBuffer.Clear();
         }
 
-        /// <summary>백업을 가져오거나 새로 만든다.</summary>
+        /// <summary>백업 조회 또는 생성.</summary>
         public FacialAnimationCompat.Backup GetOrCreate(Pawn p)
         {
             if (p == null) return null;
@@ -405,14 +405,13 @@ namespace ShapeshifterFramework.Compat
             return b;
         }
 
-        /// <summary>백업을 시도해 얻는다.</summary>
+        /// <summary>백업 조회 시도.</summary>
         public bool TryGet(Pawn p, out FacialAnimationCompat.Backup b)
         {
             if (p != null && map.TryGetValue(p, out b) && b != null) return true;
             b = null; return false;
         }
 
-        /// <summary>백업 제거.</summary>
         public void Remove(Pawn p)
         {
             if (p != null) map.Remove(p);
@@ -423,25 +422,17 @@ namespace ShapeshifterFramework.Compat
 
     #region Harmony hooks: CompShapeshifter ↔ FacialAnimationCompat
 
-    /// <summary>
-    /// CompShapeshifter의 라이프사이클에 맞춰 FacialAnimationCompat을 호출하는 Harmony 훅들.
-    /// - ApplyForm(Postfix): 백업 → 폼 오버라이드 적용
-    /// - RemoveForm(Prefix): 백업 기준 원복 → 제거
-    /// - PostExposeData(Postfix): PostLoadInit & 변신 상태면 오버라이드 재적용
-    /// </summary>
+    /// <summary>CompShapeshifter 라이프사이클에 FA 백업/적용/원복 훅.</summary>
     [HarmonyPatch]
     internal static class Compat_FacialAnimation_OverridesHook
     {
         private static bool counted;
 
-        /// <summary>
-        /// 원본: <c>CompShapeshifter.ApplyForm(ShapeshiftFormDef, string)</c> — <b>Postfix</b>.
-        /// 처음 준비 시 한 번만 패치 카운트 기록.
-        /// </summary>
+        /// <summary>ApplyForm Postfix.</summary>
         [HarmonyPatch(typeof(CompShapeshifter), "ApplyForm", new System.Type[] { typeof(ShapeshiftFormDef), typeof(string), typeof(System.Collections.Generic.List<Verse.Thing>) })]
         static class Patch_ApplyForm2
         {
-            /// <summary>FA 비활성 시 패치 비적용. 최초 1회 Patched 기록.</summary>
+            /// <summary>FA 비활성 시 패치 비적용.</summary>
             static bool Prepare()
             {
                 if (!CompatManager.FA.IsActive) return false;

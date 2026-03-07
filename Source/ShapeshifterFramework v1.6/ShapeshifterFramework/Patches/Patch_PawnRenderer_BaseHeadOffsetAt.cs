@@ -19,7 +19,7 @@ namespace ShapeshifterFramework.Patches
             Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
             if (pawn == null) return;
 
-            // 1) 바닐라 sqrt(bodySizeFactor) 보정 유지
+            // 1) bodySizeFactor 보정
             var ls = pawn.ageTracker != null ? pawn.ageTracker.CurLifeStage : null;
             float vanilla = Mathf.Max(0.01f, ls != null ? ls.bodySizeFactor : 1f);
             float target = Mathf.Max(0.01f, ShapeshiftSizeFactorResolver.Effective(pawn).bodySizeFactor);
@@ -29,7 +29,7 @@ namespace ShapeshifterFramework.Patches
                 __result = new Vector3(__result.x * mul, __result.y, __result.z * mul);
             }
 
-            // 2) 헤드 오프셋 추가(회전 반영)
+            // 2) 헤드 오프셋 적용
             var comp = pawn.TryGetComp<CompShapeshifter>();
             var form = comp != null ? comp.currentForm : null;
             if (comp == null || !comp.isTransformed || form == null) return;
