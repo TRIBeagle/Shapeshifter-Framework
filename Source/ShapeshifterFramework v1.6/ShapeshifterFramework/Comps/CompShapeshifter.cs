@@ -75,6 +75,9 @@ namespace ShapeshifterFramework.Comps
         // verb 자동공격 토글 상태 (키: formDefName#index)
         private readonly Dictionary<string, bool> verbAutoToggle = new Dictionary<string, bool>();
 
+        /// <summary>자동공격 verb 라운드 로빈 인덱스(런타임 전용, 세이브 불필요).</summary>
+        internal int lastAutoVerbIndex = -1;
+
         /// <summary>변신 복귀 중 내부 재장착 허용 플래그(세이브 불필요, 런타임 전용).</summary>
         public bool suppressEquipLock = false;
 

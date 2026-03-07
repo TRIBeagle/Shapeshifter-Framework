@@ -25,31 +25,38 @@ namespace ShapeshifterFramework.Patches
                     return false; // 원본 스킵
                 }
 
-                // 2) 변신 중이고 자동사격 경로(allowManualCastWeapons == false)라면, 우리 토글/필터를 반영
+                // 2) 변신 중이고 자동사격 경로(allowManualCastWeapons == false)라면, 라운드 로빈으로 verb 선택
                 var comp = __instance.TryGetComp<CompShapeshifter>();
                 if (comp != null && comp.isTransformed && !allowManualCastWeapons)
                 {
                     var vt = comp.ShapeshiftVerbTracker;
                     if (vt != null)
                     {
-                        // 원거리 verb만 토글 적용. (근접은 바닐라 로직 유지)
+                        // [수정] 라운드 로빈: 마지막 선택 인덱스 다음부터 순회하여 모든 verb에 공평한 발사 기회 부여
+                        // 기존 코드는 항상 인덱스 0부터 시작해서 첫 번째 Available한 verb만 반복 선택되었음
                         var verbs = vt.AllVerbs;
-                        for (int i = 0; i < verbs.Count; i++)
+                        int count = verbs.Count;
+                        if (count > 0)
                         {
-                            var v = verbs[i];
-                            if (v == null || v.verbProps == null) continue;
-                            if (!v.verbProps.Ranged) continue;
-                            if (!v.Available()) continue;
+                            int start = (comp.lastAutoVerbIndex + 1) % count;
+                            for (int offset = 0; offset < count; offset++)
+                            {
+                                int i = (start + offset) % count;
+                                var v = verbs[i];
+                                if (v == null || v.verbProps == null) continue;
+                                if (!v.verbProps.Ranged) continue;
+                                if (!v.Available()) continue;
 
-                            // 토글 OFF면 자동사격 후보에서 제외
-                            if (!comp.IsAutoAttackEnabled(i, v)) continue;
+                                // 토글 OFF면 자동사격 후보에서 제외
+                                if (!comp.IsAutoAttackEnabled(i, v)) continue;
 
-                            // 타겟 적합성 (간단 체크)
-                            if (target != null && !v.CanHitTarget(target)) continue;
+                                // 타겟 적합성 (간단 체크)
+                                if (target != null && !v.CanHitTarget(target)) continue;
 
-                            // 가장 먼저 만족하는 verb를 바로 선택(바닐라에 넘기지 않음)
-                            __result = v;
-                            return false;
+                                comp.lastAutoVerbIndex = i;
+                                __result = v;
+                                return false;
+                            }
                         }
 
                         // shapeshift 원거리 verb 중 자동사격 가능한 것이 없으면, 바닐라에 맡김
