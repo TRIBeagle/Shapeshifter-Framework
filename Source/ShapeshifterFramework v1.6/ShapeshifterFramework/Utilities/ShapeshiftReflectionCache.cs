@@ -6,7 +6,6 @@ using HarmonyLib;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Verse;
 using Verse.AI;
@@ -316,8 +315,23 @@ namespace ShapeshifterFramework.Utilities
             if (t == null || string.IsNullOrEmpty(name)) return null;
 
             int argc = paramTypes?.Length ?? 0;
-            string typeStr = paramTypes == null || paramTypes.Length == 0 ? "0" : string.Join("_", paramTypes.Select(p => p != null ? p.Name : "any"));
-            string key = $"{t.FullName}::M::{(isStatic ? "S" : "I")}::{name}#{typeStr}";
+            // [수정] LINQ(Select)를 제거하고 수동 StringBuilder 루프로 대체
+            string typeStr;
+            if (paramTypes == null || paramTypes.Length == 0)
+            {
+                typeStr = "0";
+            }
+            else
+            {
+                var sb = new System.Text.StringBuilder(paramTypes.Length * 16);
+                for (int i = 0; i < paramTypes.Length; i++)
+                {
+                    if (i > 0) sb.Append('_');
+                    sb.Append(paramTypes[i] != null ? paramTypes[i].Name : "any");
+                }
+                typeStr = sb.ToString();
+            }
+            string key = string.Concat(t.FullName, "::M::", isStatic ? "S" : "I", "::", name, "#", typeStr);
 
             if (MethodNotFound.ContainsKey(key)) return null; // 실패 기록 확인
 

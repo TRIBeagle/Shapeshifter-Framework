@@ -57,8 +57,9 @@ namespace ShapeshifterFramework.Utilities
                 var item = _queue[i];
                 if (item.fireTick > now) continue;
 
-                _queue.RemoveAt(i);
+                // [수정] TryPlayNow를 먼저 실행하고 RemoveAt을 나중에 — 예외 시에도 큐 아이템 유실 방지
                 TryPlayNow(item.pawn, item.form, item.isEnter);
+                _queue.RemoveAt(i);
             }
 
             // ── 오래된 쿨다운 엔트리 정리 ──

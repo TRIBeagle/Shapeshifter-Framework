@@ -58,18 +58,30 @@ namespace ShapeshifterFramework.Utilities
             return true;
         }
 
-        private static int _cacheFrame = -1;
+        // [수정] volatile로 선언하여 렌더링 멀티스레드 환경에서 _cacheFrame 읽기 가시성 보장
+        private static volatile int _cacheFrame = -1;
         private static ConcurrentDictionary<Pawn, Factors> _frameCache = new ConcurrentDictionary<Pawn, Factors>();
+        private static readonly object _frameLock = new object();
 
         internal static Factors Effective(Pawn pawn)
         {
             if (pawn == null) return default(Factors);
 
             int frame = Time.frameCount;
+            // [수정] lock으로 프레임 전환 시 Clear()와 TryAdd()의 경합을 방지
+            // 렌더링 스레드에서 한 스레드가 Clear() 중 다른 스레드가 TryAdd하면
+            // 방금 추가한 데이터가 즉시 삭제되는 레이스 컨디션이 있었음
             if (frame != _cacheFrame)
             {
-                _cacheFrame = frame;
-                _frameCache.Clear(); // 새 프레임이 시작되면 캐시 일괄 비우기
+                lock (_frameLock)
+                {
+                    // double-check: lock 획득 사이에 다른 스레드가 이미 처리했을 수 있음
+                    if (frame != _cacheFrame)
+                    {
+                        _frameCache.Clear();
+                        _cacheFrame = frame;
+                    }
+                }
             }
 
             // ConcurrentDictionary.TryGetValue는 스레드 세이프
