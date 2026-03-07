@@ -8,11 +8,7 @@ using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
-    /// <summary>
-    /// Pawn.Kill Postfix에서 CompShapeshifter.Notify_Killed 호출
-    /// - 사망음은 DoKillSideEffects Prefix에서 이미 대체됨.
-    /// - Kill 종료 시점에 변신 해제 및 캐시 정리를 보장.
-    /// </summary>
+    /// <summary>Pawn.Kill Postfix에서 Notify_Killed 호출, 변신 해제 및 캐시 정리.</summary>
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.Kill))]
     internal static class Patch_Pawn_Kill
     {

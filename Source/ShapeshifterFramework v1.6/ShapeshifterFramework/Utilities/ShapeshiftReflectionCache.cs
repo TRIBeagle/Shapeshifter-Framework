@@ -12,15 +12,7 @@ using Verse.AI;
 
 namespace ShapeshifterFramework.Utilities
 {
-    /// <summary>
-    /// 리플렉션 접근/캐시 유틸리티.
-    /// - PawnRenderer.pawn 등 빈번 접근 경로는 FieldRef 우선, 실패 시 FieldInfo 폴백.
-    /// - 타입별/이름별 멤버를 키로 캐싱하여 반복 리플렉션 비용을 상쇄.
-    /// - 메서드 호출은 인자 수 기반 캐시 키를 사용(정확 시그니처가 불명확한 경우의 보편적 선택).
-    /// - Setter 헬퍼(TrySetInstanceField/Property) 포함.
-    /// 부작용:
-    /// - 내부 예외를 삼켜 호출부 흐름을 유지(호출자는 성공/실패만 확인).
-    /// </summary>
+    /// <summary>리플렉션 접근/캐시 유틸리티. FieldRef 우선, FieldInfo 폴백. 예외 삼킴.</summary>
     internal static class ShapeshiftReflectionCache
     {
         #region PawnRenderer.pawn
@@ -30,10 +22,7 @@ namespace ShapeshifterFramework.Utilities
         private static readonly FieldInfo RendererPawnFI =
             AccessTools.Field(typeof(PawnRenderer), "pawn");
 
-        /// <summary>
-        /// PawnRenderer가 소유한 Pawn을 반환한다.
-        /// FieldRef 우선, 실패 시 FieldInfo 폴백.
-        /// </summary>
+        /// <summary>PawnRenderer의 Pawn 반환. FieldRef 우선, FieldInfo 폴백.</summary>
         internal static Pawn GetPawn(PawnRenderer renderer)
         {
             if (renderer == null) return null;
@@ -50,10 +39,7 @@ namespace ShapeshifterFramework.Utilities
         private static readonly FieldInfo PathFollowerPawnFI =
             AccessTools.Field(typeof(Pawn_PathFollower), "pawn");
 
-        /// <summary>
-        /// Pawn_PathFollower가 소유한 Pawn을 반환한다.
-        /// FieldRef 우선, 실패 시 FieldInfo 폴백.
-        /// </summary>
+        /// <summary>Pawn_PathFollower의 Pawn 반환. FieldRef 우선, FieldInfo 폴백.</summary>
         internal static Pawn GetPawn(Pawn_PathFollower pf)
         {
             if (pf == null) return null;
@@ -65,17 +51,14 @@ namespace ShapeshifterFramework.Utilities
 
         #region PawnRenderer.results → PreRenderResults.parms
 
-        // [주의] results는 struct(PreRenderResults)라서 boxing/unboxing 시 SetValue로 다시 넣어줘야 반영됨.
+        // results는 struct이므로 boxing 후 SetValue로 재반영 필요
         private static readonly FieldInfo RendererResultsFI =
             AccessTools.Field(typeof(PawnRenderer), "results");
 
         private static readonly ConcurrentDictionary<Type, FieldInfo> PreRenderParmsFieldByResultsType =
             new ConcurrentDictionary<Type, FieldInfo>();
 
-        /// <summary>
-        /// PawnRenderer.results(PreRenderResults)의 parms(PawnDrawParms)를 안전하게 얻는다.
-        /// boxedResults/parmsFi를 같이 돌려줘서, 수정 후 TrySetPreRenderParms로 다시 반영 가능.
-        /// </summary>
+        /// <summary>PawnRenderer.results에서 PawnDrawParms를 안전하게 추출.</summary>
         internal static bool TryGetPreRenderParms(PawnRenderer renderer, out object boxedResults, out FieldInfo parmsFi, out PawnDrawParms parms)
         {
             boxedResults = null;
@@ -108,9 +91,7 @@ namespace ShapeshifterFramework.Utilities
             }
         }
 
-        /// <summary>
-        /// TryGetPreRenderParms로 얻은 boxedResults/parmsFi 조합을 이용해 parms 변경을 renderer.results에 반영한다.
-        /// </summary>
+        /// <summary>변경된 parms를 renderer.results에 반영.</summary>
         internal static bool TrySetPreRenderParms(PawnRenderer renderer, object boxedResults, FieldInfo parmsFi, PawnDrawParms parms)
         {
             if (renderer == null || RendererResultsFI == null) return false;
@@ -135,9 +116,7 @@ namespace ShapeshifterFramework.Utilities
         private static readonly ConcurrentDictionary<Type, FieldInfo> HolderPawnField =
             new ConcurrentDictionary<Type, FieldInfo>();
 
-        /// <summary>
-        /// 장비/아이템의 ParentHolder 체인을 따라가 Pawn을 탐색한다(최대 hop 제한).
-        /// </summary>
+        /// <summary>ParentHolder 체인을 따라가 Pawn 탐색 (최대 hop 제한).</summary>
         internal static Pawn TryGetHolderPawn(Thing eq, int maxHops = 8)
         {
             IThingHolder h = eq != null ? eq.ParentHolder : null;
@@ -171,9 +150,7 @@ namespace ShapeshifterFramework.Utilities
             ? AttachPointTrackerT.GetField("parent", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
             : null;
 
-        /// <summary>
-        /// AttachPointTracker의 parent Thing을 반환한다(없으면 null).
-        /// </summary>
+        /// <summary>AttachPointTracker의 parent Thing 반환.</summary>
         internal static Thing GetAttachParent(object attachPointTracker)
         {
             if (attachPointTracker == null || AptParentFI == null) return null;
@@ -232,9 +209,7 @@ namespace ShapeshifterFramework.Utilities
         private static readonly ConcurrentDictionary<Type, FieldInfo> OwnerFieldByWorker =
             new ConcurrentDictionary<Type, FieldInfo>();
 
-        /// <summary>
-        /// 워커 인스턴스가 가진 owner 필드를 타입별로 캐싱하여 반환한다.
-        /// </summary>
+        /// <summary>워커의 owner 필드를 타입별 캐싱으로 반환.</summary>
         internal static object TryGetOwnerFromWorker(object worker)
         {
             if (worker == null) return null;
@@ -315,7 +290,7 @@ namespace ShapeshifterFramework.Utilities
             if (t == null || string.IsNullOrEmpty(name)) return null;
 
             int argc = paramTypes?.Length ?? 0;
-            // [수정] LINQ(Select)를 제거하고 수동 StringBuilder 루프로 대체
+            // LINQ 제거, StringBuilder 루프로 대체
             string typeStr;
             if (paramTypes == null || paramTypes.Length == 0)
             {
@@ -513,9 +488,7 @@ namespace ShapeshifterFramework.Utilities
             return ps;
         }
 
-        /// <summary>
-        /// 객체 a/b의 인스턴스 필드에서 특정 타입의 값을 탐색하여 반환한다(첫 일치).
-        /// </summary>
+        /// <summary>객체 a/b의 필드에서 특정 타입 값을 탐색 (첫 일치 반환).</summary>
         internal static T TryScanFieldsForType<T>(object a, object b) where T : class
         {
             var target = typeof(T);
@@ -544,9 +517,7 @@ namespace ShapeshifterFramework.Utilities
             return null;
         }
 
-        /// <summary>
-        /// 공통 패턴: exclusionTags(List&lt;string&gt;)를 필드/프로퍼티에서 찾아 반환한다.
-        /// </summary>
+        /// <summary>exclusionTags(List(string))를 필드/프로퍼티에서 탐색 반환.</summary>
         internal static List<string> TryGetExclusionTags(object obj)
         {
             if (obj == null) return null;

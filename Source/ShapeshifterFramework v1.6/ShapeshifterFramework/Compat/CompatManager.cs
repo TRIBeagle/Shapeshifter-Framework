@@ -92,7 +92,7 @@ namespace ShapeshifterFramework.Compat
         }
     }
 
-    /// <summary>호환 패치 전역 엔트리. 모드 활성 감지, CompatMod 보관, 보고 집행.</summary>
+    /// <summary>호환 패치 전역 엔트리.</summary>
     internal static class CompatManager
     {
         internal const string Pkg_HAR = "erdelf.HumanoidAlienRaces";
@@ -102,24 +102,22 @@ namespace ShapeshifterFramework.Compat
         internal const string LOG_FA = "[SSF/FA]";
 
         /// <summary>모드 활성 확인.</summary>
-        /// <param name="packageId">패키지 ID</param>
-        /// <param name="ignorePostfix">ModLister 규약에 따른 접미사 무시 여부</param>
         internal static bool IsActive(string packageId, bool ignorePostfix = false)
             => ModLister.GetActiveModWithIdentifier(packageId, ignorePostfix) != null;
 
         internal static readonly CompatMod HAR = new CompatMod(Pkg_HAR, LOG_HAR);
         internal static readonly CompatMod FA = new CompatMod(Pkg_FA, LOG_FA);
 
-        /// <summary>Report 이전 준비(AddComp 실행 보장, FA 폼 유효성 검증).</summary>
+        /// <summary>Report 전 준비.</summary>
         private static void RegisterBeforeReport()
         {
-            // HAR AddComp 실행 보장
+            // HAR AddComp 보장
             if (HAR.IsActive)
             {
                 try { Compat_HAR_AddComp.EnsureInitialized(); }
                 catch (System.Exception e) { Log.Warning($"{HAR.LogPrefix} Compatibility failed to load: {e.Message}"); }
             }
-            // FA 폼 유효성 검증
+            // FA 폼 검증
             if (FA.IsActive)
             {
                 try { FacialAnimationCompat.ValidateAllForms(); }
@@ -127,7 +125,7 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        /// <summary>모든 모드 보고 수행(각 1회). 전부 성공 시 최종 OK 메시지 출력.</summary>
+        /// <summary>모든 모드 보고(각 1회).</summary>
         internal static void ReportAllOnce()
         {
             RegisterBeforeReport();

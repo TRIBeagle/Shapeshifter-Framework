@@ -58,7 +58,7 @@ namespace ShapeshifterFramework.Utilities
             return true;
         }
 
-        // [수정] volatile로 선언하여 렌더링 멀티스레드 환경에서 _cacheFrame 읽기 가시성 보장
+        // volatile: 멀티스레드 환경에서 읽기 가시성 보장
         private static volatile int _cacheFrame = -1;
         private static ConcurrentDictionary<Pawn, Factors> _frameCache = new ConcurrentDictionary<Pawn, Factors>();
         private static readonly object _frameLock = new object();
@@ -68,9 +68,7 @@ namespace ShapeshifterFramework.Utilities
             if (pawn == null) return default(Factors);
 
             int frame = Time.frameCount;
-            // [수정] lock으로 프레임 전환 시 Clear()와 TryAdd()의 경합을 방지
-            // 렌더링 스레드에서 한 스레드가 Clear() 중 다른 스레드가 TryAdd하면
-            // 방금 추가한 데이터가 즉시 삭제되는 레이스 컨디션이 있었음
+            // lock으로 프레임 전환 시 Clear/TryAdd 경합 방지
             if (frame != _cacheFrame)
             {
                 lock (_frameLock)

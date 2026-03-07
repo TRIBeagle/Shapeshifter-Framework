@@ -10,13 +10,7 @@ namespace ShapeshifterFramework.Utilities
 {
     internal static class ShapeshiftOverlayUtility
     {
-        /// <summary>
-        /// FleshTypeDef 조회(안전 가드 강화)
-        /// - 변신 중이면 캐시 FleshType 사용
-        /// - 아니면 Pawn.def.race.FleshType → Pawn.RaceProps.FleshType 순으로 안전 조회
-        /// - 못 찾으면 null (바닐라도 null이면 상처 오버레이를 생략함)
-        /// 성능: TryGetValue 사용, 예외 미발생 보장
-        /// </summary>
+        /// <summary>FleshTypeDef를 캐시 우선으로 안전 조회, 없으면 null 반환.</summary>
         public static FleshTypeDef GetEffectiveFleshType(Pawn pawn)
         {
             if (pawn == null)

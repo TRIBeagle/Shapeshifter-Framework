@@ -1,7 +1,6 @@
 ﻿// ShapeshifterFramework | Compat | Compat_FacialAnimation_HeadWorker_ScaleFor.cs
-// 목적 : Facial Animation 모드 사용 시, 폰이 변신했을 때 FA의 '머리(Head)' 그래픽 크기가 변신 폼의 몸통 크기에 맞춰 정상적으로 확대/축소되도록 동기화.
-// 용도 : Verse.PawnRenderNodeWorker.ScaleFor 메서드에 Harmony Postfix로 개입하여, 대상 노드의 실제 Worker가 FA의 HeadWorker(NLFacialAnimationHeadNodeWorker)인 경우에만 폼의 스케일 배율을 적용.
-// 주의 : 리플렉션 비용 절감을 위해 대상 타입들을 ShapeshiftReflectionCache로 사전 캐싱함. 초상화나 월드맵 등 공통 렌더 경로를 보호하기 위해 대상 워커가 정확히 일치할 때만 작동함.
+// FA HeadWorker ScaleFor Postfix: 변신 시 FA 머리 스케일을 폼에 맞춰 동기화.
+// 대상 워커가 NLFacialAnimationHeadNodeWorker일 때만 배율 적용. 타입은 ReflectionCache로 캐싱.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
@@ -12,23 +11,13 @@ using Verse;
 
 namespace ShapeshifterFramework.Compat
 {
-    /// <summary>
-    /// Facial Animation(HAR-계열) 사용 시, Verse.PawnRenderNodeWorker.ScaleFor(Postfix)에 개입하여
-    /// NLFacialAnimationHeadNodeWorker(헤드 워커)인 경우에만 변신 폼 스케일(body * head)을 적용한다.
-    /// - 원본 메서드 : <c>Verse.PawnRenderNodeWorker.ScaleFor(PawnRenderNode, PawnDrawParms) : Vector3</c>
-    /// - 패치 타입   : <b>Postfix</b>
-    /// 전제:
-    /// - Facial Animation 컨트롤러 컴프( FacicalAnimationControllerComp )가 있는 Pawn만 대상.
-    /// - 변신 폼(SSOT)이 유효하고 isTransformed == true 이어야 적용.
-    /// 부작용:
-    /// - 없음(헤드 외 노드/워커에는 영향 없음).
-    /// </summary>
+    /// <summary>FA HeadWorker ScaleFor Postfix. 헤드 워커에만 변신 폼 스케일(body * head) 적용.</summary>
     [HarmonyPatch]
     internal static class Compat_FacialAnimation_HeadWorker_ScaleFor
     {
         #region Cached Types & Accessors
 
-        // [성능] 외부 모드 타입 캐시(리플렉션 비용 절감)
+        // 외부 모드 타입 캐시
         private static readonly Type T_FAComp = ShapeshiftReflectionCache.TryType("FacialAnimation.FacialAnimationControllerComp");
         private static readonly Type T_BaseWorker = ShapeshiftReflectionCache.TryType("Verse.PawnRenderNodeWorker");
         private static readonly Type T_FAHeadWorker = ShapeshiftReflectionCache.TryType("FacialAnimation.NLFacialAnimationHeadNodeWorker");
@@ -37,14 +26,10 @@ namespace ShapeshifterFramework.Compat
 
         #region Harmony Bootstrapping
 
-        /// <summary>
-        /// Harmony 패치 여부를 사전 판정한다.
-        /// Facial Animation이 비활성 상태이거나 필수 타입을 찾지 못하면 패치를 적용하지 않는다.
-        /// </summary>
-        /// <returns>패치 적용 가능 시 true, 아니면 false.</returns>
+        /// <summary>패치 적용 가능 여부 판정.</summary>
         static bool Prepare()
         {
-            // [안전] 외부 의존성(Facial Animation) 없으면 패치 비적용
+            // FA 비활성이면 패치 비적용
             if (!CompatManager.FA.IsActive || T_BaseWorker == null || T_FAHeadWorker == null)
             {
                 CompatManager.FA.Failed("HeadScale", "not active or types missing");
@@ -53,11 +38,7 @@ namespace ShapeshifterFramework.Compat
             return true;
         }
 
-        /// <summary>
-        /// 원본 타겟 메서드: <c>Verse.PawnRenderNodeWorker.ScaleFor(PawnRenderNode, PawnDrawParms)</c> 검색.
-        /// 정확 시그니처 우선, 없으면 반환형 Vector3의 동명 메서드로 폴백.
-        /// </summary>
-        /// <returns>Harmony가 패치할 대상 메서드</returns>
+        /// <summary>대상 메서드 탐색. 정확 시그니처 우선, 폴백.</summary>
         [HarmonyTargetMethod]
         static MethodBase TargetMethod()
         {
@@ -83,13 +64,7 @@ namespace ShapeshifterFramework.Compat
 
         #region Postfix
 
-        /// <summary>
-        /// <b>Postfix</b> — 헤드 워커(NLFacialAnimationHeadNodeWorker)인 경우에만
-        /// 변신 폼의 bodyDrawScale * headDrawScale을 결과 스케일에 곱한다.
-        /// </summary>
-        /// <param name="__result">원본 ScaleFor 결과(Vector3)</param>
-        /// <param name="__0">node (PawnRenderNode)</param>
-        /// <param name="__1">parms (PawnDrawParms)</param>
+        /// <summary>Postfix: 헤드 워커면 폼의 body*head 스케일 적용.</summary>
         static void Postfix(ref Vector3 __result, PawnRenderNode __0, PawnDrawParms __1)
         {
             try
@@ -101,10 +76,10 @@ namespace ShapeshifterFramework.Compat
                 Pawn pawn = parms.pawn;
                 if (pawn == null) return;
 
-                // [안전] Facial Animation 컨트롤러가 있는 Pawn만 진행
+                // FA 컨트롤러 없으면 스킵
                 if (!HasFAControllerComp(pawn)) return;
 
-                // [안전] 실제 워커가 FA 헤드 워커인지 판정(눈/입/기타 노드는 제외)
+                // FA 헤드 워커인지 판정
                 object worker = TryGetWorker(node);
                 if (worker == null || !T_FAHeadWorker.IsAssignableFrom(worker.GetType()))
                     return;
@@ -115,7 +90,7 @@ namespace ShapeshifterFramework.Compat
 
                 float factor = 1f;
 
-                // 헤드는 본체와 일치해야 하므로 body * head 모두 적용
+                // body * head 적용
                 float bodyS = form.bodyDrawScale ?? 1f;
                 float headS = form.headDrawScale ?? 1f;
                 if (!Mathf.Approximately(bodyS, 1f)) factor *= bodyS;
@@ -126,7 +101,7 @@ namespace ShapeshifterFramework.Compat
             }
             catch (Exception e)
             {
-                // [안전] 실패 시 경고만 출력하고 원본 흐름 유지
+                // 실패 시 경고, 원본 유지
                 Log.Warning($"{CompatManager.LOG_FA} Head scale postfix failed: {e}");
             }
         }
@@ -135,9 +110,7 @@ namespace ShapeshifterFramework.Compat
 
         #region Helpers
 
-        /// <summary>
-        /// Pawn이 FacialAnimation 컨트롤러 컴프를 보유하는지 검사한다.
-        /// </summary>
+        /// <summary>Pawn이 FA 컨트롤러 컴프를 보유하는지 검사.</summary>
         private static bool HasFAControllerComp(Pawn pawn)
         {
             if (T_FAComp == null || pawn == null) return false;
@@ -160,15 +133,12 @@ namespace ShapeshifterFramework.Compat
             return false;
         }
 
-        /// <summary>
-        /// PawnRenderNode의 실제 worker 인스턴스를 안전하게 획득한다.
-        /// 프로퍼티/필드 양 경로를 모두 시도한다.
-        /// </summary>
+        /// <summary>PawnRenderNode에서 worker 인스턴스 획득(프로퍼티/필드 폴백).</summary>
         private static object TryGetWorker(PawnRenderNode node)
         {
             if (node == null) return null;
 
-            // [성능] 캐시된 리플렉션 헬퍼 우선
+            // 캐시된 리플렉션 헬퍼 우선
             var v = ShapeshiftReflectionCache.GetInstanceProperty<object>(node, "Worker");
             if (v != null) return v;
 

@@ -8,13 +8,11 @@ using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
-    /// <summary>
-    /// Pawn_HealthTracker.DropBloodFilth → FilthMaker 호출 전후로 Pawn 스코프 세팅
-    /// </summary>
+    /// <summary>DropBloodFilth 전후로 FilthScope에 Pawn 세팅.</summary>
     [HarmonyPatch(typeof(Pawn_HealthTracker), "DropBloodFilth")]
     internal static class Patch_Pawn_HealthTracker_DropBloodFilth
     {
-        // private readonly Pawn pawn; 필드에 대한 참조자 준비
+        // pawn 필드 접근자
         private static readonly AccessTools.FieldRef<Pawn_HealthTracker, Pawn> pawnFieldRef =
             AccessTools.FieldRefAccess<Pawn_HealthTracker, Pawn>("pawn");
 

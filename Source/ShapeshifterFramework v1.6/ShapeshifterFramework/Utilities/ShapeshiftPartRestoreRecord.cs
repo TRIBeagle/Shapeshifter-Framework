@@ -7,16 +7,12 @@ using Verse;
 
 namespace ShapeshifterFramework.Utilities
 {
-    /// <summary>
-    /// 변신 시작 시점의 원래 상태를 기록해두었다가,
-    /// 변신 해제 시 이 기록을 기반으로 정확히 복원하기 위한 레코드.
-    /// (IExposable 구현으로 세이브/로드 지원)
-    /// </summary>
+    /// <summary>변신 전 파츠 상태 기록. 해제 시 복원용 (IExposable).</summary>
     public class ShapeshiftPartRestoreRecord : IExposable
     {
-        public BodyPartRecord Part;                           // 대상 파츠
-        public bool WasMissingBefore;                         // 변신 전 결손 여부
-        public List<PreExistingAddedEntry> PreExistingAdded;  // 변신 전 파츠에 있던 AddedPart들
+        public BodyPartRecord Part;
+        public bool WasMissingBefore;
+        public List<PreExistingAddedEntry> PreExistingAdded;
 
         public void ExposeData()
         {
