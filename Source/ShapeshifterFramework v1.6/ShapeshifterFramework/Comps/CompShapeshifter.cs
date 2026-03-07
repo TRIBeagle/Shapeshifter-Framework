@@ -1593,68 +1593,74 @@ namespace ShapeshifterFramework.Comps
             }
             else if (currentForm != null)
             {
-                // 해제
-                yield return new Command_Action
-                {
-                    defaultLabel = "SSF_Command_RevertLabel".Translate(),
-                    defaultDesc = (currentForm.durationTicks.HasValue && currentForm.durationTicks.Value > 0)
-                        ? "SSF_Command_RevertTime".Translate((float)RemainingShapeshiftTicks / 60f)
-                        : "SSF_Command_RevertDesc".Translate(),
-                    action = delegate { RemoveForm(); },
-                    icon = ShapeshiftTextureUtility.GetRevertIcon(currentForm)
-                };
-
-                // 전환
-                string prev = currentForm.defName;
-                if (gizmoFormsCache.Count > threshold)
+                // 해제: canRevertVoluntarily가 false면 해제 버튼을 숨김 (강제 변신용)
+                if (currentForm.canRevertVoluntarily)
                 {
                     yield return new Command_Action
                     {
-                        defaultLabel = "SSF_Menu_SwitchLabel".Translate(),
-                        defaultDesc = "SSF_Menu_SwitchDesc".Translate(),
-                        action = delegate
-                        {
-                            var opts = new List<FloatMenuOption>(gizmoFormsCache.Count);
-                            for (int i = 0; i < gizmoFormsCache.Count; i++)
-                            {
-                                var f = gizmoFormsCache[i]; if (f == null) continue;
-                                var cap = f;
-                                opts.Add(new FloatMenuOption(f.LabelCap, delegate
-                                {
-                                    List<Thing> sources = FindSourceItemsForForm(cap);
-                                    ApplyForm(cap, prev, sources);
-                                }));
-                            }
-                            if (opts.Count == 0) opts.Add(new FloatMenuOption("None".Translate(), null));
-                            Find.WindowStack.Add(new FloatMenu(opts));
-                        },
-                        icon = ShapeshiftTextureUtility.DefaultEnterIcon
+                        defaultLabel = "SSF_Command_RevertLabel".Translate(),
+                        defaultDesc = (currentForm.durationTicks.HasValue && currentForm.durationTicks.Value > 0)
+                            ? "SSF_Command_RevertTime".Translate((float)RemainingShapeshiftTicks / 60f)
+                            : "SSF_Command_RevertDesc".Translate(),
+                        action = delegate { RemoveForm(); },
+                        icon = ShapeshiftTextureUtility.GetRevertIcon(currentForm)
                     };
                 }
-                else
-                {
-                    for (int i = 0; i < gizmoFormsCache.Count; i++)
-                    {
-                        var form = gizmoFormsCache[i]; if (form == null) continue;
 
+                // 전환: canRevertVoluntarily가 false면 전환 버튼도 숨김 (전환 = 해제 후 재적용)
+                if (currentForm.canRevertVoluntarily)
+                {
+                    string prev = currentForm.defName;
+                    if (gizmoFormsCache.Count > threshold)
+                    {
                         yield return new Command_Action
                         {
-                            defaultLabel = "SSF_Command_SwitchLabel".Translate(form.LabelCap),
-                            defaultDesc = "SSF_Command_SwitchDesc".Translate(form.description),
+                            defaultLabel = "SSF_Menu_SwitchLabel".Translate(),
+                            defaultDesc = "SSF_Menu_SwitchDesc".Translate(),
                             action = delegate
                             {
-                                List<Thing> sources = FindSourceItemsForForm(form);
-                                ApplyForm(form, prev, sources);
+                                var opts = new List<FloatMenuOption>(gizmoFormsCache.Count);
+                                for (int i = 0; i < gizmoFormsCache.Count; i++)
+                                {
+                                    var f = gizmoFormsCache[i]; if (f == null) continue;
+                                    var cap = f;
+                                    opts.Add(new FloatMenuOption(f.LabelCap, delegate
+                                    {
+                                        List<Thing> sources = FindSourceItemsForForm(cap);
+                                        ApplyForm(cap, prev, sources);
+                                    }));
+                                }
+                                if (opts.Count == 0) opts.Add(new FloatMenuOption("None".Translate(), null));
+                                Find.WindowStack.Add(new FloatMenu(opts));
                             },
-                            // [최적화 완료]
-                            icon = ShapeshiftTextureUtility.GetEnterIcon(form)
+                            icon = ShapeshiftTextureUtility.DefaultEnterIcon
                         };
+                    }
+                    else
+                    {
+                        for (int i = 0; i < gizmoFormsCache.Count; i++)
+                        {
+                            var form = gizmoFormsCache[i]; if (form == null) continue;
+
+                            yield return new Command_Action
+                            {
+                                defaultLabel = "SSF_Command_SwitchLabel".Translate(form.LabelCap),
+                                defaultDesc = "SSF_Command_SwitchDesc".Translate(form.description),
+                                action = delegate
+                                {
+                                    List<Thing> sources = FindSourceItemsForForm(form);
+                                    ApplyForm(form, prev, sources);
+                                },
+                                // [최적화 완료]
+                                icon = ShapeshiftTextureUtility.GetEnterIcon(form)
+                            };
+                        }
                     }
                 }
             }
             else
             {
-                // 방어적 폴백
+                // 방어적 폴백: canRevertVoluntarily 체크 (currentForm이 null이지만 isTransformed인 비정상 상태)
                 yield return new Command_Action
                 {
                     defaultLabel = "SSF_Command_RevertLabel".Translate(),
