@@ -76,8 +76,8 @@ namespace ShapeshifterFramework.Patches
             var comp = pawn.TryGetComp<CompShapeshifter>();
             string formLabel = (comp != null && comp.isTransformed && comp.currentForm != null && !string.IsNullOrEmpty(comp.currentForm.label))
                 ? comp.currentForm.label
-                : "Shapeshift".Translate().ToString();
-            TooltipHandler.TipRegion(geneRect, "ShapeshiftGeneAppearanceHidden".Translate(formLabel));
+                : "SSF_Fallback_Transform".Translate().ToString();
+            TooltipHandler.TipRegion(geneRect, "SSF_Inspect_GeneHidden".Translate(formLabel));
 
             GUI.color = prevCol;
         }

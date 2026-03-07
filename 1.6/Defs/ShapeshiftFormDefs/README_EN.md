@@ -41,8 +41,8 @@ Written as a list (`<li>`). You can use the special keyword **"All"** to apply t
 
 ## 5. Equipment Handling
 Defines what happens to the pawn's current apparel and weapons when they transform.
-* `<apparelOnTransform>` / `<weaponsOnTransform>`: Options are `None` (keep wearing), `Inventory` (move to bag), or `Drop` (drop on floor). (Default: `None`).
-* `<apparelEquipLock>` / `<weaponEquipLock>`: Prevents changing gear while transformed. `Auto` (matches the above setting), `Always`, or `Never`. (Default: `Auto`).
+* `<apparelOnTransform>` / `<weaponsOnTransform>`: Options are `Keep` (keep wearing), `Inventory` (move to bag), or `Drop` (drop on floor). (Default: `Keep`).
+* `<apparelEquipLock>` / `<weaponEquipLock>`: Prevents changing gear while transformed. `Auto` (matches the above setting), `Locked`, or `Unlocked`. (Default: `Auto`).
 
 ## 6. Stats & Capacities
 * `<statOffsets>`: Flat additions (+ or -) to stats.

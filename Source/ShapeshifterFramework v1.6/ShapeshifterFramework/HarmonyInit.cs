@@ -18,6 +18,9 @@ namespace ShapeshifterFramework
             var harmony = new Harmony("TRIBeagle.shapeshifterframework");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
+            // 폼별 동적 스탯 헤디프 — 누락분 보험 (ResolveReferences에서 대부분 생성됨)
+            ShapeshifterFramework.Utilities.ShapeshiftStatHediffGenerator.GenerateAll();
+
             // 개별 패치들은 성공/실패만 집계함. 여기서 모드별 요약 1회 출력.
             CompatManager.ReportAllOnce();
         }

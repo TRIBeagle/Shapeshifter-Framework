@@ -35,7 +35,7 @@ namespace ShapeshifterFramework.Patches
             bool lockWeapon = ShapeshiftEquipRules.LockWeapons(comp);
             if (!lockApparel && !lockWeapon) return;
 
-            string blockedSuffix = " (" + "Shapeshift_Menu_Blocked".Translate() + ")";
+            string blockedSuffix = " (" + "SSF_Menu_Blocked".Translate() + ")";
 
             for (int i = 0; i < __result.Count; i++)
             {

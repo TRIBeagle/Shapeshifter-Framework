@@ -74,6 +74,8 @@
     <Compile Include="Comps\CompProperties_AbilityShiftTarget.cs" />
     <Compile Include="Comps\CompAbilityEffect_ShiftTarget.cs" />
     <Compile Include="Debugs\Shapeshifter_DebugActions.cs" />
+    <Compile Include="Hediffs\Hediff_ShapeshiftForm.cs" />
+    <Compile Include="Patches\Patch_Pawn_EquipmentTracker_TryDropEquipment.cs" />
     <Compile Include="Patches\Patch_Pawn_GetReasonsForDisabledWorkType.cs" />
     <Compile Include="Patches\Patch_PawnRenderer_DrawShadowInternal.cs" />
     <Compile Include="Patches\Patch_PawnRenderNodeWorker_HediffEye_OffsetFor.cs" />
@@ -105,12 +107,11 @@
     <Compile Include="Patches\Patch_Pawn_TryGetAttackVerb.cs" />
     <Compile Include="Patches\Patch_PawnRenderer_BaseHeadOffsetAt.cs" />
     <Compile Include="Patches\Patch_GeneUIUtility_DrawGene.cs" />
-    <Compile Include="Patches\Patch_HealthCardUtility_GetPawnCapacityTip.cs" />
     <Compile Include="Patches\Patch_AttachPointTracker_GetRotatedOffset.cs" />
-    <Compile Include="Patches\Patch_PawnCapacityUtility_CalculateCapacityLevel.cs" />
     <Compile Include="Patches\Patch_GeneUtility_SortGenes.cs" />
     <Compile Include="Patches\Patch_Verb_ShootBeam.cs" />
     <Compile Include="Patches\Patch_TooltipUtility_ShotCalculationTipString.cs" />
+    <Compile Include="Utilities\ShapeshiftStatHediffGenerator.cs" />
     <Compile Include="Utilities\ShapeshiftTextureUtility.cs" />
     <Compile Include="Utilities\ShapeshiftRenderUtility.cs" />
     <Compile Include="Utilities\ShapeshiftPartRestoreRecord.cs" />
@@ -141,12 +142,9 @@
     <Compile Include="Utilities\ShapeshiftEligibility.cs" />
     <Compile Include="Utilities\ShapeshiftReflectionCache.cs" />
     <Compile Include="Utilities\ShapeshiftSizeFactorResolver.cs" />
-    <Compile Include="Patches\Patch_StatWorker_ShiftExplain.cs" />
-    <Compile Include="Utilities\ShapeshiftCapacityExplainUtility.cs" />
     <Compile Include="ShapeshiftFormIndex.cs" />
     <Compile Include="ShapeshifterFrameworkSettings.cs" />
     <Compile Include="Utilities\ShapeshiftVisualFilter.cs" />
-    <Compile Include="Patches\Patch_StatWorker_ShiftMods.cs" />
     <Compile Include="ShapeshifterFrameworkMod.cs" />
     <Compile Include="ShapeshiftFormDef.cs" />
     <Compile Include="Comps\CompProperties_Shapeshifter.cs" />

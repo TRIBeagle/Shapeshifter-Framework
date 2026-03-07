@@ -32,7 +32,7 @@ namespace ShapeshifterFramework.Utilities
 
             if (!comp.CanTransform(target, form))
             {
-                Messages.Message("Shapeshift_CannotTransform".Translate(form.LabelCap), MessageTypeDefOf.RejectInput, false);
+                Messages.Message("SSF_Message_CannotTransform".Translate(form.LabelCap), MessageTypeDefOf.RejectInput, false);
                 return false;
             }
 

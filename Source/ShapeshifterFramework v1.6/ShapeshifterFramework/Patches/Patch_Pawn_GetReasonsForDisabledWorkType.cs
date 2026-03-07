@@ -30,7 +30,7 @@ namespace ShapeshifterFramework.Patches
             if (!disabledByType && !disabledByTag) return;
 
             // 이미 같은 이유가 추가되어 있으면 스킵 (중복 방지)
-            string reason = "Shapeshift_WorkDisabled".Translate(form.LabelCap);
+            string reason = "SSF_Message_WorkDisabled".Translate(form.LabelCap);
             if (!__result.Contains(reason))
                 __result.Add(reason);
         }

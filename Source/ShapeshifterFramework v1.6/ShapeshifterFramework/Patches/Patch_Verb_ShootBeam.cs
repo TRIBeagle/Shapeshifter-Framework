@@ -3,7 +3,6 @@
 // 용도 : 바닐라 광선 로직은 무조건 무기(EquipmentSource.def)를 참조하려 하므로, 무기가 없을 경우 이를 Prefix로 가로채어 직접 데미지 계산을 수행하고 원본 로직을 스킵(return false)시켜 게임 멈춤을 완벽히 방어함.
 
 using HarmonyLib;
-using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

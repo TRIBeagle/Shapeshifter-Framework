@@ -26,7 +26,7 @@ namespace ShapeshifterFramework.Patches
             {
                 if (!comp.suppressEquipLock && pawn.IsColonistPlayerControlled)
                 {
-                    Messages.Message("Shapeshift_CannotWearWhileTransformed".Translate(pawn.Named("PAWN")),
+                    Messages.Message("SSF_Message_CannotWear".Translate(pawn.Named("PAWN")),
                                      pawn, MessageTypeDefOf.RejectInput, false);
                 }
                 return false; // 원본 Wear 실행 취소

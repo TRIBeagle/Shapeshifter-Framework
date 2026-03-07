@@ -9,8 +9,6 @@ using RimWorld;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Xml;
 using Verse;
 using Verse.AI;
 
@@ -32,6 +30,14 @@ namespace ShapeshifterFramework.Comps
         /// <summary>현재 변신 여부.</summary>
         public bool isTransformed { get { return currentForm != null; } }
 
+        /// <summary>
+        /// 해당 무기가 변신 폼에 의해 소환된 전용 무기인지 확인
+        /// </summary>
+        public bool IsGeneratedWeapon(ThingWithComps eq)
+        {
+            return generatedWeapons != null && generatedWeapons.Contains(eq);
+        }
+
         /// <summary>남은 변신 틱(카운트다운). 0 이하일 때 무시.</summary>
         private int transformTimer = 0;
 
@@ -47,6 +53,13 @@ namespace ShapeshifterFramework.Comps
         // 변신 전 장비 스냅샷(해제 시 자동 재착용용)
         private readonly List<Apparel> prevApparels = new List<Apparel>();
         private readonly List<ThingWithComps> prevWeapons = new List<ThingWithComps>();
+
+        // 변신을 유발한 원본 아이템 (예: 변신 반지) - 드랍 보호용
+        public List<Thing> sourceItems = new List<Thing>();
+
+        // 변신 시 소환된 폼 전용 장비 추적 (해제 시 삭제 및 복사 방지용)
+        private List<Apparel> generatedApparel = new List<Apparel>();
+        private List<ThingWithComps> generatedWeapons = new List<ThingWithComps>();
 
         // 폼 전용 VerbTracker (폼 verbs/tools용)
         private VerbTracker shapeshiftVerbTracker;
@@ -222,7 +235,7 @@ namespace ShapeshifterFramework.Comps
                 if (!string.IsNullOrEmpty(s)) return s.Translate().CapitalizeFirst();
             }
 
-            string __label = string.IsNullOrEmpty(vp?.label) ? "Shapeshift.Verb.Attack".Translate() : vp.label.Translate();
+            string __label = string.IsNullOrEmpty(vp?.label) ? "SSF_Verb_Attack".Translate() : vp.label.Translate();
             return __label.CapitalizeFirst();
         }
 
@@ -236,8 +249,8 @@ namespace ShapeshifterFramework.Comps
                 if (!string.IsNullOrEmpty(s)) return s.Translate();
             }
 
-            if (forToggle) return "Shapeshift.Verb.ToggleDesc".Translate();
-            return "Shapeshift.Verb.OrderDesc".Translate();
+            if (forToggle) return "SSF_Verb_ToggleDesc".Translate();
+            return "SSF_Verb_OrderDesc".Translate();
         }
 
         #endregion
@@ -252,7 +265,7 @@ namespace ShapeshifterFramework.Comps
             base.CompTick();
             Pawn pawn = parent as Pawn;
 
-            // [A-2 수정됨] 인벤토리 내부 우선 검색 추가 + HashSet 기반 O(1) 단일 순회
+            // 인벤토리 내부 우선 검색 추가 + HashSet 기반 O(1) 단일 순회
             if (needsGearResolve)
             {
                 needsGearResolve = false;
@@ -306,6 +319,14 @@ namespace ShapeshifterFramework.Comps
 
             if (isTransformed && currentForm != null)
             {
+                // 외부 요인(캐릭터 에디터 등)으로 스탯 헤디프가 강제 삭제된 경우 변신 해제
+                if (currentForm.generatedStatHediff != null
+                    && pawn != null
+                    && pawn.health?.hediffSet?.GetFirstHediffOfDef(currentForm.generatedStatHediff) == null)
+                {
+                    RemoveForm();
+                    return;
+                }
                 if (pawn != null && pawn.Dead)
                 {
                     RemoveForm();
@@ -315,6 +336,62 @@ namespace ShapeshifterFramework.Comps
                 {
                     transformTimer--;
                     if (transformTimer <= 0) RemoveForm();
+                }
+                // 1초(60틱)마다 한 번씩 핵심 유지 요건 검사
+                if (pawn.IsHashIntervalTick(60))
+                {
+                    // 1. 다중 코어템(sourceItems) 유실 검사
+                    if (this.sourceItems != null && this.sourceItems.Count > 0)
+                    {
+                        for (int i = this.sourceItems.Count - 1; i >= 0; i--)
+                        {
+                            Thing item = this.sourceItems[i];
+                            if (item == null) continue;
+
+                            bool isHeldByPawn =
+                                (pawn.apparel != null && pawn.apparel.Contains(item as Apparel)) ||
+                                (pawn.equipment != null && pawn.equipment.Contains(item as ThingWithComps)) ||
+                                (pawn.inventory != null && pawn.inventory.innerContainer.Contains(item));
+
+                            if (item.Destroyed || item.Spawned || !isHeldByPawn)
+                            {
+                                ShapeshiftDiagnostics.Info("Source item lost. Forcing shapeshift revert.");
+                                // 알림 메시지 띄우기
+                                Messages.Message("SSF_Message_RevertDueToItemLost".Translate(pawn.LabelShortCap, item.Label), pawn, MessageTypeDefOf.NegativeEvent, false);
+                                RemoveForm();
+                                return;
+                            }
+                        }
+                    }
+
+                    // 2. 신체적 조건(유전자, 헤디프) 유실 검사
+                    if (currentForm.requiredGenes != null && currentForm.requiredGenes.Count > 0 && pawn.genes != null)
+                    {
+                        for (int i = 0; i < currentForm.requiredGenes.Count; i++)
+                        {
+                            if (!pawn.genes.HasActiveGene(currentForm.requiredGenes[i]))
+                            {
+                                // 알림 메시지 띄우기
+                                Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
+                                RemoveForm();
+                                return;
+                            }
+                        }
+                    }
+
+                    if (currentForm.requiredHediffs != null && currentForm.requiredHediffs.Count > 0 && pawn.health != null)
+                    {
+                        for (int i = 0; i < currentForm.requiredHediffs.Count; i++)
+                        {
+                            if (pawn.health.hediffSet.GetFirstHediffOfDef(currentForm.requiredHediffs[i]) == null)
+                            {
+                                // ★ 알림 메시지 띄우기
+                                Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
+                                RemoveForm();
+                                return;
+                            }
+                        }
+                    }
                 }
                 try
                 {
@@ -349,7 +426,7 @@ namespace ShapeshifterFramework.Comps
 
             // durationTicks가 없거나 <=0 이면 영구 변신
             if (!currentForm.durationTicks.HasValue || currentForm.durationTicks.Value <= 0)
-                return "ShapeshiftInspect_Permanent".Translate();
+                return "SSF_Inspect_Permanent".Translate();
 
             int remain = transformTimer; // 남은 틱(CompTick에서 감소하는 기존 필드)
             if (remain <= 0) return null;
@@ -358,7 +435,7 @@ namespace ShapeshifterFramework.Comps
             string timeStr = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: true);
 
             // "변신: 남은 시간 {0}" / "Shapeshift: {0} remaining"
-            return "ShapeshiftInspect_Remaining".Translate(timeStr);
+            return "SSF_Inspect_Remaining".Translate(timeStr);
         }
 
         #endregion
@@ -404,22 +481,63 @@ namespace ShapeshifterFramework.Comps
             return gizmoFormsCache;
         }
 
+        /// <summary>
+        /// 해당 폼의 변신 조건(requiredApparels/Weapons)을 만족시킨 코어 아이템'들'을 모두 찾아냅니다.
+        /// </summary>
+        private List<Thing> FindSourceItemsForForm(ShapeshiftFormDef form)
+        {
+            List<Thing> found = new List<Thing>();
+            var pawn = parent as Pawn;
+            if (pawn == null || form == null) return found;
+
+            // 1. 의류 검사
+            if (form.requiredApparels != null && form.requiredApparels.Count > 0 && pawn.apparel != null)
+            {
+                foreach (var ap in pawn.apparel.WornApparel)
+                {
+                    if (form.requiredApparels.Contains(ap.def)) found.Add(ap);
+                }
+            }
+
+            // 2. 무기 검사
+            if (form.requiredWeapons != null && form.requiredWeapons.Count > 0 && pawn.equipment != null)
+            {
+                foreach (var eq in pawn.equipment.AllEquipmentListForReading)
+                {
+                    if (form.requiredWeapons.Contains(eq.def)) found.Add(eq);
+                }
+            }
+
+            // 3. 일반 아이템(인벤토리 소지품) 검사
+            if (form.requiredItems != null && form.requiredItems.Count > 0 && pawn.inventory?.innerContainer != null)
+            {
+                foreach (var t in pawn.inventory.innerContainer)
+                {
+                    if (form.requiredItems.Contains(t.def)) found.Add(t);
+                }
+            }
+
+            return found;
+        }
+
         #endregion
 
         #region 변신 적용/해제
 
         /// <summary>지정 폼 적용(이전 폼 없음).</summary>
-        public void ApplyForm(ShapeshiftFormDef form) { ApplyForm(form, null); }
+        public void ApplyForm(ShapeshiftFormDef form) { ApplyForm(form, null, null); }
 
         /// <summary>
         /// 지정 폼 적용. <paramref name="prevOverride"/>가 있으면 먼저 해제 후 전환.
         /// - 실시간 재검증(기본/조건 게이트) → 장비 스냅샷 → 장비 처리 → 체형 백업 → 능력/헤디프 부여
         ///   → 상태 적용/FX/타이머 설정 → 체형/머리형 적용 → 사운드/혈흔/살점 캐시 → VerbTracker 초기화 → 갱신.
         /// </summary>
-        public void ApplyForm(ShapeshiftFormDef form, string prevOverride)
+        public void ApplyForm(ShapeshiftFormDef form, string prevOverride, List<Thing> sources = null)
         {
             var pawn = parent as Pawn;
             if (pawn == null || form == null) return;
+
+            this.sourceItems = sources ?? new List<Thing>();
 
             string prev = prevOverride ?? ((isTransformed && currentForm != null) ? currentForm.defName : null);
 
@@ -427,7 +545,7 @@ namespace ShapeshifterFramework.Comps
             if (!ShapeshiftEligibility.PassBasicFilters(pawn, form, prev) ||
                 !ShapeshiftEligibility.PassConditional(pawn, form))
             {
-                try { Messages.Message("Shapeshift_CannotTransform".Translate(form.LabelCap), MessageTypeDefOf.RejectInput, false); } catch { }
+                try { Messages.Message("SSF_Message_CannotTransform".Translate(form.LabelCap), MessageTypeDefOf.RejectInput, false); } catch { }
                 return;
             }
 
@@ -444,6 +562,7 @@ namespace ShapeshifterFramework.Comps
             try
             {
                 HandleGearOnTransform(pawn, form);
+                SpawnAndEquipFormGear(pawn, form);
             }
             catch (Exception ex)
             {
@@ -492,6 +611,21 @@ namespace ShapeshifterFramework.Comps
 
             // 상태 적용
             currentForm = form;
+
+            // 동적 스탯 헤디프 부여(바닐라 건강 탭에 스탯 변동 표시용)
+            if (form.generatedStatHediff != null && pawn.health != null)
+            {
+                if (pawn.health.hediffSet.GetFirstHediffOfDef(form.generatedStatHediff) == null)
+                {
+                    Hediff statHediff = pawn.health.AddHediff(form.generatedStatHediff);
+                    if (statHediff != null)
+                    {
+                        tempAddedHediffs.Add(statHediff);
+                        tempAddedHediffsDefCache.Add(form.generatedStatHediff);
+                    }
+                }
+            }
+
             ShapeshiftTransformFxUtility.PlayEnterFx(pawn, form); // 변신 시작 FX
             if (form.durationTicks.HasValue && form.durationTicks.Value > 0)
                 transformTimer = form.durationTicks.Value;
@@ -524,6 +658,25 @@ namespace ShapeshifterFramework.Comps
             var pawn = parent as Pawn;
             if (pawn == null) return;
             var __oldForm = currentForm;
+
+            // 소환된 전용 장비 강제 파괴 (바닥에 떨어져 복사되는 버그 원천 차단)
+            using (new ShapeshiftEquipLockScope(this)) // 락 무시
+            {
+                for (int i = generatedApparel.Count - 1; i >= 0; i--)
+                {
+                    if (generatedApparel[i] != null && !generatedApparel[i].Destroyed)
+                        generatedApparel[i].Destroy(DestroyMode.Vanish);
+                }
+                generatedApparel.Clear();
+
+                for (int i = generatedWeapons.Count - 1; i >= 0; i--)
+                {
+                    if (generatedWeapons[i] != null && !generatedWeapons[i].Destroyed)
+                        generatedWeapons[i].Destroy(DestroyMode.Vanish);
+                }
+                generatedWeapons.Clear();
+            }
+            if (this.sourceItems != null) this.sourceItems.Clear(); // 기원 아이템 초기화
 
             // 능력 회수
             if (pawn.abilities != null && tempAddedAbilities.Count > 0)
@@ -759,7 +912,7 @@ namespace ShapeshifterFramework.Comps
             ShapeshifterFrameworkSettings st = ShapeshifterFrameworkMod.Settings;
 
             // 의복
-            if (form.apparelOnTransform != GearHandling.None && pawn.apparel != null)
+            if (form.apparelOnTransform != GearHandling.Keep && pawn.apparel != null)
             {
                 List<Apparel> worn = pawn.apparel.WornApparel;
                 List<Apparel> copy = new List<Apparel>(worn.Count);
@@ -769,6 +922,8 @@ namespace ShapeshifterFramework.Comps
                 {
                     Apparel ap = copy[i];
                     if (ap == null) continue;
+
+                    if ((sourceItems != null && sourceItems.Contains(ap)) || generatedApparel.Contains(ap)) continue;
 
                     if (form.apparelOnTransform == GearHandling.Inventory)
                     {
@@ -799,7 +954,7 @@ namespace ShapeshifterFramework.Comps
             }
 
             // 무기
-            if (form.weaponsOnTransform != GearHandling.None && pawn.equipment != null)
+            if (form.weaponsOnTransform != GearHandling.Keep && pawn.equipment != null)
             {
                 List<ThingWithComps> list = pawn.equipment.AllEquipmentListForReading;
                 List<ThingWithComps> copy = new List<ThingWithComps>(list.Count);
@@ -809,6 +964,8 @@ namespace ShapeshifterFramework.Comps
                 {
                     ThingWithComps eq = copy[i];
                     if (eq == null) continue;
+
+                    if ((sourceItems != null && sourceItems.Contains(eq)) || generatedWeapons.Contains(eq)) continue;
 
                     if (form.weaponsOnTransform == GearHandling.Inventory)
                     {
@@ -833,6 +990,143 @@ namespace ShapeshifterFramework.Comps
                         if (st != null && st.forbidDroppedItemsOnTransform && dropped != null && dropped.Spawned)
                         {
                             dropped.SetForbidden(true);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 변신 시 폼 전용 장비 소환 및 장착 (겹치는 기존 장비 스마트 처리 포함)
+        /// </summary>
+        void SpawnAndEquipFormGear(Pawn pawn, ShapeshiftFormDef form)
+        {
+            if (pawn == null || form == null) return;
+
+            using (new ShapeshiftEquipLockScope(this)) // 강제 장착을 위해 락 임시 해제
+            {
+                // 1. 전용 의류 소환
+                if (form.spawnApparelOnTransform != null && form.spawnApparelOnTransform.Count > 0)
+                {
+                    for (int i = 0; i < form.spawnApparelOnTransform.Count; i++)
+                    {
+                        ThingDef apparelDef = form.spawnApparelOnTransform[i];
+                        if (apparelDef == null || !apparelDef.IsApparel) continue;
+
+                        // 새 슈트와 부위가 겹치는 기존 옷들을 찾아서 인벤토리로 피신
+                        if (pawn.apparel != null)
+                        {
+                            List<Apparel> worn = pawn.apparel.WornApparel;
+                            for (int j = worn.Count - 1; j >= 0; j--)
+                            {
+                                Apparel existingAp = worn[j];
+                                if ((sourceItems != null && sourceItems.Contains(existingAp)) || generatedApparel.Contains(existingAp)) continue;
+
+                                // 바닐라 엔진을 이용해 겹침 여부 판정
+                                if (!ApparelUtility.CanWearTogether(apparelDef, existingAp.def, pawn.RaceProps.body))
+                                {
+                                    pawn.apparel.Remove(existingAp); // 안전하게 벗김
+                                    if (form.conflictingGearHandling == GearHandling.Drop)
+                                    {
+                                        TryDropThing(existingAp, pawn.PositionHeld, pawn.MapHeld);
+                                    }
+                                    else // Inventory (또는 Keep)
+                                    {
+                                        if (pawn.inventory?.innerContainer != null && pawn.inventory.innerContainer.TryAdd(existingAp, false)) { }
+                                        else TryDropThing(existingAp, pawn.PositionHeld, pawn.MapHeld);
+                                    }
+
+                                    // 바닥에 떨어졌다면 상호작용 금지 처리
+                                    if (existingAp.Spawned && ShapeshifterFrameworkMod.Settings != null && ShapeshifterFrameworkMod.Settings.forbidDroppedItemsOnTransform)
+                                    {
+                                        existingAp.SetForbidden(true);
+                                    }
+
+                                    // 해제 시 다시 입어야 하므로 장부에 기록
+                                    if (!prevApparels.Contains(existingAp)) prevApparels.Add(existingAp);
+                                }
+                            }
+                        }
+
+                        // 1. 재료 안전망 적용
+                        ThingDef stuff = null;
+                        if (apparelDef.MadeFromStuff) // 재료를 요구하는 장비인지 확인
+                        {
+                            stuff = form.spawnApparelStuff;
+                            // 모더가 재료를 안 적었거나 불일치시
+                            if (stuff == null || stuff.stuffProps == null || !stuff.stuffProps.CanMake(apparelDef))
+                            {
+                                stuff = GenStuff.DefaultStuffFor(apparelDef); // 강제로 기본 재료(천, 강철 등)로 교체
+                            }
+                        }
+
+                        // 2. 옷 생성 및 착용
+                        Apparel newApparel = (Apparel)ThingMaker.MakeThing(apparelDef, stuff);
+
+                        if (pawn.apparel != null)
+                        {
+                            pawn.apparel.Wear(newApparel, dropReplacedApparel: false);
+                            pawn.apparel.Lock(newApparel);
+                            generatedApparel.Add(newApparel);
+                        }
+                    }
+                }
+
+                // 2. 전용 무기 소환
+                if (form.spawnWeaponOnTransform != null && form.spawnWeaponOnTransform.Count > 0)
+                {
+                    // 무기는 슬롯이 겹치므로 기존 무기가 있다면 인벤토리나 바닥으로 처리
+                    if (pawn.equipment != null && pawn.equipment.Primary != null)
+                    {
+                        ThingWithComps existingWep = pawn.equipment.Primary;
+                        if ((sourceItems == null || !sourceItems.Contains(existingWep)) && !generatedWeapons.Contains(existingWep))
+                        {
+                            pawn.equipment.Remove(existingWep);
+
+                            // 설정값에 따라 드랍할지 인벤토리로 피신시킬지 결정
+                            if (form.conflictingGearHandling == GearHandling.Drop)
+                            {
+                                TryDropThing(existingWep, pawn.PositionHeld, pawn.MapHeld);
+                            }
+                            else // Inventory (또는 Keep)
+                            {
+                                if (pawn.inventory?.innerContainer != null && pawn.inventory.innerContainer.TryAdd(existingWep, false)) { }
+                                else TryDropThing(existingWep, pawn.PositionHeld, pawn.MapHeld);
+                            }
+
+                            // 바닥에 떨어졌다면 상호작용 금지 처리
+                            if (existingWep.Spawned && ShapeshifterFrameworkMod.Settings != null && ShapeshifterFrameworkMod.Settings.forbidDroppedItemsOnTransform)
+                            {
+                                existingWep.SetForbidden(true);
+                            }
+
+                            if (!prevWeapons.Contains(existingWep)) prevWeapons.Add(existingWep);
+                        }
+                    }
+
+                    for (int i = 0; i < form.spawnWeaponOnTransform.Count; i++)
+                    {
+                        ThingDef weaponDef = form.spawnWeaponOnTransform[i];
+                        if (weaponDef == null || !weaponDef.IsWeapon) continue;
+
+                        // 1. 재료 안전망 적용
+                        ThingDef stuff = null;
+                        if (weaponDef.MadeFromStuff) // 재료를 요구하는 장비인지 확인
+                        {
+                            stuff = form.spawnWeaponStuff;
+                            if (stuff == null || stuff.stuffProps == null || !stuff.stuffProps.CanMake(weaponDef))
+                            {
+                                stuff = GenStuff.DefaultStuffFor(weaponDef); // 강제로 기본 재료(천, 강철 등)로 교체
+                            }
+                        }
+
+                        // 2. 무기 생성 및 장착
+                        ThingWithComps newWeapon = (ThingWithComps)ThingMaker.MakeThing(weaponDef, stuff);
+
+                        if (pawn.equipment != null)
+                        {
+                            pawn.equipment.AddEquipment(newWeapon);
+                            generatedWeapons.Add(newWeapon);
                         }
                     }
                 }
@@ -1172,11 +1466,22 @@ namespace ShapeshifterFramework.Comps
                     for (int i = 0; i < __keys.Count; i++) verbAutoToggle[__keys[i]] = __vals[i];
                 }
             }
-
+            Scribe_Collections.Look(ref sourceItems, "sourceItems", LookMode.Reference);
+            Scribe_Collections.Look(ref generatedApparel, "generatedApparel", LookMode.Reference);
+            Scribe_Collections.Look(ref generatedWeapons, "generatedWeapons", LookMode.Reference);
             // === PostLoadInit ===
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+                if (sourceItems != null) sourceItems.RemoveAll(x => x == null);
+                else sourceItems = new List<Thing>();
+
+                if (generatedApparel != null) generatedApparel.RemoveAll(x => x == null);
+                else generatedApparel = new List<Apparel>();
+
+                if (generatedWeapons != null) generatedWeapons.RemoveAll(x => x == null);
+                else generatedWeapons = new List<ThingWithComps>();
+
                 if (__tmpHediffsLoad != null)
                 {
                     for (int i = 0; i < __tmpHediffsLoad.Count; i++)
@@ -1241,8 +1546,8 @@ namespace ShapeshifterFramework.Comps
                 {
                     yield return new Command_Action
                     {
-                        defaultLabel = "ShapeshiftMenuChooseLabel".Translate(),
-                        defaultDesc = "ShapeshiftMenuChooseDesc".Translate(),
+                        defaultLabel = "SSF_Menu_ChooseLabel".Translate(),
+                        defaultDesc = "SSF_Menu_ChooseDesc".Translate(),
                         action = delegate
                         {
                             var opts = new List<FloatMenuOption>(gizmoFormsCache.Count);
@@ -1250,7 +1555,11 @@ namespace ShapeshifterFramework.Comps
                             {
                                 var f = gizmoFormsCache[i]; if (f == null) continue;
                                 var cap = f; // capture
-                                opts.Add(new FloatMenuOption(f.LabelCap, delegate { ApplyForm(cap); }));
+                                opts.Add(new FloatMenuOption(f.LabelCap, delegate
+                                {
+                                    List<Thing> sources = FindSourceItemsForForm(cap);
+                                    ApplyForm(cap, null, sources);
+                                }));
                             }
                             if (opts.Count == 0) opts.Add(new FloatMenuOption("None".Translate(), null));
                             Find.WindowStack.Add(new FloatMenu(opts));
@@ -1267,9 +1576,13 @@ namespace ShapeshifterFramework.Comps
 
                         yield return new Command_Action
                         {
-                            defaultLabel = "ShapeshiftCommandLabel".Translate(form.LabelCap),
-                            defaultDesc = "ShapeshiftCommandDesc".Translate(form.description),
-                            action = delegate { ApplyForm(form); },
+                            defaultLabel = "SSF_Command_TransformLabel".Translate(form.LabelCap),
+                            defaultDesc = "SSF_Command_TransformDesc".Translate(form.description),
+                            action = delegate
+                            {
+                                List<Thing> sources = FindSourceItemsForForm(form);
+                                ApplyForm(form, null, sources);
+                            },
                             icon = ShapeshiftTextureUtility.GetEnterIcon(form)
                         };
                     }
@@ -1280,10 +1593,10 @@ namespace ShapeshifterFramework.Comps
                 // 해제
                 yield return new Command_Action
                 {
-                    defaultLabel = "ShapeshiftRevertLabel".Translate(),
+                    defaultLabel = "SSF_Command_RevertLabel".Translate(),
                     defaultDesc = (currentForm.durationTicks.HasValue && currentForm.durationTicks.Value > 0)
-                        ? "ShapeshiftRevertDesc_WithTime".Translate((float)RemainingShapeshiftTicks / 60f)
-                        : "ShapeshiftRevertDesc".Translate(),
+                        ? "SSF_Command_RevertTime".Translate((float)RemainingShapeshiftTicks / 60f)
+                        : "SSF_Command_RevertDesc".Translate(),
                     action = delegate { RemoveForm(); },
                     icon = ShapeshiftTextureUtility.GetRevertIcon(currentForm)
                 };
@@ -1294,8 +1607,8 @@ namespace ShapeshifterFramework.Comps
                 {
                     yield return new Command_Action
                     {
-                        defaultLabel = "ShapeshiftMenuSwitchLabel".Translate(),
-                        defaultDesc = "ShapeshiftMenuSwitchDesc".Translate(),
+                        defaultLabel = "SSF_Menu_SwitchLabel".Translate(),
+                        defaultDesc = "SSF_Menu_SwitchDesc".Translate(),
                         action = delegate
                         {
                             var opts = new List<FloatMenuOption>(gizmoFormsCache.Count);
@@ -1303,7 +1616,11 @@ namespace ShapeshifterFramework.Comps
                             {
                                 var f = gizmoFormsCache[i]; if (f == null) continue;
                                 var cap = f;
-                                opts.Add(new FloatMenuOption(f.LabelCap, delegate { ApplyForm(cap, prev); }));
+                                opts.Add(new FloatMenuOption(f.LabelCap, delegate
+                                {
+                                    List<Thing> sources = FindSourceItemsForForm(cap);
+                                    ApplyForm(cap, prev, sources);
+                                }));
                             }
                             if (opts.Count == 0) opts.Add(new FloatMenuOption("None".Translate(), null));
                             Find.WindowStack.Add(new FloatMenu(opts));
@@ -1319,9 +1636,13 @@ namespace ShapeshifterFramework.Comps
 
                         yield return new Command_Action
                         {
-                            defaultLabel = "ShapeshiftSwitchLabel".Translate(form.LabelCap),
-                            defaultDesc = "ShapeshiftSwitchDesc".Translate(form.description),
-                            action = delegate { ApplyForm(form, prev); },
+                            defaultLabel = "SSF_Command_SwitchLabel".Translate(form.LabelCap),
+                            defaultDesc = "SSF_Command_SwitchDesc".Translate(form.description),
+                            action = delegate
+                            {
+                                List<Thing> sources = FindSourceItemsForForm(form);
+                                ApplyForm(form, prev, sources);
+                            },
                             // [최적화 완료]
                             icon = ShapeshiftTextureUtility.GetEnterIcon(form)
                         };
@@ -1333,8 +1654,8 @@ namespace ShapeshifterFramework.Comps
                 // 방어적 폴백
                 yield return new Command_Action
                 {
-                    defaultLabel = "ShapeshiftRevertLabel".Translate(),
-                    defaultDesc = "ShapeshiftRevertDesc".Translate(),
+                    defaultLabel = "SSF_Command_RevertLabel".Translate(),
+                    defaultDesc = "SSF_Command_RevertDesc".Translate(),
                     action = delegate { RemoveForm(); },
                     icon = ShapeshiftTextureUtility.DefaultRevertIcon
                 };
@@ -1395,7 +1716,7 @@ namespace ShapeshifterFramework.Comps
                     groupable = false,
                 };
                 if (!projectileOk)
-                    cmd.Disable("ShapeshiftNoProjectileForVerb".Translate());
+                    cmd.Disable("SSF_Message_NoProjectile".Translate());
                 if (!canViolent)
                     cmd.Disable("IsIncapableOfViolence".Translate());
                 else if (!v.Available())

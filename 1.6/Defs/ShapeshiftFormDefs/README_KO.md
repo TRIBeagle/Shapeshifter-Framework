@@ -41,8 +41,8 @@
 
 ## 5. 장비 처리 규칙 (Equipment Handling)
 변신할 때 원래 입고 있던 옷과 무기를 어떻게 할지 결정합니다.
-* `<apparelOnTransform>` / `<weaponsOnTransform>`: 변신 시 처리 방법. `None`(그대로 착용), `Inventory`(인벤토리에 넣음), `Drop`(바닥에 떨어뜨림) 중 택 1 (기본값: `None`)
-* `<apparelEquipLock>` / `<weaponEquipLock>`: 변신 중 착용 변경 제한. `Auto`(위 옵션에 따라 자동 결정), `Always`(무조건 변경 불가), `Never`(자유롭게 변경 가능) (기본값: `Auto`)
+* `<apparelOnTransform>` / `<weaponsOnTransform>`: 변신 시 처리 방법. `Keep`(그대로 착용), `Inventory`(인벤토리에 넣음), `Drop`(바닥에 떨어뜨림) 중 택 1 (기본값: `Keep`)
+* `<apparelEquipLock>` / `<weaponEquipLock>`: 변신 중 착용 변경 제한. `Auto`(위 옵션에 따라 자동 결정), `Locked`(무조건 변경 불가), `Unlocked`(자유롭게 변경 가능) (기본값: `Auto`)
 
 ## 6. 능력치 및 능력 (Stats & Capacities)
 * `<statOffsets>`: 스탯에 합연산(+, -) 적용 (예: 이동 속도 +2)

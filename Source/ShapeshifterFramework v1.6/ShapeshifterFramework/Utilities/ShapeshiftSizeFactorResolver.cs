@@ -3,6 +3,7 @@
 // 용도 : 복잡한 스케일 연산이 매 프레임마다 반복되는 것을 막기 위해, Time.frameCount를 기준으로 해당 프레임에 이미 계산이 끝난 폰의 결과값을 즉시 반환하는 고효율 캐싱(Frame Cache)을 적용함.
 
 using ShapeshifterFramework.Comps;
+using System.Collections.Concurrent;
 using UnityEngine;
 using Verse;
 
@@ -54,12 +55,11 @@ namespace ShapeshifterFramework.Utilities
             f.attachPointScaleFactor = baseAttach * sBody;
             f.bodySizeFactor = baseBodyFac * sBody * sBody;
 
-            // 변신 폼이면 오버라이드했다고 간주(값이 1이어도 변신 중이면 true로 처리 무방)
             return true;
         }
 
         private static int _cacheFrame = -1;
-        private static System.Collections.Generic.Dictionary<Pawn, Factors> _frameCache = new System.Collections.Generic.Dictionary<Pawn, Factors>();
+        private static ConcurrentDictionary<Pawn, Factors> _frameCache = new ConcurrentDictionary<Pawn, Factors>();
 
         internal static Factors Effective(Pawn pawn)
         {
@@ -72,14 +72,15 @@ namespace ShapeshifterFramework.Utilities
                 _frameCache.Clear(); // 새 프레임이 시작되면 캐시 일괄 비우기
             }
 
-            // 이번 프레임에 이미 계산이 끝난 폰이면 저장된 값을 즉시 반환
-            if (_frameCache.TryGetValue(pawn, out Factors cached))
+            // ConcurrentDictionary.TryGetValue는 스레드 세이프
+            Factors cached;
+            if (_frameCache.TryGetValue(pawn, out cached))
             {
                 return cached;
             }
 
             TryGetOverrides(pawn, out Factors f);
-            _frameCache[pawn] = f;
+            _frameCache.TryAdd(pawn, f); // TryAdd로 경합 안전 — 중복 삽입 시 무시
             return f;
         }
     }

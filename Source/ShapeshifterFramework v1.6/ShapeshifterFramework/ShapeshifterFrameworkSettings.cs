@@ -45,48 +45,51 @@ namespace ShapeshifterFramework
             list.Begin(inRect);
 
             string buf = maxInlineGizmoCount.ToString();
-            list.TextFieldNumericLabeled("MaxInlineGizmoCount_title".Translate(), ref maxInlineGizmoCount, ref buf, 1f, 24f);
+            Rect gizmoRect = list.GetRect(Text.LineHeight);
+            TooltipHandler.TipRegion(gizmoRect, "SSF_Setting_MaxGizmo_Desc".Translate());
+            Widgets.TextFieldNumericLabeled(gizmoRect, "SSF_Setting_MaxGizmo_Title".Translate(), ref maxInlineGizmoCount, ref buf, 1f, 24f);
+
             list.Gap(10f);
 
-            bool tmpWeapons = scaleHeldWeapons;
-            list.CheckboxLabeled("ScaleHeldWeapons_title".Translate(), ref tmpWeapons, "ScaleHeldWeapons_desc".Translate());
-            scaleHeldWeapons = tmpWeapons;
-
             bool tmpPortrait = enablePortraitScale;
-            list.CheckboxLabeled("EnablePortraitScale_title".Translate(), ref tmpPortrait, "EnablePortraitScale_desc".Translate());
+            list.CheckboxLabeled("SSF_Setting_PortraitScale_Title".Translate(), ref tmpPortrait, "SSF_Setting_PortraitScale_Desc".Translate());
             enablePortraitScale = tmpPortrait;
+
+            bool tmpWeapons = scaleHeldWeapons;
+            list.CheckboxLabeled("SSF_Setting_WeaponScale_Title".Translate(), ref tmpWeapons, "SSF_Setting_WeaponScale_Desc".Translate());
+            scaleHeldWeapons = tmpWeapons;
 
             list.Gap(10f);
 
             bool tmpInv = autoReequipFromInventory;
-            list.CheckboxLabeled("AutoReequipFromInventory_title".Translate(), ref tmpInv, "AutoReequipFromInventory_desc".Translate());
+            list.CheckboxLabeled("SSF_Setting_ReequipInventory_Title".Translate(), ref tmpInv, "SSF_Setting_ReequipInventory_Desc".Translate());
             autoReequipFromInventory = tmpInv;
 
             bool tmpGround = autoReequipFromGround;
-            list.CheckboxLabeled("AutoReequipFromGround_title".Translate(), ref tmpGround, "AutoReequipFromGround_desc".Translate());
+            list.CheckboxLabeled("SSF_Setting_ReequipGround_Title".Translate(), ref tmpGround, "SSF_Setting_ReequipGround_Desc".Translate());
             autoReequipFromGround = tmpGround;
 
             list.Gap(10f);
 
             bool tmpForbid = forbidDroppedItemsOnTransform;
-            list.CheckboxLabeled("forbidDroppedItemsOnTransform_title".Translate(), ref tmpForbid, "forbidDroppedItemsOnTransform_desc".Translate());
+            list.CheckboxLabeled("SSF_Setting_ForbidItems_Title".Translate(), ref tmpForbid, "SSF_Setting_ForbidItems_Desc".Translate());
             forbidDroppedItemsOnTransform = tmpForbid;
 
             list.Gap(10f);
 
             bool tmpShowToggle = showVerbAutoToggle;
-            list.CheckboxLabeled("ShowVerbAutoToggle_title".Translate(), ref tmpShowToggle, "ShowVerbAutoToggle_desc".Translate());
+            list.CheckboxLabeled("SSF_Setting_VerbToggle_Title".Translate(), ref tmpShowToggle, "SSF_Setting_VerbToggle_Desc".Translate());
             showVerbAutoToggle = tmpShowToggle;
 
             list.Gap(10f);
 
             bool tmpDebug = enableDebugLog;
-            list.CheckboxLabeled("EnableDebugLog_title".Translate(), ref tmpDebug, "EnableDebugLog_desc".Translate());
+            list.CheckboxLabeled("SSF_Setting_DebugLog_Title".Translate(), ref tmpDebug, "SSF_Setting_DebugLog_Desc".Translate());
             enableDebugLog = tmpDebug;
 
             list.Gap(12f);
 
-            if (list.ButtonText("resetAllSetting_title".Translate()))
+            if (list.ButtonText("SSF_Setting_ResetAll_Title".Translate()))
             {
                 maxInlineGizmoCount = 8;
                 scaleHeldWeapons = true;

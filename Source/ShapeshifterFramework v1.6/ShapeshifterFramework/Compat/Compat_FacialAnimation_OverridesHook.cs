@@ -471,7 +471,7 @@ namespace ShapeshifterFramework.Compat
         /// 원본: <c>CompShapeshifter.ApplyForm(ShapeshiftFormDef, string)</c> — <b>Postfix</b>.
         /// 처음 준비 시 한 번만 패치 카운트 기록.
         /// </summary>
-        [HarmonyPatch(typeof(CompShapeshifter), "ApplyForm", new System.Type[] { typeof(ShapeshiftFormDef), typeof(string) })]
+        [HarmonyPatch(typeof(CompShapeshifter), "ApplyForm", new System.Type[] { typeof(ShapeshiftFormDef), typeof(string), typeof(System.Collections.Generic.List<Verse.Thing>) })]
         static class Patch_ApplyForm2
         {
             /// <summary>FA 비활성 시 패치 비적용. 최초 1회 Patched 기록.</summary>

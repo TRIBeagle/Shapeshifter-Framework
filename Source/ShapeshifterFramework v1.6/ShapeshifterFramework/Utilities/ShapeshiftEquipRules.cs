@@ -11,15 +11,17 @@ namespace ShapeshifterFramework.Utilities
         public static bool LockApparel(CompShapeshifter comp)
         {
             if (comp == null) return false;
-            if (comp.suppressEquipLock) return false; // ★ 내부 복구 중엔 잠금 해제
+            if (comp.suppressEquipLock) return false;
             var def = comp.currentForm as ShapeshiftFormDef;
             if (def == null) return false;
 
             switch (def.apparelEquipLock)
             {
-                case EquipLockMode.Always: return true;
-                case EquipLockMode.Never: return false;
-                default: return def.apparelOnTransform != GearHandling.None;
+                case EquipLockMode.Locked: return true;  // 잠금 상태이므로 true
+                case EquipLockMode.Unlocked: return false; // 잠금 해제 상태이므로 false
+                default:
+                    // Auto: 겉옷을 벗어 던지는 폼이면 자동으로 잠금(true)
+                    return def.apparelOnTransform != GearHandling.Keep;
             }
         }
 
@@ -32,9 +34,9 @@ namespace ShapeshifterFramework.Utilities
 
             switch (def.weaponEquipLock)
             {
-                case EquipLockMode.Always: return true;
-                case EquipLockMode.Never: return false;
-                default: return def.weaponsOnTransform != GearHandling.None;
+                case EquipLockMode.Locked: return true;  // 잠금 상태이므로 true
+                case EquipLockMode.Unlocked: return false; // 잠금 해제 상태이므로 false
+                default: return def.weaponsOnTransform != GearHandling.Keep;
             }
         }
     }

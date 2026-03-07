@@ -50,10 +50,10 @@ namespace ShapeshifterFramework
     public enum RequirementMatchMode { All, Any }
 
     // 변신 시 기존 장비 처리 모드(의복/무기 각자 지정)
-    public enum GearHandling { None, Inventory, Drop }
+    public enum GearHandling { Keep, Inventory, Drop }
 
     // 착용/장착 금지 정책(기본 Auto = GearHandling에 묶음)
-    public enum EquipLockMode { Auto, Always, Never }
+    public enum EquipLockMode { Auto, Locked, Unlocked }
 
     // verb별 UI 메타
     public class VerbGizmoOption
@@ -129,12 +129,26 @@ namespace ShapeshifterFramework
         public List<string> renderShowHediffDefNames;
 
         // 변신 시 기존 장비 처리(폼별): 의복/무기 각각
-        public GearHandling apparelOnTransform = GearHandling.None;
-        public GearHandling weaponsOnTransform = GearHandling.None;
+        public GearHandling apparelOnTransform = GearHandling.Keep;
+        public GearHandling weaponsOnTransform = GearHandling.Keep;
 
         // 착용/장착 금지 정책(기본 Auto = GearHandling에 묶음)
         public EquipLockMode apparelEquipLock = EquipLockMode.Auto;
         public EquipLockMode weaponEquipLock = EquipLockMode.Auto;
+
+        // 변신 시 소환해서 강제로 입힐 전용 의류 목록 (해제 시 자동 파괴)
+        public List<ThingDef> spawnApparelOnTransform = new List<ThingDef>();
+
+        // 변신 시 소환해서 강제로 들려줄 전용 무기 목록 (해제 시 자동 파괴)
+        public List<ThingDef> spawnWeaponOnTransform = new List<ThingDef>();
+
+        // 소환되는 의류/무기의 재질 (예: ThingDefOf.Plasteel).
+        public ThingDef spawnApparelStuff;
+        public ThingDef spawnWeaponStuff;
+
+        // 소환된 전용 의류/무기와 부위가 겹쳐서 강제로 벗어야 하는 의복 처리
+        public GearHandling conflictingGearHandling = GearHandling.Inventory;
+
 
         // 폼 전용 렌더 노드(해당 폼 활성 시에만 추가)
         public List<PawnRenderNodeProperties> renderNodeProperties;
@@ -236,6 +250,10 @@ namespace ShapeshifterFramework
         public ThingDef bloodSmearDef;
         public FleshTypeDef fleshType;
 
+        // 런타임 자동 생성된 스탯 헤디프 (세이브 불필요, 매 시작 재생성)
+        [Unsaved(false)]
+        public HediffDef generatedStatHediff;
+
         // HAR 옵션
         [MayRequire("erdelf.HumanoidAlienRaces")] public bool showHarAddons = false;
 
@@ -248,5 +266,15 @@ namespace ShapeshifterFramework
         [MayRequire("Nals.FacialAnimation")] public string faSkinTypeDef;
         [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor;
         [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor2;
+
+        /// <summary>
+        /// Def 로드 완료 후 호출. 세이브 역직렬화보다 먼저 실행되어
+        /// 동적 HediffDef가 DefDatabase에 등록된 상태를 보장.
+        /// </summary>
+        public override void ResolveReferences()
+        {
+            base.ResolveReferences();
+            ShapeshifterFramework.Utilities.ShapeshiftStatHediffGenerator.TryGenerateFor(this);
+        }
     }
 }

@@ -1,68 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <!-- Gizmo / Commands -->
-  <ShapeshiftCommandLabel>변신: {0}</ShapeshiftCommandLabel>
-  <ShapeshiftCommandDesc>변신 폼: {0}</ShapeshiftCommandDesc>
-  <ShapeshiftRevertLabel>변신 해제</ShapeshiftRevertLabel>
-  <ShapeshiftRevertDesc>변신을 해제합니다</ShapeshiftRevertDesc>
-  <ShapeshiftRevertDesc_WithTime>변신이 {0:0.0}초 남음</ShapeshiftRevertDesc_WithTime>
-  <ShapeshiftSwitchLabel>전환: {0}</ShapeshiftSwitchLabel>
-  <ShapeshiftSwitchDesc>전환 폼: {0}</ShapeshiftSwitchDesc>
-
-  <!-- Dropdown menu titles (폼이 많을 때) -->
-  <ShapeshiftMenuChooseLabel>변신: 폼 선택</ShapeshiftMenuChooseLabel>
-  <ShapeshiftMenuChooseDesc>변신할 폼을 선택합니다.</ShapeshiftMenuChooseDesc>
-  <ShapeshiftMenuSwitchLabel>변신: 폼 전환</ShapeshiftMenuSwitchLabel>
-  <ShapeshiftMenuSwitchDesc>다른 폼으로 전환합니다.</ShapeshiftMenuSwitchDesc>
-
-  <!-- 변신 실패 메시지(allowedFromForms 등 조건 불충족) -->
-  <Shapeshift_CannotTransform>{0} 형태로 변신할 수 없습니다.</Shapeshift_CannotTransform>
   
-  <!-- 변신 폼으로 인한 작업 결격 사유 (작업 탭 툴팁 / 캐릭터 창) -->
-  <Shapeshift_WorkDisabled>{0} 변신 때문에 비활성</Shapeshift_WorkDisabled>
+  <SSF_Command_TransformLabel>변신: {0}</SSF_Command_TransformLabel>
+  <SSF_Command_TransformDesc>변신 폼: {0}</SSF_Command_TransformDesc>
+  <SSF_Command_RevertLabel>변신 해제</SSF_Command_RevertLabel>
+  <SSF_Command_RevertDesc>변신을 해제합니다</SSF_Command_RevertDesc>
+  <SSF_Command_RevertTime>변신이 {0:0.0}초 남음</SSF_Command_RevertTime>
+  <SSF_Command_SwitchLabel>전환: {0}</SSF_Command_SwitchLabel>
+  <SSF_Command_SwitchDesc>전환 폼: {0}</SSF_Command_SwitchDesc>
 
-  <!-- Gene overlay -->
-  <ShapeshiftGeneAppearanceHidden>변신({0}) 효과: 외형만 숨김</ShapeshiftGeneAppearanceHidden>
+  <SSF_Menu_ChooseLabel>변신: 폼 선택</SSF_Menu_ChooseLabel>
+  <SSF_Menu_ChooseDesc>변신할 폼을 선택합니다.</SSF_Menu_ChooseDesc>
+  <SSF_Menu_SwitchLabel>변신: 폼 전환</SSF_Menu_SwitchLabel>
+  <SSF_Menu_SwitchDesc>다른 폼으로 전환합니다.</SSF_Menu_SwitchDesc>
+  <SSF_Menu_Blocked>차단됨</SSF_Menu_Blocked>
 
-  <!-- Stat/Capacity explain lines -->
-  <ShapeshiftStatFactor>변신 ({0}): ×{1}</ShapeshiftStatFactor>
-  <ShapeshiftStatOffset>변신 ({0}): {1}</ShapeshiftStatOffset>
-  <ShapeshiftCapacityFactor>변신 ({0}): ×{1}</ShapeshiftCapacityFactor>
-  <ShapeshiftCapacityOffset>변신 ({0}): {1}</ShapeshiftCapacityOffset>
+  <SSF_Hediff_FormLabel>변신 효과: {0}</SSF_Hediff_FormLabel>
+  <SSF_Hediff_FormDesc>{0} 변신으로 인한 능력치 변동.</SSF_Hediff_FormDesc>
 
-  <!-- Settings -->
-  <MaxInlineGizmoCountSetting_title>변신 버튼 최대 개수</MaxInlineGizmoCountSetting_title>
-  <MaxInlineGizmoCountSetting_Desc>폼 수가 이 값을 초과하면 드롭다운 메뉴(목록)로 전환됩니다.</MaxInlineGizmoCountSetting_Desc>
-  <EnablePortraitScaleSetting_title>포트레잇 배율 적용</EnablePortraitScaleSetting_title>
-  <EnablePortraitScaleSetting_desc>각 폼의 portraitDrawScale 값을 정보창 포트레잇에 적용합니다. 포트레잇 바 계열 모드와 충돌하면 꺼 주세요.</EnablePortraitScaleSetting_desc>
-  <ScaleHeldWeaponsSetting_title>장비 무기 크기를 바디 배율에 연동</ScaleHeldWeaponsSetting_title>
-  <ScaleHeldWeaponsSetting_desc>변신 바디 드로우 배율에 맞춰 들고 있는 무기 그래픽을 등방으로 확대/축소합니다. 다른 무기 크기 조절 모드와 충돌하면 꺼 주세요.</ScaleHeldWeaponsSetting_desc>
-  <AutoReequipFromInventory_title>인벤토리에서 자동 재장비</AutoReequipFromInventory_title>
-  <AutoReequipFromInventory_desc>변신 해제 시 인벤토리에 있던 무기/도구를 자동으로 다시 장비합니다.</AutoReequipFromInventory_desc>
-  <AutoReequipFromGround_title>바닥에서 자동 재장비</AutoReequipFromGround_title>
-  <AutoReequipFromGround_desc>변신 해제 시 근처에 떨어진 이전 장비를 자동으로 다시 주워 장비합니다.</AutoReequipFromGround_desc>
-  <forbidDroppedItemsOnTransform_title>변신 중 드롭 아이템 금지</forbidDroppedItemsOnTransform_title>
-  <forbidDroppedItemsOnTransform_desc>변신 과정에서 떨어진 아이템을 일시적으로 금지 상태로 표시합니다.</forbidDroppedItemsOnTransform_desc>
-  <ShowVerbAutoToggle_title>자동 공격 토글 표시</ShowVerbAutoToggle_title>
-  <ShowVerbAutoToggle_desc>공격 명령에 자동 공격 토글을 표시합니다.</ShowVerbAutoToggle_desc>
-  <EnableDebugLog_title>개발자 디버그 로그 출력</EnableDebugLog_title>
-  <EnableDebugLog_desc>변신 프레임워크의 상세한 내부 연산(헤디프 부여 등)을 림월드 로그 창에 출력합니다. 모드 개발자나 버그 제보를 할 때만 켜주세요.</EnableDebugLog_desc>
-  <resetAllSetting_title>모두 기본값으로</resetAllSetting_title>
+  <SSF_Inspect_Permanent>변신: 무제한</SSF_Inspect_Permanent>
+  <SSF_Inspect_Remaining>변신: 남은 시간 {0}</SSF_Inspect_Remaining>
+  <SSF_Inspect_GeneHidden>변신({0}) 효과: 외형만 숨김</SSF_Inspect_GeneHidden>
 
-  <!-- Fallback (일부 코드에서 폴백으로 사용) -->
-  <Shapeshift>변신</Shapeshift>
+  <SSF_Verb_Attack>공격</SSF_Verb_Attack>
+  <SSF_Verb_ToggleDesc>자동 공격 전환</SSF_Verb_ToggleDesc>
+  <SSF_Verb_OrderDesc>공격 지시</SSF_Verb_OrderDesc>
+
+  <SSF_Message_CannotTransform>{0} 형태로 변신할 수 없습니다.</SSF_Message_CannotTransform>
+  <SSF_Message_WorkDisabled>{0} 변신 때문에 비활성</SSF_Message_WorkDisabled>
+  <SSF_Message_NoProjectile>이 공격은 발사체가 없어 사용할 수 없습니다.</SSF_Message_NoProjectile>
+  <SSF_Message_CannotWear>{PAWN}은(는) 변신 상태에서 의류를 착용할 수 없습니다.</SSF_Message_CannotWear>
+  <SSF_Message_CannotEquip>{PAWN}은(는) 변신 상태에서 장비를 손에 들 수 없습니다.</SSF_Message_CannotEquip>
+  <SSF_Message_CannotDropGeneratedWeapon>변신 중에는 폼 전용 무기를 버릴 수 없습니다.</SSF_Message_CannotDropGeneratedWeapon>
+  <SSF_Message_RevertDueToItemLost>{0}의 변신이 해제되었습니다: {1} 유실.</SSF_Message_RevertDueToItemLost>
+  <SSF_Message_RevertDueToConditionLost>{0}의 변신이 해제되었습니다: 신체 조건 미충족.</SSF_Message_RevertDueToConditionLost>
+
+  <SSF_Setting_MaxGizmo_Title>변신 버튼 최대 개수</SSF_Setting_MaxGizmo_Title>
+  <SSF_Setting_MaxGizmo_Desc>폼 수가 이 값을 초과하면 드롭다운 메뉴(목록)로 전환됩니다.</SSF_Setting_MaxGizmo_Desc>
   
-  <!-- Verb Gizmo Labels & Descriptions -->
-  <Shapeshift.Verb.Attack>공격</Shapeshift.Verb.Attack>
-  <Shapeshift.Verb.ToggleDesc>자동 공격 전환</Shapeshift.Verb.ToggleDesc>
-  <Shapeshift.Verb.OrderDesc>공격 지시</Shapeshift.Verb.OrderDesc>
-  <ShapeshiftNoProjectileForVerb>이 공격은 발사체가 없어 사용할 수 없습니다.</ShapeshiftNoProjectileForVerb>
-  <Shapeshift_Menu_Blocked>차단됨</Shapeshift_Menu_Blocked>
-  <Shapeshift_CannotWearWhileTransformed>{PAWN}은(는) 변신 상태에서 의류를 착용할 수 없습니다.</Shapeshift_CannotWearWhileTransformed>
-  <Shapeshift_CannotEquipWhileTransformed>{PAWN}은(는) 변신 상태에서 장비를 손에 들 수 없습니다.</Shapeshift_CannotEquipWhileTransformed>
+  <SSF_Setting_PortraitScale_Title>포트레잇 배율 적용</SSF_Setting_PortraitScale_Title>
+  <SSF_Setting_PortraitScale_Desc>각 폼의 portraitDrawScale 값을 정보창 포트레잇에 적용합니다. 포트레잇 바 계열 모드와 충돌하면 꺼 주세요.</SSF_Setting_PortraitScale_Desc>
   
-  <!-- Inspect: 변신 상태 -->
-  <ShapeshiftInspect_Permanent>변신: 무제한</ShapeshiftInspect_Permanent>
-  <!-- {0} = GenDate.ToStringTicksToPeriod 포맷 문자열 -->
-  <ShapeshiftInspect_Remaining>변신: 남은 시간 {0}</ShapeshiftInspect_Remaining>
+  <SSF_Setting_WeaponScale_Title>장비 무기 크기를 바디 배율에 연동</SSF_Setting_WeaponScale_Title>
+  <SSF_Setting_WeaponScale_Desc>변신 바디 드로우 배율에 맞춰 들고 있는 무기 그래픽을 등방으로 확대/축소합니다. 다른 무기 크기 조절 모드와 충돌하면 꺼 주세요.</SSF_Setting_WeaponScale_Desc>
+  
+  <SSF_Setting_ReequipInventory_Title>인벤토리에서 자동 재장비</SSF_Setting_ReequipInventory_Title>
+  <SSF_Setting_ReequipInventory_Desc>변신 해제 시 인벤토리에 있던 무기/도구를 자동으로 다시 장비합니다.</SSF_Setting_ReequipInventory_Desc>
+  
+  <SSF_Setting_ReequipGround_Title>바닥에서 자동 재장비</SSF_Setting_ReequipGround_Title>
+  <SSF_Setting_ReequipGround_Desc>변신 해제 시 근처에 떨어진 이전 장비를 자동으로 다시 주워 장비합니다.</SSF_Setting_ReequipGround_Desc>
+  
+  <SSF_Setting_ForbidItems_Title>변신 중 드롭 아이템 금지</SSF_Setting_ForbidItems_Title>
+  <SSF_Setting_ForbidItems_Desc>변신 과정에서 떨어진 아이템을 일시적으로 금지 상태로 표시합니다.</SSF_Setting_ForbidItems_Desc>
+  
+  <SSF_Setting_VerbToggle_Title>자동 공격 토글 표시</SSF_Setting_VerbToggle_Title>
+  <SSF_Setting_VerbToggle_Desc>공격 명령에 자동 공격 토글을 표시합니다.</SSF_Setting_VerbToggle_Desc>
+  
+  <SSF_Setting_DebugLog_Title>개발자 디버그 로그 출력</SSF_Setting_DebugLog_Title>
+  <SSF_Setting_DebugLog_Desc>변신 프레임워크의 상세한 내부 연산을 출력합니다. 개발 중이거나 버그 추적 시에만 켜주세요.</SSF_Setting_DebugLog_Desc>
+  
+  <SSF_Setting_ResetAll_Title>모두 기본값으로</SSF_Setting_ResetAll_Title>
+
+  <SSF_Fallback_Transform>변신</SSF_Fallback_Transform>
+
 </LanguageData>
