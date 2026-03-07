@@ -31,12 +31,18 @@ namespace ShapeshifterFramework.Comps
         {
             base.DoEffect(user);
 
+            // [수정] 카라반/수송 포드 등 오프맵 상태에서 Map이 null일 수 있으므로 방어 처리
             var map = user.Map;
-            // [수정] user.Position이 아닌 '사용자가 바라보는 앞 칸(FacingCell)'을 확인
-            IntVec3 targetCell = user.Position + user.Rotation.FacingCell;
+            Pawn pawn = null;
 
-            // 앞 칸에 폰이 있으면 그 폰을, 없으면 자기 자신을 대상으로 지정
-            Pawn pawn = targetCell.InBounds(map) ? targetCell.GetFirstPawn(map) : null;
+            if (map != null)
+            {
+                // user.Position이 아닌 '사용자가 바라보는 앞 칸(FacingCell)'을 확인
+                IntVec3 targetCell = user.Position + user.Rotation.FacingCell;
+                // 앞 칸에 폰이 있으면 그 폰을, 없으면 자기 자신을 대상으로 지정
+                pawn = targetCell.InBounds(map) ? targetCell.GetFirstPawn(map) : null;
+            }
+
             if (pawn == null)
             {
                 pawn = user;

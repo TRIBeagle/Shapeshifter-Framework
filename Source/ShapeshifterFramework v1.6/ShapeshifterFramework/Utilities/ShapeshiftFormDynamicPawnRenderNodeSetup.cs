@@ -19,6 +19,7 @@ namespace ShapeshifterFramework.Utilities
         // Dev 로그 스로틀링
         static readonly Dictionary<int, int> lastLogTick = new Dictionary<int, int>();
         const int LogCooldownTicks = 120; // 2초 정도
+        const int LogDictCleanupThreshold = 256; // [수정] 딕셔너리 무한 성장 방지 임계값
 
         public override IEnumerable<(PawnRenderNode node, PawnRenderNode parent)> GetDynamicNodes(Pawn pawn, PawnRenderTree tree)
         {
@@ -50,6 +51,16 @@ namespace ShapeshifterFramework.Utilities
             {
                 int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
                 int id = pawn.thingIDNumber;
+
+                // [수정] 딕셔너리가 임계값을 넘으면 만료된 엔트리 일괄 정리
+                if (lastLogTick.Count > LogDictCleanupThreshold)
+                {
+                    var staleKeys = new List<int>();
+                    foreach (var kv in lastLogTick)
+                        if (tick - kv.Value > LogCooldownTicks * 10) staleKeys.Add(kv.Key);
+                    for (int k = 0; k < staleKeys.Count; k++)
+                        lastLogTick.Remove(staleKeys[k]);
+                }
 
                 int last;
                 if (!lastLogTick.TryGetValue(id, out last) || tick - last >= LogCooldownTicks)

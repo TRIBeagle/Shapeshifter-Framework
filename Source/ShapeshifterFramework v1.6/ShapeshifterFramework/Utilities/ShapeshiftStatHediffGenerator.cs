@@ -27,6 +27,15 @@ namespace ShapeshifterFramework.Utilities
             string defName = "SSF_FormStats_" + form.defName;
             if (_generated.Contains(defName)) return;
 
+            // [수정] 다른 모드가 동일 defName을 먼저 등록했을 경우 중복 Add 방어
+            var existing = DefDatabase<HediffDef>.GetNamedSilentFail(defName);
+            if (existing != null)
+            {
+                form.generatedStatHediff = existing;
+                _generated.Add(defName);
+                return;
+            }
+
             var hediffDef = CreateHediffDef(form, defName);
             if (hediffDef == null) return;
 
