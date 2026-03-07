@@ -8,11 +8,7 @@ using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
-    /// <summary>
-    /// Pawn_CallTracker.DoCall 패치
-    /// - 평상시 콜(soundCall) → 폼 전용 soundCall 대체
-    /// - 공격적 콜(forceAggressive = true) → 폼 전용 soundAngry 대체
-    /// </summary>
+    /// <summary>DoCall에서 평상시/공격적 콜을 폼 전용 사운드로 대체.</summary>
     [HarmonyPatch(typeof(Pawn_CallTracker), nameof(Pawn_CallTracker.DoCall))]
     internal static class Patch_Pawn_CallTracker_DoCall
     {

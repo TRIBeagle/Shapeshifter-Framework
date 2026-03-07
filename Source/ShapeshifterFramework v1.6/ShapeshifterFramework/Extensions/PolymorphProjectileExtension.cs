@@ -6,10 +6,7 @@ using Verse;
 
 namespace ShapeshifterFramework.Extensions
 {
-    /// <summary>
-    /// 투사체가 명중했을 때 대상에게 변신 폼을 적용하기 위한 확장 데이터.
-    /// 실제 효과 적용은 별도 처리기(예: <see cref="ShapeshifterFramework.Utilities.ShapeshiftTargetUtility"/> 호출부)에서 수행한다.
-    /// </summary>
+    /// <summary>투사체 명중 시 대상에게 변신 폼을 적용하기 위한 확장 데이터.</summary>
     public class PolymorphProjectileExtension : DefModExtension
     {
         #region 설정 필드

@@ -106,25 +106,25 @@ namespace ShapeshifterFramework
         public PartOverrideOption tattooBody = new PartOverrideOption();
         public PartOverrideOption tattooHead = new PartOverrideOption();
 
-        // ▼ 의상 숨김: layer/defName (특수값: "All")
+        // 의상 숨김: layer/defName (특수값: "All")
         public List<string> renderHideApparelLayers;
         public List<string> renderHideApparelDefNames;
         public List<string> renderShowApparelLayers;
         public List<string> renderShowApparelDefNames;
 
-        // ▼ 장비(무기) 숨김: weaponTags/defName (특수값: "All")
+        // 장비(무기) 숨김: weaponTags/defName (특수값: "All")
         public List<string> renderHideWeaponTags;
         public List<string> renderHideWeaponDefNames;
         public List<string> renderShowWeaponTags;
         public List<string> renderShowWeaponDefNames;
 
-        // ▼ 유전자 그래픽 숨김: exclusionTags/defName 목록 (특수값: "All")
+        // 유전자 그래픽 숨김: exclusionTags/defName 목록 (특수값: "All")
         public List<string> renderHideGeneExclusionTags;
         public List<string> renderHideGeneDefNames;
         public List<string> renderShowGeneExclusionTags;
         public List<string> renderShowGeneDefNames;
 
-        // ▼ 헤디프 그래픽 숨김: defName 목록 (특수값: "All")
+        // 헤디프 그래픽 숨김: defName 목록 (특수값: "All")
         public List<string> renderHideHediffDefNames;
         public List<string> renderShowHediffDefNames;
 

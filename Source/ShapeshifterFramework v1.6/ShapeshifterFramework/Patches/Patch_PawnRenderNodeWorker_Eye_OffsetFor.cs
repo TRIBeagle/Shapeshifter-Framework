@@ -17,7 +17,7 @@ namespace ShapeshifterFramework.Patches
             // 이중 실행 방지 (HediffEye가 부를 때는 무시)
             if (__instance.GetType() != typeof(PawnRenderNodeWorker_Eye)) return;
 
-            // 유틸리티 호출 한 줄로 끝! (머리 배율 적용)
+            // 머리 배율 적용
             ShapeshiftRenderUtility.ApplyOffsetScale(parms, ref __result, useHeadScale: true);
         }
     }

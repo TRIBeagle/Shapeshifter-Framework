@@ -12,18 +12,7 @@ using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
-    /// <summary>
-    /// PawnWoundDrawer.WriteCache의 pawn.RaceProps.FleshType 접근을
-    /// ShapeshiftOverlayHelper.GetEffectiveFleshType(pawn) 호출로 치환.
-    /// 
-    /// # 안전성
-    /// - 스택을 정확히 맞추기 위해 get_FleshType 호출을 Pop하고,
-    ///   인자(parms)에서 Pawn을 다시 로드하여 헬퍼를 호출한다.
-    /// - 치환 실패 시 바닐라로 그대로 두고 경고 로그만 남긴다(크래시 방지).
-    /// 
-    /// # 성능
-    /// - 치환 횟수 카운트/최소 로그만. LINQ 미사용.
-    /// </summary>
+    /// <summary>WriteCache의 FleshType 접근을 폼 전용 헬퍼로 치환하는 Transpiler.</summary>
     [HarmonyPatch(typeof(PawnWoundDrawer), "WriteCache")]
     internal static class Patch_PawnWoundDrawer_WriteCache
     {

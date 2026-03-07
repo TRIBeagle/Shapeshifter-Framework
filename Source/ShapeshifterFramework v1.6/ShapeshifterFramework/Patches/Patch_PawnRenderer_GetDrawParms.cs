@@ -65,7 +65,7 @@ namespace ShapeshifterFramework.Patches
                     if (!Mathf.Approximately(s, 1f))
                     {
                         Matrix4x4 m = __result.matrix;
-                        // 루트 TRS의 기저 벡터에 배수 곱 → 모든 파츠/의상/무기/HAR 오버레이가 동일 비율(※ HAR는 별도 패치에서 동기화)
+                        // 루트 TRS 기저 벡터에 배수 곱 (HAR는 별도 패치에서 동기화)
                         m.m00 *= s; // X
                         m.m11 *= s; // Y
                         m.m22 *= s; // Z

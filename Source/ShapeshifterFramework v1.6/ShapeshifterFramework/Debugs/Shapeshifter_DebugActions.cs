@@ -17,16 +17,7 @@ using Verse.Sound;
 
 namespace ShapeshifterFramework.Debugs
 {
-    /// <summary>
-    /// Debug(Action) 탭 > "Shapeshifter Framework"
-    /// - Inspect Active Form (ToolMapForPawns): 현재 Pawn의 활성 폼 요약을 플로트 메뉴로 표시
-    /// - Play Form Sounds (ToolMapForPawns): 폼에 정의된 보이스/먹는 소리를 즉시 재생
-    /// - Dump Active Form to Log (ToolMapForPawns): 활성 폼 전체 정보를 로그로 출력
-    ///
-    /// 참고
-    /// - 플로트 메뉴 구성 패턴은 바닐라 DebugAction 사례를 따름.
-    /// - 표시 항목은 현 ShapeshiftFormDef 스키마를 기준으로 요약/상세를 구분함.
-    /// </summary>
+    /// <summary>Debug 탭 "Shapeshifter Framework" 디버그 액션 모음.</summary>
     public static class Shapeshifter_DebugActions
     {
         #region 1) 활성 폼 요약 확인(Inspect)
@@ -157,9 +148,7 @@ namespace ShapeshifterFramework.Debugs
 
         #region 헬퍼(플로트 메뉴·요약 문자열·덤프 빌더)
 
-        /// <summary>
-        /// 특정 SoundDef를 재생하는 플로트 메뉴 항목을 추가한다.
-        /// </summary>
+        /// <summary>SoundDef 재생용 플로트 메뉴 항목 추가.</summary>
         private static void TryAddPlayOption(List<FloatMenuOption> opts, Pawn pawn, SoundDef def, string label)
         {
             if (def == null) return;
@@ -186,7 +175,7 @@ namespace ShapeshifterFramework.Debugs
             }));
         }
 
-        /// <summary>PartOverrideOption(몸/머리/헤어/수염/문신)의 모드 요약.</summary>
+        /// <summary>파츠 모드 요약.</summary>
         private static string SummarizeParts(ShapeshiftFormDef f)
         {
             // body/head/hair/beard/tattoo* 의 PartControlMode 요약 (성별 분기는 간단 표기)
@@ -200,7 +189,7 @@ namespace ShapeshifterFramework.Debugs
             return opt.mode.ToString();
         }
 
-        /// <summary>의복/무기/유전자 렌더 필터 요약(All/개수).</summary>
+        /// <summary>렌더 필터 요약.</summary>
         private static string SummarizeRenderFilters(ShapeshiftFormDef f)
         {
             return $"Render filters: apparel(Hide={CountOrAll(f.renderHideApparelLayers, f.renderHideApparelDefNames)}, Show={CountOrAll(f.renderShowApparelLayers, f.renderShowApparelDefNames)}) " +
@@ -227,7 +216,7 @@ namespace ShapeshifterFramework.Debugs
             return false;
         }
 
-        /// <summary>verbs/tools 개수 및 대체 여부 요약.</summary>
+        /// <summary>Verb/Tool 요약.</summary>
         private static string SummarizeVerbsTools(ShapeshiftFormDef f)
         {
             int v = f.verbs != null ? f.verbs.Count : 0;
@@ -237,7 +226,7 @@ namespace ShapeshifterFramework.Debugs
             return $"Verbs/Tools: verbs={v}({rv}), tools={t}({rt})";
         }
 
-        /// <summary>스탯/캐퍼 수정 항목 요약(개수만).</summary>
+        /// <summary>스탯/캐퍼 요약.</summary>
         private static string SummarizeStatsCaps(ShapeshiftFormDef f)
         {
             int so = f.statOffsets != null ? f.statOffsets.Count : 0;
@@ -246,19 +235,19 @@ namespace ShapeshifterFramework.Debugs
             return $"Stats: offsets={so}, factors={sf}, caps={cm}";
         }
 
-        /// <summary>사운드 정의 유무 요약.</summary>
+        /// <summary>사운드 요약.</summary>
         private static string SummarizeSounds(ShapeshiftFormDef f)
         {
             return $"Sounds: call={(f.soundCall != null)} angry={(f.soundAngry != null)} wounded={(f.soundWounded != null)} death={(f.soundDeath != null)} eat={(f.soundEating != null)} melee(hitPawn={(f.soundMeleeHitPawn != null)}, hitBld={(f.soundMeleeHitBuilding != null)}, miss={(f.soundMeleeMiss != null)})";
         }
 
-        /// <summary>혈흔/살점 타입 정의 유무 요약.</summary>
+        /// <summary>혈흔/살점 요약.</summary>
         private static string SummarizeBlood(ShapeshiftFormDef f)
         {
             return $"Blood/Flesh: blood={(f.bloodDef != null)} smear={(f.bloodSmearDef != null)} flesh={(f.fleshType != null)}";
         }
 
-        /// <summary>활성 폼 전체 정보를 로그용 문자열로 구성.</summary>
+        /// <summary>활성 폼 전체 덤프 빌드.</summary>
         private static void BuildFullDump(Pawn pawn, ShapeshiftFormDef f, StringBuilder sb)
         {
             sb.AppendLine($"[Shapeshifter] Dump for {pawn?.LabelCap} ({pawn?.ThingID})");

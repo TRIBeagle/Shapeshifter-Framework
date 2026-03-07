@@ -6,16 +6,9 @@ using Verse;
 
 namespace ShapeshifterFramework.Comps
 {
-    /// <summary>
-    /// ThingDef에 CompShapeshifter를 연결하기 위한 속성 정의.
-    /// - 컴포넌트 동작은 모두 <see cref="CompShapeshifter"/> 내부에 구현됨.
-    /// - Def에 이 속성을 선언하면 해당 Pawn/Thing이 변신 가능 개체가 됨.
-    /// </summary>
+    /// <summary>CompShapeshifter 연결용 속성 정의.</summary>
     public class CompProperties_Shapeshifter : CompProperties
     {
-        /// <summary>
-        /// 생성자: 연결된 실행 클래스 <see cref="CompShapeshifter"/>를 지정한다.
-        /// </summary>
         public CompProperties_Shapeshifter()
         {
             compClass = typeof(CompShapeshifter);

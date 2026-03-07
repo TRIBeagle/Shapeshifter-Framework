@@ -54,8 +54,7 @@ namespace ShapeshifterFramework.Patches
             // 바닐라: 수영 관련 상태면 그림자 자체를 안 그림
             if (pawn.Swimming || pawn.DrawNonHumanlikeSwimmingGraphic) return true;
 
-            // [추가] 변신 폼에서 "수영 텍스처"를 쓰는 상태면 그림자도 스킵(바닐라 동물 수영 룩과 일치)
-            // - pawn.Swimming 플래그가 false여도, 우리 로직(물 타일 기반 텍스처 교체)로 수영 룩이 될 수 있기 때문
+            // 변신 폼에서 수영 텍스처 사용 시 그림자 스킵
             ShapeshiftFormDef form;
             if (ShapeshiftPartControlUtility.ShouldRun(pawn, out form) && form != null)
             {

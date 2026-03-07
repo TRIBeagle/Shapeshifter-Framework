@@ -18,10 +18,7 @@ namespace ShapeshifterFramework.Comps
 {
     public class IngestionOutcomeDoer_Shapeshift : IngestionOutcomeDoer
     {
-        /// <summary>적용할 ShapeshiftFormDef의 defName.</summary>
         public string formDefName;
-
-        /// <summary>성공 확률(0~1). 기본값 1.0f.</summary>
         public float successChance = 1f;
 
         protected override void DoIngestionOutcomeSpecial(Pawn pawn, Thing ingested, int ingestedCount)

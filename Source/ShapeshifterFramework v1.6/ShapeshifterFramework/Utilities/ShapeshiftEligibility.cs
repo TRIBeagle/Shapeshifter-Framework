@@ -34,27 +34,27 @@ namespace ShapeshifterFramework.Utilities
 
         private static bool Active<T>(List<T> list) => list != null && list.Count > 0;
 
-        // 단일 값용 allow/disallow 필터
+        // 단일 값 allow/disallow 필터
         private static bool PassAllowDisallowSingle<T>(T value, List<T> allow, List<T> disallow)
             where T : class
         {
             bool hasAllow = Active(allow);
             bool hasDisallow = Active(disallow);
 
-            if (!hasAllow && !hasDisallow) return true;                 // 전부 미지정 → 전부 허용
-            if (hasAllow && !hasDisallow)                                // allow만
+            if (!hasAllow && !hasDisallow) return true;
+            if (hasAllow && !hasDisallow)
             {
                 for (int i = 0; i < allow.Count; i++)
                     if (allow[i] == value) return true;
                 return false;
             }
-            if (!hasAllow && hasDisallow)                                // disallow만
+            if (!hasAllow && hasDisallow)
             {
                 for (int i = 0; i < disallow.Count; i++)
                     if (disallow[i] == value) return false;
                 return true;
             }
-            // 둘다 있음 → allow - disallow
+            // allow - disallow
             bool inAllow = false;
             for (int i = 0; i < allow.Count; i++) if (allow[i] == value) { inAllow = true; break; }
             if (!inAllow) return false;
@@ -62,7 +62,7 @@ namespace ShapeshifterFramework.Utilities
             return true;
         }
 
-        // 다중 값(보유 집합)용 allow/disallow 필터 (예: Mutant 여러 가능성)
+        // 다중 값 allow/disallow 필터
         private static bool PassAllowDisallowMulti<T>(List<T> have, List<T> allow, List<T> disallow)
             where T : class
         {
@@ -88,7 +88,7 @@ namespace ShapeshifterFramework.Utilities
                 return true;
             }
 
-            // 둘다 있음 → (have ∩ (allow - disallow)) ≠ ∅
+            // have ∩ (allow - disallow)
             for (int i = 0; i < have.Count; i++)
             {
                 bool inAllow = false;
@@ -139,7 +139,6 @@ namespace ShapeshifterFramework.Utilities
             {
                 if (!ModLister.AnomalyInstalled)
                 {
-                    // allowed가 있으면 불허, disallow만 있으면 허용
                     if (Active(form.allowedMutants)) return false;
                 }
                 else
@@ -155,7 +154,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 if (!ModsConfig.BiotechActive)
                 {
-                    if (Active(form.allowedXenotypes)) return false; // allowed가 있으면 불허
+                    if (Active(form.allowedXenotypes)) return false;
                 }
                 else
                 {
@@ -178,7 +177,7 @@ namespace ShapeshifterFramework.Utilities
 
                 if (prevDefName == null)
                 {
-                    if (!noneAllowed) return false;  // "None" 명시 없으면 미변신→불허
+                    if (!noneAllowed) return false;
                 }
                 else
                 {
