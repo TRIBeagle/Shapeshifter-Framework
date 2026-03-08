@@ -70,11 +70,10 @@ namespace ShapeshifterFramework.Utilities
             abilityDef.label = form.label ?? form.defName;
             abilityDef.description = form.description ?? "";
 
-            // 아이콘: gizmoIconPathEnter 사용 (없으면 기본 아이콘)
-            if (!string.IsNullOrEmpty(form.gizmoIconPathEnter))
-            {
-                abilityDef.iconPath = form.gizmoIconPathEnter;
-            }
+            // 아이콘: gizmoIconPathEnter 사용 (없으면 기본 아이콘 폴백)
+            abilityDef.iconPath = !string.IsNullOrEmpty(form.gizmoIconPathEnter)
+                ? form.gizmoIconPathEnter
+                : "UI/Commands/SSF_Shift_Enter";
 
             // 쿨다운/신경열 없음
             abilityDef.cooldownTicksRange = new IntRange(0, 0);
