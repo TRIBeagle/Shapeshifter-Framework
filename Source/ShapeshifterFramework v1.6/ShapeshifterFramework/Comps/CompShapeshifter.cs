@@ -35,6 +35,10 @@ namespace ShapeshifterFramework.Comps
         private BodyTypeDef originalBodyType;
         private HeadTypeDef originalHeadType;
 
+        // 기본 컬러 백업
+        private Color? originalHairColor;
+        private Color? originalSkinColor;
+
         // 임시 부여 요소 추적
         private readonly List<AbilityDef> tempAddedAbilities = new List<AbilityDef>();
         private readonly List<Hediff> tempAddedHediffs = new List<Hediff>();
@@ -671,11 +675,13 @@ namespace ShapeshifterFramework.Comps
                 Log.Error($"[SSF] Error handling gear during transform for {pawn.Name}: {ex}");
             }
 
-            // 체형 백업
+            // 체형/컬러 백업
             if (!isTransformed && pawn.story != null)
             {
                 originalBodyType = pawn.story.bodyType;
                 originalHeadType = pawn.story.headType;
+                originalHairColor = pawn.story.hairColor;
+                originalSkinColor = pawn.story.skinColor;
             }
 
             // 능력 부여
@@ -730,11 +736,13 @@ namespace ShapeshifterFramework.Comps
             if (form.durationTicks.HasValue && form.durationTicks.Value > 0)
                 transformTimer = form.durationTicks.Value;
 
-            // 체형/머리형 적용
+            // 체형/머리형/컬러 적용
             if (pawn.story != null)
             {
                 if (form.bodyType != null) pawn.story.bodyType = form.bodyType;
                 if (form.headType != null) pawn.story.headType = form.headType;
+                if (form.hairColor.HasValue) pawn.story.hairColor = form.hairColor.Value;
+                if (form.skinColor.HasValue) pawn.story.skinColor = form.skinColor.Value;
             }
 
             // 런타임 캐시 등록
@@ -891,11 +899,13 @@ namespace ShapeshifterFramework.Comps
 
             transformTimer = 0;
 
-            // 체형/머리형 원복
+            // 체형/머리형/컬러 원복
             if (pawn.story != null)
             {
                 if (originalBodyType != null) pawn.story.bodyType = originalBodyType;
                 if (originalHeadType != null) pawn.story.headType = originalHeadType;
+                if (originalHairColor.HasValue) pawn.story.hairColor = originalHairColor.Value;
+                if (originalSkinColor.HasValue) pawn.story.skinColor = originalSkinColor.Value;
             }
 
             // 자동 재착용
@@ -1448,6 +1458,20 @@ namespace ShapeshifterFramework.Comps
             Scribe_Values.Look(ref transformTimer, "transformTimer", 0, true);
             Scribe_Defs.Look(ref originalBodyType, "originalBodyType");
             Scribe_Defs.Look(ref originalHeadType, "originalHeadType");
+
+            Color __tmpHairColor = originalHairColor ?? default;
+            bool __hasHairColor = originalHairColor.HasValue;
+            Scribe_Values.Look(ref __hasHairColor, "hasOriginalHairColor", false);
+            Scribe_Values.Look(ref __tmpHairColor, "originalHairColor");
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                originalHairColor = __hasHairColor ? __tmpHairColor : (Color?)null;
+
+            Color __tmpSkinColor = originalSkinColor ?? default;
+            bool __hasSkinColor = originalSkinColor.HasValue;
+            Scribe_Values.Look(ref __hasSkinColor, "hasOriginalSkinColor", false);
+            Scribe_Values.Look(ref __tmpSkinColor, "originalSkinColor");
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                originalSkinColor = __hasSkinColor ? __tmpSkinColor : (Color?)null;
 
             // Def 리스트
 

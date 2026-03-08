@@ -161,6 +161,10 @@ namespace ShapeshifterFramework
         public BodyTypeDef bodyType;
         public HeadTypeDef headType;
 
+        // 기본 컬러 오버라이드(선택, 텍스처 Replace 시 무시됨)
+        public Color? hairColor;
+        public Color? skinColor;
+
         // 수치 변경
         public List<StatModifier> statOffsets;
         public List<StatModifier> statFactors;
