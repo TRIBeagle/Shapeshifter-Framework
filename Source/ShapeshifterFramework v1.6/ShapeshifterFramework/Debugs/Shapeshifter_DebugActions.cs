@@ -10,7 +10,6 @@ using RimWorld;
 using ShapeshifterFramework.Comps;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using UnityEngine;
 using Verse;
@@ -143,128 +142,6 @@ namespace ShapeshifterFramework.Debugs
             BuildFullDump(pawn, form, sb);
             Log.Message(sb.ToString());
             Messages.Message("Shapeshifter: dumped to log.", MessageTypeDefOf.TaskCompletion, false);
-        }
-
-        #endregion
-
-        #region 4) 틱 성능 벤치마크(Benchmark CompTick)
-
-        [DebugAction(
-            category = "Shapeshifter Framework",
-            name = "Benchmark CompTick (all pawns)",
-            actionType = DebugActionType.Action,
-            allowedGameStates = AllowedGameStates.PlayingOnMap
-        )]
-        private static void BenchmarkCompTick()
-        {
-            if (!Prefs.DevMode) return;
-
-            var map = Find.CurrentMap;
-            if (map == null)
-            {
-                Messages.Message("[SSF] No active map.", MessageTypeDefOf.RejectInput, false);
-                return;
-            }
-
-            // 맵의 모든 폰에서 CompShapeshifter를 가진 폰 수집
-            var allPawns = map.mapPawns.AllPawnsSpawned;
-            var comps = new List<(Pawn pawn, CompShapeshifter comp)>();
-            for (int i = 0; i < allPawns.Count; i++)
-            {
-                var comp = allPawns[i].TryGetComp<CompShapeshifter>();
-                if (comp != null)
-                    comps.Add((allPawns[i], comp));
-            }
-
-            if (comps.Count == 0)
-            {
-                Messages.Message("[SSF] No pawns with CompShapeshifter on map.", MessageTypeDefOf.RejectInput, false);
-                return;
-            }
-
-            int transformedCount = 0;
-            int untransformedCount = 0;
-            for (int i = 0; i < comps.Count; i++)
-            {
-                if (comps[i].comp.isTransformed) transformedCount++;
-                else untransformedCount++;
-            }
-
-            // 워밍업: JIT 컴파일 영향 제거
-            const int warmupIterations = 100;
-            for (int w = 0; w < warmupIterations; w++)
-            {
-                for (int i = 0; i < comps.Count; i++)
-                    comps[i].comp.CompTick();
-            }
-
-            // 본 측정
-            const int iterations = 1000;
-            var sw = new Stopwatch();
-            var perPawn = new long[comps.Count];
-
-            // 전체 합산
-            sw.Restart();
-            for (int iter = 0; iter < iterations; iter++)
-            {
-                for (int i = 0; i < comps.Count; i++)
-                    comps[i].comp.CompTick();
-            }
-            sw.Stop();
-            long totalTicks = sw.ElapsedTicks;
-            double totalMs = sw.Elapsed.TotalMilliseconds;
-
-            // 개별 측정 (가장 무거운 폰 찾기)
-            for (int i = 0; i < comps.Count; i++)
-            {
-                sw.Restart();
-                for (int iter = 0; iter < iterations; iter++)
-                    comps[i].comp.CompTick();
-                sw.Stop();
-                perPawn[i] = sw.ElapsedTicks;
-            }
-
-            // 결과 출력
-            double freq = Stopwatch.Frequency;
-            double avgPerTickAllMs = totalMs / iterations; // 전체 폰 1틱 합산
-            double avgPerPawnPerTickUs = (totalMs * 1000.0) / (iterations * comps.Count); // 폰 1명 1틱
-
-            var sb = new StringBuilder(1024);
-            sb.AppendLine("===== [SSF] CompTick Benchmark =====");
-            sb.AppendLine($"Map pawns with comp: {comps.Count} (transformed: {transformedCount}, idle: {untransformedCount})");
-            sb.AppendLine($"Iterations: {iterations} (warmup: {warmupIterations})");
-            sb.AppendLine();
-            sb.AppendLine($"Total {comps.Count} pawns x {iterations} ticks = {totalMs:F3} ms");
-            sb.AppendLine($"  All pawns per tick: {avgPerTickAllMs:F4} ms  ({avgPerTickAllMs * 1000:F2} \u00b5s)");
-            sb.AppendLine($"  Per pawn per tick:  {avgPerPawnPerTickUs:F4} \u00b5s");
-            sb.AppendLine();
-
-            // 개별 상위 5명
-            sb.AppendLine("Top 5 slowest pawns:");
-            var indices = new int[comps.Count];
-            for (int i = 0; i < indices.Length; i++) indices[i] = i;
-            Array.Sort(perPawn, indices);
-            Array.Reverse(perPawn);
-            Array.Reverse(indices);
-
-            int top = Math.Min(5, comps.Count);
-            for (int r = 0; r < top; r++)
-            {
-                int idx = indices[r];
-                double pawnMs = (perPawn[r] / freq) * 1000.0;
-                double pawnUs = (pawnMs / iterations) * 1000.0;
-                string formLabel = comps[idx].comp.isTransformed
-                    ? comps[idx].comp.currentForm?.defName ?? "?"
-                    : "(idle)";
-                sb.AppendLine($"  {r + 1}. {comps[idx].pawn.LabelShortCap} [{formLabel}]: {pawnUs:F3} \u00b5s/tick");
-            }
-
-            sb.AppendLine();
-            sb.AppendLine("Reference: RimWorld targets ~16.6ms per game tick (60 TPS).");
-            sb.AppendLine("If 'All pawns per tick' is under 0.1ms, tick impact is negligible.");
-
-            Log.Message(sb.ToString());
-            Messages.Message($"[SSF] Benchmark done: {comps.Count} pawns, {avgPerPawnPerTickUs:F2}\u00b5s/pawn/tick. See log.", MessageTypeDefOf.TaskCompletion, false);
         }
 
         #endregion
