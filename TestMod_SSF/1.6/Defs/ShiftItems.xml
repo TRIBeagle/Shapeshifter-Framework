@@ -96,7 +96,7 @@
     <label>shift scroll (self)</label>
     <description>사용하면 자기 자신이 늑대로 변신하는 주문서.</description>
     <graphicData>
-      <texPath>Things/Item/Special/TechprofSubpersonaCore</texPath>
+      <texPath>Things/Item/Resource/Shell/Shell_HighExplosive</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
@@ -129,7 +129,7 @@
     <label>shift scroll (target)</label>
     <description>클릭한 대상을 늑대로 변신시키는 주문서. 대상을 선택하면 걸어가서 사용.</description>
     <graphicData>
-      <texPath>Things/Item/Special/TechprofSubpersonaCore</texPath>
+      <texPath>Things/Item/Resource/Shell/Shell_HighExplosive</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
