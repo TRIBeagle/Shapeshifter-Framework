@@ -5,6 +5,7 @@
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
 using System;
 using Verse;
 
@@ -32,7 +33,7 @@ namespace ShapeshifterFramework.Patches
                     var vt = comp.ShapeshiftVerbTracker;
                     if (vt != null)
                     {
-                        // 배타적 토글: 활성화된(ON) verb 중 첫 번째 반환
+                        // 2a) 배타적 토글: 활성화된(ON) 원거리 verb 중 첫 번째 반환
                         var verbs = vt.AllVerbs;
                         for (int i = 0; i < verbs.Count; i++)
                         {
@@ -47,7 +48,39 @@ namespace ShapeshifterFramework.Patches
                             return false;
                         }
 
-                        // 활성화된 원거리 verb 없으면 바닐라에 맡김
+                        // 2b) 원거리 verb 없으면 근접 verb 확인 (replaceNativeTools 시 폼 도구 강제)
+                        var form = comp.currentForm;
+                        if (form != null && form.replaceNativeTools.HasValue && form.replaceNativeTools.Value
+                            && form.tools != null && form.tools.Count > 0)
+                        {
+                            // shapeshiftVerbTracker에서 가장 강력한 근접 verb 선택
+                            Verb bestMelee = null;
+                            float bestPower = -1f;
+                            for (int i = 0; i < verbs.Count; i++)
+                            {
+                                var v = verbs[i];
+                                if (v == null || v.verbProps == null) continue;
+                                if (!v.verbProps.IsMeleeAttack) continue;
+                                if (!v.Available()) continue;
+
+                                var vma = v as Verb_MeleeAttack;
+                                float power = (vma?.tool != null) ? vma.tool.power : 0f;
+                                if (bestMelee == null || power > bestPower)
+                                {
+                                    bestMelee = v;
+                                    bestPower = power;
+                                }
+                            }
+
+                            if (bestMelee != null)
+                            {
+                                ShapeshiftDiagnostics.Info($"TryGetAttackVerb: returning form melee verb tool={((bestMelee as Verb_MeleeAttack)?.tool?.label ?? "?")} power={bestPower}");
+                                __result = bestMelee;
+                                return false;
+                            }
+                        }
+
+                        // 활성화된 원거리 verb 없고 폼 근접도 없으면 바닐라에 맡김
                         return true;
                     }
                 }

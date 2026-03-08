@@ -293,11 +293,52 @@ namespace ShapeshifterFramework.Debugs
             sb.AppendLine($"  apparelEquipLock={f.apparelEquipLock} weaponEquipLock={f.weaponEquipLock}");
             sb.AppendLine();
 
-            // Verbs / Tools
-            sb.AppendLine("== Verbs/Tools ==");
+            // Verbs / Tools (Form Definition)
+            sb.AppendLine("== Verbs/Tools (Form Def) ==");
             sb.AppendLine($"  replaceNativeVerbs={BoolVal(f.replaceNativeVerbs)} replaceNativeTools={BoolVal(f.replaceNativeTools)}");
             DumpVerbs(sb, f.verbs);
             DumpTools(sb, f.tools);
+            sb.AppendLine();
+
+            // Runtime Verb Tracker State
+            sb.AppendLine("== Runtime Verb State ==");
+            try
+            {
+                // 1) Pawn native verbTracker
+                var nativeVerbs = pawn.verbTracker?.AllVerbs;
+                sb.AppendLine($"  pawn.verbTracker.AllVerbs: {(nativeVerbs != null ? nativeVerbs.Count.ToString() : "null")}");
+                if (nativeVerbs != null)
+                {
+                    for (int i = 0; i < nativeVerbs.Count; i++)
+                    {
+                        var v = nativeVerbs[i];
+                        if (v == null) continue;
+                        var vma = v as Verb_MeleeAttack;
+                        string toolInfo = vma?.tool != null ? $"tool={vma.tool.label}(power={vma.tool.power:0.#})" : "tool=null";
+                        string manInfo = vma?.maneuver != null ? $"maneuver={vma.maneuver.defName}" : "";
+                        sb.AppendLine($"    [{i}] {v.GetType().Name} melee={v.verbProps?.IsMeleeAttack} {toolInfo} {manInfo}");
+                    }
+                }
+
+                // 2) Shapeshift verbTracker
+                var ssfComp = pawn.TryGetComp<CompShapeshifter>();
+                var ssfVt = ssfComp?.ShapeshiftVerbTracker;
+                var ssfVerbs = ssfVt?.AllVerbs;
+                sb.AppendLine($"  shapeshiftVerbTracker.AllVerbs: {(ssfVerbs != null ? ssfVerbs.Count.ToString() : "null")}");
+                if (ssfVerbs != null)
+                {
+                    for (int i = 0; i < ssfVerbs.Count; i++)
+                    {
+                        var v = ssfVerbs[i];
+                        if (v == null) continue;
+                        var vma = v as Verb_MeleeAttack;
+                        string toolInfo = vma?.tool != null ? $"tool={vma.tool.label}(power={vma.tool.power:0.#})" : "tool=null";
+                        string manInfo = vma?.maneuver != null ? $"maneuver={vma.maneuver.defName}" : "";
+                        sb.AppendLine($"    [{i}] {v.GetType().Name} melee={v.verbProps?.IsMeleeAttack} ranged={v.verbProps?.Ranged} {toolInfo} {manInfo}");
+                    }
+                }
+            }
+            catch (Exception ex) { sb.AppendLine($"  [Error dumping runtime verbs: {ex.Message}]"); }
             sb.AppendLine();
 
             // 스탯/캐퍼

@@ -1614,9 +1614,7 @@ namespace ShapeshifterFramework.Comps
                     yield return new Command_Action
                     {
                         defaultLabel = "SSF_Command_RevertLabel".Translate(),
-                        defaultDesc = (currentForm.durationTicks.HasValue && currentForm.durationTicks.Value > 0)
-                            ? "SSF_Command_RevertTime".Translate(((float)RemainingShapeshiftTicks / 60f).ToString("0.0"))
-                            : "SSF_Command_RevertDesc".Translate(),
+                        defaultDesc = "SSF_Command_RevertDesc".Translate(),
                         action = delegate { RemoveForm(); },
                         icon = ShapeshiftTextureUtility.GetRevertIcon(currentForm)
                     };

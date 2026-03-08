@@ -5,6 +5,7 @@
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
 using Verse;
@@ -30,6 +31,9 @@ namespace ShapeshifterFramework.Patches
                 var pawn = owner.ConstantCaster as Pawn;
                 if (pawn == null) return;
 
+                // Pawn 직접 소유 트래커만 처리. ShapeshiftVerbOwner 등 다른 NativeVerb 소유자는 스킵.
+                if (!(owner is Pawn)) return;
+
                 var comp = pawn.TryGetComp<CompShapeshifter>();
                 var form = (comp != null && comp.isTransformed) ? comp.currentForm : null;
                 if (form == null) return;
@@ -41,7 +45,10 @@ namespace ShapeshifterFramework.Patches
                 // 3) 이번 주입에서 "실제로 추가될 근접 Verb 수"를 예측
                 int willAdd = PredictAddCount(tools);
 
+                ShapeshiftDiagnostics.Info($"InitVerbsFromZero Postfix: pawn={pawn.LabelShort}, form={form.defName}, replaceNative={replaceNative}, willAdd={willAdd}, verbsBefore={___verbs.Count}");
+
                 // 4) Replace더라도 willAdd==0이면 제거하지 않는다 (안전 가드)
+                int removedCount = 0;
                 if (replaceNative && willAdd > 0)
                 {
                     // 네이티브 근접 verb 제거 (이 트래커는 네이티브 전용임)
@@ -49,11 +56,17 @@ namespace ShapeshifterFramework.Patches
                     {
                         var v = ___verbs[i];
                         if (v != null && v.verbProps != null && v.verbProps.IsMeleeAttack)
+                        {
+                            if (ShapeshiftDiagnostics.DebugLog)
+                                ShapeshiftDiagnostics.Info($"  Removing native melee: {v.GetType().Name} tool={((v as Verb_MeleeAttack)?.tool?.label ?? "null")}");
                             ___verbs.RemoveAt(i);
+                            removedCount++;
+                        }
                     }
                 }
 
                 // 5) Tool -> Maneuver -> Verb_MeleeAttack 주입
+                int addedCount = 0;
                 if (willAdd > 0)
                 {
                     // Maneuver 목록 캐시
@@ -88,10 +101,13 @@ namespace ShapeshifterFramework.Patches
                                 // 바닐라 규칙에 맞는 loadID 부여
                                 verb.loadID = Verb.CalculateUniqueLoadID(owner, ___verbs.Count);
                                 ___verbs.Add(verb);
+                                addedCount++;
                             }
                         }
                     }
                 }
+
+                ShapeshiftDiagnostics.Info($"  Result: removed={removedCount}, added={addedCount}, verbsAfter={___verbs.Count}");
                 // willAdd==0이고 replaceNative==true였더라도, 4)에서 제거 자체를 하지 않았기 때문에
                 // 근접 Verb 0개 상태는 발생하지 않는다.
             }
