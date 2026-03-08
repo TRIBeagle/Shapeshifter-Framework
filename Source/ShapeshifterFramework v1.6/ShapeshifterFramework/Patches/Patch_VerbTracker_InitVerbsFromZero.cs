@@ -19,7 +19,11 @@ namespace ShapeshifterFramework.Patches
         {
             try
             {
-                if (__instance == null || ___verbs == null) return;
+                if (__instance == null || ___verbs == null)
+                {
+                    ShapeshiftDiagnostics.Info($"InitVerbsFromZero Postfix: early return — instance={__instance != null}, verbs={___verbs != null}");
+                    return;
+                }
 
                 var owner = ___directOwner;
                 if (owner == null) return;
@@ -36,7 +40,11 @@ namespace ShapeshifterFramework.Patches
 
                 var comp = pawn.TryGetComp<CompShapeshifter>();
                 var form = (comp != null && comp.isTransformed) ? comp.currentForm : null;
-                if (form == null) return;
+                if (form == null)
+                {
+                    ShapeshiftDiagnostics.Info($"InitVerbsFromZero Postfix: pawn={pawn.LabelShort}, no form (isTransformed={comp?.isTransformed}, currentForm={comp?.currentForm?.defName ?? "null"})");
+                    return;
+                }
 
                 // 2) Replace/Tools 정보 취득
                 bool replaceNative = form.replaceNativeTools.HasValue && form.replaceNativeTools.Value;

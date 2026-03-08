@@ -61,6 +61,16 @@ namespace ShapeshifterFramework.Patches
                                 __result = bestMelee;
                                 return false;
                             }
+                            else
+                            {
+                                ShapeshiftDiagnostics.Info($"TryGetAttackVerb(replace): FindBestFormMelee returned null! verbs.Count={verbs.Count}, melee verbs:");
+                                for (int j = 0; j < verbs.Count; j++)
+                                {
+                                    var vj = verbs[j];
+                                    if (vj == null) continue;
+                                    ShapeshiftDiagnostics.Info($"  [{j}] {vj.GetType().Name} isMelee={vj.verbProps?.IsMeleeAttack} tool={((vj as Verb_MeleeAttack)?.tool?.label ?? "null")} caster={vj.caster?.ToString() ?? "null"}");
+                                }
+                            }
                         }
 
                         // 2c) replaceNativeTools=false (또는 null) + 폼 도구 있음:
@@ -135,7 +145,8 @@ namespace ShapeshifterFramework.Patches
                 var v = verbs[i];
                 if (v == null || v.verbProps == null) continue;
                 if (!v.verbProps.IsMeleeAttack) continue;
-                if (!v.Available()) continue;
+                // 근접 verb는 Available() 체크 생략 — shapeshiftVerbTracker verb가
+                // 바닐라 초기화 경로를 완전히 거치지 않아 false를 반환할 수 있음
 
                 var vma = v as Verb_MeleeAttack;
                 float power = (vma?.tool != null) ? vma.tool.power : 0f;
