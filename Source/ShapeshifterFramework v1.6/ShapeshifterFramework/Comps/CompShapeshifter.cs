@@ -514,23 +514,13 @@ namespace ShapeshifterFramework.Comps
             gizmoFormsCache = null;
         }
 
-        // 사용 가능 폼 캐싱 반환
+        // 사용 가능 폼 캐싱 반환 (UpdateEligibilityAndSyncAbilities 재활용)
         IEnumerable<ShapeshiftFormDef> GetAvailableFormsCached(Pawn pawn)
         {
             int now = Find.TickManager.TicksGame;
-            if (now - gizmoCacheTick > GizmoCacheInterval || gizmoFormsCache == null)
+            if (gizmoFormsCache == null || now - gizmoCacheTick > GizmoCacheInterval)
             {
-                var all = DefDatabase<ShapeshiftFormDef>.AllDefsListForReading;
-                List<ShapeshiftFormDef> list = new List<ShapeshiftFormDef>(all.Count);
-                for (int i = 0; i < all.Count; i++)
-                {
-                    var f = all[i];
-                    if (f == null) continue;
-                    if (CanTransform(pawn, f))
-                        list.Add(f);
-                }
-                gizmoFormsCache = list;
-                gizmoCacheTick = now;
+                UpdateEligibilityAndSyncAbilities(pawn);
             }
             return gizmoFormsCache;
         }
