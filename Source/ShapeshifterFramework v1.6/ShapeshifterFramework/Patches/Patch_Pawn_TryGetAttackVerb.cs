@@ -1,12 +1,13 @@
 // ShapeshifterFramework | Patches | Patch_Pawn_TryGetAttackVerb.cs
 // 목적 : 유저가 강제 공격을 지시하거나 자동 사격(Auto-attack)이 발동할 때, 변신 폼의 무기가 의도대로 선택되도록 통제.
 // 용도 : 유저가 특정 Verb로 강제 공격 중일 때는 다른 Verb가 섞여 나가지 않도록 고정하며, 자동 사격 시에는 UI 지즈모에서 꺼둔(Toggle OFF) Verb가 발사되지 않도록 필터링함.
-//        근접 도구(tools)는 RefreshPawn에서 pawn.verbTracker에 직접 주입되므로 바닐라가 자연 선택함.
+//        근접 도구(tools)는 shapeshiftVerbTracker에서 관리하며, pawn.verbTracker에서 네이티브가 제거된 후 Postfix에서 보완.
 
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
 using System;
+using System.Collections.Generic;
 using Verse;
 
 namespace ShapeshifterFramework.Patches
@@ -26,14 +27,14 @@ namespace ShapeshifterFramework.Patches
                     return false; // 원본 스킵
                 }
 
-                // 2) 변신 중이면 토글 상태에 따라 원거리 verb 선택
+                // 2) 변신 중이면 토글 상태에 따라 verb 선택
                 var comp = __instance.TryGetComp<CompShapeshifter>();
                 if (comp != null && comp.isTransformed)
                 {
                     var vt = comp.ShapeshiftVerbTracker;
                     if (vt != null)
                     {
-                        // 배타적 토글: 활성화된(ON) 원거리 verb 중 첫 번째 반환
+                        // 2a) 배타적 토글: 활성화된(ON) 원거리 verb 중 첫 번째 반환
                         var verbs = vt.AllVerbs;
                         for (int i = 0; i < verbs.Count; i++)
                         {
@@ -48,7 +49,17 @@ namespace ShapeshifterFramework.Patches
                             return false;
                         }
 
-                        // 근접은 pawn.verbTracker에 폼 도구가 주입되어 있으므로 바닐라에 위임
+                        // 2b) 원거리가 없으면 폼 근접 도구 공급 (replaceNativeTools 시 네이티브가 제거된 상태)
+                        var form = comp.currentForm;
+                        if (form != null && form.tools != null && form.tools.Count > 0)
+                        {
+                            var bestMelee = FindBestFormMelee(verbs);
+                            if (bestMelee != null)
+                            {
+                                __result = bestMelee;
+                                return false;
+                            }
+                        }
                     }
                 }
             }
@@ -57,6 +68,28 @@ namespace ShapeshifterFramework.Patches
                 Log.Warning($"[SSF] TryGetAttackVerb Prefix failed: {e}");
             }
             return true; // 기본 원본 실행
+        }
+
+        /// <summary>verbs 리스트에서 가장 파워 높은 근접 verb 반환.</summary>
+        private static Verb FindBestFormMelee(List<Verb> verbs)
+        {
+            Verb best = null;
+            float bestPower = -1f;
+            for (int i = 0; i < verbs.Count; i++)
+            {
+                var v = verbs[i];
+                if (v == null || v.verbProps == null) continue;
+                if (!v.verbProps.IsMeleeAttack) continue;
+
+                var vma = v as Verb_MeleeAttack;
+                float power = (vma?.tool != null) ? vma.tool.power : 0f;
+                if (best == null || power > bestPower)
+                {
+                    best = v;
+                    bestPower = power;
+                }
+            }
+            return best;
         }
     }
 }
