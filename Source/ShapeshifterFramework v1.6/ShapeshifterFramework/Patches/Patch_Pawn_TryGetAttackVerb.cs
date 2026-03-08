@@ -25,9 +25,9 @@ namespace ShapeshifterFramework.Patches
                     return false; // 원본 스킵
                 }
 
-                // 2) 변신 중이고 자동사격 경로(allowManualCastWeapons == false)라면, 활성화된 verb 선택
+                // 2) 변신 중이면 토글 상태에 따라 verb 선택 (allowManualCastWeapons 무관)
                 var comp = __instance.TryGetComp<CompShapeshifter>();
-                if (comp != null && comp.isTransformed && !allowManualCastWeapons)
+                if (comp != null && comp.isTransformed)
                 {
                     var vt = comp.ShapeshiftVerbTracker;
                     if (vt != null)
