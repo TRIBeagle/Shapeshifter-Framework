@@ -24,8 +24,8 @@ namespace ShapeshifterFramework.Patches
             bool disabledByType = form.disabledWorkTypesOnTransform != null
                 && form.disabledWorkTypesOnTransform.Contains(workType);
 
-            bool disabledByTag = form.resolvedDisabledWorkTags != WorkTags.None
-                && (workType.workTags & form.resolvedDisabledWorkTags) != WorkTags.None;
+            bool disabledByTag = form.disabledWorkTagsOnTransform != WorkTags.None
+                && (workType.workTags & form.disabledWorkTagsOnTransform) != WorkTags.None;
 
             if (!disabledByType && !disabledByTag) return;
 

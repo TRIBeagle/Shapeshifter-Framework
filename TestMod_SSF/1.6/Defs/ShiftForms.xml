@@ -130,7 +130,9 @@
     <body>
       <mode>Replace</mode>
       <replacementTexPath>Things/Pawn/Animal/Sheep/SheepMale</replacementTexPath>
-      <replacementTexPathFemale>Things/Pawn/Animal/Sheep/SheepFemale</replacementTexPathFemale>
+      <female>
+        <replacementTexPath>Things/Pawn/Animal/Sheep/SheepFemale</replacementTexPath>
+      </female>
     </body>
     <bodyDrawScale>0.6</bodyDrawScale>
     <durationTicks>10000</durationTicks>
@@ -138,9 +140,7 @@
     <statOffsets>
       <MoveSpeed>-1.0</MoveSpeed>
     </statOffsets>
-    <disabledWorkTagsOnTransform>
-      <li>Violent</li>
-    </disabledWorkTagsOnTransform>
+    <disabledWorkTagsOnTransform>Violent</disabledWorkTagsOnTransform>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- ======================================================
@@ -416,10 +416,7 @@
     </tools>
     <replaceNativeVerbs>false</replaceNativeVerbs>
     <replaceNativeTools>false</replaceNativeTools>
-    <disabledWorkTagsOnTransform>
-      <li>Crafting</li>
-      <li>Cooking</li>
-    </disabledWorkTagsOnTransform>
+    <disabledWorkTagsOnTransform>Crafting, Cooking</disabledWorkTagsOnTransform>
     <!-- 변신 이펙트 -->
     <transformFxCooldownTicks>30</transformFxCooldownTicks>
     <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
