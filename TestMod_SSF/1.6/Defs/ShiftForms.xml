@@ -5,18 +5,55 @@
        변신 폼 정의
        ====================================================== -->
 
-  <!-- 1) 늑대 폼 (동물형) — 약물/아이템 전용, 어빌리티 바에 표시 안 함 -->
+  <!-- 1) 늑대 폼 (동물형) — 약물/아이템 전용, 어빌리티 바에 표시 안 함
+       ★ 체형 교체 텍스처, hediff, capMods, 이펙트 통합 테스트 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSFTest_WolfForm</defName>
     <label>wolf form</label>
-    <description>테스트용 늑대 변신. 동물형 완전 변신.</description>
+    <description>테스트용 늑대 변신. 동물형 완전 변신. 곰 텍스처로 체형 교체, 캐릭터 능력 보정, hediff 부여 테스트.</description>
     <abilityMode>None</abilityMode>
-    <bodyDrawScale>0.85</bodyDrawScale>
-    <durationTicks>15000</durationTicks> <!-- 약 6분 -->
+    <!-- 체형 교체 텍스처 -->
+    <body>
+      <mode>Replace</mode>
+      <replacementTexPath>Things/Pawn/Animal/Bear/Bear</replacementTexPath>
+      <swimmingReplacementTexPath>Things/Pawn/Animal/Bear/SwimmingBear</swimmingReplacementTexPath>
+      <color>(112,82,65)</color>
+      <swimmingColor>(255,255,255)</swimmingColor>
+    </body>
+    <bodyDrawScale>1.6</bodyDrawScale>
+    <durationTicks>15000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
     <statOffsets>
       <MoveSpeed>1.5</MoveSpeed>
     </statOffsets>
+    <statFactors>
+      <MeleeHitChance>1.20</MeleeHitChance>
+      <MeleeDodgeChance>1.15</MeleeDodgeChance>
+    </statFactors>
+    <!-- 능력치 보정 -->
+    <capMods>
+      <li><capacity>Manipulation</capacity><setMax>0</setMax></li>
+      <li><capacity>Talking</capacity><postFactor>0.1</postFactor></li>
+      <li><capacity>Moving</capacity><postFactor>1.30</postFactor></li>
+      <li><capacity>Sight</capacity><postFactor>1.10</postFactor></li>
+    </capMods>
+    <!-- hediff 부여 -->
+    <addHediffs>
+      <li>
+        <hediff>FibrousMechanites</hediff>
+        <severity>0.5</severity>
+      </li>
+      <li>
+        <hediff>SSFTest_BeastArm</hediff>
+        <targetPart>Arm</targetPart>
+        <addedPartPolicy>ForceAdd</addedPartPolicy>
+      </li>
+    </addHediffs>
+    <addAbilities>
+      <li MayRequire="Ludeon.Royalty">Berserk</li>
+    </addAbilities>
+    <apparelOnTransform>Drop</apparelOnTransform>
+    <weaponsOnTransform>Drop</weaponsOnTransform>
     <tools>
       <li>
         <label>teeth</label>
@@ -27,13 +64,35 @@
       </li>
     </tools>
     <replaceNativeTools>true</replaceNativeTools>
+    <!-- 혈액/살점 -->
+    <bloodDef>Filth_BloodInsect</bloodDef>
+    <bloodSmearDef>SSFTest_Filth_BloodInsectSmear</bloodSmearDef>
+    <fleshType>Insectoid</fleshType>
+    <!-- 변신 이펙트 -->
+    <transformFxCooldownTicks>30</transformFxCooldownTicks>
+    <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
+    <transformEnterFleckCount>1</transformEnterFleckCount>
+    <transformEnterFleckScale>1.8</transformEnterFleckScale>
+    <transformEnterSound>PsychicPulseGlobal</transformEnterSound>
+    <transformExitFleck>PsycastSkipFlashExit</transformExitFleck>
+    <transformExitFleckCount>1</transformExitFleckCount>
+    <transformExitFleckScale>1.8</transformExitFleckScale>
+    <transformExitSound>PsychicSootheGlobal</transformExitSound>
+    <!-- 2단 변신: 수인 폼에서도 진입 가능 -->
+    <allowedFromForms>
+      <li>None</li>
+      <li>SSFTest_BeastkinForm</li>
+    </allowedFromForms>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- 2) 곰 전사 폼 (아머드형) — 버프 어빌리티용 동료 강화 -->
+  <!-- 2) 곰 전사 폼 (아머드형) — 버프 어빌리티용 동료 강화
+       ★ 사운드 오버라이드 통합 테스트 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
     <defName>SSFTest_BearWarriorForm</defName>
     <label>bear warrior form</label>
-    <description>테스트용 곰 전사 변신. 장비 유지하면서 스탯 강화.</description>
+    <description>테스트용 곰 전사 변신. 장비 유지하면서 스탯 강화. 곰 사운드 오버라이드.</description>
     <abilityMode>Custom</abilityMode>
     <linkedAbility>SSFTest_Ability_BuffAlly</linkedAbility>
     <bodyDrawScale>1.3</bodyDrawScale>
@@ -46,6 +105,14 @@
     <statFactors>
       <IncomingDamageFactor>0.8</IncomingDamageFactor>
     </statFactors>
+    <!-- 사운드 오버라이드 -->
+    <soundAngry>Pawn_Bear_Angry</soundAngry>
+    <soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
+    <soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
+    <soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
+    <!-- 이펙트 -->
+    <transformEnterEffecter>Vaporize_Heatwave</transformEnterEffecter>
+    <transformExitEffecter>ImpactSmallDustCloud</transformExitEffecter>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- 3) 양 폼 (동물형) — 디버프/범위형용. 해제 불가 -->
@@ -56,7 +123,7 @@
     <abilityMode>Custom</abilityMode>
     <linkedAbility>SSFTest_Ability_DebuffEnemy</linkedAbility>
     <bodyDrawScale>0.6</bodyDrawScale>
-    <durationTicks>10000</durationTicks> <!-- 약 4분 -->
+    <durationTicks>10000</durationTicks>
     <canRevertVoluntarily>false</canRevertVoluntarily>
     <statOffsets>
       <MoveSpeed>-1.0</MoveSpeed>
@@ -76,15 +143,12 @@
     <abilityMode>Custom</abilityMode>
     <linkedAbility>SSFTest_Ability_DarkKnight</linkedAbility>
     <bodyDrawScale>1.2</bodyDrawScale>
-    <durationTicks>18000</durationTicks> <!-- 약 7분 -->
+    <durationTicks>18000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
-    <!-- 기존 장비를 인벤토리로 -->
     <apparelOnTransform>Inventory</apparelOnTransform>
     <weaponsOnTransform>Inventory</weaponsOnTransform>
-    <!-- 변신 중 장비 교체 금지 -->
     <apparelEquipLock>Locked</apparelEquipLock>
     <weaponEquipLock>Locked</weaponEquipLock>
-    <!-- 전용 장비 소환 (해제 시 자동 파괴) -->
     <spawnApparelOnTransform>
       <li>Apparel_PlateArmor</li>
     </spawnApparelOnTransform>
@@ -94,7 +158,6 @@
     <spawnApparelStuff>Plasteel</spawnApparelStuff>
     <spawnWeaponStuff>Plasteel</spawnWeaponStuff>
     <conflictingGearHandling>Inventory</conflictingGearHandling>
-    <!-- 스탯 강화 -->
     <statOffsets>
       <MoveSpeed>-0.3</MoveSpeed>
       <MeleeDodgeChance>15</MeleeDodgeChance>
@@ -109,19 +172,224 @@
        3단 변신 폼: 인간 → 수인 → 동물
        ====================================================== -->
 
-  <!-- 5a) 수인 폼 (휴머노이드형) — 1단계: 인간→수인 -->
+  <!-- 5a) 수인 폼 (휴머노이드형) — 1단계: 인간→수인
+       ★ 귀/꼬리 renderNodeProperties, 보이스, verb, verbGizmoOptions 통합 테스트 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
     <defName>SSFTest_BeastkinForm</defName>
     <label>beastkin form</label>
-    <description>수인 형태. 인간 외형 유지하면서 동물적 능력 부여. 여기서 한번 더 변신하면 완전한 동물 형태로.</description>
+    <description>수인 형태. 귀/꼬리 그래픽 추가, 다양한 원거리 verb 통합 테스트. 수인 상태에서 2단 변신(완전 야수) 가능.</description>
     <abilityMode>Custom</abilityMode>
     <linkedAbility>SSFTest_Ability_Beastkin</linkedAbility>
-    <bodyDrawScale>1.1</bodyDrawScale>
+    <bodyDrawScale>1.20</bodyDrawScale>
+    <headDrawScale>1.05</headDrawScale>
+    <headOffset>(0.0, 0.03)</headOffset>
     <canRevertVoluntarily>true</canRevertVoluntarily>
     <statOffsets>
       <MoveSpeed>0.8</MoveSpeed>
       <MeleeDodgeChance>5</MeleeDodgeChance>
     </statOffsets>
+    <statFactors>
+      <MeleeHitChance>1.10</MeleeHitChance>
+    </statFactors>
+    <apparelOnTransform>Inventory</apparelOnTransform>
+    <weaponsOnTransform>Keep</weaponsOnTransform>
+    <!-- hediff -->
+    <addHediffs>
+      <li>
+        <hediff>FibrousMechanites</hediff>
+      </li>
+    </addHediffs>
+    <addAbilities>
+      <li MayRequire="Ludeon.Royalty">Waterskip</li>
+    </addAbilities>
+    <!-- 그래픽 표시 예외(휴머노이드 베이스의 Overhead 숨김을 덮어씀) -->
+    <renderShowApparelDefNames>
+      <li>Apparel_Cape</li>
+      <li>Apparel_Tuque</li>
+    </renderShowApparelDefNames>
+    <!-- ★ 귀/꼬리 그래픽 -->
+    <renderNodeProperties>
+      <li>
+        <nodeClass>PawnRenderNode_AttachmentHead</nodeClass>
+        <workerClass>PawnRenderNodeWorker_FlipWhenCrawling</workerClass>
+        <texPath>Things/Pawn/Humanlike/HeadAttachments/FloppyEars/FloppyEars</texPath>
+        <colorType>Skin</colorType>
+        <parentTagDef>Head</parentTagDef>
+        <useSkinShader>true</useSkinShader>
+        <useRottenColor>true</useRottenColor>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <drawData>
+          <defaultData>
+            <layer>70</layer>
+          </defaultData>
+        </drawData>
+      </li>
+      <li>
+        <workerClass>PawnRenderNodeWorker_AttachmentBody</workerClass>
+        <texPath>Things/Pawn/Humanlike/BodyAttachments/FurryTail/FurryTail</texPath>
+        <colorType>Hair</colorType>
+        <overrideMeshSize>(1, 1)</overrideMeshSize>
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <drawData>
+          <scaleOffsetByBodySize>true</scaleOffsetByBodySize>
+          <defaultData>
+            <layer>-2</layer>
+          </defaultData>
+          <dataNorth>
+            <offset>(0.1, 0, -0.25)</offset>
+            <layer>90</layer>
+          </dataNorth>
+          <dataSouth>
+            <offset>(-0.1, 0, -0.25)</offset>
+          </dataSouth>
+          <dataEast>
+            <offset>(-0.5, 0, -0.15)</offset>
+          </dataEast>
+          <dataWest>
+            <offset>(0.5, 0, -0.15)</offset>
+          </dataWest>
+        </drawData>
+      </li>
+    </renderNodeProperties>
+    <!-- ★ 보이스 오버라이드 -->
+    <soundCall>Pawn_Furskin_Call</soundCall>
+    <soundDeath>Pawn_Furskin_Death</soundDeath>
+    <soundWounded>Pawn_Furskin_Wounded</soundWounded>
+    <soundAngry>Pawn_Bear_Angry</soundAngry>
+    <soundEating>PredatorLarge_Eat</soundEating>
+    <soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
+    <soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
+    <soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
+    <!-- 혈액/살점 -->
+    <bloodDef>Filth_BloodInsect</bloodDef>
+    <bloodSmearDef>SSFTest_Filth_BloodInsectSmear</bloodSmearDef>
+    <fleshType>Insectoid</fleshType>
+    <!-- ★ 다양한 verb 타입 테스트 -->
+    <verbs>
+      <li Class="Verse.VerbProperties">
+        <label>AssaultRifle</label>
+        <verbClass>Verse.Verb_Shoot</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>Bullet_AssaultRifle</defaultProjectile>
+        <warmupTime>1.0</warmupTime>
+        <range>28</range>
+        <burstShotCount>3</burstShotCount>
+        <ticksBetweenBurstShots>10</ticksBetweenBurstShots>
+        <requireLineOfSight>true</requireLineOfSight>
+        <stopBurstWithoutLos>true</stopBurstWithoutLos>
+        <targetParams>
+          <canTargetPawns>true</canTargetPawns>
+          <canTargetLocations>false</canTargetLocations>
+        </targetParams>
+      </li>
+      <li Class="Verse.VerbProperties">
+        <verbClass>Verse.Verb_LaunchProjectile</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>SSFTest_Proj_FragGrenade_Safe</defaultProjectile>
+        <warmupTime>1.5</warmupTime>
+        <range>13</range>
+        <forcedMissRadius>0</forcedMissRadius>
+        <requireLineOfSight>true</requireLineOfSight>
+        <stopBurstWithoutLos>true</stopBurstWithoutLos>
+        <targetParams>
+          <canTargetPawns>true</canTargetPawns>
+          <canTargetLocations>true</canTargetLocations>
+        </targetParams>
+        <soundCast>ThrowGrenade</soundCast>
+      </li>
+      <li Class="Verse.VerbProperties">
+        <label>ArcSprayProjectile</label>
+        <verbClass>Verse.Verb_ArcSprayProjectile</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>Bullet_IncendiaryLauncher</defaultProjectile>
+        <warmupTime>1.5</warmupTime>
+        <range>16</range>
+        <requireLineOfSight>true</requireLineOfSight>
+        <stopBurstWithoutLos>true</stopBurstWithoutLos>
+        <targetParams>
+          <canTargetPawns>true</canTargetPawns>
+          <canTargetLocations>true</canTargetLocations>
+        </targetParams>
+      </li>
+      <li Class="Verse.VerbProperties">
+        <label>SpewFire</label>
+        <verbClass>Verse.Verb_SpewFire</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <onlyManualCast>true</onlyManualCast>
+        <warmupTime>1.2</warmupTime>
+        <range>10</range>
+        <minRange>1</minRange>
+        <requireLineOfSight>true</requireLineOfSight>
+        <targetParams>
+          <canTargetPawns>true</canTargetPawns>
+          <canTargetLocations>true</canTargetLocations>
+        </targetParams>
+      </li>
+      <li>
+        <label>ShootBeam</label>
+        <verbClass>Verb_ShootBeam</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <warmupTime>1.0</warmupTime>
+        <range>24.9</range>
+        <minRange>3.9</minRange>
+        <beamFullWidthRange>6.9</beamFullWidthRange>
+        <burstShotCount>5</burstShotCount>
+        <showBurstShotStats>false</showBurstShotStats>
+        <beamWidth>6</beamWidth>
+        <ticksBetweenBurstShots>22</ticksBetweenBurstShots>
+        <beamDamageDef>Beam</beamDamageDef>
+        <soundCastTail>GunTail_Medium</soundCastTail>
+        <muzzleFlashScale>9</muzzleFlashScale>
+        <soundCastBeam>BeamGraser_Shooting</soundCastBeam>
+        <beamGroundFleckDef>Fleck_BeamBurn</beamGroundFleckDef>
+        <beamFleckChancePerTick>0.32</beamFleckChancePerTick>
+        <beamMaxDeviation>1.5</beamMaxDeviation>
+        <beamCurvature>0.6</beamCurvature>
+        <beamMoteDef>Mote_GraserBeamBase</beamMoteDef>
+        <beamEndEffecterDef>GraserBeam_End</beamEndEffecterDef>
+        <beamChanceToStartFire>0.85</beamChanceToStartFire>
+        <beamChanceToAttachFire>0.85</beamChanceToAttachFire>
+        <beamFireSizeRange>0.55~0.85</beamFireSizeRange>
+        <beamLineFleckDef>Fleck_BeamSpark</beamLineFleckDef>
+        <beamStartOffset>0.8</beamStartOffset>
+        <beamLineFleckChanceCurve>
+          <points>
+            <li>(0, 0)</li>
+            <li>(0.65, 0.4)</li>
+            <li>(1, 0.75)</li>
+          </points>
+        </beamLineFleckChanceCurve>
+      </li>
+    </verbs>
+    <!-- ★ verbGizmoOptions: 각 verb별 아이콘/라벨/자동공격 설정 -->
+    <verbGizmoOptions>
+      <li>
+        <label>돌격소총</label>
+        <iconPath>Things/Item/Equipment/WeaponRanged/AssaultRifle</iconPath>
+        <autoAttackDefault>true</autoAttackDefault>
+      </li>
+      <li>
+        <label>파편수류탄</label>
+        <iconPath>Things/Item/Equipment/WeaponRanged/Grenades</iconPath>
+        <autoAttackDefault>false</autoAttackDefault>
+      </li>
+      <li>
+        <label>화염방사</label>
+        <iconPath>Things/Item/Equipment/WeaponRanged/InfernoCannon</iconPath>
+        <autoAttackDefault>false</autoAttackDefault>
+      </li>
+      <li>
+        <label>화염 분사</label>
+        <iconPath>Things/Item/Equipment/WeaponRanged/IncendiaryLauncher</iconPath>
+        <autoAttackDefault>false</autoAttackDefault>
+      </li>
+      <li>
+        <label>광선 빔</label>
+        <iconPath>Things/Item/Equipment/WeaponRanged/ThumpCannon</iconPath>
+        <autoAttackDefault>false</autoAttackDefault>
+      </li>
+    </verbGizmoOptions>
     <tools>
       <li>
         <label>claws</label>
@@ -131,6 +399,23 @@
         <linkedBodyPartsGroup>Hands</linkedBodyPartsGroup>
       </li>
     </tools>
+    <replaceNativeVerbs>false</replaceNativeVerbs>
+    <replaceNativeTools>false</replaceNativeTools>
+    <disabledWorkTagsOnTransform>
+      <li>Crafting</li>
+    </disabledWorkTagsOnTransform>
+    <!-- 변신 이펙트 -->
+    <transformFxCooldownTicks>30</transformFxCooldownTicks>
+    <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
+    <transformEnterFleckCount>1</transformEnterFleckCount>
+    <transformEnterFleckScale>1.8</transformEnterFleckScale>
+    <transformEnterSound>PsychicPulseGlobal</transformEnterSound>
+    <transformExitFleck>PsycastSkipFlashExit</transformExitFleck>
+    <transformExitFleckCount>1</transformExitFleckCount>
+    <transformExitFleckScale>1.8</transformExitFleckScale>
+    <transformExitSound>PsychicSootheGlobal</transformExitSound>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- 5b) 야수 폼 (동물형) — 2단계: 수인→동물 (수인 상태에서만 진입 가능, Auto로 자동생성) -->
@@ -138,11 +423,9 @@
     <defName>SSFTest_FullBeastForm</defName>
     <label>full beast form</label>
     <description>완전한 야수 형태. 수인 상태에서만 변신 가능.</description>
-    <!-- abilityMode 기본값 Auto: 수인 폼일 때만 allowedFromForms 조건 충족 → 어빌리티 자동 부여/회수 -->
     <bodyDrawScale>1.0</bodyDrawScale>
-    <durationTicks>12000</durationTicks> <!-- 약 5분 후 자동 해제 -->
+    <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
-    <!-- 수인 폼에서만 진입 가능 -->
     <allowedFromForms>
       <li>SSFTest_BeastkinForm</li>
     </allowedFromForms>
@@ -169,6 +452,140 @@
       </li>
     </tools>
     <replaceNativeTools>true</replaceNativeTools>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- ======================================================
+       추가 테스트 폼들
+       ====================================================== -->
+
+  <!-- 6) Portrait-only scale + HAR addons + FA 테스트 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
+    <defName>SSFTest_PortraitScale_HAR</defName>
+    <label>TEST Portrait Scale HAR</label>
+    <description>Portrait scales the whole figure; HAR body addons are rendered in this form. FA 눈/입 오버라이드 테스트.</description>
+    <bodyDrawScale>10.0</bodyDrawScale>
+    <portraitDrawScale>0.2</portraitDrawScale>
+    <showHarAddons>true</showHarAddons>
+    <apparelOnTransform>Keep</apparelOnTransform>
+    <weaponsOnTransform>Keep</weaponsOnTransform>
+    <faHeadTypeDef>HeadNormal</faHeadTypeDef>
+    <faEyeballTypeDef>EyeNormal</faEyeballTypeDef>
+    <faLidTypeDef>LidNormal</faLidTypeDef>
+    <faBrowTypeDef>BrowNormal</faBrowTypeDef>
+    <faMouthTypeDef>MouthNormal</faMouthTypeDef>
+    <faSkinTypeDef>SkinNormal</faSkinTypeDef>
+    <faEyeColor>(0,255,0)</faEyeColor>
+    <faEyeColor2>(0,0,255)</faEyeColor2>
+    <disabledWorkTypesOnTransform>
+      <li>Art</li>
+    </disabledWorkTypesOnTransform>
+    <allowedFromForms>
+      <li>None</li>
+    </allowedFromForms>
+    <replaceNativeVerbs>false</replaceNativeVerbs>
+    <replaceNativeTools>true</replaceNativeTools>
+    <transformEnterEffecter>Vaporize_Heatwave</transformEnterEffecter>
+    <transformExitEffecter>ImpactSmallDustCloud</transformExitEffecter>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 7) 우라늄 기사 — 재질 지정 소환 테스트 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_Form_Knight</defName>
+    <label>Test: 우라늄 기사</label>
+    <description>우라늄 판금 갑옷과 플라스틸 장검이 정상적으로 소환되는지 테스트합니다.</description>
+    <durationTicks>2500</durationTicks>
+    <spawnApparelOnTransform>
+      <li>Apparel_PlateArmor</li>
+    </spawnApparelOnTransform>
+    <spawnApparelStuff>Uranium</spawnApparelStuff>
+    <spawnWeaponOnTransform>
+      <li>MeleeWeapon_LongSword</li>
+    </spawnWeaponOnTransform>
+    <spawnWeaponStuff>Plasteel</spawnWeaponStuff>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 8) 스페이스 마린 — 재질 없는 장비 + 무기 잠금 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_Form_Marine</defName>
+    <label>Test: 스페이스 마린</label>
+    <description>재질이 필요 없는 해병대 방어구와 전하 소총을 소환하며, 무기 슬롯까지 강제로 잠급니다.</description>
+    <weaponEquipLock>Locked</weaponEquipLock>
+    <spawnApparelOnTransform>
+      <li>Apparel_PowerArmor</li>
+      <li>Apparel_PowerArmorHelmet</li>
+    </spawnApparelOnTransform>
+    <spawnWeaponOnTransform>
+      <li>Gun_ChargeRifle</li>
+    </spawnWeaponOnTransform>
+    <conflictingGearHandling>Drop</conflictingGearHandling>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 9) 저주받은 뼈 검 — 장비 잠금 해제 테스트 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_Form_CursedSword</defName>
+    <label>Test: 저주받은 뼈 검</label>
+    <description>옷은 갈아입을 수 있지만, 소환된 강철 철퇴는 절대 손에서 놓을 수 없는지 확인합니다.</description>
+    <apparelEquipLock>Unlocked</apparelEquipLock>
+    <weaponEquipLock>Unlocked</weaponEquipLock>
+    <spawnWeaponOnTransform>
+      <li>MeleeWeapon_Mace</li>
+    </spawnWeaponOnTransform>
+    <spawnWeaponStuff>Steel</spawnWeaponStuff>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 10) 재질 에러 방어 — 잘못된 재질 폴백 테스트 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_Form_ErrorProof</defName>
+    <label>Test: 재질 에러 방어</label>
+    <description>천으로 만들어야 하는 바람막이에 우라늄을 넣고, 재질이 없는 무기에 나무를 넣었을 때 에러 없이 기본 재질로 소환되는지 확인합니다.</description>
+    <spawnApparelOnTransform>
+      <li>Apparel_Duster</li>
+    </spawnApparelOnTransform>
+    <spawnApparelStuff>Uranium</spawnApparelStuff>
+    <spawnWeaponOnTransform>
+      <li>Gun_AssaultRifle</li>
+    </spawnWeaponOnTransform>
+    <spawnWeaponStuff>WoodLog</spawnWeaponStuff>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 11) 마력석 정령 — requiredItems 조건 테스트 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_Form_InventoryCore</defName>
+    <label>Test: 마력석 정령</label>
+    <description>마력의 돌을 가방에 가지고 있을 때만 유지되는 폼입니다. 변신 중 마력의 돌을 바닥에 버리거나 남에게 주면 즉시 해제됩니다.</description>
+    <requiredItems>
+      <li>SSFTest_MagicStone</li>
+    </requiredItems>
+    <spawnWeaponOnTransform>
+      <li>MeleeWeapon_LongSword</li>
+    </spawnWeaponOnTransform>
+    <spawnWeaponStuff>Plasteel</spawnWeaponStuff>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 12) 장검의 기사 — requiredWeapons 조건 테스트 -->
+  <ShapeshifterFramework.ShapeshiftFormDef Name="SSFTest_Form_WeaponCore">
+    <defName>SSFTest_Form_WeaponCore</defName>
+    <label>Test: 장검의 기사 (무기 조건)</label>
+    <description>바닐라 장검(LongSword)을 장착해야만 활성화되는 폼입니다. 장검을 바닥에 버리면 즉시 해제됩니다.</description>
+    <body><mode>Default</mode></body>
+    <head><mode>Default</mode></head>
+    <requiredWeapons>
+      <li>MeleeWeapon_LongSword</li>
+    </requiredWeapons>
+    <weaponsOnTransform>Drop</weaponsOnTransform>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 13) 바람막이 요원 — requiredApparels 조건 테스트 -->
+  <ShapeshifterFramework.ShapeshiftFormDef Name="SSFTest_Form_ApparelCore">
+    <defName>SSFTest_Form_ApparelCore</defName>
+    <label>Test: 바람막이 요원 (의복 조건)</label>
+    <description>바닐라 바람막이(Duster)를 착용해야만 활성화되는 폼입니다. 바람막이를 벗어서 바닥에 버리면 즉시 해제됩니다.</description>
+    <body><mode>Default</mode></body>
+    <head><mode>Default</mode></head>
+    <requiredApparels>
+      <li>Apparel_Duster</li>
+    </requiredApparels>
+    <apparelOnTransform>Drop</apparelOnTransform>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
 </Defs>

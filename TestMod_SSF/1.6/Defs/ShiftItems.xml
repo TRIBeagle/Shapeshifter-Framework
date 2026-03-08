@@ -2,6 +2,91 @@
 <Defs>
 
   <!-- ======================================================
+       Hediff 정의
+       ====================================================== -->
+
+  <!-- 야수 팔 (AddedPart) — 늑대 폼에서 팔 교체 테스트 -->
+  <HediffDef ParentName="AddedBodyPartBase">
+    <defName>SSFTest_BeastArm</defName>
+    <hediffClass>Hediff_AddedPart</hediffClass>
+    <label>beast arm</label>
+    <addedPartProps>
+      <solid>true</solid>
+      <partEfficiency>0.85</partEfficiency>
+    </addedPartProps>
+  </HediffDef>
+
+  <!-- 야수 손 (HediffWithComps) — 추가 파트 테스트용 -->
+  <HediffDef ParentName="AddedBodyPartBase">
+    <defName>SSFTest_BeastHand</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>beast hand</label>
+  </HediffDef>
+
+  <!-- ======================================================
+       투사체 정의
+       ====================================================== -->
+
+  <!-- 안전판 파편수류탄 — 수인 폼 verb 테스트용 -->
+  <ThingDef ParentName="BaseBullet">
+    <defName>SSFTest_Proj_FragGrenade_Safe</defName>
+    <label>frag grenade (SSF safe)</label>
+    <thingClass>Projectile_Explosive</thingClass>
+    <graphicData>
+      <texPath>Things/Projectile/Grenade</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <projectile>
+      <damageDef>Bomb</damageDef>
+      <damageAmountBase>60</damageAmountBase>
+      <explosionRadius>3.9</explosionRadius>
+      <ai_IsIncendiary>false</ai_IsIncendiary>
+      <flyOverhead>false</flyOverhead>
+      <speed>25</speed>
+      <soundExplode>Explosion_Grenade</soundExplode>
+    </projectile>
+  </ThingDef>
+
+  <!-- ======================================================
+       필스(혈흔) 정의
+       ====================================================== -->
+
+  <!-- 곤충형 혈흔 — bloodSmearDef 테스트용 -->
+  <ThingDef ParentName="FilthBlood">
+    <defName>SSFTest_Filth_BloodInsectSmear</defName>
+    <label>blood smear</label>
+    <graphicData>
+      <texPath>Things/Filth/CrawlSmear</texPath>
+      <color>(132, 138, 114, 165)</color>
+      <graphicClass>Graphic_ClusterTight</graphicClass>
+      <drawSize>0.9</drawSize>
+    </graphicData>
+  </ThingDef>
+
+  <!-- ======================================================
+       아이템 정의
+       ====================================================== -->
+
+  <!-- 마력의 돌 — requiredItems 조건 테스트용 -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>SSFTest_MagicStone</defName>
+    <label>Test: 마력의 돌</label>
+    <description>인벤토리에 소지하기만 해도 변신 기즈모를 활성화해 주는 신비한 돌입니다. 바닥에 버리면 변신이 풀립니다.</description>
+    <graphicData>
+      <texPath>Things/Item/Resource/Jade</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MarketValue>500</MarketValue>
+      <Mass>0.1</Mass>
+    </statBases>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+  </ThingDef>
+
+  <!-- ======================================================
        2a) 아이템 변신 — 자기 자신 (CompTargetable 없음)
        ====================================================== -->
   <ThingDef ParentName="ResourceBase">
