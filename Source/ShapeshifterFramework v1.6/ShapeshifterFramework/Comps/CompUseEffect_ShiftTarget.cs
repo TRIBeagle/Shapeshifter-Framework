@@ -4,11 +4,11 @@
 //        플레이어가 클릭으로 선택한 대상 Pawn을 변신시키고, CompTargetable이 없으면 사용자 자신을 변신시킴.
 // XML 사용 예 (대상 지정형):
 //   <comps>
-//     <li Class="CompProperties_UseEffect">
-//       <compClass>ShapeshifterFramework.Comps.CompUseEffect_ShiftTarget</compClass>
+//     <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
+//       <formDefName>MyForm</formDefName>
 //     </li>
-//     <li Class="CompProperties_Targetable_SinglePawn">
-//       <psychicSensitiveTargetsOnly>false</psychicSensitiveTargetsOnly>
+//     <li Class="CompProperties_Targetable">
+//       <compClass>CompTargetable_SinglePawn</compClass>
 //     </li>
 //   </comps>
 
