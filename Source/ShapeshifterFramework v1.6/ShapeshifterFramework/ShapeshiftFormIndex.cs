@@ -34,14 +34,18 @@ namespace ShapeshifterFramework
 
                 // damageSourceDef 자동 생성: 폼에 tools가 있고 damageSourceDef가 미지정이면
                 // 폼의 label을 사용하는 프록시 ThingDef를 만들어 상처 라벨에 활용
+                // DefDatabase에 정식 등록하여 세이브/로드 및 타 모드 호환성 보장
                 if (def.tools != null && def.tools.Count > 0 && def.damageSourceDef == null
                     && !string.IsNullOrEmpty(def.label))
                 {
-                    def.damageSourceDef = new ThingDef
+                    var proxy = new ThingDef
                     {
                         defName = "SSF_DmgSrc_" + def.defName,
                         label = def.label,
+                        thingClass = typeof(Thing),
                     };
+                    DefDatabase<ThingDef>.Add(proxy);
+                    def.damageSourceDef = proxy;
                 }
             }
         }
