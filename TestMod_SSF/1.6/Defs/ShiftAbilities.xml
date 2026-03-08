@@ -17,6 +17,7 @@
     <displayOrder>500</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
       <range>15</range>
       <warmupTime>1.0</warmupTime>
       <targetParams>
@@ -84,6 +85,7 @@
     <displayOrder>505</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
       <range>0</range>
       <warmupTime>1.5</warmupTime>
       <targetParams>
@@ -119,6 +121,7 @@
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
       <range>0</range>
+      <violent>false</violent>
       <warmupTime>0.5</warmupTime>
       <targetParams>
         <canTargetSelf>true</canTargetSelf>
@@ -152,6 +155,7 @@
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
       <range>0</range>
+      <violent>false</violent>
       <warmupTime>0.8</warmupTime>
       <targetParams>
         <canTargetSelf>true</canTargetSelf>
@@ -185,6 +189,7 @@
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
       <range>0</range>
+      <violent>false</violent>
       <warmupTime>0.5</warmupTime>
       <targetParams>
         <canTargetSelf>true</canTargetSelf>
@@ -218,6 +223,7 @@
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
       <range>0</range>
+      <violent>false</violent>
       <warmupTime>0.8</warmupTime>
       <targetParams>
         <canTargetSelf>true</canTargetSelf>
