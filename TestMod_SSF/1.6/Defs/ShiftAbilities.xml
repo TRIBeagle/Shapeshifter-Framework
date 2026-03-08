@@ -9,6 +9,7 @@
     <defName>SSFTest_Ability_BuffAlly</defName>
     <label>bestow bear warrior</label>
     <description>동료에게 곰 전사의 힘을 부여한다. 장비를 유지한 채 스탯이 강화된다.</description>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>1500</cooldownTicksRange>
     <hostile>false</hostile>
     <displayOrder>500</displayOrder>
@@ -39,6 +40,7 @@
     <defName>SSFTest_Ability_DebuffEnemy</defName>
     <label>polymorph: sheep</label>
     <description>적을 양으로 변신시킨다. 전투력을 상실하며 자발적 해제 불가.</description>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>3000</cooldownTicksRange>
     <hostile>true</hostile>
     <displayOrder>501</displayOrder>
@@ -69,8 +71,10 @@
     <defName>SSFTest_Ability_DarkKnight</defName>
     <label>dark knight transformation</label>
     <description>암흑 기사로 변신한다. 전용 플라스틸 판금갑옷과 장검이 소환되며, 기존 장비는 인벤토리로 이동. 해제 시 소환 장비는 소멸한다.</description>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>3000</cooldownTicksRange>
     <hostile>false</hostile>
+    <targetRequired>false</targetRequired>
     <displayOrder>505</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
@@ -99,8 +103,10 @@
     <defName>SSFTest_Ability_Beastkin</defName>
     <label>beastkin shift</label>
     <description>수인 형태로 변신한다. 수인 상태에서는 기즈모로 완전한 야수 형태로 2단 변신 가능.</description>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>1200</cooldownTicksRange>
     <hostile>false</hostile>
+    <targetRequired>false</targetRequired>
     <displayOrder>510</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
