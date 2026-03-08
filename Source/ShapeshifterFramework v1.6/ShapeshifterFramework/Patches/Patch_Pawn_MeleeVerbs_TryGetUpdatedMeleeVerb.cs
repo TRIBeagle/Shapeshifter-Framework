@@ -1,8 +1,8 @@
 // ShapeshifterFramework | Patches | Patch_Pawn_MeleeVerbs_TryGetUpdatedMeleeVerb.cs
 // 목적 : 바닐라 Pawn_MeleeVerbs가 폼의 근접 도구를 무시하는 문제 해결.
-// 용도 : pawn.verbTracker에서 네이티브 근접은 제거되어 바닐라가 null을 반환.
-//        Postfix에서 shapeshiftVerbTracker의 폼 근접 도구를 공급.
-//        replaceNativeTools=false일 때는 power 비교 후 더 강한 쪽 선택.
+// 용도 : pawn.verbTracker에서 네이티브 근접이 제거된 상태이므로, 바닐라 ChooseMeleeVerb가
+//        빈 리스트를 받아 에러를 출력하기 전에 Prefix에서 폼 verb를 직접 반환.
+//        replaceNativeTools=false일 때는 바닐라 실행 후 Postfix에서 power 비교.
 
 using HarmonyLib;
 using RimWorld;
@@ -15,10 +15,51 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(Pawn_MeleeVerbs), nameof(Pawn_MeleeVerbs.TryGetMeleeVerb))]
     internal static class Patch_Pawn_MeleeVerbs_TryGetMeleeVerb
     {
+        static bool Prefix(Pawn_MeleeVerbs __instance, ref Verb __result, Thing target)
+        {
+            try
+            {
+                var pawn = __instance.Pawn;
+                if (pawn == null) return true;
+
+                var comp = pawn.TryGetComp<CompShapeshifter>();
+                if (comp == null || !comp.isTransformed) return true;
+
+                var form = comp.currentForm;
+                if (form == null || form.tools == null || form.tools.Count == 0) return true;
+
+                bool replaceNative = form.replaceNativeTools.HasValue && form.replaceNativeTools.Value;
+
+                // replaceNativeTools=true → 네이티브가 제거되어 바닐라가 빈 리스트 에러 냄.
+                // Prefix에서 직접 폼 verb 반환하여 바닐라 스킵.
+                if (replaceNative)
+                {
+                    var vt = comp.ShapeshiftVerbTracker;
+                    if (vt == null) return true;
+
+                    var bestMelee = FindBestFormMelee(vt.AllVerbs);
+                    if (bestMelee != null)
+                    {
+                        __result = bestMelee;
+                        return false; // 바닐라 스킵
+                    }
+                }
+
+                // replaceNativeTools=false → 바닐라 실행 후 Postfix에서 비교
+            }
+            catch (System.Exception e)
+            {
+                Log.Warning($"[SSF] TryGetMeleeVerb Prefix failed: {e}");
+            }
+            return true;
+        }
+
         static void Postfix(Pawn_MeleeVerbs __instance, ref Verb __result, Thing target)
         {
             try
             {
+                // replaceNativeTools=true는 Prefix에서 처리 완료
+                // 여기는 replaceNativeTools=false (추가 모드)만 처리
                 var pawn = __instance.Pawn;
                 if (pawn == null) return;
 
@@ -28,23 +69,22 @@ namespace ShapeshifterFramework.Patches
                 var form = comp.currentForm;
                 if (form == null || form.tools == null || form.tools.Count == 0) return;
 
+                // replaceNativeTools=true는 Prefix에서 이미 처리됨
+                if (form.replaceNativeTools.HasValue && form.replaceNativeTools.Value) return;
+
                 var vt = comp.ShapeshiftVerbTracker;
                 if (vt == null) return;
 
-                var verbs = vt.AllVerbs;
-                var bestFormMelee = FindBestFormMelee(verbs);
+                var bestFormMelee = FindBestFormMelee(vt.AllVerbs);
                 if (bestFormMelee == null) return;
 
-                bool replaceNative = form.replaceNativeTools.HasValue && form.replaceNativeTools.Value;
-
-                if (replaceNative || __result == null)
+                if (__result == null)
                 {
-                    // 교체 모드이거나 바닐라가 null 반환 → 폼 도구 사용
                     __result = bestFormMelee;
                     return;
                 }
 
-                // 추가 모드: 바닐라 결과와 power 비교
+                // power 비교: 폼 도구가 더 강하면 교체
                 var vanillaMelee = __result as Verb_MeleeAttack;
                 var formMelee = bestFormMelee as Verb_MeleeAttack;
                 float vanillaPower = (vanillaMelee?.tool != null) ? vanillaMelee.tool.power : 0f;
