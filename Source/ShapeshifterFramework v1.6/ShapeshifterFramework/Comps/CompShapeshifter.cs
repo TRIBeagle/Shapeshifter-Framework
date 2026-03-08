@@ -564,22 +564,26 @@ namespace ShapeshifterFramework.Comps
             }
 
             // 회수: 부여했지만 더 이상 eligible이 아닌 경우
-            for (int i = grantedFormAbilities.Count - 1; i >= 0; i--)
+            // 변신 중에는 ShouldHideGizmo가 기즈모를 숨기므로 능력 제거 건너뜀
+            if (!isTransformed)
             {
-                var aDef = grantedFormAbilities[i];
-                if (aDef == null) { grantedFormAbilities.RemoveAt(i); continue; }
-
-                bool stillEligible = false;
-                for (int j = 0; j < eligibleForms.Count; j++)
+                for (int i = grantedFormAbilities.Count - 1; i >= 0; i--)
                 {
-                    if (eligibleForms[j].ResolvedAbility == aDef)
-                    { stillEligible = true; break; }
-                }
+                    var aDef = grantedFormAbilities[i];
+                    if (aDef == null) { grantedFormAbilities.RemoveAt(i); continue; }
 
-                if (!stillEligible)
-                {
-                    pawn.abilities.RemoveAbility(aDef);
-                    grantedFormAbilities.RemoveAt(i);
+                    bool stillEligible = false;
+                    for (int j = 0; j < eligibleForms.Count; j++)
+                    {
+                        if (eligibleForms[j].ResolvedAbility == aDef)
+                        { stillEligible = true; break; }
+                    }
+
+                    if (!stillEligible)
+                    {
+                        pawn.abilities.RemoveAbility(aDef);
+                        grantedFormAbilities.RemoveAt(i);
+                    }
                 }
             }
         }

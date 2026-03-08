@@ -15,6 +15,58 @@ namespace ShapeshifterFramework.Comps
     {
         public new CompProperties_AbilityShiftTarget Props => (CompProperties_AbilityShiftTarget)props;
 
+        // 캐시: formDefName → ShapeshiftFormDef
+        private ShapeshiftFormDef _cachedFormDef;
+        private bool _formDefResolved;
+
+        private ShapeshiftFormDef ResolvedFormDef
+        {
+            get
+            {
+                if (!_formDefResolved)
+                {
+                    _cachedFormDef = DefDatabase<ShapeshiftFormDef>.GetNamedSilentFail(Props.formDefName);
+                    _formDefResolved = true;
+                }
+                return _cachedFormDef;
+            }
+        }
+
+        /// <summary>변신 중이면서 이 폼에 도달 불가능할 때 기즈모 숨김.</summary>
+        public override bool ShouldHideGizmo
+        {
+            get
+            {
+                var caster = parent?.pawn;
+                if (caster == null) return false;
+
+                var comp = caster.TryGetComp<CompShapeshifter>();
+                if (comp == null || !comp.isTransformed || comp.currentForm == null) return false;
+
+                // 변신 중: 이 폼이 현재 폼에서 도달 가능한지 확인
+                var formDef = ResolvedFormDef;
+                if (formDef == null) return true;
+
+                // 같은 폼이면 숨김 (재시전 불가)
+                if (string.Equals(comp.currentForm.defName, Props.formDefName, System.StringComparison.Ordinal))
+                    return true;
+
+                // allowedFromForms에 현재 폼이 포함되어 있으면 표시 (체이닝 허용)
+                if (formDef.allowedFromForms != null && formDef.allowedFromForms.Count > 0)
+                {
+                    string curName = comp.currentForm.defName;
+                    for (int i = 0; i < formDef.allowedFromForms.Count; i++)
+                    {
+                        if (string.Equals(formDef.allowedFromForms[i], curName, System.StringComparison.Ordinal))
+                            return false;
+                    }
+                }
+
+                // allowedFromForms 미지정이거나 현재 폼이 목록에 없으면 숨김
+                return true;
+            }
+        }
+
         /// <summary>대상 유효성 판정. 같은 폼 재시전 차단 포함.</summary>
         public override bool CanApplyOn(LocalTargetInfo target, LocalTargetInfo dest)
         {
