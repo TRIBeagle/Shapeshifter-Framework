@@ -414,9 +414,7 @@
     </tools>
     <replaceNativeVerbs>false</replaceNativeVerbs>
     <replaceNativeTools>false</replaceNativeTools>
-    <disabledWorkTagsOnTransform>
-      <li>Crafting</li>
-    </disabledWorkTagsOnTransform>
+    <disabledWorkTagsOnTransform>Crafting</disabledWorkTagsOnTransform>
     <!-- 변신 이펙트 -->
     <transformFxCooldownTicks>30</transformFxCooldownTicks>
     <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
