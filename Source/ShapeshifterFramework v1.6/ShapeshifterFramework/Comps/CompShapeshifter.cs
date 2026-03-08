@@ -9,6 +9,7 @@ using RimWorld;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -64,7 +65,6 @@ namespace ShapeshifterFramework.Comps
         // verb 자동공격 토글 상태 (키: formDefName#index)
         private readonly Dictionary<string, bool> verbAutoToggle = new Dictionary<string, bool>();
 
-        internal int lastAutoVerbIndex = -1;
         public bool suppressEquipLock = false;
 
         // PostLoadInit에서 Reference 연결 완료 후 AddRange하기 위한 임시 보관 필드
@@ -195,17 +195,81 @@ namespace ShapeshifterFramework.Comps
             return DefaultAutoOn(index);
         }
 
-        /// <summary>자동공격 토글 전환.</summary>
+        /// <summary>자동공격 토글 전환 (배타적: ON 시 다른 ranged verb 전부 OFF).</summary>
         public void ToggleAutoAttack(int index, Verb v)
         {
             bool now = IsAutoAttackEnabled(index, v);
-            verbAutoToggle[AutoKey(v)] = !now;
+            if (now)
+            {
+                verbAutoToggle[AutoKey(v)] = false;
+            }
+            else
+            {
+                // 1) 모든 ranged verb OFF
+                var vt = ShapeshiftVerbTracker;
+                if (vt != null)
+                {
+                    var verbs = vt.AllVerbs;
+                    for (int i = 0; i < verbs.Count; i++)
+                    {
+                        var other = verbs[i];
+                        if (other == null || other.verbProps == null) continue;
+                        if (!other.verbProps.Ranged) continue;
+                        verbAutoToggle[AutoKey(other)] = false;
+                    }
+                }
+                // 2) 선택한 verb만 ON
+                verbAutoToggle[AutoKey(v)] = true;
+            }
         }
 
         /// <summary>자동공격 강제 활성.</summary>
         public void ForceAutoAttackOn(int index, Verb v)
         {
             verbAutoToggle[AutoKey(v)] = true;
+        }
+
+        /// <summary>폼 적용 시 배타적 토글 초기화: 첫 번째 ranged verb만 ON.</summary>
+        private void InitAutoToggleForForm()
+        {
+            var vt = ShapeshiftVerbTracker;
+            if (vt == null) return;
+
+            // verbGizmoOptions에 autoAttackDefault가 명시된 verb가 있으면 그것을 우선
+            int defaultOnIndex = -1;
+            var opt = currentForm?.verbGizmoOptions;
+            var verbs = vt.AllVerbs;
+
+            if (opt != null)
+            {
+                for (int i = 0; i < verbs.Count && i < opt.Count; i++)
+                {
+                    var v = verbs[i];
+                    if (v == null || v.verbProps == null || !v.verbProps.Ranged) continue;
+                    if (opt[i] != null && opt[i].autoAttackDefault == true)
+                    {
+                        defaultOnIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            bool firstSet = false;
+            for (int i = 0; i < verbs.Count; i++)
+            {
+                var v = verbs[i];
+                if (v == null || v.verbProps == null) continue;
+                if (!v.verbProps.Ranged) continue;
+
+                bool on;
+                if (defaultOnIndex >= 0)
+                    on = (i == defaultOnIndex);
+                else
+                    on = !firstSet; // 명시 없으면 첫 번째만 ON
+
+                verbAutoToggle[AutoKey(v)] = on;
+                if (on) firstSet = true;
+            }
         }
 
         /// <summary>verb 명령 라벨 반환.</summary>
@@ -215,7 +279,9 @@ namespace ShapeshifterFramework.Comps
             var opt = currentForm?.verbGizmoOptions;
             if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
             {
-                string s = preferToggleLabel ? opt[index].toggleLabel : opt[index].label;
+                var o = opt[index];
+                // toggleLabel → label 순 fallback
+                string s = preferToggleLabel ? (o.toggleLabel ?? o.label) : o.label;
                 if (!string.IsNullOrEmpty(s)) return s.Translate().CapitalizeFirst();
             }
 
@@ -229,12 +295,27 @@ namespace ShapeshifterFramework.Comps
             var opt = currentForm?.verbGizmoOptions;
             if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
             {
-                string s = forToggle ? opt[index].toggleDesc : opt[index].desc;
+                var o = opt[index];
+                // toggleDesc → desc 순 fallback
+                string s = forToggle ? (o.toggleDesc ?? o.desc) : o.desc;
                 if (!string.IsNullOrEmpty(s)) return s.Translate();
             }
 
             if (forToggle) return "SSF_Verb_ToggleDesc".Translate();
             return "SSF_Verb_OrderDesc".Translate();
+        }
+
+        /// <summary>verbGizmoOptions의 iconPath에서 아이콘 로드. 없으면 null.</summary>
+        private Texture2D GetVerbIcon(int index)
+        {
+            var opt = currentForm?.verbGizmoOptions;
+            if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
+            {
+                string path = opt[index].iconPath;
+                if (!string.IsNullOrEmpty(path))
+                    return ContentFinder<Texture2D>.Get(path, reportFailure: false);
+            }
+            return null;
         }
 
         #endregion
@@ -611,6 +692,9 @@ namespace ShapeshifterFramework.Comps
 
             // VerbTracker 리셋
             shapeshiftVerbTracker = null;
+
+            // 배타적 토글 초기화: 첫 번째 ranged verb만 ON
+            InitAutoToggleForForm();
 
             RefreshPawn(pawn);
             InvalidateGizmoCache();
@@ -1614,13 +1698,13 @@ namespace ShapeshifterFramework.Comps
                     {
                         defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: true),
                         defaultDesc = GetVerbDesc(idx, v, forToggle: true),
-                        icon = v.UIIcon,
+                        icon = GetVerbIcon(idx) ?? v.UIIcon,
                         isActive = () => IsAutoAttackEnabled(idx, v),
                         toggleAction = () => ToggleAutoAttack(idx, v),
                         groupable = false,
                     };
                     if (!canViolent)
-                        tgl.Disable("IsIncapableOfViolence".Translate());
+                        tgl.Disable("IsIncapableOfViolenceLower".Translate(pawn.LabelShort, pawn));
                     yield return tgl;
                 }
                 else
@@ -1634,14 +1718,14 @@ namespace ShapeshifterFramework.Comps
                 {
                     defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: false),
                     defaultDesc = GetVerbDesc(idx, v, forToggle: false),
-                    icon = v.UIIcon,
+                    icon = GetVerbIcon(idx) ?? v.UIIcon,
                     verb = v,
                     groupable = false,
                 };
                 if (!projectileOk)
                     cmd.Disable("SSF_Message_NoProjectile".Translate());
                 if (!canViolent)
-                    cmd.Disable("IsIncapableOfViolence".Translate());
+                    cmd.Disable("IsIncapableOfViolenceLower".Translate(pawn.LabelShort, pawn));
                 else if (!v.Available())
                     cmd.Disable("CommandCannotFire".Translate());
 

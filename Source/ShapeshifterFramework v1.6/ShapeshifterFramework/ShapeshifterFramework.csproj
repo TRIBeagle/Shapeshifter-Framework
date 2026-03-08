@@ -149,6 +149,7 @@
     <Compile Include="ShapeshiftFormDef.cs" />
     <Compile Include="Comps\CompProperties_Shapeshifter.cs" />
     <Compile Include="Comps\CompShapeshifter.cs" />
+    <Compile Include="Comps\IngestionOutcomeDoer_Shapeshift.cs" />
     <Compile Include="HarmonyInit.cs" />
     <Compile Include="Patches\Patch_PawnRenderer_GetDrawParms.cs" />
     <Compile Include="Patches\Patch_HumanlikeMeshPoolUtility_Sizing.cs" />
