@@ -38,7 +38,7 @@
       <ai_IsIncendiary>false</ai_IsIncendiary>
       <flyOverhead>false</flyOverhead>
       <speed>25</speed>
-      <soundExplode>Explosion_Grenade</soundExplode>
+      <soundExplode>Explosion_Bomb</soundExplode>
     </projectile>
   </ThingDef>
 
