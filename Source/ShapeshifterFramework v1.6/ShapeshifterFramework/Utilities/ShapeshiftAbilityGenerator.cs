@@ -79,6 +79,10 @@ namespace ShapeshifterFramework.Utilities
             abilityDef.cooldownTicksRange = new IntRange(0, 0);
             abilityDef.hostile = false;
 
+            // 비전투 상태에서도 어빌리티 바에 표시
+            abilityDef.displayGizmoWhileUndrafted = true;
+            abilityDef.disableGizmoWhileUndrafted = false;
+
             // 타겟 지정 없이 즉시 자기 변신
             abilityDef.targetRequired = false;
 

@@ -12,6 +12,8 @@
     <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>1500</cooldownTicksRange>
     <hostile>false</hostile>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>500</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
@@ -43,6 +45,8 @@
     <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>3000</cooldownTicksRange>
     <hostile>true</hostile>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>501</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
@@ -75,6 +79,8 @@
     <cooldownTicksRange>3000</cooldownTicksRange>
     <hostile>false</hostile>
     <targetRequired>false</targetRequired>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>505</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
@@ -107,6 +113,8 @@
     <cooldownTicksRange>1200</cooldownTicksRange>
     <hostile>false</hostile>
     <targetRequired>false</targetRequired>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>510</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>

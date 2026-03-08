@@ -188,7 +188,9 @@ namespace ShapeshifterFramework.Utilities
                     if (!listed) return false;
                 }
             }
-            // allowedFromForms 미지정이면 어디서든 진입 허용
+            // allowedFromForms 미지정: 변신 중이 아닐 때만 진입 허용
+            // (폼 체이닝을 원하면 allowedFromForms에 명시적으로 이전 폼을 나열해야 함)
+            if (prevDefName != null) return false;
 
             return true;
         }
