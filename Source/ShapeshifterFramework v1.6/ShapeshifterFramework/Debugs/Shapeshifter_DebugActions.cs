@@ -1,8 +1,8 @@
-﻿// ShapeshifterFramework | Debugs | Shapeshifter_DebugActions.cs
+// ShapeshifterFramework | Debugs | Shapeshifter_DebugActions.cs
 // 목적 : 림월드 개발자 모드(Dev Mode)에서 폼(Form) 설정값이 인게임에 정상 적용되는지 실시간으로 검증하기 위한 디버그 도구 모음.
 // 용도 : - Inspect Active Form : 현재 폰에 적용된 폼의 핵심 효과(그래픽, 파츠, 스탯 보정치 등)를 플로트 메뉴로 요약 표시.
 //        - Play Form Sounds : 폼에 정의된 각종 사운드(보이스, 피격, 사망, 섭취음 등)를 즉시 테스트 재생.
-//        - Dump Active Form to Log : 폼의 모든 세부 데이터(렌더 필터, Verb, Tool 등)를 콘솔 로그로 전문 덤프(Dump).
+//        - Dump Pawn State to Log : 폰의 런타임 상태(변신 여부 무관)와 폼의 모든 세부 데이터를 콘솔 로그로 전문 덤프(Dump).
 // 주의 : 바닐라 DebugAction 패턴을 준수하며, 인게임 실제 플레이 로직에는 관여하지 않고 오직 모더의 FormDef 세팅 검증 및 디버깅 편의를 위해서만 작동함.
 
 using LudeonTK;
@@ -117,11 +117,11 @@ namespace ShapeshifterFramework.Debugs
 
         #endregion
 
-        #region 3) 활성 폼 전문 로그 덤프(Dump)
+        #region 3) 폰 상태 전문 로그 덤프(Dump)
 
         [DebugAction(
             category = "Shapeshifter Framework",
-            name = "Dump Active Form to Log",
+            name = "Dump Pawn State to Log",
             actionType = DebugActionType.ToolMapForPawns,
             allowedGameStates = AllowedGameStates.PlayingOnMap
         )]
@@ -132,11 +132,6 @@ namespace ShapeshifterFramework.Debugs
 
             var comp = pawn.TryGetComp<CompShapeshifter>();
             var form = comp != null ? comp.currentForm : null;
-            if (form == null)
-            {
-                Messages.Message("No active form.", MessageTypeDefOf.RejectInput, false);
-                return;
-            }
 
             var sb = new StringBuilder(2048);
             BuildFullDump(pawn, form, sb);
@@ -235,25 +230,126 @@ namespace ShapeshifterFramework.Debugs
             return $"Stats: offsets={so}, factors={sf}, caps={cm}";
         }
 
-        /// <summary>사운드 요약.</summary>
+        /// <summary>사운드 요약 (defName 표시).</summary>
         private static string SummarizeSounds(ShapeshiftFormDef f)
         {
-            return $"Sounds: call={(f.soundCall != null)} angry={(f.soundAngry != null)} wounded={(f.soundWounded != null)} death={(f.soundDeath != null)} eat={(f.soundEating != null)} melee(hitPawn={(f.soundMeleeHitPawn != null)}, hitBld={(f.soundMeleeHitBuilding != null)}, miss={(f.soundMeleeMiss != null)})";
+            return $"Sounds: call={DefNameOrNull(f.soundCall)} angry={DefNameOrNull(f.soundAngry)} wounded={DefNameOrNull(f.soundWounded)} death={DefNameOrNull(f.soundDeath)} eat={DefNameOrNull(f.soundEating)} meleeHit={DefNameOrNull(f.soundMeleeHitPawn)} meleeMiss={DefNameOrNull(f.soundMeleeMiss)}";
         }
 
-        /// <summary>혈흔/살점 요약.</summary>
+        /// <summary>혈흔/살점 요약 (defName 표시).</summary>
         private static string SummarizeBlood(ShapeshiftFormDef f)
         {
-            return $"Blood/Flesh: blood={(f.bloodDef != null)} smear={(f.bloodSmearDef != null)} flesh={(f.fleshType != null)}";
+            return $"Blood/Flesh: blood={DefNameOrNull(f.bloodDef)} smear={DefNameOrNull(f.bloodSmearDef)} flesh={DefNameOrNull(f.fleshType)}";
         }
 
-        /// <summary>활성 폼 전체 덤프 빌드.</summary>
+        private static string DefNameOrNull(Def d) => d != null ? d.defName : "null";
+
+        /// <summary>폰 상태 전체 덤프 빌드. form이 null이면 비변신 상태 기본 정보만 출력.</summary>
         private static void BuildFullDump(Pawn pawn, ShapeshiftFormDef f, StringBuilder sb)
         {
             sb.AppendLine($"[Shapeshifter] Dump for {pawn?.LabelCap} ({pawn?.ThingID})");
-            sb.AppendLine($"  Form: {f.defName}");
-            sb.AppendLine($"  LabelKey: {f.label ?? "null"}  DescKey: {f.description ?? "null"}");
+            sb.AppendLine($"  Race: {pawn?.def?.defName ?? "null"}  BodyType: {pawn?.story?.bodyType?.defName ?? "null"}  HeadType: {pawn?.story?.headType?.defName ?? "null"}");
+            sb.AppendLine($"  Form: {(f != null ? f.defName : "(none — not transformed)")}");
+            if (f != null)
+                sb.AppendLine($"  LabelKey: {f.label ?? "null"}  DescKey: {f.description ?? "null"}");
             sb.AppendLine();
+
+            // ──────────────── 항상 표시: Runtime Verb State ────────────────
+            sb.AppendLine("== Runtime Verb State ==");
+            try
+            {
+                // 1) Pawn native verbTracker
+                var nativeVerbs = pawn.verbTracker?.AllVerbs;
+                sb.AppendLine($"  pawn.verbTracker.AllVerbs: {(nativeVerbs != null ? nativeVerbs.Count.ToString() : "null")}");
+                if (nativeVerbs != null)
+                {
+                    for (int i = 0; i < nativeVerbs.Count; i++)
+                    {
+                        var v = nativeVerbs[i];
+                        if (v == null) continue;
+                        var vma = v as Verb_MeleeAttack;
+                        string toolInfo = vma?.tool != null ? $"tool={vma.tool.label}(power={vma.tool.power:0.#})" : "tool=null";
+                        string manInfo = vma?.maneuver != null ? $"maneuver={vma.maneuver.defName}" : "";
+                        sb.AppendLine($"    [{i}] {v.GetType().Name} melee={v.verbProps?.IsMeleeAttack} {toolInfo} {manInfo}");
+                    }
+                }
+
+                // 2) Shapeshift verbTracker
+                var ssfComp = pawn.TryGetComp<CompShapeshifter>();
+                var ssfVt = ssfComp?.ShapeshiftVerbTracker;
+                var ssfVerbs = ssfVt?.AllVerbs;
+                sb.AppendLine($"  shapeshiftVerbTracker.AllVerbs: {(ssfVerbs != null ? ssfVerbs.Count.ToString() : "null")}");
+                if (ssfVerbs != null)
+                {
+                    for (int i = 0; i < ssfVerbs.Count; i++)
+                    {
+                        var v = ssfVerbs[i];
+                        if (v == null) continue;
+                        var vma = v as Verb_MeleeAttack;
+                        string toolInfo = vma?.tool != null ? $"tool={vma.tool.label}(power={vma.tool.power:0.#})" : "tool=null";
+                        string manInfo = vma?.maneuver != null ? $"maneuver={vma.maneuver.defName}" : "";
+                        sb.AppendLine($"    [{i}] {v.GetType().Name} melee={v.verbProps?.IsMeleeAttack} ranged={v.verbProps?.Ranged} {toolInfo} {manInfo}");
+                    }
+                }
+
+                // 3) Race native tools (ThingDef.tools)
+                var raceTools = pawn?.def?.tools;
+                sb.AppendLine($"  race.tools (ThingDef): {(raceTools != null ? raceTools.Count.ToString() : "null")}");
+                if (raceTools != null)
+                {
+                    for (int i = 0; i < raceTools.Count; i++)
+                    {
+                        var t = raceTools[i];
+                        if (t == null) continue;
+                        sb.AppendLine($"    [{i}] {t.label ?? "?"} power={t.power:0.##} cooldown={t.cooldownTime:0.##} caps=[{CapList(t)}]");
+                    }
+                }
+            }
+            catch (Exception ex) { sb.AppendLine($"  [Error dumping runtime verbs: {ex.Message}]"); }
+            sb.AppendLine();
+
+            // ──────────────── 항상 표시: Blood / Flesh ────────────────
+            sb.AppendLine("== Blood / Flesh ==");
+            var raceProps = pawn?.def?.race;
+            sb.AppendLine($"  [Active] bloodDef={raceProps?.BloodDef?.defName ?? "null"}  fleshType={raceProps?.FleshType?.defName ?? "null"}");
+            if (f != null)
+                sb.AppendLine($"  [Form]   bloodDef={f.bloodDef?.defName ?? "null"}  bloodSmearDef={f.bloodSmearDef?.defName ?? "null"}  fleshType={f.fleshType?.defName ?? "null"}");
+            else
+                sb.AppendLine("  (no form override)");
+            sb.AppendLine();
+
+            // ──────────────── 항상 표시: Sounds (실제 defName) ────────────────
+            sb.AppendLine("== Sounds ==");
+            if (f != null)
+            {
+                sb.AppendLine("  [Form overrides]");
+                DumpSound(sb, "    call", f.soundCall);
+                DumpSound(sb, "    angry", f.soundAngry);
+                DumpSound(sb, "    wounded", f.soundWounded);
+                DumpSound(sb, "    death", f.soundDeath);
+                DumpSound(sb, "    eating", f.soundEating);
+                DumpSound(sb, "    meleeHitPawn", f.soundMeleeHitPawn);
+                DumpSound(sb, "    meleeHitBuilding", f.soundMeleeHitBuilding);
+                DumpSound(sb, "    meleeMiss", f.soundMeleeMiss);
+            }
+            sb.AppendLine("  [Race defaults]");
+            try
+            {
+                DumpSound(sb, "    wounded", pawn?.def?.race?.soundWounded);
+                DumpSound(sb, "    death", pawn?.def?.race?.soundDeath);
+                DumpSound(sb, "    meleeHitPawn", pawn?.def?.race?.soundMeleeHitPawn);
+                DumpSound(sb, "    meleeHitBuilding", pawn?.def?.race?.soundMeleeHitBuilding);
+                DumpSound(sb, "    meleeMiss", pawn?.def?.race?.soundMeleeMiss);
+            }
+            catch { sb.AppendLine("    [Error reading race sounds]"); }
+            sb.AppendLine();
+
+            // ──────────────── 폼 전용 섹션: 변신 중일 때만 ────────────────
+            if (f == null)
+            {
+                sb.AppendLine("(Not transformed — form-specific sections skipped)");
+                return;
+            }
 
             // 그리기 보정(스케일/오프셋)
             sb.AppendLine("== Draw adjustments ==");
@@ -300,47 +396,6 @@ namespace ShapeshifterFramework.Debugs
             DumpTools(sb, f.tools);
             sb.AppendLine();
 
-            // Runtime Verb Tracker State
-            sb.AppendLine("== Runtime Verb State ==");
-            try
-            {
-                // 1) Pawn native verbTracker
-                var nativeVerbs = pawn.verbTracker?.AllVerbs;
-                sb.AppendLine($"  pawn.verbTracker.AllVerbs: {(nativeVerbs != null ? nativeVerbs.Count.ToString() : "null")}");
-                if (nativeVerbs != null)
-                {
-                    for (int i = 0; i < nativeVerbs.Count; i++)
-                    {
-                        var v = nativeVerbs[i];
-                        if (v == null) continue;
-                        var vma = v as Verb_MeleeAttack;
-                        string toolInfo = vma?.tool != null ? $"tool={vma.tool.label}(power={vma.tool.power:0.#})" : "tool=null";
-                        string manInfo = vma?.maneuver != null ? $"maneuver={vma.maneuver.defName}" : "";
-                        sb.AppendLine($"    [{i}] {v.GetType().Name} melee={v.verbProps?.IsMeleeAttack} {toolInfo} {manInfo}");
-                    }
-                }
-
-                // 2) Shapeshift verbTracker
-                var ssfComp = pawn.TryGetComp<CompShapeshifter>();
-                var ssfVt = ssfComp?.ShapeshiftVerbTracker;
-                var ssfVerbs = ssfVt?.AllVerbs;
-                sb.AppendLine($"  shapeshiftVerbTracker.AllVerbs: {(ssfVerbs != null ? ssfVerbs.Count.ToString() : "null")}");
-                if (ssfVerbs != null)
-                {
-                    for (int i = 0; i < ssfVerbs.Count; i++)
-                    {
-                        var v = ssfVerbs[i];
-                        if (v == null) continue;
-                        var vma = v as Verb_MeleeAttack;
-                        string toolInfo = vma?.tool != null ? $"tool={vma.tool.label}(power={vma.tool.power:0.#})" : "tool=null";
-                        string manInfo = vma?.maneuver != null ? $"maneuver={vma.maneuver.defName}" : "";
-                        sb.AppendLine($"    [{i}] {v.GetType().Name} melee={v.verbProps?.IsMeleeAttack} ranged={v.verbProps?.Ranged} {toolInfo} {manInfo}");
-                    }
-                }
-            }
-            catch (Exception ex) { sb.AppendLine($"  [Error dumping runtime verbs: {ex.Message}]"); }
-            sb.AppendLine();
-
             // 스탯/캐퍼
             sb.AppendLine("== Stat Offsets ==");
             DumpStatMods(sb, f.statOffsets);
@@ -350,28 +405,23 @@ namespace ShapeshifterFramework.Debugs
             DumpCapMods(sb, f.capMods);
             sb.AppendLine();
 
-            // 사운드
-            sb.AppendLine("== Sounds ==");
-            DumpSound(sb, "call", f.soundCall);
-            DumpSound(sb, "angry", f.soundAngry);
-            DumpSound(sb, "wounded", f.soundWounded);
-            DumpSound(sb, "death", f.soundDeath);
-            DumpSound(sb, "eating", f.soundEating);
-            DumpSound(sb, "meleeHitPawn", f.soundMeleeHitPawn);
-            DumpSound(sb, "meleeHitBuilding", f.soundMeleeHitBuilding);
-            DumpSound(sb, "meleeMiss", f.soundMeleeMiss);
-            sb.AppendLine();
-
-            // 혈흔/살점
-            sb.AppendLine("== Blood / Flesh ==");
-            sb.AppendLine($"  bloodDef={f.bloodDef?.defName ?? "null"}  bloodSmearDef={f.bloodSmearDef?.defName ?? "null"}  fleshType={f.fleshType?.defName ?? "null"}");
-            sb.AppendLine();
-
-            // 작업/이데올로지
+            // 작업/이데올로기
             sb.AppendLine("== Work / Ideology ==");
             sb.AppendLine($"  disabledWorkTags={f.disabledWorkTagsOnTransform}");
             DumpWorkTypes(sb, f.disabledWorkTypesOnTransform);
             sb.AppendLine($"  suppressIdeologyUncoveredThoughts={f.suppressIdeologyUncoveredThoughts}");
+        }
+
+        private static string CapList(Tool t)
+        {
+            if (t?.capacities == null || t.capacities.Count == 0) return "";
+            var sb = new StringBuilder();
+            for (int i = 0; i < t.capacities.Count; i++)
+            {
+                if (i > 0) sb.Append(", ");
+                sb.Append(t.capacities[i]?.defName ?? "null");
+            }
+            return sb.ToString();
         }
 
         // 값 포맷 도우미
@@ -417,7 +467,7 @@ namespace ShapeshifterFramework.Debugs
             {
                 var t = tools[i];
                 if (t == null) continue;
-                sb.AppendLine($"    [{i}] {t.label ?? t.ToString()}  (power={t.power:0.##}, chance={t.chanceFactor:0.##}, cooldown={t.cooldownTime:0.##})");
+                sb.AppendLine($"    [{i}] {t.label ?? t.ToString()}  (power={t.power:0.##}, chance={t.chanceFactor:0.##}, cooldown={t.cooldownTime:0.##}, caps=[{CapList(t)}])");
             }
         }
 

@@ -1,6 +1,7 @@
-﻿// ShapeshifterFramework | Patches | Patch_Pawn_TryGetAttackVerb.cs
+// ShapeshifterFramework | Patches | Patch_Pawn_TryGetAttackVerb.cs
 // 목적 : 유저가 강제 공격을 지시하거나 자동 사격(Auto-attack)이 발동할 때, 변신 폼의 무기가 의도대로 선택되도록 통제.
 // 용도 : 유저가 특정 Verb로 강제 공격 중일 때는 다른 Verb가 섞여 나가지 않도록 고정하며, 자동 사격 시에는 UI 지즈모에서 꺼둔(Toggle OFF) Verb가 발사되지 않도록 필터링함.
+//        근접 도구(tools)가 정의된 폼의 경우, replaceNativeTools 여부에 따라 바닐라 근접 선택을 교체하거나 보완함.
 
 using HarmonyLib;
 using RimWorld;
@@ -48,40 +49,22 @@ namespace ShapeshifterFramework.Patches
                             return false;
                         }
 
-                        // 2b) 원거리 verb 없으면 근접 verb 확인 (replaceNativeTools 시 폼 도구 강제)
+                        // 2b) replaceNativeTools=true: 폼 도구만 사용 (바닐라 근접 완전 차단)
                         var form = comp.currentForm;
                         if (form != null && form.replaceNativeTools.HasValue && form.replaceNativeTools.Value
                             && form.tools != null && form.tools.Count > 0)
                         {
-                            // shapeshiftVerbTracker에서 가장 강력한 근접 verb 선택
-                            Verb bestMelee = null;
-                            float bestPower = -1f;
-                            for (int i = 0; i < verbs.Count; i++)
-                            {
-                                var v = verbs[i];
-                                if (v == null || v.verbProps == null) continue;
-                                if (!v.verbProps.IsMeleeAttack) continue;
-                                if (!v.Available()) continue;
-
-                                var vma = v as Verb_MeleeAttack;
-                                float power = (vma?.tool != null) ? vma.tool.power : 0f;
-                                if (bestMelee == null || power > bestPower)
-                                {
-                                    bestMelee = v;
-                                    bestPower = power;
-                                }
-                            }
-
+                            var bestMelee = FindBestFormMelee(verbs);
                             if (bestMelee != null)
                             {
-                                ShapeshiftDiagnostics.Info($"TryGetAttackVerb: returning form melee verb tool={((bestMelee as Verb_MeleeAttack)?.tool?.label ?? "?")} power={bestPower}");
+                                ShapeshiftDiagnostics.Info($"TryGetAttackVerb(replace): form melee tool={((bestMelee as Verb_MeleeAttack)?.tool?.label ?? "?")}");
                                 __result = bestMelee;
                                 return false;
                             }
                         }
 
-                        // 활성화된 원거리 verb 없고 폼 근접도 없으면 바닐라에 맡김
-                        return true;
+                        // 2c) replaceNativeTools=false (또는 null) + 폼 도구 있음:
+                        //     바닐라 실행 후 Postfix에서 비교 (Prefix에서는 처리 안 함)
                     }
                 }
             }
@@ -90,6 +73,79 @@ namespace ShapeshifterFramework.Patches
                 Log.Warning($"[SSF] TryGetAttackVerb Prefix failed: {e}");
             }
             return true; // 기본 원본 실행
+        }
+
+        /// <summary>바닐라 결과보다 강한 폼 근접 도구가 있으면 교체 (replaceNativeTools=false 대응).</summary>
+        public static void Postfix(Pawn __instance, ref Verb __result, Thing target)
+        {
+            try
+            {
+                var comp = __instance.TryGetComp<CompShapeshifter>();
+                if (comp == null || !comp.isTransformed) return;
+
+                var form = comp.currentForm;
+                if (form == null || form.tools == null || form.tools.Count == 0) return;
+
+                // replaceNativeTools=true는 Prefix에서 이미 처리했으므로 스킵
+                if (form.replaceNativeTools.HasValue && form.replaceNativeTools.Value) return;
+
+                var vt = comp.ShapeshiftVerbTracker;
+                if (vt == null) return;
+
+                var verbs = vt.AllVerbs;
+                var bestFormMelee = FindBestFormMelee(verbs);
+                if (bestFormMelee == null) return;
+
+                // 바닐라 결과가 없거나, 바닐라 근접보다 폼 도구가 강하면 교체
+                if (__result == null)
+                {
+                    ShapeshiftDiagnostics.Info($"TryGetAttackVerb(add): no vanilla result, using form melee tool={((bestFormMelee as Verb_MeleeAttack)?.tool?.label ?? "?")}");
+                    __result = bestFormMelee;
+                    return;
+                }
+
+                // 바닐라 결과가 원거리면 건드리지 않음
+                if (__result.verbProps != null && __result.verbProps.Ranged) return;
+
+                // 바닐라 근접 vs 폼 근접: 파워 비교
+                var vanillaMelee = __result as Verb_MeleeAttack;
+                var formMelee = bestFormMelee as Verb_MeleeAttack;
+                float vanillaPower = (vanillaMelee?.tool != null) ? vanillaMelee.tool.power : 0f;
+                float formPower = (formMelee?.tool != null) ? formMelee.tool.power : 0f;
+
+                if (formPower > vanillaPower)
+                {
+                    ShapeshiftDiagnostics.Info($"TryGetAttackVerb(add): form melee({formMelee?.tool?.label}={formPower}) > vanilla({vanillaMelee?.tool?.label}={vanillaPower})");
+                    __result = bestFormMelee;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Warning($"[SSF] TryGetAttackVerb Postfix failed: {e}");
+            }
+        }
+
+        /// <summary>verbs 리스트에서 가장 파워 높은 근접 verb 반환.</summary>
+        private static Verb FindBestFormMelee(System.Collections.Generic.List<Verb> verbs)
+        {
+            Verb best = null;
+            float bestPower = -1f;
+            for (int i = 0; i < verbs.Count; i++)
+            {
+                var v = verbs[i];
+                if (v == null || v.verbProps == null) continue;
+                if (!v.verbProps.IsMeleeAttack) continue;
+                if (!v.Available()) continue;
+
+                var vma = v as Verb_MeleeAttack;
+                float power = (vma?.tool != null) ? vma.tool.power : 0f;
+                if (best == null || power > bestPower)
+                {
+                    best = v;
+                    bestPower = power;
+                }
+            }
+            return best;
         }
     }
 }
