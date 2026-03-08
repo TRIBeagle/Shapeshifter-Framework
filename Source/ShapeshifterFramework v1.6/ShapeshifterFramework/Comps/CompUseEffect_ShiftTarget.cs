@@ -22,16 +22,27 @@ namespace ShapeshifterFramework.Comps
 
             Pawn target = null;
 
-            // CompTargetable이 있으면 플레이어가 선택한 대상을 사용
+            // CompTargetable이 있으면 UseItem Job의 targetB에서 대상을 가져옴
             var targetable = parent.GetComp<CompTargetable>();
             if (targetable != null)
             {
-                foreach (var t in targetable.GetTargets(parent))
+                // 1차: UseItem Job의 targetB (RimWorld이 타겟 선택 결과를 여기에 저장)
+                var jobTarget = user.CurJob?.targetB.Thing as Pawn;
+                if (jobTarget != null && !jobTarget.Dead)
                 {
-                    if (t is Pawn p && !p.Dead)
+                    target = jobTarget;
+                }
+
+                // 2차 폴백: CompTargetable.GetTargets
+                if (target == null)
+                {
+                    foreach (var t in targetable.GetTargets(parent))
                     {
-                        target = p;
-                        break;
+                        if (t is Pawn p && !p.Dead)
+                        {
+                            target = p;
+                            break;
+                        }
                     }
                 }
             }

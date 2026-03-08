@@ -5,7 +5,7 @@
   <SSF_Command_TransformDesc>변신 폼: {0}</SSF_Command_TransformDesc>
   <SSF_Command_RevertLabel>변신 해제</SSF_Command_RevertLabel>
   <SSF_Command_RevertDesc>변신을 해제합니다</SSF_Command_RevertDesc>
-  <SSF_Command_RevertTime>변신이 {0:0.0}초 남음</SSF_Command_RevertTime>
+  <SSF_Command_RevertTime>변신이 {0}초 남음</SSF_Command_RevertTime>
   <SSF_Command_SwitchLabel>전환: {0}</SSF_Command_SwitchLabel>
   <SSF_Command_SwitchDesc>전환 폼: {0}</SSF_Command_SwitchDesc>
 
@@ -60,6 +60,8 @@
   <SSF_Setting_DebugLog_Desc>변신 프레임워크의 상세한 내부 연산을 출력합니다. 개발 중이거나 버그 추적 시에만 켜주세요.</SSF_Setting_DebugLog_Desc>
   
   <SSF_Setting_ResetAll_Title>모두 기본값으로</SSF_Setting_ResetAll_Title>
+
+  <SSF_ShiftTarget_Resisted>{0}이(가) 변신에 저항했습니다.</SSF_ShiftTarget_Resisted>
 
   <SSF_Fallback_Transform>변신</SSF_Fallback_Transform>
 

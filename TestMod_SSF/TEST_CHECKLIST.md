@@ -14,7 +14,7 @@
 
 ### 체형/텍스처
 - [ ] 곰 텍스처(`Things/Pawn/Animal/Bear/Bear`)로 교체됨
-- [ ] `bodyDrawScale` 1.6배 적용 (폰이 커짐)
+- [ ] `bodyDrawScale` 2.5배 적용 (폰이 확실히 커짐)
 - [ ] 수영 텍스처(`SwimmingBear`) + 수영 색상 `(255,255,255)` 적용
 - [ ] 기본 색상 `(112,82,65)` 적용
 
@@ -62,9 +62,10 @@
 - [ ] 해제 후 텍스처/체형 원상복귀
 - [ ] 해제 후 스탯/capMod 원상복귀
 
-### 폼 체이닝
-- [ ] 인간 상태에서 진입 가능 (`allowedFromForms`에 `None`)
-- [ ] `SSFTest_BeastkinForm` 상태에서도 진입 가능
+### 폼 체이닝 (스크롤/약물 경유로 테스트)
+- [ ] 인간 상태에서 스크롤/약물 사용 시 진입 가능 (`allowedFromForms`에 `None`)
+- [ ] `SSFTest_BeastkinForm` 상태에서 스크롤/약물 사용 시에도 진입 가능
+- [ ] (참고: abilityMode=None이라 어빌리티 바 버튼은 없음. 스크롤/약물로만 테스트)
 
 ---
 
