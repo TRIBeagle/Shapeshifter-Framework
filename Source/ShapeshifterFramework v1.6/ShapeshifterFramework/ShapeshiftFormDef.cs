@@ -231,9 +231,11 @@ namespace ShapeshifterFramework
 
         // Ability 모드 (Auto: 자동생성, Custom: 모더 AbilityDef 연결, None: 약물/아이템 전용)
         public AbilityMode abilityMode = AbilityMode.Auto;
-        // Auto 모드: 자동생성된 AbilityDef 참조 / Custom 모드: 모더가 지정한 AbilityDef
-        [Unsaved(false)]
+        // Custom 모드: 모더가 XML에서 지정하는 AbilityDef ([Unsaved] 절대 금지 — XML 로더가 무시함)
         public AbilityDef linkedAbility;
+        // Auto 모드: 프레임워크가 런타임에 생성하는 AbilityDef
+        [Unsaved(false)]
+        public AbilityDef generatedAbility;
 
         // 버튼/기타
         public string gizmoIconPathEnter;   // 변신 버튼 아이콘 (Auto 모드에서 Ability 아이콘으로도 사용)
@@ -282,12 +284,25 @@ namespace ShapeshifterFramework
             ShapeshifterFramework.Utilities.ShapeshiftStatHediffGenerator.TryGenerateFor(this);
             ShapeshifterFramework.Utilities.ShapeshiftAbilityGenerator.TryGenerateFor(this);
 
-            // Custom 모드 검증
-            if (abilityMode == AbilityMode.Custom && linkedAbility == null)
+            // Custom 모드: linkedAbility → generatedAbility에 복사 (외부에서 generatedAbility만 참조)
+            if (abilityMode == AbilityMode.Custom)
             {
-                Log.Error($"[SSF] ShapeshiftFormDef '{defName}' has abilityMode=Custom but linkedAbility is null. Falling back to None.");
-                abilityMode = AbilityMode.None;
+                if (linkedAbility != null)
+                {
+                    generatedAbility = linkedAbility;
+                }
+                else
+                {
+                    Log.Error($"[SSF] ShapeshiftFormDef '{defName}' has abilityMode=Custom but linkedAbility is null. Falling back to None.");
+                    abilityMode = AbilityMode.None;
+                }
             }
+        }
+
+        /// <summary>이 폼에 연결된 AbilityDef 반환. Auto/Custom 모두 이 프로퍼티로 통일 접근.</summary>
+        public AbilityDef ResolvedAbility
+        {
+            get { return generatedAbility; }
         }
     }
 }

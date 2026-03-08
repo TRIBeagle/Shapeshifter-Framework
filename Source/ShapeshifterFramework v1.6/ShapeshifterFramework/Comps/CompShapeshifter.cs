@@ -325,11 +325,18 @@ namespace ShapeshifterFramework.Comps
 
         #region Ticking/Inspect
 
-        /// <summary>매 틱: 타이머/사망/VerbTracker 처리.</summary>
+        /// <summary>매 틱: 타이머/사망/VerbTracker/Ability동기화 처리.</summary>
         public override void CompTick()
         {
             base.CompTick();
             Pawn pawn = parent as Pawn;
+            if (pawn == null) return;
+
+            // 90틱마다 백그라운드에서 Ability 조건 검사 및 부여/회수
+            if (pawn.IsHashIntervalTick(GizmoCacheInterval))
+            {
+                UpdateEligibilityAndSyncAbilities(pawn);
+            }
 
             // 로드 후 장비 참조 복원
             if (needsGearResolve)
@@ -524,29 +531,46 @@ namespace ShapeshifterFramework.Comps
                 }
                 gizmoFormsCache = list;
                 gizmoCacheTick = now;
-
-                // Ability 동기화 (부여/회수)
-                SyncFormAbilities(pawn, list);
             }
             return gizmoFormsCache;
         }
 
-        /// <summary>폼 조건에 따라 Ability 부여/회수. 90틱마다 호출.</summary>
+        /// <summary>90틱마다 CompTick에서 호출. 조건 검사 + Ability 부여/회수.</summary>
+        private void UpdateEligibilityAndSyncAbilities(Pawn pawn)
+        {
+            var all = DefDatabase<ShapeshiftFormDef>.AllDefsListForReading;
+            List<ShapeshiftFormDef> eligibleList = new List<ShapeshiftFormDef>(all.Count);
+
+            for (int i = 0; i < all.Count; i++)
+            {
+                var f = all[i];
+                if (f != null && CanTransform(pawn, f))
+                    eligibleList.Add(f);
+            }
+
+            gizmoFormsCache = eligibleList;
+            gizmoCacheTick = Find.TickManager.TicksGame;
+
+            SyncFormAbilities(pawn, eligibleList);
+        }
+
+        /// <summary>폼 조건에 따라 Ability 부여/회수.</summary>
         private void SyncFormAbilities(Pawn pawn, List<ShapeshiftFormDef> eligibleForms)
         {
             if (pawn == null || pawn.abilities == null) return;
 
-            // 부여: eligible + linkedAbility가 있지만 아직 없는 경우
+            // 부여: eligible + ResolvedAbility가 있지만 아직 없는 경우
             for (int i = 0; i < eligibleForms.Count; i++)
             {
                 var form = eligibleForms[i];
                 if (form.abilityMode == AbilityMode.None) continue;
-                if (form.linkedAbility == null) continue;
-                if (pawn.abilities.GetAbility(form.linkedAbility) != null) continue;
+                var aDef = form.ResolvedAbility;
+                if (aDef == null) continue;
+                if (pawn.abilities.GetAbility(aDef) != null) continue;
 
-                pawn.abilities.GainAbility(form.linkedAbility);
-                if (!grantedFormAbilities.Contains(form.linkedAbility))
-                    grantedFormAbilities.Add(form.linkedAbility);
+                pawn.abilities.GainAbility(aDef);
+                if (!grantedFormAbilities.Contains(aDef))
+                    grantedFormAbilities.Add(aDef);
             }
 
             // 회수: 부여했지만 더 이상 eligible이 아닌 경우
@@ -558,7 +582,7 @@ namespace ShapeshifterFramework.Comps
                 bool stillEligible = false;
                 for (int j = 0; j < eligibleForms.Count; j++)
                 {
-                    if (eligibleForms[j].linkedAbility == aDef)
+                    if (eligibleForms[j].ResolvedAbility == aDef)
                     { stillEligible = true; break; }
                 }
 

@@ -27,7 +27,7 @@ namespace ShapeshifterFramework.Utilities
             var existing = DefDatabase<AbilityDef>.GetNamedSilentFail(defName);
             if (existing != null)
             {
-                form.linkedAbility = existing;
+                form.generatedAbility = existing;
                 _generated.Add(defName);
                 return;
             }
@@ -37,7 +37,7 @@ namespace ShapeshifterFramework.Utilities
 
             DefDatabase<AbilityDef>.Add(abilityDef);
 
-            form.linkedAbility = abilityDef;
+            form.generatedAbility = abilityDef;
             _generated.Add(defName);
         }
 
@@ -51,7 +51,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 var form = allForms[i];
                 if (form == null || form.abilityMode != AbilityMode.Auto) continue;
-                if (form.linkedAbility != null) continue;
+                if (form.generatedAbility != null) continue;
 
                 int before = _generated.Count;
                 TryGenerateFor(form);
