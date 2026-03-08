@@ -77,12 +77,11 @@ namespace ShapeshifterFramework.Utilities
             }
 
             // 쿨다운/신경열 없음
-            abilityDef.cooldownTicksRange = new FloatRange(0f, 0f);
+            abilityDef.cooldownTicksRange = new IntRange(0, 0);
             abilityDef.hostile = false;
 
             // 타겟 지정 없이 즉시 자기 변신
             abilityDef.targetRequired = false;
-            abilityDef.canTargetSelf = true;
 
             // 자기변신 VerbProperties 설정
             abilityDef.verbProperties = new VerbProperties
