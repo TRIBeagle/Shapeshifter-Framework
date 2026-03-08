@@ -328,7 +328,7 @@ namespace ShapeshifterFramework.Debugs
 
             // 작업/이데올로지
             sb.AppendLine("== Work / Ideology ==");
-            sb.AppendLine($"  disabledWorkTags={f.disabledWorkTagsOnTransform}");
+            sb.AppendLine($"  disabledWorkTags={f.resolvedDisabledWorkTags} (from list: {f.disabledWorkTagsOnTransform?.Count ?? 0} entries)");
             DumpWorkTypes(sb, f.disabledWorkTypesOnTransform);
             sb.AppendLine($"  suppressIdeologyUncoveredThoughts={f.suppressIdeologyUncoveredThoughts}");
         }

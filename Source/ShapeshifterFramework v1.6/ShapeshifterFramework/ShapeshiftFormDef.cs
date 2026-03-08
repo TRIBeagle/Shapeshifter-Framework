@@ -203,8 +203,12 @@ namespace ShapeshifterFramework
         // ── 변신 시 특정 작업 불가(폼별)
         public List<WorkTypeDef> disabledWorkTypesOnTransform;
 
-        // WorkTags 기반 일괄 차단(예: Violent, Caring 등)
-        public WorkTags disabledWorkTagsOnTransform = WorkTags.None;
+        // WorkTags 기반 일괄 차단(예: Violent, Caring 등) — XML에서 <li> 리스트로 지정
+        public List<WorkTags> disabledWorkTagsOnTransform;
+
+        // ResolveReferences에서 리스트를 OR 결합한 결과 (런타임 사용용)
+        [Unsaved(false)]
+        public WorkTags resolvedDisabledWorkTags = WorkTags.None;
 
         // ── 이념 관련 외모 노출 계열 억제(폼별)
         public bool suppressIdeologyUncoveredThoughts = true; // 기본 on: 하의/상의/머리/얼굴 노출 사상 비활성
@@ -283,6 +287,14 @@ namespace ShapeshifterFramework
             base.ResolveReferences();
             ShapeshifterFramework.Utilities.ShapeshiftStatHediffGenerator.TryGenerateFor(this);
             ShapeshifterFramework.Utilities.ShapeshiftAbilityGenerator.TryGenerateFor(this);
+
+            // disabledWorkTagsOnTransform 리스트 → OR 결합
+            resolvedDisabledWorkTags = WorkTags.None;
+            if (disabledWorkTagsOnTransform != null)
+            {
+                for (int i = 0; i < disabledWorkTagsOnTransform.Count; i++)
+                    resolvedDisabledWorkTags |= disabledWorkTagsOnTransform[i];
+            }
 
             // Custom 모드: linkedAbility → generatedAbility에 복사 (외부에서 generatedAbility만 참조)
             if (abilityMode == AbilityMode.Custom)

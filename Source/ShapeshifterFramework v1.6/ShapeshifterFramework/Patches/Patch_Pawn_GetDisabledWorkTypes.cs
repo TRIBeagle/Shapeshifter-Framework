@@ -48,7 +48,7 @@ namespace ShapeshifterFramework.Patches
                 }
             }
 
-            var tags = form.disabledWorkTagsOnTransform;
+            var tags = form.resolvedDisabledWorkTags;
             if (tags != WorkTags.None)
             {
                 if (!_workTypesByTagsCache.TryGetValue(tags, out var matched))
