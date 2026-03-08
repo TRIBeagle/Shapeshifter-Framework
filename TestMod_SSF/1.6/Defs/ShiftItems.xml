@@ -10,6 +10,7 @@
     <defName>SSFTest_BeastArm</defName>
     <hediffClass>Hediff_AddedPart</hediffClass>
     <label>beast arm</label>
+    <description>A mutated beast arm grafted through shapeshifting.</description>
     <addedPartProps>
       <solid>true</solid>
       <partEfficiency>0.85</partEfficiency>
@@ -21,6 +22,7 @@
     <defName>SSFTest_BeastHand</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>beast hand</label>
+    <description>A mutated beast hand grafted through shapeshifting.</description>
   </HediffDef>
 
   <!-- ======================================================
@@ -111,7 +113,7 @@
         <useJob>UseItem</useJob>
         <useLabel>use shift scroll (self)</useLabel>
       </li>
-      <li Class="CompProperties_UseEffectSelfDestruct" />
+      <li Class="CompProperties_UseEffectDestroySelf" />
       <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
         <formDefName>SSFTest_WolfForm</formDefName>
         <successChance>1.0</successChance>
@@ -144,7 +146,7 @@
         <useJob>UseItem</useJob>
         <useLabel>use shift scroll on...</useLabel>
       </li>
-      <li Class="CompProperties_UseEffectSelfDestruct" />
+      <li Class="CompProperties_UseEffectDestroySelf" />
       <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
         <formDefName>SSFTest_WolfForm</formDefName>
         <successChance>1.0</successChance>

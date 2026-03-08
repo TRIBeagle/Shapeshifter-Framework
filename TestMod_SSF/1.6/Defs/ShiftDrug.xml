@@ -39,6 +39,9 @@
         <li>DrugLab</li>
       </recipeUsers>
     </recipeMaker>
+    <costList>
+      <MedicineHerbal>1</MedicineHerbal>
+    </costList>
     <comps>
       <li Class="CompProperties_Drug">
         <listOrder>1010</listOrder>
