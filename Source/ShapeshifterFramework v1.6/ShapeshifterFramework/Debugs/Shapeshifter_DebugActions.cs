@@ -8,6 +8,7 @@
 using LudeonTK;
 using RimWorld;
 using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -244,6 +245,15 @@ namespace ShapeshifterFramework.Debugs
 
         private static string DefNameOrNull(Def d) => d != null ? d.defName : "null";
 
+        private static string TryGetCachedName<T>(System.Runtime.CompilerServices.ConditionalWeakTable<Pawn, T> table, Pawn pawn) where T : class
+        {
+            if (pawn == null) return "null";
+            T val;
+            if (table.TryGetValue(pawn, out val) && val is Def def)
+                return def.defName;
+            return "null";
+        }
+
         /// <summary>폰 상태 전체 덤프 빌드. form이 null이면 비변신 상태 기본 정보만 출력.</summary>
         private static void BuildFullDump(Pawn pawn, ShapeshiftFormDef f, StringBuilder sb)
         {
@@ -332,16 +342,15 @@ namespace ShapeshifterFramework.Debugs
                 DumpSound(sb, "    meleeHitBuilding", f.soundMeleeHitBuilding);
                 DumpSound(sb, "    meleeMiss", f.soundMeleeMiss);
             }
-            sb.AppendLine("  [Race defaults]");
+            sb.AppendLine("  [Runtime cache (active overrides)]");
             try
             {
-                DumpSound(sb, "    wounded", pawn?.def?.race?.soundWounded);
-                DumpSound(sb, "    death", pawn?.def?.race?.soundDeath);
-                DumpSound(sb, "    meleeHitPawn", pawn?.def?.race?.soundMeleeHitPawn);
-                DumpSound(sb, "    meleeHitBuilding", pawn?.def?.race?.soundMeleeHitBuilding);
-                DumpSound(sb, "    meleeMiss", pawn?.def?.race?.soundMeleeMiss);
+                sb.AppendLine($"    call={TryGetCachedName(ShapeshiftRuntimeCaches.CallByPawn, pawn)}");
+                sb.AppendLine($"    wounded={TryGetCachedName(ShapeshiftRuntimeCaches.WoundedByPawn, pawn)}");
+                sb.AppendLine($"    death={TryGetCachedName(ShapeshiftRuntimeCaches.DeathByPawn, pawn)}");
+                sb.AppendLine($"    angry={TryGetCachedName(ShapeshiftRuntimeCaches.AngryByPawn, pawn)}");
             }
-            catch { sb.AppendLine("    [Error reading race sounds]"); }
+            catch { sb.AppendLine("    [Error reading runtime cache]"); }
             sb.AppendLine();
 
             // ──────────────── 폼 전용 섹션: 변신 중일 때만 ────────────────
