@@ -60,10 +60,10 @@
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- ======================================================
-       3단 변신 폼: 인간 → 수인 → 동물
+       장비 소환 변신 폼
        ====================================================== -->
 
-  <!-- 5) 암흑 기사 폼 (장비 소환형) — 전용 갑옷+무기 소환, 해제 시 자동 파괴 -->
+  <!-- 4) 암흑 기사 폼 (장비 소환형) — 전용 갑옷+무기 소환, 해제 시 자동 파괴 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
     <defName>SSFTest_DarkKnightForm</defName>
     <label>dark knight form</label>
@@ -102,7 +102,7 @@
        3단 변신 폼: 인간 → 수인 → 동물
        ====================================================== -->
 
-  <!-- 4a) 수인 폼 (휴머노이드형) — 1단계: 인간→수인 -->
+  <!-- 5a) 수인 폼 (휴머노이드형) — 1단계: 인간→수인 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
     <defName>SSFTest_BeastkinForm</defName>
     <label>beastkin form</label>
@@ -124,7 +124,7 @@
     </tools>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- 4b) 야수 폼 (동물형) — 2단계: 수인→동물 (수인 상태에서만 진입 가능) -->
+  <!-- 5b) 야수 폼 (동물형) — 2단계: 수인→동물 (수인 상태에서만 진입 가능) -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSFTest_FullBeastForm</defName>
     <label>full beast form</label>
