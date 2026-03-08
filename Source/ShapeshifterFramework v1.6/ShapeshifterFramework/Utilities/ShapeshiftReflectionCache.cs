@@ -562,6 +562,8 @@ namespace ShapeshifterFramework.Utilities
             OwnerFieldByWorker.Clear();
             HolderPawnField.Clear();
             PreRenderParmsFieldByResultsType.Clear();
+            FieldArrayCache.Clear();
+            PropertyArrayCache.Clear();
         }
 
         #endregion

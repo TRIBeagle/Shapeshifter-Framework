@@ -44,12 +44,12 @@ namespace ShapeshifterFramework.Utilities
                         // 강제 삽입 시도 후, 실패하면 Error 로그 출력
                         if (inv.TryAdd(eq, false))
                         {
-                            Log.Warning($"[SSF] Item void prevention! Forced {eq.Label} back into inventory for off-map pawn {pawn.Name}.");
+                            Log.Warning($"[SSF] Item void prevention! Forced {eq.Label} back into inventory for off-map pawn {pawn.LabelShort}.");
                         }
                         else
                         {
                             // 인벤토리 용량 초과 등으로 강제 삽입조차 실패하여 아이템이 증발하는 최악의 케이스
-                            Log.Error($"[SSF] CRITICAL: Failed to recover {eq.Label} for off-map pawn {pawn.Name}. Item is permanently lost due to inventory limits.");
+                            Log.Error($"[SSF] CRITICAL: Failed to recover {eq.Label} for off-map pawn {pawn.LabelShort}. Item is permanently lost due to inventory limits.");
                         }
                     }
                 }
@@ -91,12 +91,12 @@ namespace ShapeshifterFramework.Utilities
                         // 강제 삽입 시도 후, 실패하면 Error 로그 출력
                         if (inv.TryAdd(ap, false))
                         {
-                            Log.Warning($"[SSF] Item void prevention! Forced {ap.Label} back into inventory for off-map pawn {pawn.Name}.");
+                            Log.Warning($"[SSF] Item void prevention! Forced {ap.Label} back into inventory for off-map pawn {pawn.LabelShort}.");
                         }
                         else
                         {
                             // 인벤토리 용량 초과 등으로 강제 삽입조차 실패하여 아이템이 증발하는 최악의 케이스
-                            Log.Error($"[SSF] CRITICAL: Failed to recover {ap.Label} for off-map pawn {pawn.Name}. Item is permanently lost due to inventory limits.");
+                            Log.Error($"[SSF] CRITICAL: Failed to recover {ap.Label} for off-map pawn {pawn.LabelShort}. Item is permanently lost due to inventory limits.");
                         }
                     }
                 }

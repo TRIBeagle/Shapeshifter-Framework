@@ -85,13 +85,13 @@ namespace ShapeshifterFramework.Utilities
             stage.becomeVisible = true;
 
             if (form.statOffsets != null && form.statOffsets.Count > 0)
-                stage.statOffsets = form.statOffsets;
+                stage.statOffsets = new List<RimWorld.StatModifier>(form.statOffsets);
 
             if (form.statFactors != null && form.statFactors.Count > 0)
-                stage.statFactors = form.statFactors;
+                stage.statFactors = new List<RimWorld.StatModifier>(form.statFactors);
 
             if (form.capMods != null && form.capMods.Count > 0)
-                stage.capMods = form.capMods;
+                stage.capMods = new List<PawnCapacityModifier>(form.capMods);
 
             hediffDef.stages = new List<HediffStage>(1) { stage };
 

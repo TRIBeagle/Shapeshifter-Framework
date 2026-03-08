@@ -193,7 +193,18 @@ namespace ShapeshifterFramework.Utilities
             {
                 Hediff h = list[i];
                 if (h?.def?.addedPartProps == null) continue;
-                if (h.Part != part) continue;
+                if (h.Part == null) continue;
+
+                // 대상 파츠 자신 또는 하위 파츠의 인공장기도 제거
+                bool isTargetOrChild = false;
+                BodyPartRecord current = h.Part;
+                while (current != null)
+                {
+                    if (current == part) { isTargetOrChild = true; break; }
+                    current = current.parent;
+                }
+                if (!isTargetOrChild) continue;
+
                 try { pawn.health.RemoveHediff(h); } catch { }
             }
         }
