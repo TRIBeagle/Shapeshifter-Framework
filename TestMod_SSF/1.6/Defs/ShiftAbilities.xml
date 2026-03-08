@@ -134,4 +134,103 @@
     </comps>
   </AbilityDef>
 
+  <!-- ======================================================
+       7) 조건부 변신 어빌리티: 수호자 폼
+       마력의 돌 OR FibrousMechanites 필요
+       ====================================================== -->
+  <AbilityDef>
+    <defName>SSFTest_Ability_Guardian</defName>
+    <label>guardian shift</label>
+    <description>수호자 형태로 변신한다. 마력의 돌 소지 또는 FibrousMechanites 보유 시에만 사용 가능.</description>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <cooldownTicksRange>1500</cooldownTicksRange>
+    <hostile>false</hostile>
+    <targetRequired>false</targetRequired>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <displayOrder>530</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <warmupTime>0.8</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+        <formDefName>SSFTest_GuardianForm</formDefName>
+        <successChance>1.0</successChance>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       8) 비주얼 오버라이드 어빌리티: 유령 폼
+       head Replace + Transparent 셰이더 + bodyType 변경
+       ====================================================== -->
+  <AbilityDef>
+    <defName>SSFTest_Ability_Phantom</defName>
+    <label>phantom shift</label>
+    <description>유령 형태로 변신한다. 반투명 머리, 마른 체형.</description>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <cooldownTicksRange>1500</cooldownTicksRange>
+    <hostile>false</hostile>
+    <targetRequired>false</targetRequired>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <displayOrder>531</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <warmupTime>0.5</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+        <formDefName>SSFTest_PhantomForm</formDefName>
+        <successChance>1.0</successChance>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       9) 종족 제한 어빌리티: 인간 전용 강화 폼
+       allowedRaces=Human, headType 고정
+       ====================================================== -->
+  <AbilityDef>
+    <defName>SSFTest_Ability_RaceLocked</defName>
+    <label>race-locked shift</label>
+    <description>인간 전용 강화 변신. 비인간 종족은 사용 불가.</description>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <cooldownTicksRange>1500</cooldownTicksRange>
+    <hostile>false</hostile>
+    <targetRequired>false</targetRequired>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <displayOrder>532</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <warmupTime>0.8</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+        <formDefName>SSFTest_RaceLockedForm</formDefName>
+        <successChance>1.0</successChance>
+      </li>
+    </comps>
+  </AbilityDef>
+
 </Defs>

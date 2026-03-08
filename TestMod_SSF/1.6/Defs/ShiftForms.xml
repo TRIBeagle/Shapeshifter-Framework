@@ -470,4 +470,117 @@
     <replaceNativeTools>true</replaceNativeTools>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
+  <!-- ======================================================
+       조건부 / 비주얼 / 종족제한 테스트 폼
+       ====================================================== -->
+
+  <!-- 6) 수호자 폼 (조건부 변신) — requiredItems/requiredHediffs/requirementsMode 테스트
+       ★ portraitDrawScale, bodyOffset, shadowVolume/Offset 통합 테스트 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
+    <defName>SSFTest_GuardianForm</defName>
+    <label>guardian form</label>
+    <description>수호자 형태. 마력의 돌 소지 또는 FibrousMechanites 보유 시 변신 가능. 큰 그림자와 포트레잇 확대 테스트.</description>
+    <abilityMode>Custom</abilityMode>
+    <linkedAbility>SSFTest_Ability_Guardian</linkedAbility>
+    <bodyDrawScale>1.4</bodyDrawScale>
+    <portraitDrawScale>1.3</portraitDrawScale>
+    <bodyOffset>(0, -0.1)</bodyOffset>
+    <durationTicks>12000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <!-- 변신 조건: 마력의 돌 OR FibrousMechanites (Any 모드) -->
+    <requiredItems>
+      <li>SSFTest_MagicStone</li>
+    </requiredItems>
+    <requiredHediffs>
+      <li>FibrousMechanites</li>
+    </requiredHediffs>
+    <requirementsMode>Any</requirementsMode>
+    <!-- 그림자 오버라이드 -->
+    <body>
+      <mode>Default</mode>
+      <shadowVolume>(0.6, 1.0, 0.6)</shadowVolume>
+      <shadowOffset>(0, 0, -0.05)</shadowOffset>
+    </body>
+    <statOffsets>
+      <MoveSpeed>0.3</MoveSpeed>
+    </statOffsets>
+    <statFactors>
+      <IncomingDamageFactor>0.85</IncomingDamageFactor>
+    </statFactors>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 7) 유령 폼 (비주얼 오버라이드) — head Replace, 셰이더, bodyType, WorkTypeDef 차단 테스트
+       ★ FX delay, disabledWorkTypesOnTransform 통합 테스트 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
+    <defName>SSFTest_PhantomForm</defName>
+    <label>phantom form</label>
+    <description>유령 형태. 반투명한 머리, 마른 체형. 소방 작업 불가. FX 지연 테스트.</description>
+    <abilityMode>Custom</abilityMode>
+    <linkedAbility>SSFTest_Ability_Phantom</linkedAbility>
+    <!-- 머리 텍스처 교체 + 반투명 셰이더 -->
+    <head>
+      <mode>Replace</mode>
+      <replacementTexPath>Things/Pawn/Humanlike/Heads/Male/Male_AverageNormal</replacementTexPath>
+      <shaderTypeDefName>Transparent</shaderTypeDefName>
+      <color>(0.7, 0.8, 1.0, 0.5)</color>
+    </head>
+    <hair><mode>Hidden</mode></hair>
+    <bodyType>Thin</bodyType>
+    <bodyDrawScale>1.0</bodyDrawScale>
+    <durationTicks>10000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <statOffsets>
+      <MoveSpeed>1.0</MoveSpeed>
+    </statOffsets>
+    <!-- 소방 작업 차단 (WorkTypeDef 직접 지정) -->
+    <disabledWorkTypesOnTransform>
+      <li>Firefighter</li>
+    </disabledWorkTypesOnTransform>
+    <!-- FX 지연 테스트 -->
+    <transformEnterFxDelayTicks>30</transformEnterFxDelayTicks>
+    <transformExitFxDelayTicks>15</transformExitFxDelayTicks>
+    <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
+    <transformEnterFleckCount>1</transformEnterFleckCount>
+    <transformEnterFleckScale>1.5</transformEnterFleckScale>
+    <transformEnterSound>PsychicPulseGlobal</transformEnterSound>
+    <transformExitFleck>PsycastSkipFlashExit</transformExitFleck>
+    <transformExitFleckCount>1</transformExitFleckCount>
+    <transformExitFleckScale>1.5</transformExitFleckScale>
+    <transformExitSound>PsychicSootheGlobal</transformExitSound>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 8) 종족 제한 폼 (종족 게이트) — allowedRaces, headType, 장비 잠금 혼합 테스트 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_RaceLockedForm</defName>
+    <label>race locked form</label>
+    <description>인간 전용 강화 폼. 의류 교체 잠금, 무기만 자유 교체 가능. 머리타입 고정.</description>
+    <abilityMode>Custom</abilityMode>
+    <linkedAbility>SSFTest_Ability_RaceLocked</linkedAbility>
+    <bodyDrawScale>1.15</bodyDrawScale>
+    <durationTicks>12000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <!-- 종족 제한: 인간만 -->
+    <allowedRaces>
+      <li>Human</li>
+    </allowedRaces>
+    <!-- 머리타입 고정 -->
+    <headType>Male_AverageNormal</headType>
+    <!-- 의류 잠금, 무기 자유 -->
+    <apparelEquipLock>Locked</apparelEquipLock>
+    <weaponEquipLock>Unlocked</weaponEquipLock>
+    <statOffsets>
+      <MoveSpeed>0.5</MoveSpeed>
+      <MeleeDodgeChance>10</MeleeDodgeChance>
+    </statOffsets>
+    <statFactors>
+      <IncomingDamageFactor>0.75</IncomingDamageFactor>
+    </statFactors>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
 </Defs>
