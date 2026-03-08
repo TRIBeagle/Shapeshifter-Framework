@@ -90,6 +90,7 @@ namespace ShapeshifterFramework.Utilities
             abilityDef.verbProperties = new VerbProperties
             {
                 verbClass = typeof(Verb_CastAbility),
+                violent = false,
                 range = 0f,
                 warmupTime = 0f,
                 targetParams = new TargetingParameters
