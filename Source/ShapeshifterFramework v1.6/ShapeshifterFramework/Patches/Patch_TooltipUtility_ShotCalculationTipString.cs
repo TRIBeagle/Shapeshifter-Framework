@@ -19,16 +19,16 @@ namespace ShapeshifterFramework.Patches
         {
             try
             {
-                // 바닐라가 이미 붙였으면 그대로 둠
+                // 바닐라 결과 있으면 유지
                 if (!string.IsNullOrEmpty(__result)) return;
 
                 var sel = Find.Selector?.SingleSelectedThing as Pawn;
                 if (sel == null || sel == target) return;
 
-                // 바닐라와 동일: 플레이어 조종 + 드래프트 상태에서만
+                // 플레이어 조종 + 드래프트 상태만
                 if (sel.IsPlayerControlled && !sel.Drafted) return;
 
-                // ★ 비폭력 Pawn이면 사격 스탯이 disable이므로 계산 자체를 스킵
+                // 비폭력 Pawn이면 계산 스킵
                 if (sel.WorkTagIsDisabled(WorkTags.Violent)) return;
 
                 var comp = sel.TryGetComp<CompShapeshifter>();
@@ -44,7 +44,7 @@ namespace ShapeshifterFramework.Patches
                     if (!v.verbProps.Ranged) continue;
                     if (!v.Available()) continue;
 
-                    // 시야/사거리 체크(히트리포트도 이 전제 필요)
+                    // 시야/사거리 체크
                     if (!v.CanHitTarget(target)) continue;
 
                     if (v.caster == null) v.caster = sel;
@@ -66,7 +66,7 @@ namespace ShapeshifterFramework.Patches
                     sb.AppendLine("CannotHit".Translate());
                 }
 
-                // 야생동물 격분 경고(바닐라와 동일 개념)
+                // 야생동물 격분 경고
                 if (target is Pawn tp && tp.Faction == null && !tp.InAggroMentalState && tp.AnimalOrWildMan())
                 {
                     float chance = PawnUtility.GetManhunterOnDamageChance(tp, sel);

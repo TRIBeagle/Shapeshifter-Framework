@@ -9,12 +9,7 @@ using Verse;
 
 namespace ShapeshifterFramework.Hediffs
 {
-    /// <summary>
-    /// 변신 폼 활성 상태를 나타내는 헤디프.
-    /// - 바닐라 <see cref="HediffStage"/>의 statOffsets/statFactors/capMods를 통해
-    ///   건강 탭에 스탯 변동이 자동 표시됨(별도 Harmony 패치 불필요).
-    /// - 추가로 폼 이름과 남은 시간을 커스텀 표시.
-    /// </summary>
+    /// <summary>변신 폼 활성 상태를 나타내는 헤디프. 건강 탭에 스탯 변동과 남은 시간을 표시.</summary>
     public class Hediff_ShapeshiftForm : HediffWithComps
     {
         // CompShapeshifter 캐시(매 프레임 TryGetComp 호출 방지)
@@ -30,10 +25,7 @@ namespace ShapeshifterFramework.Hediffs
             }
         }
 
-        /// <summary>
-        /// 건강 탭 툴팁에 남은 시간을 추가한다.
-        /// 바닐라가 stages[0]의 스탯 변동을 이미 그려주므로, 여기서는 시간 정보만 얹는다.
-        /// </summary>
+        /// <summary>건강 탭 툴팁에 남은 시간 추가.</summary>
         public override string TipStringExtra
         {
             get
@@ -90,9 +82,7 @@ namespace ShapeshifterFramework.Hediffs
             }
         }
 
-        /// <summary>
-        /// 세이브/로드. 기본 HediffWithComps 처리만으로 충분.
-        /// </summary>
+        /// <summary>세이브/로드.</summary>
         public override void ExposeData()
         {
             base.ExposeData();

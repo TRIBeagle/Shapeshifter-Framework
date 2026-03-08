@@ -15,7 +15,7 @@ namespace ShapeshifterFramework.Patches
     {
         private static void Postfix(ref bool showBody, Pawn ___pawn)
         {
-            // 인간형 + 플레이어 소속 + 비수감자
+            // 인간형 + 플레이어 + 비수감자만
             if (___pawn == null || !___pawn.RaceProps.Humanlike
                 || ___pawn.Faction == null || ___pawn.Faction != Faction.OfPlayer
                 || ___pawn.IsPrisoner)
@@ -25,11 +25,11 @@ namespace ShapeshifterFramework.Patches
             if (comp == null || comp.currentForm == null || !ShapeshiftUtility.IsShapeShifting(___pawn))
                 return;
 
-            // 이미 보이거나 침대가 아니면 스킵
+            // 이미 보이거나 침대 아니면 스킵
             if (showBody || ___pawn.CurrentBed() == null)
                 return;
 
-            // 침대에서도 바디 보이도록 강제
+            // 침대에서 바디 강제 표시
             showBody = true;
         }
     }

@@ -28,7 +28,7 @@ namespace ShapeshifterFramework.Utilities
         public static bool LockWeapons(CompShapeshifter comp)
         {
             if (comp == null) return false;
-            if (comp.suppressEquipLock) return false; // ★ 내부 복구 중엔 잠금 해제
+            if (comp.suppressEquipLock) return false; // 내부 복구 중엔 잠금 해제
             var def = comp.currentForm as ShapeshiftFormDef;
             if (def == null) return false;
 

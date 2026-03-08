@@ -9,37 +9,25 @@ using Verse;
 
 namespace ShapeshifterFramework.Comps
 {
-    /// <summary>
-    /// 아이템 사용 효과: 대상 Pawn을 지정된 폼으로 변신시킨다.
-    /// - Props로 지정된 <see cref="CompProperties_UseEffect_ShiftTarget.formDefName"/> 과
-    ///   <see cref="CompProperties_UseEffect_ShiftTarget.successChance"/> 를 참조한다.
-    /// - 기본 구현에서는 자기 위치/앞 칸 Pawn을 찾거나, 없으면 자기 자신을 대상으로 한다.
-    /// </summary>
+    /// <summary>아이템 사용 시 대상 Pawn을 폼으로 변신시키는 효과.</summary>
     public class CompUseEffect_ShiftTarget : CompUseEffect
     {
-        /// <summary>
-        /// 속성 캐스팅 접근자.
-        /// </summary>
         public CompProperties_UseEffect_ShiftTarget Props => (CompProperties_UseEffect_ShiftTarget)props;
 
-        /// <summary>
-        /// 아이템 사용 시 효과를 실행한다.  
-        /// RimWorld 표준 컨텍스트(사용자 Pawn, 위치, Map 등)에 따라 Pawn을 선택하여 변신 처리한다.
-        /// </summary>
-        /// <param name="user">아이템을 사용한 Pawn</param>
+        /// <summary>아이템 사용 시 변신 효과 실행.</summary>
+        /// <param name="user">사용 Pawn</param>
         public override void DoEffect(Pawn user)
         {
             base.DoEffect(user);
 
-            // [수정] 카라반/수송 포드 등 오프맵 상태에서 Map이 null일 수 있으므로 방어 처리
+            // 오프맵 pawn Map null 방어
             var map = user.Map;
             Pawn pawn = null;
 
             if (map != null)
             {
-                // user.Position이 아닌 '사용자가 바라보는 앞 칸(FacingCell)'을 확인
+                // 앞 칸(FacingCell) Pawn 우선, 없으면 자신
                 IntVec3 targetCell = user.Position + user.Rotation.FacingCell;
-                // 앞 칸에 폰이 있으면 그 폰을, 없으면 자기 자신을 대상으로 지정
                 pawn = targetCell.InBounds(map) ? targetCell.GetFirstPawn(map) : null;
             }
 

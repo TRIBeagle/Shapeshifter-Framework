@@ -15,7 +15,7 @@ namespace ShapeshifterFramework.Patches
     {
         public static void Postfix(PawnDrawParms parms, ref Vector3 __result)
         {
-            // 위치(Offset) 보정이므로 ApplyOffsetScale 사용 (X, Z축만 팽창)
+            // X, Z축 오프셋 보정
             ShapeshiftRenderUtility.ApplyOffsetScale(parms, ref __result, useHeadScale: false);
         }
     }

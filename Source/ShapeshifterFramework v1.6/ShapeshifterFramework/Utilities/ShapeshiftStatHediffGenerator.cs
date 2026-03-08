@@ -9,17 +9,13 @@ using Verse;
 
 namespace ShapeshifterFramework.Utilities
 {
-    /// <summary>
-    /// <see cref="ShapeshiftFormDef"/>별 동적 <see cref="HediffDef"/> 생성기.
-    /// </summary>
+    /// <summary>ShapeshiftFormDef별 동적 HediffDef 생성기.</summary>
     internal static class ShapeshiftStatHediffGenerator
     {
         // 중복 생성 방지용
         private static readonly HashSet<string> _generated = new HashSet<string>();
 
-        /// <summary>
-        /// 단일 폼에 대해 동적 HediffDef를 생성한다. 중복 호출 안전.
-        /// </summary>
+        /// <summary>단일 폼에 대해 동적 HediffDef 생성. 중복 호출 안전.</summary>
         internal static void TryGenerateFor(ShapeshiftFormDef form)
         {
             if (form == null) return;
@@ -27,7 +23,7 @@ namespace ShapeshifterFramework.Utilities
             string defName = "SSF_FormStats_" + form.defName;
             if (_generated.Contains(defName)) return;
 
-            // [수정] 다른 모드가 동일 defName을 먼저 등록했을 경우 중복 Add 방어
+            // 다른 모드의 동일 defName 중복 Add 방어
             var existing = DefDatabase<HediffDef>.GetNamedSilentFail(defName);
             if (existing != null)
             {
@@ -46,9 +42,7 @@ namespace ShapeshifterFramework.Utilities
             _generated.Add(defName);
         }
 
-        /// <summary>
-        /// 모든 폼에 대해 누락분을 일괄 생성한다. HarmonyInit에서 보험용 호출.
-        /// </summary>
+        /// <summary>모든 폼의 누락분 일괄 생성. HarmonyInit 보험용.</summary>
         internal static void GenerateAll()
         {
             int generated = 0;

@@ -6,26 +6,12 @@ using RimWorld;
 
 namespace ShapeshifterFramework.Comps
 {
-    /// <summary>
-    /// 아이템 사용 시 Pawn을 변신시키는 속성 정의.
-    /// - <see cref="formDefName"/> : 변신시킬 대상 폼(defName)
-    /// - <see cref="successChance"/> : 성공 확률 (0~1, 기본 1.0)
-    /// </summary>
+    /// <summary>아이템 사용 변신 효과 속성 정의.</summary>
     public class CompProperties_UseEffect_ShiftTarget : CompProperties_UseEffect
     {
-        /// <summary>
-        /// 변신시킬 대상 폼(defName).
-        /// </summary>
         public string formDefName;
-
-        /// <summary>
-        /// 변신 성공 확률 (0~1). 기본값은 1.0.
-        /// </summary>
         public float successChance = 1.0f;
 
-        /// <summary>
-        /// 생성자: 본 속성과 연결된 실행 클래스 <see cref="CompUseEffect_ShiftTarget"/> 지정.
-        /// </summary>
         public CompProperties_UseEffect_ShiftTarget()
         {
             compClass = typeof(CompUseEffect_ShiftTarget);

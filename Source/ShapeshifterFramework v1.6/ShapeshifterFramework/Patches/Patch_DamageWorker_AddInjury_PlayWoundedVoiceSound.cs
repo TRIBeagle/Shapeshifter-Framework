@@ -10,11 +10,7 @@ using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
-    /// <summary>
-    /// Pawn이 부상했을 때 변신 폼에 정의된 wounded 사운드로 교체.
-    /// - DamageWorker_AddInjury.ApplyToPawn → damageResult.wounded 분기 직후 호출.
-    /// - 원본 효과(데미지 적용, 이펙트 등)는 그대로 유지하고, 사운드만 대체한다.
-    /// </summary>
+    /// <summary>부상 시 변신 폼의 wounded 사운드로 교체.</summary>
     [HarmonyPatch]
     internal static class Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound
     {

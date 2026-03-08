@@ -84,9 +84,7 @@ namespace ShapeshifterFramework
         public AddedPartPolicy addedPartPolicy = AddedPartPolicy.ForceAdd;
     }
 
-    /// <summary>
-    /// 변신 폼 Def(외형/필터/요건/버튼/지속/부여물 일괄 관리)
-    /// </summary>
+    /// <summary>변신 폼 Def. 외형/필터/요건/버튼/지속/부여물 일괄 관리.</summary>
     public class ShapeshiftFormDef : Def
     {
         // 스케일/오프셋(렌더 보정용)
@@ -106,25 +104,25 @@ namespace ShapeshifterFramework
         public PartOverrideOption tattooBody = new PartOverrideOption();
         public PartOverrideOption tattooHead = new PartOverrideOption();
 
-        // ▼ 의상 숨김: layer/defName (특수값: "All")
+        // 의상 숨김: layer/defName (특수값: "All")
         public List<string> renderHideApparelLayers;
         public List<string> renderHideApparelDefNames;
         public List<string> renderShowApparelLayers;
         public List<string> renderShowApparelDefNames;
 
-        // ▼ 장비(무기) 숨김: weaponTags/defName (특수값: "All")
+        // 장비(무기) 숨김: weaponTags/defName (특수값: "All")
         public List<string> renderHideWeaponTags;
         public List<string> renderHideWeaponDefNames;
         public List<string> renderShowWeaponTags;
         public List<string> renderShowWeaponDefNames;
 
-        // ▼ 유전자 그래픽 숨김: exclusionTags/defName 목록 (특수값: "All")
+        // 유전자 그래픽 숨김: exclusionTags/defName 목록 (특수값: "All")
         public List<string> renderHideGeneExclusionTags;
         public List<string> renderHideGeneDefNames;
         public List<string> renderShowGeneExclusionTags;
         public List<string> renderShowGeneDefNames;
 
-        // ▼ 헤디프 그래픽 숨김: defName 목록 (특수값: "All")
+        // 헤디프 그래픽 숨김: defName 목록 (특수값: "All")
         public List<string> renderHideHediffDefNames;
         public List<string> renderShowHediffDefNames;
 
@@ -232,6 +230,7 @@ namespace ShapeshifterFramework
         public string gizmoIconPathEnter;   // 변신 버튼 아이콘
         public string gizmoIconPathRevert;  // 해제 버튼 아이콘
         public int? durationTicks = null;      // 지속 틱(null=무제한)
+        public bool canRevertVoluntarily = true; // false면 유저가 기즈모로 해제 불가(강제 변신용)
 
         // 보이스
         public SoundDef soundCall;
@@ -267,10 +266,7 @@ namespace ShapeshifterFramework
         [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor;
         [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor2;
 
-        /// <summary>
-        /// Def 로드 완료 후 호출. 세이브 역직렬화보다 먼저 실행되어
-        /// 동적 HediffDef가 DefDatabase에 등록된 상태를 보장.
-        /// </summary>
+        /// <summary>Def 로드 완료 후 호출. 동적 HediffDef를 DefDatabase에 등록.</summary>
         public override void ResolveReferences()
         {
             base.ResolveReferences();

@@ -50,11 +50,7 @@ namespace ShapeshifterFramework.Utilities
             return sh;
         }
 
-        /// <summary>
-        /// 성별 옵션과 base를 merge해서 유효 값을 뽑는다.
-        /// - mode: 성별 옵션이 있으면 그 mode 우선
-        /// - 그 외: 성별 옵션 필드가 null/empty면 base 값을 사용
-        /// </summary>
+        /// <summary>성별 옵션과 base를 merge하여 유효 값 산출.</summary>
         private static void ResolveEffective(
             PartOverrideOption baseOpt, PartOverrideOption gOpt,
             out PartControlMode mode,
@@ -102,11 +98,7 @@ namespace ShapeshifterFramework.Utilities
             return mode == PartControlMode.Hidden;
         }
 
-        /// <summary>
-        /// 바디 수영 replacement 존재 여부(성별 우선 + base 폴백, merge 방식).
-        /// - mode가 Replace가 아니면 false
-        /// - swimmingReplacementTexPath가 비어있으면 false
-        /// </summary>
+        /// <summary>바디 수영 replacement 텍스처 경로 존재 여부 확인.</summary>
         internal static bool TryGetBodySwimmingReplacementPath(Pawn pawn, ShapeshiftFormDef form, out string swimmingPath)
         {
             swimmingPath = null;
@@ -212,11 +204,7 @@ namespace ShapeshifterFramework.Utilities
             return false;
         }
 
-        /// <summary>
-        /// 바디 shadow 오버라이드 값 추출(입력하면 대체, 미입력이면 바닐라 유지)
-        /// - 성별 옵션이 있으면: 해당 필드가 null이면 base 값을 유지(merge)
-        /// - volume/offset 중 하나라도 지정되면 true
-        /// </summary>
+        /// <summary>바디 shadow 오버라이드 값 추출. 지정 시 대체, 미지정 시 바닐라 유지.</summary>
         internal static bool TryGetBodyShadowOverride(Pawn pawn, ShapeshiftFormDef form, out Vector3 volume, out Vector3 offset)
         {
             volume = Vector3.one;

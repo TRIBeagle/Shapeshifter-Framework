@@ -15,7 +15,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(PawnRenderNodeWorker), "GetFinalizedMaterial")]
     public static class Patch_PawnRenderNodeWorker_GetFinalizedMaterial_FilterByOwner
     {
-        // 타입 캐시(읽기만): Gene 형식 식별
+        // Gene 타입 캐시
         static readonly Type T_Gene = AccessTools.TypeByName("RimWorld.Gene");
 
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
@@ -24,23 +24,23 @@ namespace ShapeshifterFramework.Patches
             if (__result == null) return;
             Pawn pawn = parms.pawn; if (pawn == null) return;
 
-            // 1) owner 우선: node.Owner → (없으면) node.owner 필드
+            // owner 탐색
             object owner = ShapeshiftReflectionCache.TryGetOwnerFromNode(node);
 
-            // ── Gene 소유 노드
+            // Gene 소유 노드
             bool isGeneOwner = owner != null && T_Gene != null && T_Gene.IsInstanceOfType(owner);
             Gene gene = isGeneOwner ? (Gene)owner : null;
 
             if (!isGeneOwner)
             {
-                // owner가 null/불명일 경우 노드/워커의 필드에서 Gene 타입을 탐색 (모드/버전 편차 대응)
+                // 필드에서 Gene 타입 탐색
                 gene = ShapeshiftReflectionCache.TryScanFieldsForType<Gene>(node, __instance);
                 isGeneOwner = (gene != null);
             }
 
             if (isGeneOwner)
             {
-                // gene.def + node.props 양쪽에서 exclusionTags 수집 (중복 제거)
+                // exclusionTags 수집
                 List<string> tags = null;
 
                 object geneDef = ShapeshiftReflectionCache.GetInstanceProperty<object>(gene, "def");
@@ -64,11 +64,11 @@ namespace ShapeshifterFramework.Patches
                 return;
             }
 
-            // ── Apparel 소유 노드
+            // Apparel 소유 노드
             Apparel apparel = owner as Apparel;
             if (apparel == null)
             {
-                // owner가 없으면 node/worker에서 Apparel 타입을 스캔
+                // 필드에서 Apparel 탐색
                 apparel = ShapeshiftReflectionCache.TryScanFieldsForType<Apparel>(node, __instance);
             }
 
@@ -79,7 +79,7 @@ namespace ShapeshifterFramework.Patches
                 return;
             }
 
-            // ── Hediff 소유 노드
+            // Hediff 소유 노드
             Hediff hediff = owner as Hediff;
             if (hediff == null)
             {

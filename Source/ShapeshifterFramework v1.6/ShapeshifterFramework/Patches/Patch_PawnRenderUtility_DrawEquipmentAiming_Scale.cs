@@ -38,10 +38,10 @@ namespace ShapeshifterFramework.Patches
             }
         }
 
-        // scale 보정: 바디 폭(bodyWidth) 비율을 등방으로 곱함
+        // 바디 폭 비율로 스케일 보정
         public static Vector3 AdjustWeaponScale(Vector3 originalScale, Thing eq)
         {
-            // 옵션 OFF면 그대로
+            // 옵션 OFF 시 원본 유지
             if (ShapeshifterFrameworkMod.Settings == null || !ShapeshifterFrameworkMod.Settings.scaleHeldWeapons)
                 return originalScale;
 
@@ -52,7 +52,7 @@ namespace ShapeshifterFramework.Patches
 
             if (Mathf.Approximately(s, 1f)) return originalScale;
 
-            // 무기는 등방 스케일이 자연스러움 (x/z 동일 배율)
+            // 등방 스케일 적용
             return new Vector3(originalScale.x * s, originalScale.y, originalScale.z * s);
         }
     }

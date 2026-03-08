@@ -8,15 +8,11 @@ using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
-    /// <summary>
-    /// Pawn_HealthTracker.DropBloodSmear → FilthMaker 호출 전후로 Pawn 스코프 세팅
-    /// - DropBloodFilth 패치와 동일한 구조
-    /// - 변신 ON 상태면 FilthMaker에서 bloodSmearDef 캐시 적용됨
-    /// </summary>
+    /// <summary>DropBloodSmear 전후로 FilthScope에 Pawn 세팅.</summary>
     [HarmonyPatch(typeof(Pawn_HealthTracker), "DropBloodSmear")]
     internal static class Patch_Pawn_HealthTracker_DropBloodSmear
     {
-        // Pawn_HealthTracker 안의 private readonly Pawn pawn; 필드 접근자
+        // pawn 필드 접근자
         private static readonly AccessTools.FieldRef<Pawn_HealthTracker, Pawn> pawnFieldRef =
             AccessTools.FieldRefAccess<Pawn_HealthTracker, Pawn>("pawn");
 

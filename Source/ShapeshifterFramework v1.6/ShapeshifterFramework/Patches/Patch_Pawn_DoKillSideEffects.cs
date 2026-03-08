@@ -23,7 +23,7 @@ namespace ShapeshifterFramework.Patches
             MethodInfo vanillaPlaySoundMethod = AccessTools.Method(typeof(LifeStageUtility), "PlayNearestLifestageSound");
             MethodInfo ourWrapperMethod = AccessTools.Method(typeof(Patch_Pawn_DoKillSideEffects), nameof(PlayNearestLifestageSoundWrapper));
 
-            // 타겟 메서드 시그니처가 변했거나 로드 순서 문제 발생 시 원본 유지 (Fail-safe)
+            // 메서드 미발견 시 원본 유지
             if (vanillaPlaySoundMethod == null || ourWrapperMethod == null)
             {
                 if (!_reported)
@@ -34,21 +34,21 @@ namespace ShapeshifterFramework.Patches
                 return instructions;
             }
 
-            // Harmony 제공 유틸: 동일 시그니처 메서드 호출을 안전하게 치환
+            // 메서드 호출 치환
             return instructions.MethodReplacer(vanillaPlaySoundMethod, ourWrapperMethod);
         }
 
-        // 바닐라 사운드 대신 호출될 Wrapper 함수
+        // 사운드 Wrapper
         public static void PlayNearestLifestageSoundWrapper(Pawn pawn, Func<LifeStageAge, SoundDef> lifestageGetter, Func<GeneDef, SoundDef> geneGetter, Func<MutantDef, SoundDef> mutantGetter, float volumeFactor)
         {
-            // 1. 변신 폰이라면 커스텀 사운드를 재생하고 즉시 종료 (바닐라 소리는 나지 않음)
+            // 1. 폼 사운드 재생
             if (ShapeshiftVoiceUtility.TryGetDeath(pawn, out var customSound))
             {
                 ShapeshiftVoiceUtility.PlayOneShotAt(pawn, customSound, 1f);
                 return;
             }
 
-            // 2. 변신 폰이 아니라면 원래 바닐라 함수를 정상적으로 실행
+            // 2. 바닐라 폴백
             LifeStageUtility.PlayNearestLifestageSound(pawn, lifestageGetter, geneGetter, mutantGetter, volumeFactor);
         }
     }

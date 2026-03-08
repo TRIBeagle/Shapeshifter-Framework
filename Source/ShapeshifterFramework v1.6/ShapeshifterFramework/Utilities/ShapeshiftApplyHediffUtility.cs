@@ -21,8 +21,7 @@ namespace ShapeshifterFramework.Utilities
             if (pawn == null || pawn.health == null) return;
             if (entries == null || entries.Count == 0) return;
 
-            // prevDefCache: 이전 변신에서 우리가 추가한 헤디프 목록
-            // null이면 우리가 추가한 것을 알 수 없으므로 정리 스킵
+            // prevDefCache가 null이면 정리 스킵
             CleanupNullPartHediffs(pawn, prevDefCache);
 
             int applied = 0;
@@ -260,7 +259,7 @@ namespace ShapeshifterFramework.Utilities
             var list = pawn.health?.hediffSet?.hediffs;
             if (list == null || list.Count == 0) return;
 
-            bool requiresDirtyCache = false; // 캐시 갱신이 필요한지 추적하는 플래그
+            bool requiresDirtyCache = false;
 
             for (int i = list.Count - 1; i >= 0; i--)
             {
@@ -268,7 +267,7 @@ namespace ShapeshifterFramework.Utilities
                 if (h == null)
                 {
                     list.RemoveAt(i);
-                    requiresDirtyCache = true; // 리스트를 직접 건드렸으므로 마킹
+                    requiresDirtyCache = true;
                     continue;
                 }
 
@@ -277,7 +276,7 @@ namespace ShapeshifterFramework.Utilities
                     if (prevDefCache == null || !prevDefCache.Contains(h.def)) continue;
                     try
                     {
-                        // RemoveHediff는 내부적으로 DirtyCache를 알아서 호출하므로 마킹 불필요
+                        // RemoveHediff는 내부에서 DirtyCache 호출
                         pawn.health.RemoveHediff(h);
                         ShapeshiftDiagnostics.Info($"Cleanup null-part hediff: {h.def?.defName ?? "null"}");
                     }
@@ -285,7 +284,7 @@ namespace ShapeshifterFramework.Utilities
                 }
             }
 
-            // 추가된 핵심 로직: RemoveAt이 실행되었다면 수동으로 캐시 갱신
+            // RemoveAt 실행 시 수동 캐시 갱신
             if (requiresDirtyCache)
             {
                 pawn.health.hediffSet.DirtyCache();

@@ -21,7 +21,7 @@ namespace ShapeshifterFramework.Patches
                 {
                     if (comp.IsGeneratedWeapon(eq))
                     {
-                        // 1. 유저가 직접 마우스로 버리기/교체를 시도한 경우 (꼼수 방지)
+                        // 1. 유저 직접 드랍 시도 차단
                         if (eq.holdingOwner == __instance.pawn.equipment.GetDirectlyHeldThings() && __instance.pawn.IsColonistPlayerControlled && !__instance.pawn.Dead)
                         {
                             Messages.Message("SSF_Message_CannotDropGeneratedWeapon".Translate(), __instance.pawn, MessageTypeDefOf.RejectInput, false);
@@ -30,12 +30,11 @@ namespace ShapeshifterFramework.Patches
                             return false;
                         }
 
-                        // 2. 팔이 잘리거나, 사망 등 '불가항력'으로 시스템이 드랍을 강제하는 경우 (무한 루프 방지)
-                        // 바닥에 떨어져 템이 복사되는 것을 막기 위해 강제로 소멸(Destroy)시킵니다.
+                        // 2. 시스템 강제 드랍 시 소멸 처리 (복사 방지)
                         resultingEq = null;
                         eq.Destroy(DestroyMode.Vanish);
-                        __result = true; // "드랍(사실은 소멸) 처리 완료했어!" 라고 시스템을 안심시킴
-                        return false;    // 바닐라의 바닥 드랍 로직은 스킵
+                        __result = true; // 처리 완료로 보고
+                        return false;    // 바닐라 드랍 스킵
                     }
                 }
             }
