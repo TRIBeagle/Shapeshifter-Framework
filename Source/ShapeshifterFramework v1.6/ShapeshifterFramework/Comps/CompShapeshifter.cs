@@ -204,7 +204,7 @@ namespace ShapeshifterFramework.Comps
             }
             else
             {
-                // ON → 같은 폼의 다른 ranged verb 전부 OFF
+                // 1) 모든 ranged verb OFF
                 var vt = ShapeshiftVerbTracker;
                 if (vt != null)
                 {
@@ -214,13 +214,11 @@ namespace ShapeshifterFramework.Comps
                         var other = verbs[i];
                         if (other == null || other.verbProps == null) continue;
                         if (!other.verbProps.Ranged) continue;
-                        verbAutoToggle[AutoKey(other)] = (other == v);
+                        verbAutoToggle[AutoKey(other)] = false;
                     }
                 }
-                else
-                {
-                    verbAutoToggle[AutoKey(v)] = true;
-                }
+                // 2) 선택한 verb만 ON
+                verbAutoToggle[AutoKey(v)] = true;
             }
         }
 
