@@ -104,6 +104,7 @@
     <Compile Include="Patches\Patch_Pawn_EquipmentTracker_AddEquipment.cs" />
     <Compile Include="Patches\Patch_Pawn_ApparelTracker_Wear.cs" />
     <Compile Include="Patches\Patch_VerbTracker_InitVerbsFromZero.cs" />
+    <Compile Include="Patches\Patch_Ability_GizmoDisabled.cs" />
     <Compile Include="Patches\Patch_Pawn_TryGetAttackVerb.cs" />
     <Compile Include="Patches\Patch_PawnRenderer_BaseHeadOffsetAt.cs" />
     <Compile Include="Patches\Patch_GeneUIUtility_DrawGene.cs" />
