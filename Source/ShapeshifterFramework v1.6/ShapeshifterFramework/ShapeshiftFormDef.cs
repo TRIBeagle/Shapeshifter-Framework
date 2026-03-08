@@ -49,6 +49,12 @@ namespace ShapeshifterFramework
     // 조건 컨디션 모드
     public enum RequirementMatchMode { All, Any }
 
+    // Ability 생성 모드
+    // Auto : 프레임워크가 AbilityDef를 자동 생성 (기본값)
+    // Custom : 모더가 직접 작성한 AbilityDef를 linkedAbility로 연결
+    // None : Ability를 생성하지 않음 (약물/아이템/외부 코드 전용)
+    public enum AbilityMode { Auto, Custom, None }
+
     // 변신 시 기존 장비 처리 모드(의복/무기 각자 지정)
     public enum GearHandling { Keep, Inventory, Drop }
 
@@ -161,11 +167,9 @@ namespace ShapeshifterFramework
         public List<PawnCapacityModifier> capMods;
 
         // ── 변신 요건(카테고리 내부는 ALL-of, 카테고리 집계는 requirementsMode 적용)
-        public List<GeneDef> requiredGenes;
         public List<ThingDef> requiredItems;
         public List<ThingDef> requiredApparels;
         public List<ThingDef> requiredWeapons;
-        public List<AbilityDef> requiredAbilities;
         public List<HediffDef> requiredHediffs;
 
         // ──조건 집계와 무관, 항상 선행 필터
@@ -225,9 +229,14 @@ namespace ShapeshifterFramework
         public int transformExitFxDelayTicks = 0;   // Exit  FX 재생 지연
         public int transformFxCooldownTicks = 30;   // 동일 단계 쿨다운(틱)
 
+        // Ability 모드 (Auto: 자동생성, Custom: 모더 AbilityDef 연결, None: 약물/아이템 전용)
+        public AbilityMode abilityMode = AbilityMode.Auto;
+        // Auto 모드: 자동생성된 AbilityDef 참조 / Custom 모드: 모더가 지정한 AbilityDef
+        [Unsaved(false)]
+        public AbilityDef linkedAbility;
+
         // 버튼/기타
-        public bool hideGizmo = false;
-        public string gizmoIconPathEnter;   // 변신 버튼 아이콘
+        public string gizmoIconPathEnter;   // 변신 버튼 아이콘 (Auto 모드에서 Ability 아이콘으로도 사용)
         public string gizmoIconPathRevert;  // 해제 버튼 아이콘
         public int? durationTicks = null;      // 지속 틱(null=무제한)
         public bool canRevertVoluntarily = true; // false면 유저가 기즈모로 해제 불가(강제 변신용)
@@ -266,11 +275,19 @@ namespace ShapeshifterFramework
         [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor;
         [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor2;
 
-        /// <summary>Def 로드 완료 후 호출. 동적 HediffDef를 DefDatabase에 등록.</summary>
+        /// <summary>Def 로드 완료 후 호출. 동적 HediffDef/AbilityDef를 DefDatabase에 등록.</summary>
         public override void ResolveReferences()
         {
             base.ResolveReferences();
             ShapeshifterFramework.Utilities.ShapeshiftStatHediffGenerator.TryGenerateFor(this);
+            ShapeshifterFramework.Utilities.ShapeshiftAbilityGenerator.TryGenerateFor(this);
+
+            // Custom 모드 검증
+            if (abilityMode == AbilityMode.Custom && linkedAbility == null)
+            {
+                Log.Error($"[SSF] ShapeshiftFormDef '{defName}' has abilityMode=Custom but linkedAbility is null. Falling back to None.");
+                abilityMode = AbilityMode.None;
+            }
         }
     }
 }

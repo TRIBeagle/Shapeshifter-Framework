@@ -42,7 +42,9 @@ namespace ShapeshifterFramework.Utilities
                 return false;
             }
 
-            comp.ApplyForm(form); // 지속시간/부가효과는 FormDef에 따름
+            // 이미 변신 중이면 폼 전환 (prevOverride로 현재 폼 defName 전달)
+            string prev = (comp.isTransformed && comp.currentForm != null) ? comp.currentForm.defName : null;
+            comp.ApplyForm(form, prev); // 지속시간/부가효과는 FormDef에 따름
             return true;
         }
     }

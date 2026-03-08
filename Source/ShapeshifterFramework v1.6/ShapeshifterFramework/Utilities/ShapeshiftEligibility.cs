@@ -204,30 +204,6 @@ namespace ShapeshifterFramework.Utilities
             bool anyActive = false;
             bool anyPass = false;
 
-            // Genes (ALL-of)
-            if (Active(form.requiredGenes))
-            {
-                anyActive = true;
-                bool pass = false;
-                var glist = pawn.genes != null ? pawn.genes.GenesListForReading : null;
-                if (glist != null)
-                {
-                    pass = true;
-                    for (int i = 0; i < form.requiredGenes.Count; i++)
-                    {
-                        var need = form.requiredGenes[i]; if (need == null) continue;
-                        bool has = false;
-                        for (int j = 0; j < glist.Count; j++)
-                        {
-                            var g = glist[j];
-                            if (g != null && g.def == need) { has = true; break; }
-                        }
-                        if (!has) { pass = false; break; }
-                    }
-                }
-                if (pass) anyPass = true; else if (mode == RequirementMatchMode.All) return false;
-            }
-
             // Items in inventory (ALL-of)
             if (Active(form.requiredItems))
             {
@@ -293,30 +269,6 @@ namespace ShapeshifterFramework.Utilities
                         {
                             var e = eqs[j];
                             if (e != null && e.def == need) { has = true; break; }
-                        }
-                        if (!has) { pass = false; break; }
-                    }
-                }
-                if (pass) anyPass = true; else if (mode == RequirementMatchMode.All) return false;
-            }
-
-            // Abilities (ALL-of)
-            if (Active(form.requiredAbilities))
-            {
-                anyActive = true;
-                bool pass = false;
-                var abs = pawn.abilities?.abilities;
-                if (abs != null)
-                {
-                    pass = true;
-                    for (int i = 0; i < form.requiredAbilities.Count; i++)
-                    {
-                        var need = form.requiredAbilities[i]; if (need == null) continue;
-                        bool has = false;
-                        for (int j = 0; j < abs.Count; j++)
-                        {
-                            var a = abs[j];
-                            if (a != null && a.def == need) { has = true; break; }
                         }
                         if (!has) { pass = false; break; }
                     }

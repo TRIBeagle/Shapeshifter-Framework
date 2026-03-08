@@ -59,6 +59,9 @@ namespace ShapeshifterFramework.Comps
         private int gizmoCacheTick = -9999;
         private List<ShapeshiftFormDef> gizmoFormsCache = new List<ShapeshiftFormDef>();
 
+        // Ability 부여/회수 추적 (Auto/Custom 모드에서 프레임워크가 부여한 Ability)
+        private readonly List<AbilityDef> grantedFormAbilities = new List<AbilityDef>();
+
         // 틱(Tick) 에러 스팸 방지용 플래그
         private bool verbTickErrorLogged = false;
 
@@ -426,20 +429,7 @@ namespace ShapeshifterFramework.Comps
                         }
                     }
 
-                    // 유전자/헤디프 조건 유실 검사
-                    if (currentForm.requiredGenes != null && currentForm.requiredGenes.Count > 0 && pawn.genes != null)
-                    {
-                        for (int i = 0; i < currentForm.requiredGenes.Count; i++)
-                        {
-                            if (!pawn.genes.HasActiveGene(currentForm.requiredGenes[i]))
-                            {
-                                Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
-                                RemoveForm();
-                                return;
-                            }
-                        }
-                    }
-
+                    // 헤디프 조건 유실 검사
                     if (currentForm.requiredHediffs != null && currentForm.requiredHediffs.Count > 0 && pawn.health != null)
                     {
                         for (int i = 0; i < currentForm.requiredHediffs.Count; i++)
@@ -529,13 +519,55 @@ namespace ShapeshifterFramework.Comps
                 {
                     var f = all[i];
                     if (f == null) continue;
-                    if (!f.hideGizmo && CanTransform(pawn, f))
+                    if (CanTransform(pawn, f))
                         list.Add(f);
                 }
                 gizmoFormsCache = list;
                 gizmoCacheTick = now;
+
+                // Ability 동기화 (부여/회수)
+                SyncFormAbilities(pawn, list);
             }
             return gizmoFormsCache;
+        }
+
+        /// <summary>폼 조건에 따라 Ability 부여/회수. 90틱마다 호출.</summary>
+        private void SyncFormAbilities(Pawn pawn, List<ShapeshiftFormDef> eligibleForms)
+        {
+            if (pawn == null || pawn.abilities == null) return;
+
+            // 부여: eligible + linkedAbility가 있지만 아직 없는 경우
+            for (int i = 0; i < eligibleForms.Count; i++)
+            {
+                var form = eligibleForms[i];
+                if (form.abilityMode == AbilityMode.None) continue;
+                if (form.linkedAbility == null) continue;
+                if (pawn.abilities.GetAbility(form.linkedAbility) != null) continue;
+
+                pawn.abilities.GainAbility(form.linkedAbility);
+                if (!grantedFormAbilities.Contains(form.linkedAbility))
+                    grantedFormAbilities.Add(form.linkedAbility);
+            }
+
+            // 회수: 부여했지만 더 이상 eligible이 아닌 경우
+            for (int i = grantedFormAbilities.Count - 1; i >= 0; i--)
+            {
+                var aDef = grantedFormAbilities[i];
+                if (aDef == null) { grantedFormAbilities.RemoveAt(i); continue; }
+
+                bool stillEligible = false;
+                for (int j = 0; j < eligibleForms.Count; j++)
+                {
+                    if (eligibleForms[j].linkedAbility == aDef)
+                    { stillEligible = true; break; }
+                }
+
+                if (!stillEligible)
+                {
+                    pawn.abilities.RemoveAbility(aDef);
+                    grantedFormAbilities.RemoveAt(i);
+                }
+            }
         }
 
         /// <summary>폼 변신 조건을 만족시킨 코어 아이템 탐색.</summary>
@@ -1478,6 +1510,22 @@ namespace ShapeshifterFramework.Comps
             Scribe_Collections.Look(ref sourceItems, "sourceItems", LookMode.Reference);
             Scribe_Collections.Look(ref generatedApparel, "generatedApparel", LookMode.Reference);
             Scribe_Collections.Look(ref generatedWeapons, "generatedWeapons", LookMode.Reference);
+
+            // grantedFormAbilities (Def 참조)
+            List<AbilityDef> __tmpGranted = null;
+            if (Scribe.mode == LoadSaveMode.Saving) __tmpGranted = grantedFormAbilities;
+            Scribe_Collections.Look(ref __tmpGranted, "grantedFormAbilities", LookMode.Def);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                grantedFormAbilities.Clear();
+                if (__tmpGranted != null)
+                {
+                    for (int i = 0; i < __tmpGranted.Count; i++)
+                    {
+                        if (__tmpGranted[i] != null) grantedFormAbilities.Add(__tmpGranted[i]);
+                    }
+                }
+            }
             // PostLoadInit
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -1527,7 +1575,7 @@ namespace ShapeshifterFramework.Comps
 
         #region 기즈모 생성
 
-        /// <summary>변신/해제/전환 및 verb 지즈모 생성.</summary>
+        /// <summary>해제 및 verb 지즈모 생성. 변신/전환은 Ability 바에서 처리.</summary>
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             var pawn = parent as Pawn;
@@ -1537,63 +1585,12 @@ namespace ShapeshifterFramework.Comps
             if (!pawn.IsColonistPlayerControlled)
                 yield break;
 
-            // 변신/해제/전환 지즈모
-            int threshold = (ShapeshifterFrameworkMod.Settings != null)
-                ? ShapeshifterFrameworkMod.Settings.maxInlineGizmoCount
-                : 8;
-
+            // Ability 동기화를 위해 캐시 갱신 트리거
             GetAvailableFormsCached(pawn);
 
-            if (!isTransformed)
+            // 변신 중: 해제 기즈모
+            if (isTransformed && currentForm != null)
             {
-                if (gizmoFormsCache.Count > threshold)
-                {
-                    yield return new Command_Action
-                    {
-                        defaultLabel = "SSF_Menu_ChooseLabel".Translate(),
-                        defaultDesc = "SSF_Menu_ChooseDesc".Translate(),
-                        action = delegate
-                        {
-                            var opts = new List<FloatMenuOption>(gizmoFormsCache.Count);
-                            for (int i = 0; i < gizmoFormsCache.Count; i++)
-                            {
-                                var f = gizmoFormsCache[i]; if (f == null) continue;
-                                var cap = f; // capture
-                                opts.Add(new FloatMenuOption(f.LabelCap, delegate
-                                {
-                                    List<Thing> sources = FindSourceItemsForForm(cap);
-                                    ApplyForm(cap, null, sources);
-                                }));
-                            }
-                            if (opts.Count == 0) opts.Add(new FloatMenuOption("None".Translate(), null));
-                            Find.WindowStack.Add(new FloatMenu(opts));
-                        },
-                        icon = ShapeshiftTextureUtility.DefaultEnterIcon
-                    };
-                }
-                else
-                {
-                    for (int i = 0; i < gizmoFormsCache.Count; i++)
-                    {
-                        var form = gizmoFormsCache[i]; if (form == null) continue;
-
-                        yield return new Command_Action
-                        {
-                            defaultLabel = "SSF_Command_TransformLabel".Translate(form.LabelCap),
-                            defaultDesc = "SSF_Command_TransformDesc".Translate(form.description),
-                            action = delegate
-                            {
-                                List<Thing> sources = FindSourceItemsForForm(form);
-                                ApplyForm(form, null, sources);
-                            },
-                            icon = ShapeshiftTextureUtility.GetEnterIcon(form)
-                        };
-                    }
-                }
-            }
-            else if (currentForm != null)
-            {
-                // 해제 버튼
                 if (currentForm.canRevertVoluntarily)
                 {
                     yield return new Command_Action
@@ -1606,67 +1603,6 @@ namespace ShapeshifterFramework.Comps
                         icon = ShapeshiftTextureUtility.GetRevertIcon(currentForm)
                     };
                 }
-
-                // 전환 버튼
-                if (currentForm.canRevertVoluntarily)
-                {
-                    string prev = currentForm.defName;
-                    if (gizmoFormsCache.Count > threshold)
-                    {
-                        yield return new Command_Action
-                        {
-                            defaultLabel = "SSF_Menu_SwitchLabel".Translate(),
-                            defaultDesc = "SSF_Menu_SwitchDesc".Translate(),
-                            action = delegate
-                            {
-                                var opts = new List<FloatMenuOption>(gizmoFormsCache.Count);
-                                for (int i = 0; i < gizmoFormsCache.Count; i++)
-                                {
-                                    var f = gizmoFormsCache[i]; if (f == null) continue;
-                                    var cap = f;
-                                    opts.Add(new FloatMenuOption(f.LabelCap, delegate
-                                    {
-                                        List<Thing> sources = FindSourceItemsForForm(cap);
-                                        ApplyForm(cap, prev, sources);
-                                    }));
-                                }
-                                if (opts.Count == 0) opts.Add(new FloatMenuOption("None".Translate(), null));
-                                Find.WindowStack.Add(new FloatMenu(opts));
-                            },
-                            icon = ShapeshiftTextureUtility.DefaultEnterIcon
-                        };
-                    }
-                    else
-                    {
-                        for (int i = 0; i < gizmoFormsCache.Count; i++)
-                        {
-                            var form = gizmoFormsCache[i]; if (form == null) continue;
-
-                            yield return new Command_Action
-                            {
-                                defaultLabel = "SSF_Command_SwitchLabel".Translate(form.LabelCap),
-                                defaultDesc = "SSF_Command_SwitchDesc".Translate(form.description),
-                                action = delegate
-                                {
-                                    List<Thing> sources = FindSourceItemsForForm(form);
-                                    ApplyForm(form, prev, sources);
-                                },
-                                icon = ShapeshiftTextureUtility.GetEnterIcon(form)
-                            };
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // 방어적 폴백
-                yield return new Command_Action
-                {
-                    defaultLabel = "SSF_Command_RevertLabel".Translate(),
-                    defaultDesc = "SSF_Command_RevertDesc".Translate(),
-                    action = delegate { RemoveForm(); },
-                    icon = ShapeshiftTextureUtility.DefaultRevertIcon
-                };
             }
 
             // 폼 전용 verb 토글/공격

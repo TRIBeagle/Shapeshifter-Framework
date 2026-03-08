@@ -112,6 +112,7 @@
     <Compile Include="Patches\Patch_Verb_ShootBeam.cs" />
     <Compile Include="Patches\Patch_TooltipUtility_ShotCalculationTipString.cs" />
     <Compile Include="Utilities\ShapeshiftStatHediffGenerator.cs" />
+    <Compile Include="Utilities\ShapeshiftAbilityGenerator.cs" />
     <Compile Include="Utilities\ShapeshiftTextureUtility.cs" />
     <Compile Include="Utilities\ShapeshiftRenderUtility.cs" />
     <Compile Include="Utilities\ShapeshiftPartRestoreRecord.cs" />
