@@ -38,6 +38,7 @@ namespace ShapeshifterFramework.Comps
         // 기본 컬러 백업
         private Color? originalHairColor;
         private Color? originalSkinColor;
+        private bool hasSavedColors;
 
         // 임시 부여 요소 추적
         private readonly List<AbilityDef> tempAddedAbilities = new List<AbilityDef>();
@@ -680,8 +681,9 @@ namespace ShapeshifterFramework.Comps
             {
                 originalBodyType = pawn.story.bodyType;
                 originalHeadType = pawn.story.headType;
-                originalHairColor = pawn.story.hairColor;
-                originalSkinColor = pawn.story.skinColor;
+                originalHairColor = pawn.story.HairColor;
+                originalSkinColor = pawn.story.skinColorOverride;
+                hasSavedColors = true;
             }
 
             // 능력 부여
@@ -741,8 +743,8 @@ namespace ShapeshifterFramework.Comps
             {
                 if (form.bodyType != null) pawn.story.bodyType = form.bodyType;
                 if (form.headType != null) pawn.story.headType = form.headType;
-                if (form.hairColor.HasValue) pawn.story.hairColor = form.hairColor.Value;
-                if (form.skinColor.HasValue) pawn.story.skinColor = form.skinColor.Value;
+                if (form.hairColor.HasValue) pawn.story.HairColor = form.hairColor.Value;
+                if (form.skinColor.HasValue) pawn.story.skinColorOverride = form.skinColor.Value;
             }
 
             // 런타임 캐시 등록
@@ -904,8 +906,12 @@ namespace ShapeshifterFramework.Comps
             {
                 if (originalBodyType != null) pawn.story.bodyType = originalBodyType;
                 if (originalHeadType != null) pawn.story.headType = originalHeadType;
-                if (originalHairColor.HasValue) pawn.story.hairColor = originalHairColor.Value;
-                if (originalSkinColor.HasValue) pawn.story.skinColor = originalSkinColor.Value;
+                if (hasSavedColors)
+                {
+                    if (originalHairColor.HasValue) pawn.story.HairColor = originalHairColor.Value;
+                    pawn.story.skinColorOverride = originalSkinColor; // null 복원 포함
+                    hasSavedColors = false;
+                }
             }
 
             // 자동 재착용
@@ -1458,6 +1464,8 @@ namespace ShapeshifterFramework.Comps
             Scribe_Values.Look(ref transformTimer, "transformTimer", 0, true);
             Scribe_Defs.Look(ref originalBodyType, "originalBodyType");
             Scribe_Defs.Look(ref originalHeadType, "originalHeadType");
+
+            Scribe_Values.Look(ref hasSavedColors, "hasSavedColors", false);
 
             Color __tmpHairColor = originalHairColor ?? default;
             bool __hasHairColor = originalHairColor.HasValue;
