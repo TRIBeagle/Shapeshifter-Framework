@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- 약물 -->
+  <SSFTest_WolfElixir.label>늑대 영약</SSFTest_WolfElixir.label>
+  <SSFTest_WolfElixir.description>복용하면 늑대로 변신하는 영약. 85% 확률로 성공한다.</SSFTest_WolfElixir.description>
+
+  <!-- 아이템: 자기 자신 -->
+  <SSFTest_ShiftScroll_Self.label>변신 주문서 (자신)</SSFTest_ShiftScroll_Self.label>
+  <SSFTest_ShiftScroll_Self.description>사용하면 자기 자신이 늑대로 변신하는 주문서.</SSFTest_ShiftScroll_Self.description>
+
+  <!-- 아이템: 대상 지정 -->
+  <SSFTest_ShiftScroll_Target.label>변신 주문서 (대상)</SSFTest_ShiftScroll_Target.label>
+  <SSFTest_ShiftScroll_Target.description>대상을 선택하여 늑대로 변신시키는 주문서. 대상을 클릭하면 걸어가서 사용한다.</SSFTest_ShiftScroll_Target.description>
+
+  <!-- 투사체 -->
+  <SSFTest_Projectile_MassSheep.label>폴리모프 파동</SSFTest_Projectile_MassSheep.label>
+
+</LanguageData>

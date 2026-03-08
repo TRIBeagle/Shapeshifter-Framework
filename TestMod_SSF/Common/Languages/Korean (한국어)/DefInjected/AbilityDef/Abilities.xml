@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- 버프: 곰 전사 -->
+  <SSFTest_Ability_BuffAlly.label>곰 전사의 축복</SSFTest_Ability_BuffAlly.label>
+  <SSFTest_Ability_BuffAlly.description>동료에게 곰 전사의 힘을 부여한다. 장비를 유지한 채 스탯이 강화된다.</SSFTest_Ability_BuffAlly.description>
+
+  <!-- 디버프: 양 변신 -->
+  <SSFTest_Ability_DebuffEnemy.label>폴리모프: 양</SSFTest_Ability_DebuffEnemy.label>
+  <SSFTest_Ability_DebuffEnemy.description>적을 양으로 변신시킨다. 전투력을 상실하며 자발적으로 해제할 수 없다.</SSFTest_Ability_DebuffEnemy.description>
+
+  <!-- 장비소환: 암흑 기사 -->
+  <SSFTest_Ability_DarkKnight.label>암흑 기사 변신</SSFTest_Ability_DarkKnight.label>
+  <SSFTest_Ability_DarkKnight.description>암흑 기사로 변신한다. 전용 플라스틸 판금갑옷과 장검이 소환되며, 기존 장비는 인벤토리로 이동한다. 해제 시 소환 장비는 소멸한다.</SSFTest_Ability_DarkKnight.description>
+
+  <!-- 범위형: 대규모 폴리모프 -->
+  <SSFTest_Ability_MassPolymorph.label>대규모 폴리모프</SSFTest_Ability_MassPolymorph.label>
+  <SSFTest_Ability_MassPolymorph.description>반경 5칸 내 모든 폰을 양으로 변신시키는 범위 마법. 60% 확률.</SSFTest_Ability_MassPolymorph.description>
+
+  <!-- 3단: 수인 변신 -->
+  <SSFTest_Ability_Beastkin.label>수인 변신</SSFTest_Ability_Beastkin.label>
+  <SSFTest_Ability_Beastkin.description>수인 형태로 변신한다. 수인 상태에서는 기즈모로 완전한 야수 형태로 2단 변신할 수 있다.</SSFTest_Ability_Beastkin.description>
+
+</LanguageData>

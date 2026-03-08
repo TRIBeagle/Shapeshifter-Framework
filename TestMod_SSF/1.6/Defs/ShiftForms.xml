@@ -63,6 +63,45 @@
        3단 변신 폼: 인간 → 수인 → 동물
        ====================================================== -->
 
+  <!-- 5) 암흑 기사 폼 (장비 소환형) — 전용 갑옷+무기 소환, 해제 시 자동 파괴 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_DarkKnightForm</defName>
+    <label>dark knight form</label>
+    <description>암흑 기사로 변신. 전용 갑옷과 무기가 소환되며, 기존 장비는 인벤토리로 이동. 해제 시 소환 장비는 소멸.</description>
+    <bodyDrawScale>1.2</bodyDrawScale>
+    <durationTicks>18000</durationTicks> <!-- 약 7분 -->
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <!-- 기존 장비를 인벤토리로 -->
+    <apparelOnTransform>Inventory</apparelOnTransform>
+    <weaponsOnTransform>Inventory</weaponsOnTransform>
+    <!-- 변신 중 장비 교체 금지 -->
+    <apparelEquipLock>Locked</apparelEquipLock>
+    <weaponEquipLock>Locked</weaponEquipLock>
+    <!-- 전용 장비 소환 (해제 시 자동 파괴) -->
+    <spawnApparelOnTransform>
+      <li>Apparel_PlateArmor</li>
+    </spawnApparelOnTransform>
+    <spawnWeaponOnTransform>
+      <li>MeleeWeapon_LongSword</li>
+    </spawnWeaponOnTransform>
+    <spawnApparelStuff>Plasteel</spawnApparelStuff>
+    <spawnWeaponStuff>Plasteel</spawnWeaponStuff>
+    <conflictingGearHandling>Inventory</conflictingGearHandling>
+    <!-- 스탯 강화 -->
+    <statOffsets>
+      <MoveSpeed>-0.3</MoveSpeed>
+      <MeleeDodgeChance>15</MeleeDodgeChance>
+    </statOffsets>
+    <statFactors>
+      <IncomingDamageFactor>0.6</IncomingDamageFactor>
+      <MeleeWeapon_CooldownMultiplier>0.85</MeleeWeapon_CooldownMultiplier>
+    </statFactors>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- ======================================================
+       3단 변신 폼: 인간 → 수인 → 동물
+       ====================================================== -->
+
   <!-- 4a) 수인 폼 (휴머노이드형) — 1단계: 인간→수인 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
     <defName>SSFTest_BeastkinForm</defName>

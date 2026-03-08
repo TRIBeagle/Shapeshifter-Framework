@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- 늑대 폼 -->
+  <SSFTest_WolfForm.label>늑대 변신</SSFTest_WolfForm.label>
+  <SSFTest_WolfForm.description>늑대로 완전 변신한다. 이동속도가 빨라지고 이빨로 공격한다.</SSFTest_WolfForm.description>
+
+  <!-- 곰 전사 폼 -->
+  <SSFTest_BearWarriorForm.label>곰 전사 변신</SSFTest_BearWarriorForm.label>
+  <SSFTest_BearWarriorForm.description>곰 전사로 변신한다. 장비를 유지한 채 방어력과 회피율이 상승한다.</SSFTest_BearWarriorForm.description>
+
+  <!-- 양 폼 -->
+  <SSFTest_SheepForm.label>양 변신</SSFTest_SheepForm.label>
+  <SSFTest_SheepForm.description>양으로 변신한다. 전투력을 상실하며, 자발적으로 해제할 수 없다.</SSFTest_SheepForm.description>
+
+  <!-- 암흑 기사 폼 -->
+  <SSFTest_DarkKnightForm.label>암흑 기사 변신</SSFTest_DarkKnightForm.label>
+  <SSFTest_DarkKnightForm.description>암흑 기사로 변신한다. 플라스틸 판금갑옷과 장검이 소환되며, 기존 장비는 인벤토리로 이동한다. 해제 시 소환된 장비는 소멸한다.</SSFTest_DarkKnightForm.description>
+
+  <!-- 수인 폼 -->
+  <SSFTest_BeastkinForm.label>수인 변신</SSFTest_BeastkinForm.label>
+  <SSFTest_BeastkinForm.description>수인 형태로 변신한다. 인간 외형을 유지하면서 동물적 능력을 얻는다. 이 상태에서 기즈모로 완전한 야수 형태로 2단 변신할 수 있다.</SSFTest_BeastkinForm.description>
+
+  <!-- 야수 폼 -->
+  <SSFTest_FullBeastForm.label>완전 야수 변신</SSFTest_FullBeastForm.label>
+  <SSFTest_FullBeastForm.description>완전한 야수 형태로 변신한다. 수인 상태에서만 진입 가능하다.</SSFTest_FullBeastForm.description>
+
+</LanguageData>

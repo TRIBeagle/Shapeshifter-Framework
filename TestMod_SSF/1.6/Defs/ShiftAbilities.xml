@@ -62,7 +62,36 @@
   </AbilityDef>
 
   <!-- ======================================================
-       5) 3단 변신 어빌리티: 수인 변신
+       5) 장비소환 어빌리티: 암흑 기사 변신
+       플라스틸 판금갑옷 + 장검 소환, 해제 시 소멸
+       ====================================================== -->
+  <AbilityDef>
+    <defName>SSFTest_Ability_DarkKnight</defName>
+    <label>dark knight transformation</label>
+    <description>암흑 기사로 변신한다. 전용 플라스틸 판금갑옷과 장검이 소환되며, 기존 장비는 인벤토리로 이동. 해제 시 소환 장비는 소멸한다.</description>
+    <cooldownTicksRange>3000</cooldownTicksRange>
+    <hostile>false</hostile>
+    <displayOrder>505</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <warmupTime>1.5</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+        <formDefName>SSFTest_DarkKnightForm</formDefName>
+        <successChance>1.0</successChance>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       6) 3단 변신 어빌리티: 수인 변신
        인간 → 수인 (수인 상태에서 다시 사용하면 야수 폼으로는
        별도 기즈모로 진입 — allowedFromForms 조건 충족)
        ====================================================== -->
