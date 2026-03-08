@@ -9,6 +9,7 @@ using RimWorld;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -278,7 +279,9 @@ namespace ShapeshifterFramework.Comps
             var opt = currentForm?.verbGizmoOptions;
             if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
             {
-                string s = preferToggleLabel ? opt[index].toggleLabel : opt[index].label;
+                var o = opt[index];
+                // toggleLabel → label 순 fallback
+                string s = preferToggleLabel ? (o.toggleLabel ?? o.label) : o.label;
                 if (!string.IsNullOrEmpty(s)) return s.Translate().CapitalizeFirst();
             }
 
@@ -292,12 +295,27 @@ namespace ShapeshifterFramework.Comps
             var opt = currentForm?.verbGizmoOptions;
             if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
             {
-                string s = forToggle ? opt[index].toggleDesc : opt[index].desc;
+                var o = opt[index];
+                // toggleDesc → desc 순 fallback
+                string s = forToggle ? (o.toggleDesc ?? o.desc) : o.desc;
                 if (!string.IsNullOrEmpty(s)) return s.Translate();
             }
 
             if (forToggle) return "SSF_Verb_ToggleDesc".Translate();
             return "SSF_Verb_OrderDesc".Translate();
+        }
+
+        /// <summary>verbGizmoOptions의 iconPath에서 아이콘 로드. 없으면 null.</summary>
+        private Texture2D GetVerbIcon(int index)
+        {
+            var opt = currentForm?.verbGizmoOptions;
+            if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
+            {
+                string path = opt[index].iconPath;
+                if (!string.IsNullOrEmpty(path))
+                    return ContentFinder<Texture2D>.Get(path, reportFailure: false);
+            }
+            return null;
         }
 
         #endregion
@@ -1680,7 +1698,7 @@ namespace ShapeshifterFramework.Comps
                     {
                         defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: true),
                         defaultDesc = GetVerbDesc(idx, v, forToggle: true),
-                        icon = v.UIIcon,
+                        icon = GetVerbIcon(idx) ?? v.UIIcon,
                         isActive = () => IsAutoAttackEnabled(idx, v),
                         toggleAction = () => ToggleAutoAttack(idx, v),
                         groupable = false,
@@ -1700,7 +1718,7 @@ namespace ShapeshifterFramework.Comps
                 {
                     defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: false),
                     defaultDesc = GetVerbDesc(idx, v, forToggle: false),
-                    icon = v.UIIcon,
+                    icon = GetVerbIcon(idx) ?? v.UIIcon,
                     verb = v,
                     groupable = false,
                 };
