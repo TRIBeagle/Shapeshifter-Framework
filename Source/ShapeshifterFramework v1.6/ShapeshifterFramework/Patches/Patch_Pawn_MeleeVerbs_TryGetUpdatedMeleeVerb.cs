@@ -6,6 +6,7 @@
 //        false이면 power 비교 후 더 강한 쪽을 선택.
 
 using HarmonyLib;
+using RimWorld;
 using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
