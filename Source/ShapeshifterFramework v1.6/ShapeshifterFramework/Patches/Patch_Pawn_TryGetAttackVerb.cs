@@ -57,19 +57,8 @@ namespace ShapeshifterFramework.Patches
                             var bestMelee = FindBestFormMelee(verbs);
                             if (bestMelee != null)
                             {
-                                ShapeshiftDiagnostics.Info($"TryGetAttackVerb(replace): form melee tool={((bestMelee as Verb_MeleeAttack)?.tool?.label ?? "?")}");
                                 __result = bestMelee;
                                 return false;
-                            }
-                            else
-                            {
-                                ShapeshiftDiagnostics.Info($"TryGetAttackVerb(replace): FindBestFormMelee returned null! verbs.Count={verbs.Count}, melee verbs:");
-                                for (int j = 0; j < verbs.Count; j++)
-                                {
-                                    var vj = verbs[j];
-                                    if (vj == null) continue;
-                                    ShapeshiftDiagnostics.Info($"  [{j}] {vj.GetType().Name} isMelee={vj.verbProps?.IsMeleeAttack} tool={((vj as Verb_MeleeAttack)?.tool?.label ?? "null")} caster={vj.caster?.ToString() ?? "null"}");
-                                }
                             }
                         }
 

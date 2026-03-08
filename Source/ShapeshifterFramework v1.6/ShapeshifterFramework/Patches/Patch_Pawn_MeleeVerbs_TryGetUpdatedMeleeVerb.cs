@@ -42,7 +42,6 @@ namespace ShapeshifterFramework.Patches
                 if (replaceNative)
                 {
                     // 교체 모드: 항상 폼 근접 도구 사용
-                    ShapeshiftDiagnostics.Info($"TryGetMeleeVerb(replace): using form melee tool={((bestFormMelee as Verb_MeleeAttack)?.tool?.label ?? "?")} instead of vanilla={(((__result as Verb_MeleeAttack)?.tool?.label) ?? "null")}");
                     __result = bestFormMelee;
                     return;
                 }
