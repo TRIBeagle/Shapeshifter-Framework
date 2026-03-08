@@ -2,15 +2,6 @@
 // 목적 : 물약, 아티팩트 등 아이템(Use/Ingest) 사용 시 대상 폰을 변신시키는 실행 로직.
 // 용도 : 같은 ThingDef에 CompTargetable(예: CompTargetable_SinglePawn)이 함께 정의되어 있으면
 //        플레이어가 클릭으로 선택한 대상 Pawn을 변신시키고, CompTargetable이 없으면 사용자 자신을 변신시킴.
-// XML 사용 예 (대상 지정형):
-//   <comps>
-//     <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
-//       <formDefName>MyForm</formDefName>
-//     </li>
-//     <li Class="CompProperties_Targetable">
-//       <compClass>CompTargetable_SinglePawn</compClass>
-//     </li>
-//   </comps>
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;

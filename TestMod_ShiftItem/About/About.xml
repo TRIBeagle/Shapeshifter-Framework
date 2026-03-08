@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>[SSF Test] Shift Item</name>
+	<author>TRIBeagle</author>
+	<supportedVersions>
+		<li>1.6</li>
+	</supportedVersions>
+	<packageId>TRIBeagle.ssftest.shiftitem</packageId>
+	<description>ShapeShifter Framework 아이템 변신 테스트 모드. CompUseEffect_ShiftTarget + CompTargetable 동작 확인용.</description>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+		</li>
+		<li>
+			<packageId>TRIBeagle.shapeshifterframework</packageId>
+			<displayName>ShapeShifter Framework</displayName>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>TRIBeagle.shapeshifterframework</li>
+	</loadAfter>
+</ModMetaData>

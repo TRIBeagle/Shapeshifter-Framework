@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ============================================================
+       1) 자기 자신 변신 아이템 (CompTargetable 없음)
+       사용법: 아이템 우클릭 → "Use" → 사용자 자신이 변신
+       ============================================================ -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>SSFTest_ShiftPotion_Self</defName>
+    <label>shift potion (self)</label>
+    <description>사용자 자신을 늑대로 변신시키는 물약. CompTargetable 없이 자기 자신에게 적용.</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>100</MarketValue>
+      <Mass>0.2</Mass>
+    </statBases>
+    <stackLimit>5</stackLimit>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>drink shift potion (self)</useLabel>
+      </li>
+      <li Class="CompProperties_UseEffectSelfDestruct" />
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
+        <formDefName>SSFTest_WolfForm</formDefName>
+        <successChance>1.0</successChance>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- ============================================================
+       2) 대상 지정 변신 아이템 (CompTargetable_SinglePawn 사용)
+       사용법: 아이템 우클릭 → 대상 폰 선택 → 해당 폰이 변신
+       ============================================================ -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>SSFTest_ShiftPotion_Target</defName>
+    <label>shift potion (target)</label>
+    <description>클릭한 대상을 늑대로 변신시키는 물약. CompTargetable_SinglePawn으로 대상 선택.</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>150</MarketValue>
+      <Mass>0.2</Mass>
+    </statBases>
+    <stackLimit>5</stackLimit>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>use shift potion on...</useLabel>
+      </li>
+      <li Class="CompProperties_UseEffectSelfDestruct" />
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
+        <formDefName>SSFTest_WolfForm</formDefName>
+        <successChance>1.0</successChance>
+      </li>
+      <li Class="CompProperties_Targetable">
+        <compClass>CompTargetable_SinglePawn</compClass>
+      </li>
+    </comps>
+  </ThingDef>
+
+</Defs>
