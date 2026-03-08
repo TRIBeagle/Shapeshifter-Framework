@@ -228,6 +228,49 @@ namespace ShapeshifterFramework.Comps
             verbAutoToggle[AutoKey(v)] = true;
         }
 
+        /// <summary>폼 적용 시 배타적 토글 초기화: 첫 번째 ranged verb만 ON.</summary>
+        private void InitAutoToggleForForm()
+        {
+            var vt = ShapeshiftVerbTracker;
+            if (vt == null) return;
+
+            // verbGizmoOptions에 autoAttackDefault가 명시된 verb가 있으면 그것을 우선
+            int defaultOnIndex = -1;
+            var opt = currentForm?.verbGizmoOptions;
+            var verbs = vt.AllVerbs;
+
+            if (opt != null)
+            {
+                for (int i = 0; i < verbs.Count && i < opt.Count; i++)
+                {
+                    var v = verbs[i];
+                    if (v == null || v.verbProps == null || !v.verbProps.Ranged) continue;
+                    if (opt[i] != null && opt[i].autoAttackDefault == true)
+                    {
+                        defaultOnIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            bool firstSet = false;
+            for (int i = 0; i < verbs.Count; i++)
+            {
+                var v = verbs[i];
+                if (v == null || v.verbProps == null) continue;
+                if (!v.verbProps.Ranged) continue;
+
+                bool on;
+                if (defaultOnIndex >= 0)
+                    on = (i == defaultOnIndex);
+                else
+                    on = !firstSet; // 명시 없으면 첫 번째만 ON
+
+                verbAutoToggle[AutoKey(v)] = on;
+                if (on) firstSet = true;
+            }
+        }
+
         /// <summary>verb 명령 라벨 반환.</summary>
         public string GetVerbLabel(int index, Verb v, bool preferToggleLabel)
         {
@@ -631,6 +674,9 @@ namespace ShapeshifterFramework.Comps
 
             // VerbTracker 리셋
             shapeshiftVerbTracker = null;
+
+            // 배타적 토글 초기화: 첫 번째 ranged verb만 ON
+            InitAutoToggleForForm();
 
             RefreshPawn(pawn);
             InvalidateGizmoCache();
