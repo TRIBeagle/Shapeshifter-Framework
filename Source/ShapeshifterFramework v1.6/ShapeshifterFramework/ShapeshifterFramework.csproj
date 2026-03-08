@@ -94,6 +94,7 @@
     <Compile Include="Patches\Patch_Pawn_Kill.cs" />
     <Compile Include="Patches\Patch_Pawn_DoKillSideEffects.cs" />
     <Compile Include="Patches\Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound.cs" />
+    <Compile Include="Patches\Patch_Thing_TakeDamage.cs" />
     <Compile Include="Patches\Patch_Pawn_CallTracker_DoCall.cs" />
     <Compile Include="Patches\Patch_ThoughtWorker_Precept_GroinChestHairOrFaceUncovered.cs" />
     <Compile Include="Patches\Patch_ThoughtWorker_Precept_GroinChestOrHairUncovered.cs" />
