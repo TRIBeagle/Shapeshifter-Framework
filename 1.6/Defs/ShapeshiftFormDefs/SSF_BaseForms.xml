@@ -45,6 +45,7 @@
     <headOffset>(0,0)</headOffset>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
+  <!-- 장갑/슈트 베이스: 인간 외형 및 기존 장비 유지, 겹치는 장비는 인벤토리 보관, 의류 교체 잠금 -->
   <ShapeshifterFramework.ShapeshiftFormDef Name="SSF_BaseForm_Armored" Abstract="True">
     <body><mode>Default</mode></body>
     <head><mode>Default</mode></head>
