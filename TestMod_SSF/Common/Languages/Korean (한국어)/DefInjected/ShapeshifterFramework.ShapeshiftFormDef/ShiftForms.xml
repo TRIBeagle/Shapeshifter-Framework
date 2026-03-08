@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
 
-  <!-- 늑대 폼 -->
-  <SSFTest_WolfForm.label>늑대 변신</SSFTest_WolfForm.label>
-  <SSFTest_WolfForm.description>늑대로 완전 변신한다. 이동속도가 빨라지고 이빨로 공격한다.</SSFTest_WolfForm.description>
+  <!-- 베어 폼 -->
+  <SSFTest_BearForm.label>곰 변신</SSFTest_BearForm.label>
+  <SSFTest_BearForm.description>곰으로 완전 변신한다. 이동속도가 빨라지고 이빨로 공격한다.</SSFTest_BearForm.description>
 
   <!-- 곰 전사 폼 -->
   <SSFTest_BearWarriorForm.label>곰 전사 변신</SSFTest_BearWarriorForm.label>

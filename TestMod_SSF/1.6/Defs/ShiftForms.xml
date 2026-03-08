@@ -5,12 +5,12 @@
        변신 폼 정의
        ====================================================== -->
 
-  <!-- 1) 늑대 폼 (동물형) — 약물/아이템 전용, 어빌리티 바에 표시 안 함
+  <!-- 1) 베어 폼 (동물형) — 약물/아이템 전용, 어빌리티 바에 표시 안 함
        ★ 체형 교체 텍스처, hediff, capMods, 이펙트 통합 테스트 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
-    <defName>SSFTest_WolfForm</defName>
-    <label>wolf form</label>
-    <description>테스트용 늑대 변신. 동물형 완전 변신. 곰 텍스처로 체형 교체, 캐릭터 능력 보정, hediff 부여 테스트.</description>
+    <defName>SSFTest_BearForm</defName>
+    <label>bear form</label>
+    <description>테스트용 곰 변신. 동물형 완전 변신. 곰 텍스처로 체형 교체, 캐릭터 능력 보정, hediff 부여 테스트.</description>
     <abilityMode>None</abilityMode>
     <!-- 체형 교체 텍스처 -->
     <body>
@@ -32,7 +32,7 @@
     </statFactors>
     <!-- 능력치 보정 -->
     <capMods>
-      <li><capacity>Manipulation</capacity><setMax>0</setMax></li>
+      <li><capacity>Manipulation</capacity><setMax>0.2</setMax></li>
       <li><capacity>Talking</capacity><postFactor>0.1</postFactor></li>
       <li><capacity>Moving</capacity><postFactor>1.30</postFactor></li>
       <li><capacity>Sight</capacity><postFactor>1.10</postFactor></li>
@@ -87,6 +87,7 @@
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
+
   <!-- 2) 곰 전사 폼 (아머드형) — 버프 어빌리티용 동료 강화
        ★ 사운드 오버라이드 통합 테스트 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
@@ -125,6 +126,12 @@
     <description>테스트용 양 변신. 전투력 상실, 자발적 해제 불가.</description>
     <abilityMode>Custom</abilityMode>
     <linkedAbility>SSFTest_Ability_DebuffEnemy</linkedAbility>
+    <!-- 양 텍스처로 체형 교체 -->
+    <body>
+      <mode>Replace</mode>
+      <replacementTexPath>Things/Pawn/Animal/Sheep/SheepMale</replacementTexPath>
+      <replacementTexPathFemale>Things/Pawn/Animal/Sheep/SheepFemale</replacementTexPathFemale>
+    </body>
     <bodyDrawScale>0.6</bodyDrawScale>
     <durationTicks>10000</durationTicks>
     <canRevertVoluntarily>false</canRevertVoluntarily>

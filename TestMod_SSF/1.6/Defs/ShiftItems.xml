@@ -115,7 +115,7 @@
       </li>
       <li Class="CompProperties_UseEffectDestroySelf" />
       <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
-        <formDefName>SSFTest_WolfForm</formDefName>
+        <formDefName>SSFTest_BearForm</formDefName>
         <successChance>1.0</successChance>
       </li>
     </comps>
@@ -148,7 +148,7 @@
       </li>
       <li Class="CompProperties_UseEffectDestroySelf" />
       <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
-        <formDefName>SSFTest_WolfForm</formDefName>
+        <formDefName>SSFTest_BearForm</formDefName>
         <successChance>1.0</successChance>
       </li>
       <li Class="CompProperties_Targetable">
