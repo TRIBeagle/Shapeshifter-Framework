@@ -197,151 +197,160 @@
 - [ ] #108 각 verb별 커스텀 아이콘 표시
 - [ ] #109 각 verb별 한글 라벨 표시
 - [ ] #110 토글 ON/OFF 시 자동공격 동작 변경
+- [ ] #111 기즈모 순서: 각 verb마다 [공격 커맨드] → [자동공격 토글] 순서로 표시
+
+### 기본 컬러 오버라이드
+- [ ] #112 머리카락 색상 `(0.85, 0.85, 0.95)` (은빛)으로 변경됨
+- [ ] #113 해제 후 원래 머리카락 색상으로 복원
 
 ### 근접 도구
-- [ ] #111 `claws` (Scratch, power 10) 추가됨
-- [ ] #112 `replaceNativeTools=false` → 기존 도구도 유지
-- [ ] #113 `replaceNativeVerbs=false` → 기존 verb도 유지
+- [ ] #114 `claws` (Scratch, power 10) 추가됨
+- [ ] #115 `replaceNativeTools=false` → 기존 도구도 유지
+- [ ] #116 `replaceNativeVerbs=false` → 기존 verb도 유지
 
 ### 장비/Hediff
-- [ ] #114 의류 → 인벤토리
-- [ ] #115 무기 → 유지 (Keep)
-- [ ] #116 `FibrousMechanites` hediff 부여
-- [ ] #117 Royalty 시 `Waterskip` 어빌리티 추가
+- [ ] #117 의류 → 인벤토리
+- [ ] #118 무기 → 유지 (Keep)
+- [ ] #119 `FibrousMechanites` hediff 부여
+- [ ] #120 Royalty 시 `Waterskip` 어빌리티 추가
 
 ### 작업 제한
-- [ ] #118 Crafting 작업 불가
-- [ ] #119 Cooking 작업 불가
-- [ ] #120 작업 탭에서 해당 항목 체크 해제 & 잠금
+- [ ] #121 Crafting 작업 불가
+- [ ] #122 Cooking 작업 불가
+- [ ] #123 작업 탭에서 해당 항목 체크 해제 & 잠금
 
 ### 혈액/이펙트
-- [ ] #121 Insectoid 피/혈흔
-- [ ] #122 진입/해제 Fleck + 사운드
+- [ ] #124 Insectoid 피/혈흔
+- [ ] #125 진입/해제 Fleck + 사운드
 
 ---
 
 ## 5b. SSFTest_FullBeastForm (야수 폼) — 3단 변신 2단계, abilityMode=Auto
 
 ### 트리거/폼 체이닝
-- [ ] #123 인간 상태에서 진입 **불가** (`allowedFromForms`에 `None` 없음)
-- [ ] #124 수인(BeastkinForm) 상태에서만 진입 **가능**
-- [ ] #125 Auto 생성 어빌리티 `SSF_AutoAbility_SSFTest_FullBeastForm` 존재 확인
-- [ ] #126 로그에 `[SSF] Generated 1 additional ability def(s)` 출력
+- [ ] #126 인간 상태에서 진입 **불가** (`allowedFromForms`에 `None` 없음)
+- [ ] #127 수인(BeastkinForm) 상태에서만 진입 **가능**
+- [ ] #128 Auto 생성 어빌리티 `SSF_AutoAbility_SSFTest_FullBeastForm` 존재 확인
+- [ ] #129 로그에 `[SSF] Generated 1 additional ability def(s)` 출력
 
 ### 스탯/도구
-- [ ] #127 이동속도 +2.0
-- [ ] #128 피해배율 x0.7
-- [ ] #129 `fangs` (Bite, power 18) + `claws` (Scratch, power 14)
-- [ ] #130 `replaceNativeTools=true` → 네이티브 도구 교체
+- [ ] #130 이동속도 +2.0
+- [ ] #131 피해배율 x0.7
+- [ ] #132 `fangs` (Bite, power 18) + `claws` (Scratch, power 14)
+- [ ] #133 `replaceNativeTools=true` → 네이티브 도구 교체
 
 ### 해제/체이닝 복귀
-- [ ] #131 12000틱 자동 해제
-- [ ] #132 야수 폼 해제 후 → 수인 폼으로 복귀? 아니면 인간? (동작 확인)
+- [ ] #134 12000틱 자동 해제
+- [ ] #135 야수 폼 해제 후 → 수인 폼으로 복귀? 아니면 인간? (동작 확인)
 
 ---
 
 ## 6. SSFTest_GuardianForm (수호자) — 조건부 변신
 
 ### 변신 조건 (requirementsMode=Any)
-- [ ] #133 `SSFTest_MagicStone` 인벤토리 보유 시 → 변신 가능
-- [ ] #134 `FibrousMechanites` hediff 보유 시 → 변신 가능
-- [ ] #135 둘 다 없으면 → 변신 불가 (어빌리티 비활성 or 실패)
-- [ ] #136 둘 다 있어도 OK (Any 모드이므로)
+- [ ] #136 `SSFTest_MagicStone` 인벤토리 보유 시 → 변신 가능
+- [ ] #137 `FibrousMechanites` hediff 보유 시 → 변신 가능
+- [ ] #138 둘 다 없으면 → 변신 불가 (어빌리티 비활성 or 실패)
+- [ ] #139 둘 다 있어도 OK (Any 모드이므로)
 
 ### 비주얼
-- [ ] #137 `bodyDrawScale` 1.4 (크게)
-- [ ] #138 `portraitDrawScale` 1.3 → 캐릭터 포트레잇(좌측 초상화) 확대
-- [ ] #139 `bodyOffset` (0, -0.1) → 약간 아래로
+- [ ] #140 `bodyDrawScale` 1.4 (크게)
+- [ ] #141 `portraitDrawScale` 1.3 → 캐릭터 포트레잇(좌측 초상화) 확대
+- [ ] #142 `bodyOffset` (0, -0.1) → 약간 아래로
 
 ### 그림자 오버라이드
-- [ ] #140 `shadowVolume` (0.6, 1.0, 0.6) → 큰 그림자
-- [ ] #141 `shadowOffset` (0, 0, -0.05)
+- [ ] #143 `shadowVolume` (0.6, 1.0, 0.6) → 큰 그림자
+- [ ] #144 `shadowOffset` (0, 0, -0.05)
 
 ### 스탯/해제
-- [ ] #142 이동속도 +0.3, 피해배율 x0.85
-- [ ] #143 12000틱 자동 해제
-- [ ] #144 마력의 돌 드롭 시 → 변신 유지? 즉시 해제? (동작 확인)
+- [ ] #145 이동속도 +0.3, 피해배율 x0.85
+- [ ] #146 12000틱 자동 해제
+- [ ] #147 마력의 돌 드롭 시 → 변신 유지? 즉시 해제? (동작 확인)
 
 ---
 
 ## 7. SSFTest_PhantomForm (유령) — 비주얼 오버라이드
 
 ### 비주얼
-- [ ] #145 머리 텍스처 `Male_AverageNormal`로 교체
-- [ ] #146 셰이더 `Transparent` → 반투명 렌더링
-- [ ] #147 머리 색상 `(0.7, 0.8, 1.0, 0.5)` → 푸른빛 반투명
-- [ ] #148 머리카락 숨김 (`hair: Hidden`)
-- [ ] #149 `bodyType` → Thin (마른 체형으로 변경)
+- [ ] #148 머리 텍스처 `Male_AverageNormal`로 교체
+- [ ] #149 셰이더 `Transparent` → 반투명 렌더링
+- [ ] #150 머리 색상 `(0.7, 0.8, 1.0, 0.5)` → 푸른빛 반투명
+- [ ] #151 머리카락 숨김 (`hair: Hidden`)
+- [ ] #152 `bodyType` → Thin (마른 체형으로 변경)
+
+### 기본 스킨컬러 오버라이드
+- [ ] #153 피부색 `(0.7, 0.8, 1.0)` (창백한 푸른빛)으로 변경됨
+- [ ] #154 해제 후 원래 피부색으로 복원 (skinColorOverride가 null이면 null로 복원)
 
 ### FX 지연
-- [ ] #150 진입 FX 30틱 딜레이 후 재생 (`transformEnterFxDelayTicks=30`)
-- [ ] #151 해제 FX 15틱 딜레이 후 재생 (`transformExitFxDelayTicks=15`)
+- [ ] #155 진입 FX 30틱 딜레이 후 재생 (`transformEnterFxDelayTicks=30`)
+- [ ] #156 해제 FX 15틱 딜레이 후 재생 (`transformExitFxDelayTicks=15`)
 
 ### 작업 제한
-- [ ] #152 소방(Firefighter) 작업 불가 (`disabledWorkTypesOnTransform`)
-- [ ] #153 WorkTag이 아닌 WorkTypeDef 직접 차단 정상 작동
+- [ ] #157 소방(Firefighter) 작업 불가 (`disabledWorkTypesOnTransform`)
+- [ ] #158 WorkTag이 아닌 WorkTypeDef 직접 차단 정상 작동
 
 ### 해제
-- [ ] #154 10000틱 자동 해제
-- [ ] #155 해제 후 머리/체형/셰이더 원상복귀
-- [ ] #156 해제 후 머리카락 다시 표시
+- [ ] #159 10000틱 자동 해제
+- [ ] #160 해제 후 머리/체형/셰이더/피부색 원상복귀
+- [ ] #161 해제 후 머리카락 다시 표시
 
 ---
 
 ## 8. SSFTest_RaceLockedForm (종족 제한) — 인간 전용
 
 ### 종족 제한
-- [ ] #157 인간(Human) 폰 → 변신 성공
-- [ ] #158 비인간 종족 폰 → 변신 불가 (차단 메시지)
+- [ ] #162 인간(Human) 폰 → 변신 성공
+- [ ] #163 비인간 종족 폰 → 변신 불가 (차단 메시지)
 
 ### 머리타입
-- [ ] #159 `headType=Male_AverageNormal`로 고정
-- [ ] #160 여성 폰도 Male 머리로 강제 변경되는지 확인
+- [ ] #164 `headType=Male_AverageNormal`로 고정
+- [ ] #165 여성 폰도 Male 머리로 강제 변경되는지 확인
 
 ### 장비 잠금
-- [ ] #161 `apparelEquipLock=Locked` → 의류 탈착 불가
-- [ ] #162 `weaponEquipLock=Unlocked` → 무기 자유 교체 가능
+- [ ] #166 `apparelEquipLock=Locked` → 의류 탈착 불가
+- [ ] #167 `weaponEquipLock=Unlocked` → 무기 자유 교체 가능
 
 ### 스탯/해제
-- [ ] #163 이동속도 +0.5, 근접회피 +10, 피해배율 x0.75
-- [ ] #164 12000틱 자동 해제
+- [ ] #168 이동속도 +0.5, 근접회피 +10, 피해배율 x0.75
+- [ ] #169 12000틱 자동 해제
 
 ---
 
 ## 9. AoE 투사체 (SSFTest_Ability_MassPolymorph)
 
-- [ ] #165 사거리 25칸 투사체 발사
-- [ ] #166 warmupTime 2.5초
-- [ ] #167 착탄 지점 반경 5칸 내 모든 폰 대상
-- [ ] #168 각 폰 60% 확률로 양 변신
-- [ ] #169 아군도 영향받는지 확인
-- [ ] #170 지면 타겟 가능 (`canTargetLocations=true`)
+- [ ] #170 사거리 25칸 투사체 발사
+- [ ] #171 warmupTime 2.5초
+- [ ] #172 착탄 지점 반경 5칸 내 모든 폰 대상
+- [ ] #173 각 폰 60% 확률로 양 변신
+- [ ] #174 아군도 영향받는지 확인
+- [ ] #175 지면 타겟 가능 (`canTargetLocations=true`)
 
 ---
 
 ## 10. 아이템/약물 경로
 
-- [ ] #171 `SSFTest_ShiftScroll_Self`: 사용 후 아이템 파괴
-- [ ] #172 `SSFTest_ShiftScroll_Self`: stackLimit 5 동작
-- [ ] #173 `SSFTest_ShiftScroll_Target`: 타겟 선택 UI 표시
-- [ ] #174 `SSFTest_ShiftScroll_Target`: 대상 근처로 이동 후 사용
-- [ ] #175 `SSFTest_BearElixir`: DrugLab 제작 가능 (허브약 1개)
-- [ ] #176 `SSFTest_BearElixir`: drugCategory=Medical, 복용 120틱
-- [ ] #177 `SSFTest_MagicStone`: 인벤토리 소지 아이템 (소비 안 됨)
+- [ ] #176 `SSFTest_ShiftScroll_Self`: 사용 후 아이템 파괴
+- [ ] #177 `SSFTest_ShiftScroll_Self`: stackLimit 5 동작
+- [ ] #178 `SSFTest_ShiftScroll_Target`: 타겟 선택 UI 표시
+- [ ] #179 `SSFTest_ShiftScroll_Target`: 대상 근처로 이동 후 사용
+- [ ] #180 `SSFTest_BearElixir`: DrugLab 제작 가능 (허브약 1개)
+- [ ] #181 `SSFTest_BearElixir`: drugCategory=Medical, 복용 120틱
+- [ ] #182 `SSFTest_MagicStone`: 인벤토리 소지 아이템 (소비 안 됨)
 
 ---
 
 ## 11. 공통 / 크로스커팅 테스트
 
-- [ ] #178 세이브/로드 후 변신 상태 유지
-- [ ] #179 세이브/로드 후 스탯/hediff/텍스처 정상
-- [ ] #180 변신 중 사망 → 시체 텍스처/혈액 정상
-- [ ] #181 변신 중 징집/비징집 전환
-- [ ] #182 이미 변신 중 같은 폼 재사용 시도 → 차단 or 갱신
-- [ ] #183 이미 변신 중 다른 폼 사용 → 기존 폼 해제 → 새 폼 적용
-- [ ] #184 카라반 이동 중 변신 타이머 만료
-- [ ] #185 빨간 에러 로그 없음 (전 테스트 과정)
+- [ ] #183 세이브/로드 후 변신 상태 유지
+- [ ] #184 세이브/로드 후 스탯/hediff/텍스처/컬러 정상
+- [ ] #185 변신 중 사망 → 시체 텍스처/혈액 정상
+- [ ] #186 변신 중 징집/비징집 전환
+- [ ] #187 이미 변신 중 같은 폼 재사용 시도 → 차단 or 갱신
+- [ ] #188 이미 변신 중 다른 폼 사용 → 기존 폼 해제 → 새 폼 적용
+- [ ] #189 카라반 이동 중 변신 타이머 만료
+- [ ] #190 빨간 에러 로그 없음 (전 테스트 과정)
 
 ---
 
-> **총 185개 항목** | 8개 폼 + AoE + 아이템 + 공통 테스트
+> **총 190개 항목** | 8개 폼 + AoE + 아이템 + 공통 테스트

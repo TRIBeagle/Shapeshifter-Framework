@@ -269,6 +269,8 @@
         </drawData>
       </li>
     </renderNodeProperties>
+    <!-- ★ 기본 컬러 오버라이드 (텍스처 Replace 없이 색상만 변경) -->
+    <hairColor>(0.85, 0.85, 0.95)</hairColor>
     <!-- ★ 보이스 오버라이드 -->
     <soundCall>Pawn_Furskin_Call</soundCall>
     <soundDeath>Pawn_Furskin_Death</soundDeath>
@@ -530,6 +532,8 @@
     </head>
     <hair><mode>Hidden</mode></hair>
     <bodyType>Thin</bodyType>
+    <!-- ★ 기본 스킨컬러 오버라이드 (유령답게 창백한 푸른빛) -->
+    <skinColor>(0.7, 0.8, 1.0)</skinColor>
     <bodyDrawScale>1.0</bodyDrawScale>
     <durationTicks>10000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
