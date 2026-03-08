@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       3) 어빌리티: 동료 변신 (버프형)
+       곰 전사 폼으로 변신시켜 전투력 강화
+       ====================================================== -->
+  <AbilityDef>
+    <defName>SSFTest_Ability_BuffAlly</defName>
+    <label>bestow bear warrior</label>
+    <description>동료에게 곰 전사의 힘을 부여한다. 장비를 유지한 채 스탯이 강화된다.</description>
+    <cooldownTicksRange>1500</cooldownTicksRange>
+    <hostile>false</hostile>
+    <displayOrder>500</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>15</range>
+      <warmupTime>1.0</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetAnimals>false</canTargetAnimals>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+        <formDefName>SSFTest_BearWarriorForm</formDefName>
+        <successChance>1.0</successChance>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       4) 어빌리티: 적 변신 (디버프형)
+       적을 양으로 변신시켜 무력화
+       ====================================================== -->
+  <AbilityDef>
+    <defName>SSFTest_Ability_DebuffEnemy</defName>
+    <label>polymorph: sheep</label>
+    <description>적을 양으로 변신시킨다. 전투력을 상실하며 자발적 해제 불가.</description>
+    <cooldownTicksRange>3000</cooldownTicksRange>
+    <hostile>true</hostile>
+    <displayOrder>501</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>20</range>
+      <warmupTime>1.5</warmupTime>
+      <targetParams>
+        <canTargetSelf>false</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetAnimals>false</canTargetAnimals>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+        <formDefName>SSFTest_SheepForm</formDefName>
+        <successChance>0.75</successChance>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       5) 3단 변신 어빌리티: 수인 변신
+       인간 → 수인 (수인 상태에서 다시 사용하면 야수 폼으로는
+       별도 기즈모로 진입 — allowedFromForms 조건 충족)
+       ====================================================== -->
+  <AbilityDef>
+    <defName>SSFTest_Ability_Beastkin</defName>
+    <label>beastkin shift</label>
+    <description>수인 형태로 변신한다. 수인 상태에서는 기즈모로 완전한 야수 형태로 2단 변신 가능.</description>
+    <cooldownTicksRange>1200</cooldownTicksRange>
+    <hostile>false</hostile>
+    <displayOrder>510</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <warmupTime>0.5</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+        <formDefName>SSFTest_BeastkinForm</formDefName>
+        <successChance>1.0</successChance>
+      </li>
+    </comps>
+  </AbilityDef>
+
+</Defs>

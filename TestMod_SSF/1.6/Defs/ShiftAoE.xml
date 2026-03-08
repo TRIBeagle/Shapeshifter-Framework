@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       6) 범위형 변신 — Projectile_Polymorph + aoeRadius
+       반경 5칸 내 모든 폰을 양으로 변신시키는 투사체
+       ====================================================== -->
+
+  <!-- 투사체 정의 -->
+  <ThingDef ParentName="BaseBullet">
+    <defName>SSFTest_Projectile_MassSheep</defName>
+    <label>polymorph wave</label>
+    <graphicData>
+      <texPath>Things/Projectile/Bullet_Small</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <thingClass>ShapeshifterFramework.Projectiles.Projectile_Polymorph</thingClass>
+    <projectile>
+      <damageDef>Stun</damageDef>
+      <damageAmountBase>1</damageAmountBase>
+      <speed>60</speed>
+    </projectile>
+    <modExtensions>
+      <li Class="ShapeshifterFramework.Extensions.PolymorphProjectileExtension">
+        <formDefName>SSFTest_SheepForm</formDefName>
+        <successChance>0.6</successChance>
+        <aoeRadius>5</aoeRadius>
+      </li>
+    </modExtensions>
+  </ThingDef>
+
+  <!-- 범위 변신 어빌리티: 투사체를 발사 -->
+  <AbilityDef>
+    <defName>SSFTest_Ability_MassPolymorph</defName>
+    <label>mass polymorph</label>
+    <description>반경 5칸 내 모든 폰을 양으로 변신시키는 범위 마법. 60% 확률.</description>
+    <cooldownTicksRange>6000</cooldownTicksRange>
+    <hostile>true</hostile>
+    <displayOrder>520</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>25</range>
+      <warmupTime>2.5</warmupTime>
+      <defaultProjectile>SSFTest_Projectile_MassSheep</defaultProjectile>
+      <targetParams>
+        <canTargetSelf>false</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetLocations>true</canTargetLocations>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+  </AbilityDef>
+
+</Defs>

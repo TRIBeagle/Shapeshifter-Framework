@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Defs>
 
-  <!-- ============================================================
-       1) 자기 자신 변신 아이템 (CompTargetable 없음)
-       사용법: 아이템 우클릭 → "Use" → 사용자 자신이 변신
-       ============================================================ -->
+  <!-- ======================================================
+       2a) 아이템 변신 — 자기 자신 (CompTargetable 없음)
+       ====================================================== -->
   <ThingDef ParentName="ResourceBase">
-    <defName>SSFTest_ShiftPotion_Self</defName>
-    <label>shift potion (self)</label>
-    <description>사용자 자신을 늑대로 변신시키는 물약. CompTargetable 없이 자기 자신에게 적용.</description>
+    <defName>SSFTest_ShiftScroll_Self</defName>
+    <label>shift scroll (self)</label>
+    <description>사용하면 자기 자신이 늑대로 변신하는 주문서.</description>
     <graphicData>
-      <texPath>Things/Item/Drug/Penoxycyline</texPath>
-      <graphicClass>Graphic_StackCount</graphicClass>
+      <texPath>Things/Item/Special/TechprofSubpersonaCore</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
       <MaxHitPoints>50</MaxHitPoints>
-      <MarketValue>100</MarketValue>
-      <Mass>0.2</Mass>
+      <MarketValue>120</MarketValue>
+      <Mass>0.1</Mass>
     </statBases>
     <stackLimit>5</stackLimit>
     <thingCategories>
@@ -25,7 +24,7 @@
     <comps>
       <li Class="CompProperties_Usable">
         <useJob>UseItem</useJob>
-        <useLabel>drink shift potion (self)</useLabel>
+        <useLabel>use shift scroll (self)</useLabel>
       </li>
       <li Class="CompProperties_UseEffectSelfDestruct" />
       <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
@@ -35,22 +34,21 @@
     </comps>
   </ThingDef>
 
-  <!-- ============================================================
-       2) 대상 지정 변신 아이템 (CompTargetable_SinglePawn 사용)
-       사용법: 아이템 우클릭 → 대상 폰 선택 → 해당 폰이 변신
-       ============================================================ -->
+  <!-- ======================================================
+       2b) 아이템 변신 — 대상 지정 (CompTargetable_SinglePawn)
+       ====================================================== -->
   <ThingDef ParentName="ResourceBase">
-    <defName>SSFTest_ShiftPotion_Target</defName>
-    <label>shift potion (target)</label>
-    <description>클릭한 대상을 늑대로 변신시키는 물약. CompTargetable_SinglePawn으로 대상 선택.</description>
+    <defName>SSFTest_ShiftScroll_Target</defName>
+    <label>shift scroll (target)</label>
+    <description>클릭한 대상을 늑대로 변신시키는 주문서. 대상을 선택하면 걸어가서 사용.</description>
     <graphicData>
-      <texPath>Things/Item/Drug/Penoxycyline</texPath>
-      <graphicClass>Graphic_StackCount</graphicClass>
+      <texPath>Things/Item/Special/TechprofSubpersonaCore</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
       <MaxHitPoints>50</MaxHitPoints>
       <MarketValue>150</MarketValue>
-      <Mass>0.2</Mass>
+      <Mass>0.1</Mass>
     </statBases>
     <stackLimit>5</stackLimit>
     <thingCategories>
@@ -59,7 +57,7 @@
     <comps>
       <li Class="CompProperties_Usable">
         <useJob>UseItem</useJob>
-        <useLabel>use shift potion on...</useLabel>
+        <useLabel>use shift scroll on...</useLabel>
       </li>
       <li Class="CompProperties_UseEffectSelfDestruct" />
       <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">

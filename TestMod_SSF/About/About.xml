@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>[SSF Test] Shift Item</name>
+	<name>[SSF Test] Shapeshifter Playground</name>
 	<author>TRIBeagle</author>
 	<supportedVersions>
 		<li>1.6</li>
 	</supportedVersions>
-	<packageId>TRIBeagle.ssftest.shiftitem</packageId>
-	<description>ShapeShifter Framework 아이템 변신 테스트 모드. CompUseEffect_ShiftTarget + CompTargetable 동작 확인용.</description>
+	<packageId>TRIBeagle.ssftest.playground</packageId>
+	<description>ShapeShifter Framework 종합 테스트 모드.
+- 약물 변신
+- 아이템 변신 (자기/대상)
+- 어빌리티: 동료 변신 (버프형)
+- 어빌리티: 적 변신 (디버프형)
+- 범위형 변신 (반경 내 모든 적)
+- 3단 변신 (인간→수인→동물)</description>
 	<modDependencies>
 		<li>
 			<packageId>brrainz.harmony</packageId>

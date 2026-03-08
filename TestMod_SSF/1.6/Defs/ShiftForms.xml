@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       변신 폼 정의
+       ====================================================== -->
+
+  <!-- 1) 늑대 폼 (동물형) — 약물/아이템/디버프 어빌리티용 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
+    <defName>SSFTest_WolfForm</defName>
+    <label>wolf form</label>
+    <description>테스트용 늑대 변신. 동물형 완전 변신.</description>
+    <bodyDrawScale>0.85</bodyDrawScale>
+    <durationTicks>15000</durationTicks> <!-- 약 6분 -->
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <statOffsets>
+      <MoveSpeed>1.5</MoveSpeed>
+    </statOffsets>
+    <tools>
+      <li>
+        <label>teeth</label>
+        <capacities><li>Bite</li></capacities>
+        <power>12</power>
+        <cooldownTime>1.5</cooldownTime>
+        <linkedBodyPartsGroup>Teeth</linkedBodyPartsGroup>
+      </li>
+    </tools>
+    <replaceNativeTools>true</replaceNativeTools>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 2) 곰 전사 폼 (아머드형) — 버프 어빌리티용 동료 강화 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_BearWarriorForm</defName>
+    <label>bear warrior form</label>
+    <description>테스트용 곰 전사 변신. 장비 유지하면서 스탯 강화.</description>
+    <bodyDrawScale>1.3</bodyDrawScale>
+    <durationTicks>15000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <statOffsets>
+      <MoveSpeed>0.5</MoveSpeed>
+      <MeleeDodgeChance>10</MeleeDodgeChance>
+    </statOffsets>
+    <statFactors>
+      <IncomingDamageFactor>0.8</IncomingDamageFactor>
+    </statFactors>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 3) 양 폼 (동물형) — 디버프/범위형용. 해제 불가 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
+    <defName>SSFTest_SheepForm</defName>
+    <label>sheep form</label>
+    <description>테스트용 양 변신. 전투력 상실, 자발적 해제 불가.</description>
+    <bodyDrawScale>0.6</bodyDrawScale>
+    <durationTicks>10000</durationTicks> <!-- 약 4분 -->
+    <canRevertVoluntarily>false</canRevertVoluntarily>
+    <statOffsets>
+      <MoveSpeed>-1.0</MoveSpeed>
+    </statOffsets>
+    <disabledWorkTagsOnTransform>Violent</disabledWorkTagsOnTransform>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- ======================================================
+       3단 변신 폼: 인간 → 수인 → 동물
+       ====================================================== -->
+
+  <!-- 4a) 수인 폼 (휴머노이드형) — 1단계: 인간→수인 -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
+    <defName>SSFTest_BeastkinForm</defName>
+    <label>beastkin form</label>
+    <description>수인 형태. 인간 외형 유지하면서 동물적 능력 부여. 여기서 한번 더 변신하면 완전한 동물 형태로.</description>
+    <bodyDrawScale>1.1</bodyDrawScale>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <statOffsets>
+      <MoveSpeed>0.8</MoveSpeed>
+      <MeleeDodgeChance>5</MeleeDodgeChance>
+    </statOffsets>
+    <tools>
+      <li>
+        <label>claws</label>
+        <capacities><li>Scratch</li></capacities>
+        <power>10</power>
+        <cooldownTime>1.8</cooldownTime>
+        <linkedBodyPartsGroup>Hands</linkedBodyPartsGroup>
+      </li>
+    </tools>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 4b) 야수 폼 (동물형) — 2단계: 수인→동물 (수인 상태에서만 진입 가능) -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
+    <defName>SSFTest_FullBeastForm</defName>
+    <label>full beast form</label>
+    <description>완전한 야수 형태. 수인 상태에서만 변신 가능.</description>
+    <bodyDrawScale>1.0</bodyDrawScale>
+    <durationTicks>12000</durationTicks> <!-- 약 5분 후 자동 해제 -->
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <!-- 수인 폼에서만 진입 가능 -->
+    <allowedFromForms>
+      <li>SSFTest_BeastkinForm</li>
+    </allowedFromForms>
+    <statOffsets>
+      <MoveSpeed>2.0</MoveSpeed>
+    </statOffsets>
+    <statFactors>
+      <IncomingDamageFactor>0.7</IncomingDamageFactor>
+    </statFactors>
+    <tools>
+      <li>
+        <label>fangs</label>
+        <capacities><li>Bite</li></capacities>
+        <power>18</power>
+        <cooldownTime>1.5</cooldownTime>
+        <linkedBodyPartsGroup>Teeth</linkedBodyPartsGroup>
+      </li>
+      <li>
+        <label>claws</label>
+        <capacities><li>Scratch</li></capacities>
+        <power>14</power>
+        <cooldownTime>1.2</cooldownTime>
+        <linkedBodyPartsGroup>Hands</linkedBodyPartsGroup>
+      </li>
+    </tools>
+    <replaceNativeTools>true</replaceNativeTools>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+</Defs>
