@@ -1669,6 +1669,25 @@ namespace ShapeshifterFramework.Comps
 
                 int idx = i;
 
+                bool projectileOk = !(v is Verb_LaunchProjectile) || v.verbProps.defaultProjectile != null;
+
+                var cmd = new Command_VerbTarget
+                {
+                    defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: false),
+                    defaultDesc = GetVerbDesc(idx, v, forToggle: false),
+                    icon = GetVerbIcon(idx) ?? v.UIIcon,
+                    verb = v,
+                    groupable = false,
+                };
+                if (!projectileOk)
+                    cmd.Disable("SSF_Message_NoProjectile".Translate());
+                if (!canViolent)
+                    cmd.Disable("IsIncapableOfViolenceLower".Translate(pawn.LabelShort, pawn));
+                else if (!v.Available())
+                    cmd.Disable("CommandCannotFire".Translate());
+
+                yield return cmd;
+
                 if (showToggle)
                 {
                     var tgl = new Command_Toggle
@@ -1688,25 +1707,6 @@ namespace ShapeshifterFramework.Comps
                 {
                     ForceAutoAttackOn(idx, v);
                 }
-
-                bool projectileOk = !(v is Verb_LaunchProjectile) || v.verbProps.defaultProjectile != null;
-
-                var cmd = new Command_VerbTarget
-                {
-                    defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: false),
-                    defaultDesc = GetVerbDesc(idx, v, forToggle: false),
-                    icon = GetVerbIcon(idx) ?? v.UIIcon,
-                    verb = v,
-                    groupable = false,
-                };
-                if (!projectileOk)
-                    cmd.Disable("SSF_Message_NoProjectile".Translate());
-                if (!canViolent)
-                    cmd.Disable("IsIncapableOfViolenceLower".Translate(pawn.LabelShort, pawn));
-                else if (!v.Available())
-                    cmd.Disable("CommandCannotFire".Translate());
-
-                yield return cmd;
             }
         }
         #endregion
