@@ -64,7 +64,6 @@ namespace ShapeshifterFramework.Comps
         // verb 자동공격 토글 상태 (키: formDefName#index)
         private readonly Dictionary<string, bool> verbAutoToggle = new Dictionary<string, bool>();
 
-        internal int lastAutoVerbIndex = -1;
         public bool suppressEquipLock = false;
 
         // PostLoadInit에서 Reference 연결 완료 후 AddRange하기 위한 임시 보관 필드
@@ -195,11 +194,34 @@ namespace ShapeshifterFramework.Comps
             return DefaultAutoOn(index);
         }
 
-        /// <summary>자동공격 토글 전환.</summary>
+        /// <summary>자동공격 토글 전환 (배타적: ON 시 다른 ranged verb 전부 OFF).</summary>
         public void ToggleAutoAttack(int index, Verb v)
         {
             bool now = IsAutoAttackEnabled(index, v);
-            verbAutoToggle[AutoKey(v)] = !now;
+            if (now)
+            {
+                verbAutoToggle[AutoKey(v)] = false;
+            }
+            else
+            {
+                // ON → 같은 폼의 다른 ranged verb 전부 OFF
+                var vt = ShapeshiftVerbTracker;
+                if (vt != null)
+                {
+                    var verbs = vt.AllVerbs;
+                    for (int i = 0; i < verbs.Count; i++)
+                    {
+                        var other = verbs[i];
+                        if (other == null || other.verbProps == null) continue;
+                        if (!other.verbProps.Ranged) continue;
+                        verbAutoToggle[AutoKey(other)] = (other == v);
+                    }
+                }
+                else
+                {
+                    verbAutoToggle[AutoKey(v)] = true;
+                }
+            }
         }
 
         /// <summary>자동공격 강제 활성.</summary>

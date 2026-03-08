@@ -25,40 +25,29 @@ namespace ShapeshifterFramework.Patches
                     return false; // 원본 스킵
                 }
 
-                // 2) 변신 중이고 자동사격 경로(allowManualCastWeapons == false)라면, 라운드 로빈으로 verb 선택
+                // 2) 변신 중이고 자동사격 경로(allowManualCastWeapons == false)라면, 활성화된 verb 선택
                 var comp = __instance.TryGetComp<CompShapeshifter>();
                 if (comp != null && comp.isTransformed && !allowManualCastWeapons)
                 {
                     var vt = comp.ShapeshiftVerbTracker;
                     if (vt != null)
                     {
-                        // 라운드 로빈: 마지막 인덱스 다음부터 순회
+                        // 배타적 토글: 활성화된(ON) verb 중 첫 번째 반환
                         var verbs = vt.AllVerbs;
-                        int count = verbs.Count;
-                        if (count > 0)
+                        for (int i = 0; i < verbs.Count; i++)
                         {
-                            int start = (comp.lastAutoVerbIndex + 1) % count;
-                            for (int offset = 0; offset < count; offset++)
-                            {
-                                int i = (start + offset) % count;
-                                var v = verbs[i];
-                                if (v == null || v.verbProps == null) continue;
-                                if (!v.verbProps.Ranged) continue;
-                                if (!v.Available()) continue;
+                            var v = verbs[i];
+                            if (v == null || v.verbProps == null) continue;
+                            if (!v.verbProps.Ranged) continue;
+                            if (!v.Available()) continue;
+                            if (!comp.IsAutoAttackEnabled(i, v)) continue;
+                            if (target != null && !v.CanHitTarget(target)) continue;
 
-                                // 토글 OFF면 자동사격 후보에서 제외
-                                if (!comp.IsAutoAttackEnabled(i, v)) continue;
-
-                                // 타겟 적합성 (간단 체크)
-                                if (target != null && !v.CanHitTarget(target)) continue;
-
-                                comp.lastAutoVerbIndex = i;
-                                __result = v;
-                                return false;
-                            }
+                            __result = v;
+                            return false;
                         }
 
-                        // shapeshift 원거리 verb 중 자동사격 가능한 것이 없으면, 바닐라에 맡김
+                        // 활성화된 원거리 verb 없으면 바닐라에 맡김
                         return true;
                     }
                 }
