@@ -1704,7 +1704,7 @@ namespace ShapeshifterFramework.Comps
                         groupable = false,
                     };
                     if (!canViolent)
-                        tgl.Disable("IsIncapableOfViolence".Translate());
+                        tgl.Disable("IsIncapableOfViolenceLower".Translate(pawn.LabelShort, pawn));
                     yield return tgl;
                 }
                 else
@@ -1725,7 +1725,7 @@ namespace ShapeshifterFramework.Comps
                 if (!projectileOk)
                     cmd.Disable("SSF_Message_NoProjectile".Translate());
                 if (!canViolent)
-                    cmd.Disable("IsIncapableOfViolence".Translate());
+                    cmd.Disable("IsIncapableOfViolenceLower".Translate(pawn.LabelShort, pawn));
                 else if (!v.Available())
                     cmd.Disable("CommandCannotFire".Translate());
 
