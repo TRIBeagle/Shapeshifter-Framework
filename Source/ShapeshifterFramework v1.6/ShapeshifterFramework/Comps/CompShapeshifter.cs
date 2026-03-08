@@ -1387,6 +1387,68 @@ namespace ShapeshifterFramework.Comps
             }
             catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Shapeshift Verbs) error: {ex}"); }
 
+            // 폼 근접 도구 직접 주입: pawn.verbTracker에서 네이티브 근접 제거 후 폼 도구 추가
+            try
+            {
+                var comp2 = pawn.TryGetComp<CompShapeshifter>();
+                if (comp2 != null && comp2.isTransformed && comp2.currentForm != null && forceReinitPawnVerbs)
+                {
+                    var form = comp2.currentForm;
+                    bool replaceNative = form.replaceNativeTools.HasValue && form.replaceNativeTools.Value;
+                    var formTools = form.tools;
+
+                    if (formTools != null && formTools.Count > 0 && pawn.verbTracker != null)
+                    {
+                        var verbList = pawn.verbTracker.AllVerbs;
+
+                        // 1) replaceNativeTools=true → 네이티브 근접 verb 제거
+                        if (replaceNative)
+                        {
+                            for (int i = verbList.Count - 1; i >= 0; i--)
+                            {
+                                var v = verbList[i];
+                                if (v != null && v.verbProps != null && v.verbProps.IsMeleeAttack)
+                                    verbList.RemoveAt(i);
+                            }
+                        }
+
+                        // 2) 폼 도구를 pawn.verbTracker에 직접 주입
+                        var maneuvers = DefDatabase<ManeuverDef>.AllDefsListForReading;
+                        for (int ti = 0; ti < formTools.Count; ti++)
+                        {
+                            var tool = formTools[ti];
+                            if (tool == null) continue;
+                            var caps = tool.capacities;
+                            if (caps == null || caps.Count == 0) continue;
+
+                            for (int ci = 0; ci < caps.Count; ci++)
+                            {
+                                var cap = caps[ci];
+                                if (cap == null) continue;
+
+                                for (int mi = 0; mi < maneuvers.Count; mi++)
+                                {
+                                    var man = maneuvers[mi];
+                                    if (man == null || man.requiredCapacity != cap) continue;
+                                    var vp = man.verb;
+                                    if (vp == null || !vp.IsMeleeAttack) continue;
+
+                                    var verb = (Verb)System.Activator.CreateInstance(vp.verbClass);
+                                    verb.loadID = Verb.CalculateUniqueLoadID(pawn, verbList.Count);
+                                    verb.verbProps = vp;
+                                    verb.verbTracker = pawn.verbTracker;
+                                    verb.tool = tool;
+                                    verb.maneuver = man;
+                                    verb.caster = pawn;
+                                    verbList.Add(verb);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Form Tool Inject) error: {ex}"); }
+
             // UI 갱신
             try
             {

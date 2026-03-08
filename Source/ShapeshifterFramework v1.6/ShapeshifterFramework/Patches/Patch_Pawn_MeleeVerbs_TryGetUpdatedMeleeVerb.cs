@@ -1,14 +1,11 @@
 // ShapeshifterFramework | Patches | Patch_Pawn_MeleeVerbs_TryGetUpdatedMeleeVerb.cs
-// 목적 : 실제 근접 전투에서 바닐라 Pawn_MeleeVerbs가 폼의 근접 도구를 무시하는 문제 해결.
-// 용도 : Pawn_MeleeVerbs.GetUpdatedAvailableVerbsList()는 pawn.verbTracker에서만 verb를 수집하기 때문에
-//        shapeshiftVerbTracker의 폼 근접 도구가 선택되지 않음.
-//        TryGetMeleeVerb Postfix에서 replaceNativeTools=true이면 폼 도구로 강제 교체,
-//        false이면 power 비교 후 더 강한 쪽을 선택.
+// 목적 : 폼 근접 도구가 pawn.verbTracker에 직접 주입되지 못한 경우를 대비한 안전 장치.
+// 용도 : RefreshPawn에서 폼 도구가 pawn.verbTracker에 주입되므로 바닐라가 자연 선택하지만,
+//        만약 주입이 실패했을 때 shapeshiftVerbTracker에서 폼 근접 도구를 가져와 보완함.
 
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
-using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using Verse;
 
@@ -21,6 +18,9 @@ namespace ShapeshifterFramework.Patches
         {
             try
             {
+                // 바닐라가 이미 유효한 근접 verb를 골랐으면 스킵
+                if (__result != null) return;
+
                 var pawn = __instance.Pawn;
                 if (pawn == null) return;
 
@@ -30,62 +30,25 @@ namespace ShapeshifterFramework.Patches
                 var form = comp.currentForm;
                 if (form == null || form.tools == null || form.tools.Count == 0) return;
 
+                // 바닐라가 null을 반환했을 때만 shapeshiftVerbTracker에서 폴백
                 var vt = comp.ShapeshiftVerbTracker;
                 if (vt == null) return;
 
                 var verbs = vt.AllVerbs;
-                var bestFormMelee = FindBestFormMelee(verbs);
-                if (bestFormMelee == null) return;
-
-                bool replaceNative = form.replaceNativeTools.HasValue && form.replaceNativeTools.Value;
-
-                if (replaceNative)
+                for (int i = 0; i < verbs.Count; i++)
                 {
-                    // 교체 모드: 항상 폼 근접 도구 사용
-                    __result = bestFormMelee;
-                    return;
+                    var v = verbs[i];
+                    if (v != null && v.verbProps != null && v.verbProps.IsMeleeAttack)
+                    {
+                        __result = v;
+                        return;
+                    }
                 }
-
-                // 추가 모드: 바닐라 결과와 power 비교
-                if (__result == null)
-                {
-                    __result = bestFormMelee;
-                    return;
-                }
-
-                var vanillaMelee = __result as Verb_MeleeAttack;
-                var formMelee = bestFormMelee as Verb_MeleeAttack;
-                float vanillaPower = (vanillaMelee?.tool != null) ? vanillaMelee.tool.power : 0f;
-                float formPower = (formMelee?.tool != null) ? formMelee.tool.power : 0f;
-
-                if (formPower > vanillaPower)
-                    __result = bestFormMelee;
             }
             catch (System.Exception e)
             {
                 Log.Warning($"[SSF] TryGetMeleeVerb Postfix failed: {e}");
             }
-        }
-
-        private static Verb FindBestFormMelee(List<Verb> verbs)
-        {
-            Verb best = null;
-            float bestPower = -1f;
-            for (int i = 0; i < verbs.Count; i++)
-            {
-                var v = verbs[i];
-                if (v == null || v.verbProps == null) continue;
-                if (!v.verbProps.IsMeleeAttack) continue;
-
-                var vma = v as Verb_MeleeAttack;
-                float power = (vma?.tool != null) ? vma.tool.power : 0f;
-                if (best == null || power > bestPower)
-                {
-                    best = v;
-                    bestPower = power;
-                }
-            }
-            return best;
         }
     }
 }
