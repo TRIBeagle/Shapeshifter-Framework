@@ -200,6 +200,10 @@ namespace ShapeshifterFramework
 
         public List<VerbGizmoOption> verbGizmoOptions; // verbs 순서에 맞춰 매칭
 
+        // ── 근접 공격 시 상처 라벨에 표시할 종족 ThingDef (예: Warg → "Warg teeth")
+        // null이면 바닐라 기본(CasterPawn.def = "인간 teeth") 사용
+        public ThingDef damageSourceDef;
+
         // ── 변신 시 특정 작업 불가(폼별)
         public List<WorkTypeDef> disabledWorkTypesOnTransform;
 
