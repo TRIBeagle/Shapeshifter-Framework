@@ -15,16 +15,33 @@ namespace ShapeshifterFramework
         public static readonly HashSet<PawnRenderNodeProperties> AllFormProps =
             new HashSet<PawnRenderNodeProperties>();
 
-        // 초기화: 모든 ShapeshiftFormDef를 순회하며 renderNodeProperties를 수집
+        // 초기화: 모든 ShapeshiftFormDef를 순회하며 renderNodeProperties 수집 + damageSourceDef 자동 생성
         static ShapeshiftFormIndex()
         {
             foreach (var def in DefDatabase<ShapeshiftFormDef>.AllDefsListForReading)
             {
-                if (def?.renderNodeProperties == null) continue;
-                for (int i = 0; i < def.renderNodeProperties.Count; i++)
+                if (def == null) continue;
+
+                // 렌더 노드 인덱싱
+                if (def.renderNodeProperties != null)
                 {
-                    var p = def.renderNodeProperties[i];
-                    if (p != null) AllFormProps.Add(p);
+                    for (int i = 0; i < def.renderNodeProperties.Count; i++)
+                    {
+                        var p = def.renderNodeProperties[i];
+                        if (p != null) AllFormProps.Add(p);
+                    }
+                }
+
+                // damageSourceDef 자동 생성: 폼에 tools가 있고 damageSourceDef가 미지정이면
+                // 폼의 label을 사용하는 프록시 ThingDef를 만들어 상처 라벨에 활용
+                if (def.tools != null && def.tools.Count > 0 && def.damageSourceDef == null
+                    && !string.IsNullOrEmpty(def.label))
+                {
+                    def.damageSourceDef = new ThingDef
+                    {
+                        defName = "SSF_DmgSrc_" + def.defName,
+                        label = def.label,
+                    };
                 }
             }
         }
