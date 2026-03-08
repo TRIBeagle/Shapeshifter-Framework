@@ -5,11 +5,12 @@
        변신 폼 정의
        ====================================================== -->
 
-  <!-- 1) 늑대 폼 (동물형) — 약물/아이템/디버프 어빌리티용 -->
+  <!-- 1) 늑대 폼 (동물형) — 약물/아이템 전용, 어빌리티 바에 표시 안 함 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSFTest_WolfForm</defName>
     <label>wolf form</label>
     <description>테스트용 늑대 변신. 동물형 완전 변신.</description>
+    <abilityMode>None</abilityMode>
     <bodyDrawScale>0.85</bodyDrawScale>
     <durationTicks>15000</durationTicks> <!-- 약 6분 -->
     <canRevertVoluntarily>true</canRevertVoluntarily>
@@ -33,6 +34,8 @@
     <defName>SSFTest_BearWarriorForm</defName>
     <label>bear warrior form</label>
     <description>테스트용 곰 전사 변신. 장비 유지하면서 스탯 강화.</description>
+    <abilityMode>Custom</abilityMode>
+    <linkedAbility>SSFTest_Ability_BuffAlly</linkedAbility>
     <bodyDrawScale>1.3</bodyDrawScale>
     <durationTicks>15000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
@@ -50,6 +53,8 @@
     <defName>SSFTest_SheepForm</defName>
     <label>sheep form</label>
     <description>테스트용 양 변신. 전투력 상실, 자발적 해제 불가.</description>
+    <abilityMode>Custom</abilityMode>
+    <linkedAbility>SSFTest_Ability_DebuffEnemy</linkedAbility>
     <bodyDrawScale>0.6</bodyDrawScale>
     <durationTicks>10000</durationTicks> <!-- 약 4분 -->
     <canRevertVoluntarily>false</canRevertVoluntarily>
@@ -68,6 +73,8 @@
     <defName>SSFTest_DarkKnightForm</defName>
     <label>dark knight form</label>
     <description>암흑 기사로 변신. 전용 갑옷과 무기가 소환되며, 기존 장비는 인벤토리로 이동. 해제 시 소환 장비는 소멸.</description>
+    <abilityMode>Custom</abilityMode>
+    <linkedAbility>SSFTest_Ability_DarkKnight</linkedAbility>
     <bodyDrawScale>1.2</bodyDrawScale>
     <durationTicks>18000</durationTicks> <!-- 약 7분 -->
     <canRevertVoluntarily>true</canRevertVoluntarily>
@@ -107,6 +114,8 @@
     <defName>SSFTest_BeastkinForm</defName>
     <label>beastkin form</label>
     <description>수인 형태. 인간 외형 유지하면서 동물적 능력 부여. 여기서 한번 더 변신하면 완전한 동물 형태로.</description>
+    <abilityMode>Custom</abilityMode>
+    <linkedAbility>SSFTest_Ability_Beastkin</linkedAbility>
     <bodyDrawScale>1.1</bodyDrawScale>
     <canRevertVoluntarily>true</canRevertVoluntarily>
     <statOffsets>
@@ -124,11 +133,12 @@
     </tools>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- 5b) 야수 폼 (동물형) — 2단계: 수인→동물 (수인 상태에서만 진입 가능) -->
+  <!-- 5b) 야수 폼 (동물형) — 2단계: 수인→동물 (수인 상태에서만 진입 가능, Auto로 자동생성) -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSFTest_FullBeastForm</defName>
     <label>full beast form</label>
     <description>완전한 야수 형태. 수인 상태에서만 변신 가능.</description>
+    <!-- abilityMode 기본값 Auto: 수인 폼일 때만 allowedFromForms 조건 충족 → 어빌리티 자동 부여/회수 -->
     <bodyDrawScale>1.0</bodyDrawScale>
     <durationTicks>12000</durationTicks> <!-- 약 5분 후 자동 해제 -->
     <canRevertVoluntarily>true</canRevertVoluntarily>
