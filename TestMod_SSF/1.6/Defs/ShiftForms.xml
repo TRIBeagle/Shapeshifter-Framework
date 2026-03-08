@@ -140,7 +140,9 @@
     <statOffsets>
       <MoveSpeed>-1.0</MoveSpeed>
     </statOffsets>
-    <disabledWorkTagsOnTransform>Violent</disabledWorkTagsOnTransform>
+    <disabledWorkTagsOnTransform>
+      <li>Violent</li>
+    </disabledWorkTagsOnTransform>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- ======================================================
@@ -416,7 +418,10 @@
     </tools>
     <replaceNativeVerbs>false</replaceNativeVerbs>
     <replaceNativeTools>false</replaceNativeTools>
-    <disabledWorkTagsOnTransform>Crafting, Cooking</disabledWorkTagsOnTransform>
+    <disabledWorkTagsOnTransform>
+      <li>Crafting</li>
+      <li>Cooking</li>
+    </disabledWorkTagsOnTransform>
     <!-- 변신 이펙트 -->
     <transformFxCooldownTicks>30</transformFxCooldownTicks>
     <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
