@@ -3,12 +3,12 @@
 
   <!-- ======================================================
        1) 약물로 변신 — IngestionOutcomeDoer_Shapeshift
-       먹으면 자기 자신이 늑대로 변신
+       먹으면 자기 자신이 곰으로 변신
        ====================================================== -->
   <ThingDef ParentName="MakeableDrugBase">
-    <defName>SSFTest_WolfElixir</defName>
-    <label>wolf elixir</label>
-    <description>복용하면 늑대로 변신하는 영약. 85% 확률로 성공.</description>
+    <defName>SSFTest_BearElixir</defName>
+    <label>bear elixir</label>
+    <description>복용하면 곰으로 변신하는 영약. 85% 확률로 성공.</description>
     <graphicData>
       <texPath>Things/Item/Drug/Penoxycyline</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>

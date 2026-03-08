@@ -17,14 +17,6 @@
     </addedPartProps>
   </HediffDef>
 
-  <!-- 야수 손 (HediffWithComps) — 추가 파트 테스트용 -->
-  <HediffDef ParentName="AddedBodyPartBase">
-    <defName>SSFTest_BeastHand</defName>
-    <hediffClass>HediffWithComps</hediffClass>
-    <label>beast hand</label>
-    <description>A mutated beast hand grafted through shapeshifting.</description>
-  </HediffDef>
-
   <!-- ======================================================
        투사체 정의
        ====================================================== -->

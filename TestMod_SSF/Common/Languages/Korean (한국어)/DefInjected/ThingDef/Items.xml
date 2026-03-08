@@ -2,8 +2,8 @@
 <LanguageData>
 
   <!-- 약물 -->
-  <SSFTest_WolfElixir.label>늑대 영약</SSFTest_WolfElixir.label>
-  <SSFTest_WolfElixir.description>복용하면 늑대로 변신하는 영약. 85% 확률로 성공한다.</SSFTest_WolfElixir.description>
+  <SSFTest_BearElixir.label>곰 영약</SSFTest_BearElixir.label>
+  <SSFTest_BearElixir.description>복용하면 곰으로 변신하는 영약. 85% 확률로 성공한다.</SSFTest_BearElixir.description>
 
   <!-- 아이템: 자기 자신 -->
   <SSFTest_ShiftScroll_Self.label>변신 주문서 (자신)</SSFTest_ShiftScroll_Self.label>
