@@ -18,7 +18,7 @@ namespace ShapeshifterFramework.Patches
     {
         static bool Prefix(Pawn_EquipmentTracker __instance, ThingWithComps newEq)
         {
-            Pawn pawn = __instance.pawn; // public
+            Pawn pawn = __instance.pawn;
             if (pawn == null) return true;
 
             var comp = pawn.TryGetComp<CompShapeshifter>();
@@ -29,7 +29,7 @@ namespace ShapeshifterFramework.Patches
                     Messages.Message("SSF_Message_CannotEquip".Translate(pawn.Named("PAWN")),
                                      pawn, MessageTypeDefOf.RejectInput, false);
                 }
-                return false; // 원본 AddEquipment 실행 취소
+                return false; // 원본 스킵
             }
             return true;
         }

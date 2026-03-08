@@ -440,7 +440,7 @@ namespace ShapeshifterFramework.Compat
                 return true;
             }
 
-            /// <summary>변신 직후: 현 상태 백업 후 폼 오버라이드 적용.</summary>
+            /// <summary>변신 직후 백업 후 오버라이드 적용.</summary>
             static void Postfix(CompShapeshifter __instance, ShapeshiftFormDef form)
             {
                 try
@@ -457,17 +457,14 @@ namespace ShapeshifterFramework.Compat
                 }
                 catch (Exception e)
                 {
-                    // [안전] 훅 예외는 동일 id로 1회만 보고
+                    // 훅 예외는 1회만 보고
                     if (!CompatManager.FA.HasFailed("OverridesHook:ApplyForm2:Exception"))
                         CompatManager.FA.Failed("OverridesHook:ApplyForm2:Exception", e.Message);
                 }
             }
         }
 
-        /// <summary>
-        /// 원본: <c>CompShapeshifter.RemoveForm()</c> — <b>Prefix</b>.
-        /// 제거 전 백업 기준으로 원복, 백업 제거.
-        /// </summary>
+        /// <summary>RemoveForm Prefix: 백업 기준 원복 후 제거.</summary>
         [HarmonyPatch(typeof(CompShapeshifter), "RemoveForm")]
         static class Patch_RemoveForm
         {
@@ -496,10 +493,7 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        /// <summary>
-        /// 원본: <c>CompShapeshifter.PostExposeData()</c> — <b>Postfix</b>.
-        /// PostLoadInit 이후 이미 변신 상태면 폼 오버라이드를 재적용.
-        /// </summary>
+        /// <summary>PostExposeData Postfix: 로드 후 변신 상태면 오버라이드 재적용.</summary>
         [HarmonyPatch(typeof(CompShapeshifter), "PostExposeData")]
         static class Patch_PostExposeData
         {
@@ -509,20 +503,20 @@ namespace ShapeshifterFramework.Compat
             {
                 try
                 {
-                    // [저장] 저장 불러온 뒤 이미 변신 상태면 재적용
+                    // 로드 후 변신 상태면 재적용
                     if (Scribe.mode == LoadSaveMode.PostLoadInit && __instance != null && __instance.isTransformed && __instance.currentForm != null)
                     {
                         var pawn = __instance.parent as Pawn;
                         if (pawn == null) return;
 
                         var store = Current.Game?.GetComponent<FAStateStore>();
-                        // GetOrCreate를 쓰면 빈 백업이 생성될 수 있으므로, 없으면 아무것도 하지 않거나 경고만 띄움
+                        // 빈 백업 방지, 없으면 경고
                         if (store == null || !store.TryGet(pawn, out var backup) || backup == null || backup.IsEmpty)
                         {
                             Log.Warning($"[SSF] FA backup missing for transformed pawn {pawn.Name}. Facial revert might fail later.");
                         }
 
-                        // 오버라이드는 안전하게 덮어씌움
+                        // 오버라이드 적용
                         FacialAnimationCompat.ApplyOverrides(pawn, __instance.currentForm);
                     }
                 }

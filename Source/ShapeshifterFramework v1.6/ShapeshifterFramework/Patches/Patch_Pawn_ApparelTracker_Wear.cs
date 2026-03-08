@@ -18,7 +18,7 @@ namespace ShapeshifterFramework.Patches
     {
         static bool Prefix(Pawn_ApparelTracker __instance, Apparel newApparel, bool dropReplacedApparel, bool locked)
         {
-            Pawn pawn = __instance.pawn; // public 필드라 Traverse 불필요
+            Pawn pawn = __instance.pawn;
             if (pawn == null) return true;
 
             var comp = pawn.TryGetComp<CompShapeshifter>();
@@ -29,7 +29,7 @@ namespace ShapeshifterFramework.Patches
                     Messages.Message("SSF_Message_CannotWear".Translate(pawn.Named("PAWN")),
                                      pawn, MessageTypeDefOf.RejectInput, false);
                 }
-                return false; // 원본 Wear 실행 취소
+                return false; // 원본 스킵
             }
             return true;
         }

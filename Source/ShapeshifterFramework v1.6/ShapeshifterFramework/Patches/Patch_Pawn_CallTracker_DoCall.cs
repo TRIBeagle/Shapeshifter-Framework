@@ -15,29 +15,29 @@ namespace ShapeshifterFramework.Patches
         static bool Prefix(Pawn_CallTracker __instance, bool forceAggressive = false)
         {
             var pawn = __instance?.pawn;
-            if (pawn == null) return true; // 원본 실행
+            if (pawn == null) return true;
 
-            // ── 공격적 콜(angry) 처리 ──
+            // 공격적 콜 처리
             if (forceAggressive)
             {
                 SoundDef formAngry;
                 if (ShapeshiftVoiceUtility.TryGetAngry(pawn, out formAngry))
                 {
                     ShapeshiftVoiceUtility.PlayOneShotAt(pawn, formAngry, volumeFactor: 1f);
-                    return false; // 원본 skip
+                    return false;
                 }
-                return true; // 캐시 없음 → 바닐라 실행
+                return true;
             }
 
-            // ── 일반 콜(call) 처리 ──
+            // 일반 콜 처리
             SoundDef formCall;
             if (ShapeshiftVoiceUtility.TryGetCall(pawn, out formCall))
             {
                 ShapeshiftVoiceUtility.PlayOneShotAt(pawn, formCall, volumeFactor: 1f);
-                return false; // 원본 skip
+                return false;
             }
 
-            return true; // 변환 없음 → 바닐라 실행
+            return true;
         }
     }
 }

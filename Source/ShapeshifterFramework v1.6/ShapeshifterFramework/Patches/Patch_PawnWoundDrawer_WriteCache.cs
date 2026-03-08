@@ -1,6 +1,6 @@
 ﻿// ShapeshifterFramework | Patches | Patch_PawnWoundDrawer_WriteCache.cs
 // 목적 : 상처(Wound) 오버레이를 그릴 때, 폰의 피/살점 타입(FleshType)을 바닐라 종족이 아닌 폼에 지정된 타입(기계, 곤충 등)으로 치환.
-// 용도 : Transpiler를 이용해 get_FleshType 호출을 ShapeshiftOverlayUtility 헬퍼 호출로 교체함. 바닐라 시그니처 변경 시 크래시를 방지하기 위해 파라미터 인덱스를 동적으로 탐색하는 초고도 안전망이 설계됨.
+// 용도 : Transpiler로 get_FleshType 호출을 헬퍼로 교체. 파라미터 인덱스를 동적 탐색하여 시그니처 변경에 대비.
 
 using HarmonyLib;
 using RimWorld;
@@ -24,8 +24,7 @@ namespace ShapeshifterFramework.Patches
             var helperMethod = AccessTools.Method(typeof(ShapeshiftOverlayUtility), nameof(ShapeshiftOverlayUtility.GetEffectiveFleshType));
             var parmsPawnFld = AccessTools.Field(typeof(PawnDrawParms), nameof(PawnDrawParms.pawn));
 
-            // PawnDrawParms 파라미터 위치를 동적으로 탐색 (시그니처 변경에 대비)
-            // +1: this(인스턴스 메서드의 arg 0은 this)
+            // PawnDrawParms 파라미터 위치 동적 탐색 (+1: this)
             int parmsArgIndex = -1;
             var writeCache = AccessTools.Method(typeof(PawnWoundDrawer), "WriteCache");
             if (writeCache != null)
@@ -48,7 +47,7 @@ namespace ShapeshifterFramework.Patches
                 return list;
             }
 
-            // parmsArgIndex에 맞는 Ldarg 명령 생성
+            // Ldarg 명령 생성
             CodeInstruction MakeLdarg(int index)
             {
                 if (index == 0) return new CodeInstruction(OpCodes.Ldarg_0);
@@ -64,26 +63,20 @@ namespace ShapeshifterFramework.Patches
             {
                 CodeInstruction ci = list[i];
 
-                // RaceProperties.get_FleshType 호출 지점
+                // get_FleshType 호출 지점
                 if (ci.opcode == OpCodes.Callvirt && ci.operand is MethodInfo mi && mi == fleshGetter)
                 {
-                    // 스택: ... [RaceProperties]
-                    // 바꾸기:
-                    //   Pop (RaceProperties 제거)
-                    //   Ldarg (parms — 동적으로 탐색한 인덱스)
-                    //   Ldfld PawnDrawParms.pawn
-                    //   Call GetEffectiveFleshType(pawn)
-
-                    list[i] = new CodeInstruction(OpCodes.Pop);                        // Pop RaceProperties
-                    list.Insert(++i, MakeLdarg(parmsArgIndex));                        // parms
-                    list.Insert(++i, new CodeInstruction(OpCodes.Ldfld, parmsPawnFld)); // parms.pawn
-                    list.Insert(++i, new CodeInstruction(OpCodes.Call, helperMethod));  // helper(pawn)
+                    // Pop RaceProperties → parms.pawn → helper(pawn)
+                    list[i] = new CodeInstruction(OpCodes.Pop);
+                    list.Insert(++i, MakeLdarg(parmsArgIndex));
+                    list.Insert(++i, new CodeInstruction(OpCodes.Ldfld, parmsPawnFld));
+                    list.Insert(++i, new CodeInstruction(OpCodes.Call, helperMethod));
 
                     replaceCount++;
                 }
             }
 
-            // 진단: 치환 실패 시 경고만 (호환성)
+            // 치환 실패 시 경고
             if (replaceCount == 0)
             {
                 Log.Warning("[SSF] PawnWoundDrawer transpiler pattern not found. Falling back to vanilla wound overlays.");
