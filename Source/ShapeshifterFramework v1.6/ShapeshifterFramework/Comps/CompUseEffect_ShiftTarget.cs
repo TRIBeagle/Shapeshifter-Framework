@@ -1,7 +1,16 @@
 ﻿// ShapeshifterFramework | Comps | CompUseEffect_ShiftTarget.cs
 // 목적 : 물약, 아티팩트 등 아이템(Use/Ingest) 사용 시 대상 폰을 변신시키는 실행 로직.
-// 용도 : 아이템 사용(DoEffect) 시점의 위치와 방향(Rotation)을 계산하여, '사용자가 바라보는 바로 앞 칸(FacingCell)'에 다른 폰이 있다면 해당 대상을, 없다면 사용자 자신을 타겟으로 지정하여 TryShiftPawn을 호출함.
-// 주의 : 단순 자가 버프가 아니라 방향 기반의 타겟팅 로직이 포함되어 있으므로, 아이템 사용 시 폰의 위치와 바라보는 방향이 중요하게 작용함.
+// 용도 : 같은 ThingDef에 CompTargetable(예: CompTargetable_SinglePawn)이 함께 정의되어 있으면
+//        플레이어가 클릭으로 선택한 대상 Pawn을 변신시키고, CompTargetable이 없으면 사용자 자신을 변신시킴.
+// XML 사용 예 (대상 지정형):
+//   <comps>
+//     <li Class="CompProperties_UseEffect">
+//       <compClass>ShapeshifterFramework.Comps.CompUseEffect_ShiftTarget</compClass>
+//     </li>
+//     <li Class="CompProperties_Targetable_SinglePawn">
+//       <psychicSensitiveTargetsOnly>false</psychicSensitiveTargetsOnly>
+//     </li>
+//   </comps>
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;
@@ -20,23 +29,29 @@ namespace ShapeshifterFramework.Comps
         {
             base.DoEffect(user);
 
-            // 오프맵 pawn Map null 방어
-            var map = user.Map;
-            Pawn pawn = null;
+            Pawn target = null;
 
-            if (map != null)
+            // CompTargetable이 있으면 플레이어가 선택한 대상을 사용
+            var targetable = parent.GetComp<CompTargetable>();
+            if (targetable != null)
             {
-                // 앞 칸(FacingCell) Pawn 우선, 없으면 자신
-                IntVec3 targetCell = user.Position + user.Rotation.FacingCell;
-                pawn = targetCell.InBounds(map) ? targetCell.GetFirstPawn(map) : null;
+                foreach (var t in targetable.GetTargets(parent))
+                {
+                    if (t is Pawn p && !p.Dead)
+                    {
+                        target = p;
+                        break;
+                    }
+                }
             }
 
-            if (pawn == null)
+            // CompTargetable이 없거나 유효한 대상이 없으면 자기 자신
+            if (target == null)
             {
-                pawn = user;
+                target = user;
             }
 
-            ShapeshiftTargetUtility.TryShiftPawn(pawn, Props.formDefName, Props.successChance);
+            ShapeshiftTargetUtility.TryShiftPawn(target, Props.formDefName, Props.successChance);
         }
     }
 }
