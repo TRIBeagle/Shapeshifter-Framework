@@ -51,6 +51,7 @@
     <displayOrder>501</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
       <range>20</range>
       <warmupTime>1.5</warmupTime>
       <targetParams>

@@ -39,6 +39,7 @@
     <displayOrder>520</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
       <range>25</range>
       <warmupTime>2.5</warmupTime>
       <defaultProjectile>SSFTest_Projectile_MassSheep</defaultProjectile>
