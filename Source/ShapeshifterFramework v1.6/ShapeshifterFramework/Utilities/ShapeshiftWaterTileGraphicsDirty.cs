@@ -11,6 +11,7 @@ namespace ShapeshifterFramework.Utilities
     {
         private readonly Dictionary<int, bool> lastOnWaterTile = new Dictionary<int, bool>(128);
         private const int CheckIntervalTicks = 60;
+        private const int PurgeIntervalTicks = 2500; // ~1일마다 죽은 폰 정리
 
         public ShapeshiftWaterTileGraphicsDirty(Map map) : base(map) { }
 
@@ -20,7 +21,24 @@ namespace ShapeshifterFramework.Utilities
             if (map == null) return;
 
             var pawns = map.mapPawns?.AllPawnsSpawned;
-            if (pawns == null || pawns.Count == 0) return;
+            if (pawns == null || pawns.Count == 0)
+            {
+                if (lastOnWaterTile.Count > 0) lastOnWaterTile.Clear();
+                return;
+            }
+
+            // 주기적으로 맵에서 사라진 폰 엔트리 정리
+            if (Find.TickManager.TicksGame % PurgeIntervalTicks == 0 && lastOnWaterTile.Count > 0)
+            {
+                var spawnedIds = new HashSet<int>(pawns.Count);
+                for (int i = 0; i < pawns.Count; i++)
+                    if (pawns[i] != null) spawnedIds.Add(pawns[i].thingIDNumber);
+
+                var staleIds = new List<int>();
+                foreach (var kv in lastOnWaterTile)
+                    if (!spawnedIds.Contains(kv.Key)) staleIds.Add(kv.Key);
+                for (int i = 0; i < staleIds.Count; i++) lastOnWaterTile.Remove(staleIds[i]);
+            }
 
             for (int i = 0; i < pawns.Count; i++)
             {

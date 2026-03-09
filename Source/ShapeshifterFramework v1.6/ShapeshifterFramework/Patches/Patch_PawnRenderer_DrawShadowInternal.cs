@@ -40,8 +40,8 @@ namespace ShapeshifterFramework.Patches
         private static readonly Dictionary<ShadowKey, Graphic_Shadow> FormShadowGraphicByKey =
             new Dictionary<ShadowKey, Graphic_Shadow>(64);
 
-        private static readonly Dictionary<ShadowData, Graphic_Shadow> SpecialShadowGraphicByRef =
-            new Dictionary<ShadowData, Graphic_Shadow>(16);
+        /// <summary>맵 전환/게임 로드 시 그림자 캐시 정리.</summary>
+        public static void ClearCache() { FormShadowGraphicByKey.Clear(); }
 
         static bool Prefix(PawnRenderer __instance, Vector3 drawLoc)
         {

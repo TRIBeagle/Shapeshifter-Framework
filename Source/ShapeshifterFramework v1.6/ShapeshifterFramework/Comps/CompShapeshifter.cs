@@ -174,12 +174,23 @@ namespace ShapeshifterFramework.Comps
 
         #region Verb 자동공격 토글 유틸/라벨·설명 헬퍼
 
-        // 자동공격 토글 키(formDefName#verbName)
+        // 자동공격 토글 키(formDefName#index#verbName)
         string AutoKey(Verb v)
         {
             var f = currentForm?.defName ?? "None";
             string vName = v?.verbProps?.label ?? v?.GetType().Name ?? "UnknownVerb";
-            return f + "#" + vName;
+            // verb index를 포함하여 같은 label의 verb 간 충돌 방지
+            int idx = 0;
+            var vt = shapeshiftVerbTracker;
+            if (vt != null)
+            {
+                var verbs = vt.AllVerbs;
+                for (int i = 0; i < verbs.Count; i++)
+                {
+                    if (verbs[i] == v) { idx = i; break; }
+                }
+            }
+            return f + "#" + idx + "#" + vName;
         }
 
         // 기본 자동공격 상태(없으면 true)
@@ -441,16 +452,42 @@ namespace ShapeshifterFramework.Comps
                         }
                     }
 
-                    // 헤디프 조건 유실 검사
+                    // 헤디프 조건 유실 검사 (requirementsMode 반영)
                     if (currentForm.requiredHediffs != null && currentForm.requiredHediffs.Count > 0 && pawn.health != null)
                     {
-                        for (int i = 0; i < currentForm.requiredHediffs.Count; i++)
+                        var mode = currentForm.requirementsMode ?? RequirementMatchMode.All;
+                        if (mode == RequirementMatchMode.All)
                         {
-                            if (pawn.health.hediffSet.GetFirstHediffOfDef(currentForm.requiredHediffs[i]) == null)
+                            // ALL: 하나라도 없으면 해제
+                            for (int i = 0; i < currentForm.requiredHediffs.Count; i++)
                             {
-                                Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
-                                RemoveForm();
-                                return;
+                                if (pawn.health.hediffSet.GetFirstHediffOfDef(currentForm.requiredHediffs[i]) == null)
+                                {
+                                    Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
+                                    RemoveForm();
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // ANY: 모두 없어야 해제 (하나라도 있으면 유지)
+                            bool anyHeld = false;
+                            for (int i = 0; i < currentForm.requiredHediffs.Count; i++)
+                            {
+                                if (pawn.health.hediffSet.GetFirstHediffOfDef(currentForm.requiredHediffs[i]) != null)
+                                { anyHeld = true; break; }
+                            }
+                            // Any 모드에서는 다른 조건(아이템 등)도 확인
+                            if (!anyHeld)
+                            {
+                                bool anyItemHeld = sourceItems != null && sourceItems.Count > 0;
+                                if (!anyItemHeld)
+                                {
+                                    Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
+                                    RemoveForm();
+                                    return;
+                                }
                             }
                         }
                     }
@@ -471,7 +508,7 @@ namespace ShapeshifterFramework.Comps
         }
 
         // 남은 변신 틱
-        private int RemainingShapeshiftTicks
+        public int RemainingShapeshiftTicks
         {
             get
             {
@@ -643,8 +680,6 @@ namespace ShapeshifterFramework.Comps
             var pawn = parent as Pawn;
             if (pawn == null || form == null) return;
 
-            this.sourceItems = sources ?? new List<Thing>();
-
             string prev = prevOverride ?? ((isTransformed && currentForm != null) ? currentForm.defName : null);
 
             // 실시간 재검증
@@ -655,9 +690,11 @@ namespace ShapeshifterFramework.Comps
                 return;
             }
 
-            // 전환 시 기존 폼 먼저 해제
-            if (isTransformed && prevOverride != null)
+            // 전환 시 기존 폼 먼저 해제 (sourceItems 덮어쓰기 전에 수행)
+            if (isTransformed)
                 RemoveForm();
+
+            this.sourceItems = sources ?? new List<Thing>();
 
             // 장비 스냅샷 캡처
             prevApparels.Clear();

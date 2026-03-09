@@ -39,7 +39,7 @@ namespace ShapeshifterFramework.Hediffs
                     // 1. 지속 시간이 있는 폼일 경우
                     if (form.durationTicks.HasValue && form.durationTicks.Value > 0)
                     {
-                        int remain = form.durationTicks.Value - ageTicks;
+                        int remain = comp.RemainingShapeshiftTicks;
                         if (remain > 0)
                         {
                             string timeStr = GenDate.ToStringTicksToPeriod(remain,

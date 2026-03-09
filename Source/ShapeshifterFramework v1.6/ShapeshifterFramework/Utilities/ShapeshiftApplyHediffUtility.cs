@@ -313,6 +313,7 @@ namespace ShapeshifterFramework.Utilities
             for (int i = 0; i < hediffs.Count; i++)
             {
                 var h = hediffs[i];
+                if (h == null || h.def == null) continue;
                 if (h.Part == null || h.Part == rootPart) continue;
 
                 bool isMissing = h is Hediff_MissingPart;
@@ -346,6 +347,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 for (int i = 0; i < hediffs.Count; i++)
                 {
+                    if (hediffs[i] == null || hediffs[i].def == null) continue;
                     if (hediffs[i].Part == current && hediffs[i].def.addedPartProps != null)
                     {
                         return true;

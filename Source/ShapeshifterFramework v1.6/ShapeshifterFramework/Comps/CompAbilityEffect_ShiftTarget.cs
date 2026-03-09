@@ -51,18 +51,19 @@ namespace ShapeshifterFramework.Comps
                 if (string.Equals(comp.currentForm.defName, Props.formDefName, System.StringComparison.Ordinal))
                     return true;
 
+                // allowedFromForms 미지정(null/빈 리스트) → 제한 없음 → 표시
+                if (formDef.allowedFromForms == null || formDef.allowedFromForms.Count == 0)
+                    return false;
+
                 // allowedFromForms에 현재 폼이 포함되어 있으면 표시 (체이닝 허용)
-                if (formDef.allowedFromForms != null && formDef.allowedFromForms.Count > 0)
+                string curName = comp.currentForm.defName;
+                for (int i = 0; i < formDef.allowedFromForms.Count; i++)
                 {
-                    string curName = comp.currentForm.defName;
-                    for (int i = 0; i < formDef.allowedFromForms.Count; i++)
-                    {
-                        if (string.Equals(formDef.allowedFromForms[i], curName, System.StringComparison.Ordinal))
-                            return false;
-                    }
+                    if (string.Equals(formDef.allowedFromForms[i], curName, System.StringComparison.Ordinal))
+                        return false;
                 }
 
-                // allowedFromForms 미지정이거나 현재 폼이 목록에 없으면 숨김
+                // 현재 폼이 허용 목록에 없으면 숨김
                 return true;
             }
         }

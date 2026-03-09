@@ -55,6 +55,9 @@ namespace ShapeshifterFramework.Utilities
             BloodByPawn = new ConditionalWeakTable<Pawn, ThingDef>();
             SmearByPawn = new ConditionalWeakTable<Pawn, ThingDef>();
             FleshTypeByPawn = new ConditionalWeakTable<Pawn, FleshTypeDef>();
+
+            // 그림자 그래픽 캐시 정리
+            try { ShapeshifterFramework.Patches.Patch_PawnRenderer_DrawShadowInternal.ClearCache(); } catch { }
         }
     }
 }
