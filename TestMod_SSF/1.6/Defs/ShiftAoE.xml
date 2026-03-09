@@ -11,7 +11,6 @@
     <description>반경 5칸 내 폰을 양으로 변신시키는 범위 마법. 60% 확률.</description>
     <cooldownTicksRange>6000</cooldownTicksRange>
     <hostile>true</hostile>
-    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
     <displayOrder>520</displayOrder>
     <statBases>
       <Ability_EffectRadius>5</Ability_EffectRadius>

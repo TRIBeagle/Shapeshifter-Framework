@@ -61,7 +61,7 @@ namespace ShapeshifterFramework.Utilities
             out string shaderTypeDefName,
             out string swimmingShaderTypeDefName)
         {
-            mode = (gOpt != null) ? gOpt.mode : baseOpt.mode;
+            mode = (gOpt != null && gOpt.mode != PartControlMode.Default) ? gOpt.mode : baseOpt.mode;
 
             replacementTexPath =
                 (gOpt != null && !string.IsNullOrEmpty(gOpt.replacementTexPath)) ? gOpt.replacementTexPath : baseOpt.replacementTexPath;
