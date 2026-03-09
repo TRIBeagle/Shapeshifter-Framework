@@ -531,7 +531,7 @@ namespace ShapeshifterFramework.Comps
             if (remain <= 0) return null;
 
             // 바닐라 시간 포맷
-            string timeStr = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: true);
+            string timeStr = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: false);
 
             return "SSF_Inspect_Remaining".Translate(timeStr);
         }

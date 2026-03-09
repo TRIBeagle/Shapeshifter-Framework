@@ -43,7 +43,7 @@ namespace ShapeshifterFramework.Hediffs
                         if (remain > 0)
                         {
                             string timeStr = GenDate.ToStringTicksToPeriod(remain,
-                                allowSeconds: false, shortForm: true);
+                                allowSeconds: false, shortForm: false);
                             sb.AppendLine("SSF_Inspect_Remaining".Translate(timeStr));
                         }
                     }
