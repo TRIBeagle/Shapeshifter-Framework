@@ -36,15 +36,13 @@
     <description>반경 5칸 내 적대 폰을 양으로 변신시키는 범위 마법. 60% 확률.</description>
     <cooldownTicksRange>6000</cooldownTicksRange>
     <hostile>true</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
     <displayOrder>520</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
       <violent>false</violent>
       <range>25</range>
       <warmupTime>2.5</warmupTime>
-      <!-- defaultProjectile 제거: Verb_CastAbility는 투사체를 발사하지 않음.
-           대신 comps의 CompAbilityEffect_LaunchPolymorph가 투사체를 직접 스폰·발사.
-           damageDef가 verb에 없으므로 비폭력 폰도 사용 가능. -->
       <targetParams>
         <canTargetSelf>false</canTargetSelf>
         <canTargetPawns>true</canTargetPawns>
