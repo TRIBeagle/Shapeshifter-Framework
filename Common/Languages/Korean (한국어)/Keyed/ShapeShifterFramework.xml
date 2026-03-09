@@ -61,6 +61,7 @@
   
   <SSF_Setting_ResetAll_Title>모두 기본값으로</SSF_Setting_ResetAll_Title>
 
+  <SSF_ShiftTarget_NoComp>{0}에게는 효과가 없습니다.</SSF_ShiftTarget_NoComp>
   <SSF_ShiftTarget_Resisted>{0}이(가) 변신에 저항했습니다.</SSF_ShiftTarget_Resisted>
 
   <SSF_Fallback_Transform>변신</SSF_Fallback_Transform>

@@ -16,7 +16,7 @@ namespace ShapeshifterFramework.Utilities
 
             if (!ShapeshiftUtility.TryGetComp(target, out var comp))
             {
-                Messages.Message("[SSF] Target has no shapeshift comp.", MessageTypeDefOf.RejectInput, false);
+                Messages.Message("SSF_ShiftTarget_NoComp".Translate(target.LabelShortCap), MessageTypeDefOf.RejectInput, false);
                 return false;
             }
 
