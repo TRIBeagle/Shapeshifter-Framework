@@ -12,6 +12,7 @@
     <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>1500</cooldownTicksRange>
     <hostile>false</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
     <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
     <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>500</displayOrder>

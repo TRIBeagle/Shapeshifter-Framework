@@ -78,6 +78,7 @@ namespace ShapeshifterFramework.Utilities
             // 쿨다운/신경열 없음
             abilityDef.cooldownTicksRange = new IntRange(0, 0);
             abilityDef.hostile = false;
+            abilityDef.casterMustBeCapableOfViolence = false;
 
             // 비전투 상태에서도 어빌리티 바에 표시
             abilityDef.displayGizmoWhileUndrafted = true;

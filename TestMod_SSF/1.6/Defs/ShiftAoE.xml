@@ -2,42 +2,20 @@
 <Defs>
 
   <!-- ======================================================
-       6) 범위형 변신 — Projectile_Polymorph + aoeRadius
-       반경 5칸 내 모든 폰을 양으로 변신시키는 투사체
+       6) 범위형 변신 어빌리티 (바닐라 패턴)
+       Ability_EffectRadius + CompAbilityShiftTarget
        ====================================================== -->
-
-  <!-- 투사체 정의 -->
-  <ThingDef ParentName="BaseBullet">
-    <defName>SSFTest_Projectile_MassSheep</defName>
-    <label>polymorph wave</label>
-    <graphicData>
-      <texPath>Things/Projectile/Bullet_Small</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <thingClass>ShapeshifterFramework.Projectiles.Projectile_Polymorph</thingClass>
-    <projectile>
-      <damageDef>Stun</damageDef>
-      <damageAmountBase>1</damageAmountBase>
-      <speed>60</speed>
-    </projectile>
-    <modExtensions>
-      <li Class="ShapeshifterFramework.Extensions.PolymorphProjectileExtension">
-        <formDefName>SSFTest_SheepForm</formDefName>
-        <successChance>0.6</successChance>
-        <aoeRadius>5</aoeRadius>
-      </li>
-    </modExtensions>
-  </ThingDef>
-
-  <!-- 범위 변신 어빌리티: CompAbilityEffect에서 투사체 직접 발사 -->
   <AbilityDef>
     <defName>SSFTest_Ability_MassPolymorph</defName>
     <label>mass polymorph</label>
-    <description>반경 5칸 내 적대 폰을 양으로 변신시키는 범위 마법. 60% 확률.</description>
+    <description>반경 5칸 내 폰을 양으로 변신시키는 범위 마법. 60% 확률.</description>
     <cooldownTicksRange>6000</cooldownTicksRange>
     <hostile>true</hostile>
     <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
     <displayOrder>520</displayOrder>
+    <statBases>
+      <Ability_EffectRadius>5</Ability_EffectRadius>
+    </statBases>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
       <violent>false</violent>
@@ -51,10 +29,100 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityLaunchPolymorph">
-        <projectileDefName>SSFTest_Projectile_MassSheep</projectileDefName>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+        <formDefName>SSFTest_SheepForm</formDefName>
+        <successChance>0.6</successChance>
+      </li>
+      <li Class="CompProperties_AbilityFleckOnTarget">
+        <fleckDef>PsycastPsychicEffect</fleckDef>
       </li>
     </comps>
   </AbilityDef>
+
+  <!-- ======================================================
+       7) 변신 투사체 무기 — Projectile_Polymorph 테스트
+       저주받은 활: 화살에 맞으면 양으로 변신
+       ====================================================== -->
+
+  <!-- 변신 화살 투사체 -->
+  <ThingDef ParentName="BaseBullet">
+    <defName>SSFTest_Projectile_CursedArrow</defName>
+    <label>cursed arrow</label>
+    <graphicData>
+      <texPath>Things/Projectile/Arrow_Small</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <thingClass>ShapeshifterFramework.Projectiles.Projectile_Polymorph</thingClass>
+    <projectile>
+      <damageDef>Arrow</damageDef>
+      <damageAmountBase>8</damageAmountBase>
+      <stoppingPower>1</stoppingPower>
+      <armorPenetrationBase>0.18</armorPenetrationBase>
+      <speed>38</speed>
+    </projectile>
+    <modExtensions>
+      <li Class="ShapeshifterFramework.Extensions.PolymorphProjectileExtension">
+        <formDefName>SSFTest_SheepForm</formDefName>
+        <successChance>0.4</successChance>
+        <!-- aoeRadius 0 = 단일 타겟만 -->
+      </li>
+    </modExtensions>
+  </ThingDef>
+
+  <!-- 저주받은 활 무기 -->
+  <ThingDef ParentName="BaseHumanMakeableGun">
+    <defName>SSFTest_Weapon_CursedBow</defName>
+    <label>cursed bow</label>
+    <description>저주가 깃든 활. 화살에 맞은 대상이 40% 확률로 양으로 변신한다.</description>
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponRanged/RecurveBow</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <techLevel>Medieval</techLevel>
+    <weaponTags>
+      <li>ShortBows</li>
+    </weaponTags>
+    <recipeMaker>
+      <recipeUsers>
+        <li>CraftingSpot</li>
+      </recipeUsers>
+      <researchPrerequisite>RecurveBow</researchPrerequisite>
+      <skillRequirements>
+        <Crafting>5</Crafting>
+      </skillRequirements>
+    </recipeMaker>
+    <costList>
+      <WoodLog>40</WoodLog>
+    </costList>
+    <statBases>
+      <WorkToMake>10000</WorkToMake>
+      <Mass>1.5</Mass>
+      <AccuracyTouch>0.60</AccuracyTouch>
+      <AccuracyShort>0.75</AccuracyShort>
+      <AccuracyMedium>0.55</AccuracyMedium>
+      <AccuracyLong>0.35</AccuracyLong>
+      <RangedWeapon_Cooldown>1.8</RangedWeapon_Cooldown>
+    </statBases>
+    <verbs>
+      <li>
+        <verbClass>Verb_Shoot</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>SSFTest_Projectile_CursedArrow</defaultProjectile>
+        <warmupTime>1.5</warmupTime>
+        <range>23</range>
+        <soundCast>Bow_Recurve</soundCast>
+      </li>
+    </verbs>
+    <tools>
+      <li>
+        <label>limb</label>
+        <capacities>
+          <li>Blunt</li>
+        </capacities>
+        <power>8</power>
+        <cooldownTime>2</cooldownTime>
+      </li>
+    </tools>
+  </ThingDef>
 
 </Defs>
