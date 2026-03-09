@@ -142,6 +142,318 @@ namespace ShapeshifterFramework.Debugs
 
         #endregion
 
+        #region 4) 전체 폼 자동 검증(Auto-Verify)
+
+        [DebugAction(
+            category = "Shapeshifter Framework",
+            name = "Auto-Verify All Forms...",
+            actionType = DebugActionType.ToolMapForPawns,
+            allowedGameStates = AllowedGameStates.PlayingOnMap
+        )]
+        private static void AutoVerifyAllForms(Pawn pawn)
+        {
+            if (!Prefs.DevMode || pawn == null || pawn.DestroyedOrNull()) return;
+
+            var comp = pawn.TryGetComp<CompShapeshifter>();
+            if (comp == null)
+            {
+                Log.Warning("[SSF-Test] Pawn has no CompShapeshifter.");
+                return;
+            }
+
+            // 기존 변신 해제
+            if (comp.isTransformed) comp.RemoveForm();
+
+            var allForms = DefDatabase<ShapeshiftFormDef>.AllDefsListForReading;
+            var sb = new StringBuilder(4096);
+            sb.AppendLine($"[SSF-Test] ═══ Auto-Verify All Forms for {pawn.LabelCap} ({pawn.ThingID}) ═══");
+            sb.AppendLine($"  Total forms registered: {allForms.Count}");
+            sb.AppendLine();
+
+            int totalPass = 0, totalFail = 0, totalSkip = 0;
+
+            // 원본 상태 스냅샷
+            BodyTypeDef origBody = pawn.story?.bodyType;
+            HeadTypeDef origHead = pawn.story?.headType;
+            Color? origHair = pawn.story != null ? (Color?)pawn.story.HairColor : null;
+            Color? origSkin = pawn.story?.skinColorOverride;
+
+            for (int f = 0; f < allForms.Count; f++)
+            {
+                var form = allForms[f];
+                if (form == null) continue;
+
+                sb.AppendLine($"── [{f+1}/{allForms.Count}] {form.defName} ──");
+
+                // 변신 시도
+                try
+                {
+                    comp.ApplyForm(form, "None");
+                }
+                catch (Exception ex)
+                {
+                    sb.AppendLine($"  ✗ CRASH on ApplyForm: {ex.Message}");
+                    totalFail++;
+                    sb.AppendLine();
+                    continue;
+                }
+
+                if (!comp.isTransformed || comp.currentForm != form)
+                {
+                    sb.AppendLine($"  - Skipped (eligibility filter or apply failed)");
+                    totalSkip++;
+                    sb.AppendLine();
+                    continue;
+                }
+
+                // ── 변신 상태 검증 ──
+                int checks = 0, passed = 0;
+
+                // 1. 스탯 hediff 존재
+                if (form.generatedStatHediff != null)
+                {
+                    checks++;
+                    if (pawn.health?.hediffSet?.GetFirstHediffOfDef(form.generatedStatHediff) != null) passed++;
+                    else sb.AppendLine($"  ✗ Missing stat hediff: {form.generatedStatHediff.defName}");
+                }
+
+                // 2. 체형 변경
+                if (form.bodyType != null && pawn.story != null)
+                {
+                    checks++;
+                    if (pawn.story.bodyType == form.bodyType) passed++;
+                    else sb.AppendLine($"  ✗ BodyType expected={form.bodyType.defName} actual={pawn.story.bodyType?.defName}");
+                }
+
+                // 3. 머리형 변경
+                if (form.headType != null && pawn.story != null)
+                {
+                    checks++;
+                    if (pawn.story.headType == form.headType) passed++;
+                    else sb.AppendLine($"  ✗ HeadType expected={form.headType.defName} actual={pawn.story.headType?.defName}");
+                }
+
+                // 4. 머리색 변경
+                if (form.hairColor.HasValue && pawn.story != null)
+                {
+                    checks++;
+                    if (ColorsClose(pawn.story.HairColor, form.hairColor.Value)) passed++;
+                    else sb.AppendLine($"  ✗ HairColor expected={form.hairColor.Value} actual={pawn.story.HairColor}");
+                }
+
+                // 5. 피부색 변경
+                if (form.skinColor.HasValue && pawn.story != null)
+                {
+                    checks++;
+                    Color? actual = pawn.story.skinColorOverride;
+                    if (actual.HasValue && ColorsClose(actual.Value, form.skinColor.Value)) passed++;
+                    else sb.AppendLine($"  ✗ SkinColor expected={form.skinColor.Value} actual={actual}");
+                }
+
+                // 6. 추가 hediff
+                if (form.addHediffs != null)
+                {
+                    for (int h = 0; h < form.addHediffs.Count; h++)
+                    {
+                        var entry = form.addHediffs[h];
+                        if (entry?.hediff == null) continue;
+                        checks++;
+                        if (pawn.health?.hediffSet?.GetFirstHediffOfDef(entry.hediff) != null) passed++;
+                        else sb.AppendLine($"  ✗ Missing addHediff: {entry.hediff.defName}");
+                    }
+                }
+
+                // 7. 추가 어빌리티
+                if (form.addAbilities != null)
+                {
+                    for (int a = 0; a < form.addAbilities.Count; a++)
+                    {
+                        var aDef = form.addAbilities[a];
+                        if (aDef == null) continue;
+                        checks++;
+                        if (pawn.abilities?.GetAbility(aDef) != null) passed++;
+                        else sb.AppendLine($"  ✗ Missing addAbility: {aDef.defName}");
+                    }
+                }
+
+                // 8. 소환 장비
+                if (form.spawnApparelOnTransform != null)
+                {
+                    for (int s = 0; s < form.spawnApparelOnTransform.Count; s++)
+                    {
+                        var apDef = form.spawnApparelOnTransform[s];
+                        if (apDef == null) continue;
+                        checks++;
+                        bool found = false;
+                        if (pawn.apparel != null)
+                        {
+                            var worn = pawn.apparel.WornApparel;
+                            for (int w = 0; w < worn.Count; w++)
+                                if (worn[w].def == apDef) { found = true; break; }
+                        }
+                        if (found) passed++; else sb.AppendLine($"  ✗ Missing spawn apparel: {apDef.defName}");
+                    }
+                }
+
+                if (form.spawnWeaponOnTransform != null)
+                {
+                    for (int s = 0; s < form.spawnWeaponOnTransform.Count; s++)
+                    {
+                        var wpDef = form.spawnWeaponOnTransform[s];
+                        if (wpDef == null) continue;
+                        checks++;
+                        bool found = pawn.equipment?.Primary?.def == wpDef;
+                        if (found) passed++; else sb.AppendLine($"  ✗ Missing spawn weapon: {wpDef.defName}");
+                    }
+                }
+
+                // 9. VerbTracker
+                bool hasVerbs = form.verbs != null && form.verbs.Count > 0;
+                bool hasTools = form.tools != null && form.tools.Count > 0;
+                if (hasVerbs || hasTools)
+                {
+                    checks++;
+                    var vt = comp.ShapeshiftVerbTracker;
+                    if (vt != null && vt.AllVerbs != null && vt.AllVerbs.Count > 0) passed++;
+                    else sb.AppendLine($"  ✗ VerbTracker null/empty (verbs={form.verbs?.Count ?? 0}, tools={form.tools?.Count ?? 0})");
+                }
+
+                // 10. 런타임 캐시
+                if (form.soundCall != null)
+                {
+                    checks++;
+                    SoundDef cached;
+                    if (ShapeshiftRuntimeCaches.CallByPawn.TryGetValue(pawn, out cached) && cached == form.soundCall) passed++;
+                    else sb.AppendLine($"  ✗ Runtime cache soundCall mismatch");
+                }
+                if (form.bloodDef != null)
+                {
+                    checks++;
+                    ThingDef cached;
+                    if (ShapeshiftRuntimeCaches.BloodByPawn.TryGetValue(pawn, out cached) && cached == form.bloodDef) passed++;
+                    else sb.AppendLine($"  ✗ Runtime cache bloodDef mismatch");
+                }
+
+                // 11. 타이머
+                if (form.durationTicks.HasValue && form.durationTicks.Value > 0)
+                {
+                    checks++;
+                    if (comp.RemainingShapeshiftTicks > 0) passed++;
+                    else sb.AppendLine($"  ✗ Timer not set (expected ~{form.durationTicks.Value})");
+                }
+
+                sb.AppendLine($"  → Apply: {passed}/{checks} passed");
+                bool applyOk = (passed == checks);
+
+                // ── 해제 검증 ──
+                int rc = 0, rp = 0;
+                try { comp.RemoveForm(); }
+                catch (Exception ex)
+                {
+                    sb.AppendLine($"  ✗ CRASH on RemoveForm: {ex.Message}");
+                    totalFail++;
+                    sb.AppendLine();
+                    continue;
+                }
+
+                // isTransformed 해제
+                rc++; if (!comp.isTransformed) rp++; else sb.AppendLine($"  ✗ Still transformed after RemoveForm");
+
+                // 체형/머리형 원복
+                if (origBody != null && pawn.story != null)
+                {
+                    rc++;
+                    if (pawn.story.bodyType == origBody) rp++;
+                    else sb.AppendLine($"  ✗ BodyType not restored: {origBody.defName} vs {pawn.story.bodyType?.defName}");
+                }
+                if (origHead != null && pawn.story != null)
+                {
+                    rc++;
+                    if (pawn.story.headType == origHead) rp++;
+                    else sb.AppendLine($"  ✗ HeadType not restored: {origHead.defName} vs {pawn.story.headType?.defName}");
+                }
+
+                // 컬러 원복
+                if (origHair.HasValue && pawn.story != null)
+                {
+                    rc++;
+                    if (ColorsClose(pawn.story.HairColor, origHair.Value)) rp++;
+                    else sb.AppendLine($"  ✗ HairColor not restored");
+                }
+                if (pawn.story != null)
+                {
+                    rc++;
+                    if (pawn.story.skinColorOverride == origSkin) rp++;
+                    else sb.AppendLine($"  ✗ SkinColor not restored");
+                }
+
+                // 스탯 hediff 제거
+                if (form.generatedStatHediff != null)
+                {
+                    rc++;
+                    if (pawn.health?.hediffSet?.GetFirstHediffOfDef(form.generatedStatHediff) == null) rp++;
+                    else sb.AppendLine($"  ✗ Stat hediff not removed: {form.generatedStatHediff.defName}");
+                }
+
+                // 추가 hediff 제거 (addedPart 제외)
+                if (form.addHediffs != null)
+                {
+                    for (int h = 0; h < form.addHediffs.Count; h++)
+                    {
+                        var entry = form.addHediffs[h];
+                        if (entry?.hediff == null || entry.hediff.addedPartProps != null) continue;
+                        rc++;
+                        if (pawn.health?.hediffSet?.GetFirstHediffOfDef(entry.hediff) == null) rp++;
+                        else sb.AppendLine($"  ✗ addHediff not removed: {entry.hediff.defName}");
+                    }
+                }
+
+                // 추가 어빌리티 제거
+                if (form.addAbilities != null)
+                {
+                    for (int a = 0; a < form.addAbilities.Count; a++)
+                    {
+                        var aDef = form.addAbilities[a];
+                        if (aDef == null) continue;
+                        rc++;
+                        if (pawn.abilities?.GetAbility(aDef) == null) rp++;
+                        else sb.AppendLine($"  ✗ addAbility not removed: {aDef.defName}");
+                    }
+                }
+
+                // 캐시 정리
+                rc++;
+                SoundDef __c;
+                if (!ShapeshiftRuntimeCaches.CallByPawn.TryGetValue(pawn, out __c)) rp++;
+                else sb.AppendLine($"  ✗ Runtime cache not cleared");
+
+                sb.AppendLine($"  → Revert: {rp}/{rc} passed");
+                bool revertOk = (rp == rc);
+
+                if (applyOk && revertOk) totalPass++;
+                else totalFail++;
+
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("═══ Summary ═══");
+            sb.AppendLine($"  Forms: {allForms.Count}  |  Pass: {totalPass}  |  Fail: {totalFail}  |  Skip: {totalSkip}");
+            if (totalFail == 0) sb.AppendLine("  ★ ALL CHECKS PASSED ★");
+            else sb.AppendLine($"  ⚠ {totalFail} form(s) had failures");
+
+            Log.Message(sb.ToString());
+            Messages.Message($"SSF Auto-Verify: {totalPass} pass, {totalFail} fail, {totalSkip} skip — see log", MessageTypeDefOf.TaskCompletion, false);
+        }
+
+        private static bool ColorsClose(Color a, Color b, float tolerance = 0.02f)
+        {
+            return Mathf.Abs(a.r - b.r) < tolerance
+                && Mathf.Abs(a.g - b.g) < tolerance
+                && Mathf.Abs(a.b - b.b) < tolerance;
+        }
+
+        #endregion
+
         #region 헬퍼(플로트 메뉴·요약 문자열·덤프 빌더)
 
         /// <summary>SoundDef 재생용 플로트 메뉴 항목 추가.</summary>
