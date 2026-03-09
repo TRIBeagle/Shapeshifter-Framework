@@ -4,6 +4,7 @@
 // 주의 : 투사체의 기본 이펙트나 파괴 로직을 정상 수행하기 위해, 변신 처리가 끝난 후 마지막에 반드시 base.Impact()를 호출하도록 설계됨.
 // AoE 팩션 필터: affectAllies=false(기본값)이면 시전자에게 적대적인 폰만 변신. true이면 모든 폰.
 
+using RimWorld;
 using ShapeshifterFramework.Extensions;
 using ShapeshifterFramework.Utilities;
 using Verse;
@@ -43,7 +44,9 @@ namespace ShapeshifterFramework.Projectiles
             {
                 foreach (var t in GenRadial.RadialDistinctThingsAround(Position, Map, ext.aoeRadius, true))
                 {
-                    if (t == hitThing || t is not Pawn pp || pp.Dead)
+                    if (t == hitThing) continue;
+                    var pp = t as Pawn;
+                    if (pp == null || pp.Dead)
                         continue;
 
                     // 팩션 필터: affectAllies=false일 때, 시전자와 적대 관계가 아니면 스킵
