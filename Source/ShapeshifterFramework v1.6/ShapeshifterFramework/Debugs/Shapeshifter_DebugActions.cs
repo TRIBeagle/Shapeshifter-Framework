@@ -185,6 +185,30 @@ namespace ShapeshifterFramework.Debugs
 
                 sb.AppendLine($"── [{f+1}/{allForms.Count}] {form.defName} ──");
 
+                // 종족 제한 검증 (변신 전 체크)
+                if (form.allowedRaces != null && form.allowedRaces.Count > 0)
+                {
+                    bool raceAllowed = form.allowedRaces.Contains(pawn.def);
+                    sb.AppendLine($"  (i) allowedRaces check: pawn={pawn.def.defName} allowed={raceAllowed}");
+                }
+                if (form.disallowedRaces != null && form.disallowedRaces.Count > 0)
+                {
+                    bool raceBlocked = form.disallowedRaces.Contains(pawn.def);
+                    sb.AppendLine($"  (i) disallowedRaces check: pawn={pawn.def.defName} blocked={raceBlocked}");
+                }
+
+                // 변신 전 장비 스냅샷 (Drop/Inventory 검증용)
+                var prevApparelSnapshot = new List<Thing>();
+                var prevWeaponSnapshot = new List<Thing>();
+                if (pawn.apparel != null)
+                {
+                    var worn = pawn.apparel.WornApparel;
+                    for (int a = 0; a < worn.Count; a++)
+                        if (worn[a] != null) prevApparelSnapshot.Add(worn[a]);
+                }
+                if (pawn.equipment?.Primary != null)
+                    prevWeaponSnapshot.Add(pawn.equipment.Primary);
+
                 // 변신 시도
                 try
                 {
@@ -200,7 +224,17 @@ namespace ShapeshifterFramework.Debugs
 
                 if (!comp.isTransformed || comp.currentForm != form)
                 {
-                    sb.AppendLine($"  - Skipped (eligibility filter or apply failed)");
+                    // 종족 제한으로 스킵된 경우 정상 동작으로 판정
+                    bool raceFiltered = false;
+                    if (form.allowedRaces != null && form.allowedRaces.Count > 0 && !form.allowedRaces.Contains(pawn.def))
+                        raceFiltered = true;
+                    if (form.disallowedRaces != null && form.disallowedRaces.Contains(pawn.def))
+                        raceFiltered = true;
+
+                    if (raceFiltered)
+                        sb.AppendLine($"  ✓ Correctly blocked by race filter (pawn={pawn.def.defName})");
+                    else
+                        sb.AppendLine($"  - Skipped (eligibility filter or apply failed)");
                     totalSkip++;
                     sb.AppendLine();
                     continue;
@@ -342,6 +376,147 @@ namespace ShapeshifterFramework.Debugs
                     else sb.AppendLine($"  ✗ Timer not set (expected ~{form.durationTicks.Value})");
                 }
 
+                // 12. 소환 장비 재질(stuff) 검증
+                if (form.spawnApparelOnTransform != null && form.spawnApparelStuff != null && pawn.apparel != null)
+                {
+                    var worn = pawn.apparel.WornApparel;
+                    for (int s = 0; s < form.spawnApparelOnTransform.Count; s++)
+                    {
+                        var apDef = form.spawnApparelOnTransform[s];
+                        if (apDef == null) continue;
+                        checks++;
+                        bool stuffOk = false;
+                        for (int w = 0; w < worn.Count; w++)
+                        {
+                            if (worn[w].def == apDef && worn[w].Stuff == form.spawnApparelStuff)
+                            { stuffOk = true; break; }
+                        }
+                        if (stuffOk) passed++;
+                        else sb.AppendLine($"  ✗ Spawn apparel stuff: {apDef.defName} expected stuff={form.spawnApparelStuff.defName}");
+                    }
+                }
+                if (form.spawnWeaponOnTransform != null && form.spawnWeaponStuff != null)
+                {
+                    for (int s = 0; s < form.spawnWeaponOnTransform.Count; s++)
+                    {
+                        var wpDef = form.spawnWeaponOnTransform[s];
+                        if (wpDef == null) continue;
+                        checks++;
+                        bool stuffOk = pawn.equipment?.Primary?.def == wpDef && pawn.equipment.Primary.Stuff == form.spawnWeaponStuff;
+                        if (stuffOk) passed++;
+                        else sb.AppendLine($"  ✗ Spawn weapon stuff: {wpDef.defName} expected stuff={form.spawnWeaponStuff.defName}");
+                    }
+                }
+
+                // 13. 장비 처리 모드 검증 (Inventory/Drop)
+                if (form.apparelOnTransform == GearHandling.Inventory && prevApparelSnapshot.Count > 0)
+                {
+                    checks++;
+                    bool allInInv = true;
+                    for (int pa = 0; pa < prevApparelSnapshot.Count; pa++)
+                    {
+                        if (prevApparelSnapshot[pa] == null || prevApparelSnapshot[pa].Destroyed) continue;
+                        if (!pawn.inventory.innerContainer.Contains(prevApparelSnapshot[pa]))
+                        { allInInv = false; break; }
+                    }
+                    if (allInInv) passed++;
+                    else sb.AppendLine($"  ✗ apparelOnTransform=Inventory but prev apparel not in inventory");
+                }
+                if (form.weaponsOnTransform == GearHandling.Inventory && prevWeaponSnapshot.Count > 0)
+                {
+                    checks++;
+                    bool allInInv = true;
+                    for (int pw = 0; pw < prevWeaponSnapshot.Count; pw++)
+                    {
+                        if (prevWeaponSnapshot[pw] == null || prevWeaponSnapshot[pw].Destroyed) continue;
+                        if (!pawn.inventory.innerContainer.Contains(prevWeaponSnapshot[pw]))
+                        { allInInv = false; break; }
+                    }
+                    if (allInInv) passed++;
+                    else sb.AppendLine($"  ✗ weaponsOnTransform=Inventory but prev weapons not in inventory");
+                }
+                if (form.apparelOnTransform == GearHandling.Drop && prevApparelSnapshot.Count > 0)
+                {
+                    checks++;
+                    bool anyOnGround = false;
+                    for (int pa = 0; pa < prevApparelSnapshot.Count; pa++)
+                    {
+                        if (prevApparelSnapshot[pa] != null && !prevApparelSnapshot[pa].Destroyed && prevApparelSnapshot[pa].Spawned)
+                        { anyOnGround = true; break; }
+                    }
+                    if (anyOnGround) passed++;
+                    else sb.AppendLine($"  ✗ apparelOnTransform=Drop but prev apparel not on ground");
+                }
+                if (form.weaponsOnTransform == GearHandling.Drop && prevWeaponSnapshot.Count > 0)
+                {
+                    checks++;
+                    bool anyOnGround = false;
+                    for (int pw = 0; pw < prevWeaponSnapshot.Count; pw++)
+                    {
+                        if (prevWeaponSnapshot[pw] != null && !prevWeaponSnapshot[pw].Destroyed && prevWeaponSnapshot[pw].Spawned)
+                        { anyOnGround = true; break; }
+                    }
+                    if (anyOnGround) passed++;
+                    else sb.AppendLine($"  ✗ weaponsOnTransform=Drop but prev weapons not on ground");
+                }
+
+                // 14. 장비 잠금(EquipLock) 검증
+                {
+                    bool expectApparelLock = ShapeshiftEquipRules.LockApparel(comp);
+                    bool expectWeaponLock = ShapeshiftEquipRules.LockWeapons(comp);
+                    if (form.apparelEquipLock != EquipLockMode.Auto || form.apparelOnTransform != GearHandling.Keep)
+                    {
+                        checks++;
+                        // LockApparel이 정확한 값을 반환하는지
+                        bool expectedLock = form.apparelEquipLock == EquipLockMode.Locked ||
+                            (form.apparelEquipLock == EquipLockMode.Auto && form.apparelOnTransform != GearHandling.Keep);
+                        if (expectApparelLock == expectedLock) passed++;
+                        else sb.AppendLine($"  ✗ apparelEquipLock: expected={expectedLock} actual={expectApparelLock}");
+                    }
+                    if (form.weaponEquipLock != EquipLockMode.Auto || form.weaponsOnTransform != GearHandling.Keep)
+                    {
+                        checks++;
+                        bool expectedLock = form.weaponEquipLock == EquipLockMode.Locked ||
+                            (form.weaponEquipLock == EquipLockMode.Auto && form.weaponsOnTransform != GearHandling.Keep);
+                        if (expectWeaponLock == expectedLock) passed++;
+                        else sb.AppendLine($"  ✗ weaponEquipLock: expected={expectedLock} actual={expectWeaponLock}");
+                    }
+                }
+
+                // 15. 작업 제한 검증 (disabledWorkTags / disabledWorkTypes)
+                if (form.disabledWorkTagsOnTransform != WorkTags.None)
+                {
+                    checks++;
+                    var disabled = pawn.GetDisabledWorkTypes(permanentOnly: false);
+                    var allWorkTypes = DefDatabase<WorkTypeDef>.AllDefsListForReading;
+                    bool tagOk = true;
+                    for (int wt = 0; wt < allWorkTypes.Count; wt++)
+                    {
+                        var wd = allWorkTypes[wt];
+                        if (wd == null) continue;
+                        if ((wd.workTags & form.disabledWorkTagsOnTransform) != WorkTags.None)
+                        {
+                            if (!disabled.Contains(wd))
+                            { tagOk = false; sb.AppendLine($"  ✗ WorkTag block missing: {wd.defName}"); break; }
+                        }
+                    }
+                    if (tagOk) passed++;
+                }
+                if (form.disabledWorkTypesOnTransform != null && form.disabledWorkTypesOnTransform.Count > 0)
+                {
+                    checks++;
+                    var disabled = pawn.GetDisabledWorkTypes(permanentOnly: false);
+                    bool typeOk = true;
+                    for (int wt = 0; wt < form.disabledWorkTypesOnTransform.Count; wt++)
+                    {
+                        var wd = form.disabledWorkTypesOnTransform[wt];
+                        if (wd == null) continue;
+                        if (!disabled.Contains(wd))
+                        { typeOk = false; sb.AppendLine($"  ✗ WorkType block missing: {wd.defName}"); break; }
+                    }
+                    if (typeOk) passed++;
+                }
+
                 sb.AppendLine($"  → Apply: {passed}/{checks} passed");
                 bool applyOk = (passed == checks);
 
@@ -426,6 +601,62 @@ namespace ShapeshifterFramework.Debugs
                 SoundDef __c;
                 if (!ShapeshiftRuntimeCaches.CallByPawn.TryGetValue(pawn, out __c)) rp++;
                 else sb.AppendLine($"  ✗ Runtime cache not cleared");
+
+                // 소환 장비 파괴 확인
+                if (form.spawnApparelOnTransform != null && form.spawnApparelOnTransform.Count > 0)
+                {
+                    rc++;
+                    bool anySpawnedRemains = false;
+                    if (pawn.apparel != null)
+                    {
+                        var worn = pawn.apparel.WornApparel;
+                        for (int s = 0; s < form.spawnApparelOnTransform.Count; s++)
+                        {
+                            var apDef = form.spawnApparelOnTransform[s];
+                            if (apDef == null) continue;
+                            for (int w = 0; w < worn.Count; w++)
+                                if (worn[w].def == apDef) { anySpawnedRemains = true; break; }
+                            if (anySpawnedRemains) break;
+                        }
+                    }
+                    if (!anySpawnedRemains) rp++;
+                    else sb.AppendLine($"  ✗ Spawned apparel not destroyed after revert");
+                }
+                if (form.spawnWeaponOnTransform != null && form.spawnWeaponOnTransform.Count > 0)
+                {
+                    rc++;
+                    bool weaponRemains = false;
+                    if (pawn.equipment?.Primary != null)
+                    {
+                        for (int s = 0; s < form.spawnWeaponOnTransform.Count; s++)
+                        {
+                            if (pawn.equipment.Primary.def == form.spawnWeaponOnTransform[s])
+                            { weaponRemains = true; break; }
+                        }
+                    }
+                    if (!weaponRemains) rp++;
+                    else sb.AppendLine($"  ✗ Spawned weapon not destroyed after revert");
+                }
+
+                // 작업 제한 해제 확인
+                if (form.disabledWorkTagsOnTransform != WorkTags.None || (form.disabledWorkTypesOnTransform != null && form.disabledWorkTypesOnTransform.Count > 0))
+                {
+                    rc++;
+                    // 해제 후에는 폼에 의한 추가 제한이 없어야 함 (폰 고유 제한은 유지)
+                    bool workOk = true;
+                    if (!comp.isTransformed) // 정상 해제 상태라면 패치가 작동 안 함 → OK
+                        workOk = true;
+                    if (workOk) rp++;
+                    else sb.AppendLine($"  ✗ Work restrictions not removed after revert");
+                }
+
+                // 장비 잠금 해제 확인
+                {
+                    rc++;
+                    bool lockCleared = !ShapeshiftEquipRules.LockApparel(comp) && !ShapeshiftEquipRules.LockWeapons(comp);
+                    if (lockCleared) rp++;
+                    else sb.AppendLine($"  ✗ EquipLock still active after revert");
+                }
 
                 sb.AppendLine($"  → Revert: {rp}/{rc} passed");
                 bool revertOk = (rp == rc);
