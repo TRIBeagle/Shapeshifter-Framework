@@ -84,9 +84,9 @@
 
 ### 사운드 오버라이드
 - [ ] #046 `[AUTO]` 분노 소리: `Pawn_Bear_Angry` → `soundCache` (캐시 등록)
-- [ ] #047 `[MANUAL]` 근접 히트(폰): `Pawn_Melee_SmallScratch_HitPawn` (긁기 소리 — 기본 Punch와 확연히 다름)
-- [ ] #048 `[MANUAL]` 근접 히트(건물): `Pawn_Melee_SmallScratch_HitBuilding`
-- [ ] #049 `[MANUAL]` 근접 미스: `Pawn_Melee_SmallScratch_Miss`
+- [ ] #047 `[MANUAL]` 근접 히트(폰): `Shot_Charge_Blaster` (차지 블라스터 발사음 — 근접인데 총소리!)
+- [ ] #048 `[MANUAL]` 근접 히트(건물): `Explosion_EMP` (EMP 폭발음)
+- [ ] #049 `[MANUAL]` 근접 미스: `Pawn_Mech_Scyther_Call` (사이더 기계음)
 
 ### 이펙트
 - [ ] #050 `[MANUAL]` 진입 이펙터: `Vaporize_Heatwave`
