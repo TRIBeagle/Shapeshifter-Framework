@@ -14,6 +14,10 @@
   <SSFTest_ShiftScroll_Target.description>대상을 선택하여 늑대로 변신시키는 주문서. 대상을 클릭하면 걸어가서 사용한다.</SSFTest_ShiftScroll_Target.description>
 
   <!-- 투사체 -->
-  <SSFTest_Projectile_MassSheep.label>폴리모프 파동</SSFTest_Projectile_MassSheep.label>
+  <SSFTest_Projectile_CursedArrow.label>저주받은 화살</SSFTest_Projectile_CursedArrow.label>
+
+  <!-- 무기 -->
+  <SSFTest_Weapon_CursedBow.label>저주받은 활</SSFTest_Weapon_CursedBow.label>
+  <SSFTest_Weapon_CursedBow.description>저주가 깃든 활. 화살에 맞은 대상이 40% 확률로 양으로 변신한다.</SSFTest_Weapon_CursedBow.description>
 
 </LanguageData>
