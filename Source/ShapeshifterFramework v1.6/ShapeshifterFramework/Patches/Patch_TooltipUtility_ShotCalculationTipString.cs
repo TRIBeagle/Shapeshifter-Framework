@@ -53,6 +53,9 @@ namespace ShapeshifterFramework.Patches
                 }
                 if (picked == null) return;
 
+                // 변신 폼의 race에서 ShootingAccuracyPawn 스탯이 비활성이면 HitReport 계산 불가
+                if (StatDefOf.ShootingAccuracyPawn.Worker.IsDisabledFor(sel)) return;
+
                 var sb = new StringBuilder();
                 sb.Append("ShotBy".Translate(sel.LabelShort, sel) + ": ");
 
