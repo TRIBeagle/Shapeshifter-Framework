@@ -106,11 +106,11 @@
     <statFactors>
       <IncomingDamageFactor>0.8</IncomingDamageFactor>
     </statFactors>
-    <!-- 사운드 오버라이드 -->
+    <!-- 사운드 오버라이드 (SmallScratch: 기본 Punch/Bash와 확연히 다른 긁기 계열) -->
     <soundAngry>Pawn_Bear_Angry</soundAngry>
-    <soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
-    <soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
-    <soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
+    <soundMeleeHitPawn>Pawn_Melee_SmallScratch_HitPawn</soundMeleeHitPawn>
+    <soundMeleeHitBuilding>Pawn_Melee_SmallScratch_HitBuilding</soundMeleeHitBuilding>
+    <soundMeleeMiss>Pawn_Melee_SmallScratch_Miss</soundMeleeMiss>
     <!-- 이펙트 -->
     <transformEnterEffecter>Vaporize_Heatwave</transformEnterEffecter>
     <transformExitEffecter>ImpactSmallDustCloud</transformExitEffecter>

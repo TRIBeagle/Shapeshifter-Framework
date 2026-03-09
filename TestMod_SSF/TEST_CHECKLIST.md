@@ -84,9 +84,9 @@
 
 ### 사운드 오버라이드
 - [ ] #046 `[AUTO]` 분노 소리: `Pawn_Bear_Angry` → `soundCache` (캐시 등록)
-- [ ] #047 `[MANUAL]` 근접 히트(폰): `Pawn_Melee_BigBash_HitPawn`
-- [ ] #048 `[MANUAL]` 근접 히트(건물): `Pawn_Melee_BigBash_HitBuilding`
-- [ ] #049 `[MANUAL]` 근접 미스: `Pawn_Melee_BigBash_Miss`
+- [ ] #047 `[MANUAL]` 근접 히트(폰): `Pawn_Melee_SmallScratch_HitPawn` (긁기 소리 — 기본 Punch와 확연히 다름)
+- [ ] #048 `[MANUAL]` 근접 히트(건물): `Pawn_Melee_SmallScratch_HitBuilding`
+- [ ] #049 `[MANUAL]` 근접 미스: `Pawn_Melee_SmallScratch_Miss`
 
 ### 이펙트
 - [ ] #050 `[MANUAL]` 진입 이펙터: `Vaporize_Heatwave`
