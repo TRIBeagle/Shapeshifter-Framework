@@ -62,6 +62,7 @@
   <SSF_Setting_ResetAll_Title>Reset to defaults</SSF_Setting_ResetAll_Title>
 
   <SSF_ShiftTarget_NoComp>Cannot affect {0}.</SSF_ShiftTarget_NoComp>
+  <SSF_ShiftTarget_MissingForm>Unknown form: {0}.</SSF_ShiftTarget_MissingForm>
   <SSF_ShiftTarget_Resisted>{0} resisted the shapeshift.</SSF_ShiftTarget_Resisted>
 
   <SSF_Fallback_Transform>Shapeshift</SSF_Fallback_Transform>

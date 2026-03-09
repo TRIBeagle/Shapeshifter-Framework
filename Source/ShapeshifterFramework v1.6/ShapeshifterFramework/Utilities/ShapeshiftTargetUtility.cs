@@ -23,7 +23,7 @@ namespace ShapeshifterFramework.Utilities
             var form = ShapeshiftUtility.GetDefSafe<ShapeshiftFormDef>(formDefName);
             if (form == null)
             {
-                Messages.Message($"[SSF] Missing ShapeshiftFormDef: {formDefName}", MessageTypeDefOf.RejectInput, false);
+                Messages.Message("SSF_ShiftTarget_MissingForm".Translate(formDefName), MessageTypeDefOf.RejectInput, false);
                 return false;
             }
 
