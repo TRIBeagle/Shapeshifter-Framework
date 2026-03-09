@@ -29,11 +29,11 @@
     </modExtensions>
   </ThingDef>
 
-  <!-- 범위 변신 어빌리티: 투사체를 발사 -->
+  <!-- 범위 변신 어빌리티: CompAbilityEffect에서 투사체 직접 발사 -->
   <AbilityDef>
     <defName>SSFTest_Ability_MassPolymorph</defName>
     <label>mass polymorph</label>
-    <description>반경 5칸 내 모든 폰을 양으로 변신시키는 범위 마법. 60% 확률.</description>
+    <description>반경 5칸 내 적대 폰을 양으로 변신시키는 범위 마법. 60% 확률.</description>
     <cooldownTicksRange>6000</cooldownTicksRange>
     <hostile>true</hostile>
     <displayOrder>520</displayOrder>
@@ -42,7 +42,9 @@
       <violent>false</violent>
       <range>25</range>
       <warmupTime>2.5</warmupTime>
-      <defaultProjectile>SSFTest_Projectile_MassSheep</defaultProjectile>
+      <!-- defaultProjectile 제거: Verb_CastAbility는 투사체를 발사하지 않음.
+           대신 comps의 CompAbilityEffect_LaunchPolymorph가 투사체를 직접 스폰·발사.
+           damageDef가 verb에 없으므로 비폭력 폰도 사용 가능. -->
       <targetParams>
         <canTargetSelf>false</canTargetSelf>
         <canTargetPawns>true</canTargetPawns>
@@ -50,6 +52,11 @@
         <canTargetBuildings>false</canTargetBuildings>
       </targetParams>
     </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityLaunchPolymorph">
+        <projectileDefName>SSFTest_Projectile_MassSheep</projectileDefName>
+      </li>
+    </comps>
   </AbilityDef>
 
 </Defs>

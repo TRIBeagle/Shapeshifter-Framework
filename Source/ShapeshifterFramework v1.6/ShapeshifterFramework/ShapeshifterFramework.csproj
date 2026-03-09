@@ -73,6 +73,8 @@
     <Compile Include="Comps\CompProperties_UseEffect_ShiftTarget.cs" />
     <Compile Include="Comps\CompProperties_AbilityShiftTarget.cs" />
     <Compile Include="Comps\CompAbilityEffect_ShiftTarget.cs" />
+    <Compile Include="Comps\CompProperties_AbilityLaunchPolymorph.cs" />
+    <Compile Include="Comps\CompAbilityEffect_LaunchPolymorph.cs" />
     <Compile Include="Debugs\Shapeshifter_DebugActions.cs" />
     <Compile Include="Hediffs\Hediff_ShapeshiftForm.cs" />
     <Compile Include="Patches\Patch_Pawn_EquipmentTracker_TryDropEquipment.cs" />

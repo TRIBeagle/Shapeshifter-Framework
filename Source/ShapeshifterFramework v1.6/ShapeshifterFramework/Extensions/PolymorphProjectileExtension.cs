@@ -20,6 +20,9 @@ namespace ShapeshifterFramework.Extensions
         // AoE 반경. 0 이하면 단일 타겟만 적용
         public float aoeRadius = 0f;
 
+        // true면 AoE가 아군 포함 모든 폰에 적용. false(기본)면 시전자에게 적대적인 폰만.
+        public bool affectAllies = false;
+
         #endregion
     }
 }
