@@ -114,8 +114,8 @@
     <Compile Include="Patches\Patch_GeneUtility_SortGenes.cs" />
     <Compile Include="Patches\Patch_Verb_ShootBeam.cs" />
     <Compile Include="Patches\Patch_TooltipUtility_ShotCalculationTipString.cs" />
-    <Compile Include="Utilities\ShapeshiftStatHediffGenerator.cs" />
-    <Compile Include="Utilities\ShapeshiftAbilityGenerator.cs" />
+    <Compile Include="Comps\CompGiveAbility_SSF.cs" />
+    <Compile Include="Comps\CompProperties_GiveAbility_SSF.cs" />
     <Compile Include="Utilities\ShapeshiftTextureUtility.cs" />
     <Compile Include="Utilities\ShapeshiftRenderUtility.cs" />
     <Compile Include="Utilities\ShapeshiftPartRestoreRecord.cs" />
