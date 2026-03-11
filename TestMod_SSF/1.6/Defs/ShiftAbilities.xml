@@ -2,32 +2,15 @@
 <Defs>
 
   <!-- ======================================================
-       3) 어빌리티: 동료 변신 (버프형)
+       어빌리티: 동료 변신 (버프형)
        곰 전사 폼으로 변신시켜 전투력 강화
        ====================================================== -->
-  <AbilityDef>
+  <AbilityDef ParentName="SSF_BaseTargetedShiftAbility">
     <defName>SSFTest_Ability_BuffAlly</defName>
     <label>bestow bear warrior</label>
     <description>동료에게 곰 전사의 힘을 부여한다. 장비를 유지한 채 스탯이 강화된다.</description>
-    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>1500</cooldownTicksRange>
-    <hostile>false</hostile>
-    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
-    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
-    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>500</displayOrder>
-    <verbProperties>
-      <verbClass>Verb_CastAbility</verbClass>
-      <violent>false</violent>
-      <range>15</range>
-      <warmupTime>1.0</warmupTime>
-      <targetParams>
-        <canTargetSelf>true</canTargetSelf>
-        <canTargetPawns>true</canTargetPawns>
-        <canTargetBuildings>false</canTargetBuildings>
-        <canTargetAnimals>false</canTargetAnimals>
-      </targetParams>
-    </verbProperties>
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
         <formDefName>SSFTest_BearWarriorForm</formDefName>
@@ -37,18 +20,15 @@
   </AbilityDef>
 
   <!-- ======================================================
-       4) 어빌리티: 적 변신 (디버프형)
+       어빌리티: 적 변신 (디버프형)
        적을 양으로 변신시켜 무력화
        ====================================================== -->
-  <AbilityDef>
+  <AbilityDef ParentName="SSF_BaseTargetedShiftAbility">
     <defName>SSFTest_Ability_DebuffEnemy</defName>
     <label>polymorph: sheep</label>
     <description>적을 양으로 변신시킨다. 전투력을 상실하며 자발적 해제 불가.</description>
-    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>3000</cooldownTicksRange>
     <hostile>true</hostile>
-    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
-    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>501</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
@@ -71,20 +51,14 @@
   </AbilityDef>
 
   <!-- ======================================================
-       5) 장비소환 어빌리티: 암흑 기사 변신
+       어빌리티: 암흑 기사 변신
        플라스틸 판금갑옷 + 장검 소환, 해제 시 소멸
        ====================================================== -->
-  <AbilityDef>
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_DarkKnight</defName>
     <label>dark knight transformation</label>
     <description>암흑 기사로 변신한다. 전용 플라스틸 판금갑옷과 장검이 소환되며, 기존 장비는 인벤토리로 이동. 해제 시 소환 장비는 소멸한다.</description>
-    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>3000</cooldownTicksRange>
-    <hostile>false</hostile>
-    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
-    <targetRequired>false</targetRequired>
-    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
-    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>505</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
@@ -106,21 +80,14 @@
   </AbilityDef>
 
   <!-- ======================================================
-       6) 3단 변신 어빌리티: 수인 변신
-       인간 → 수인 (수인 상태에서 다시 사용하면 야수 폼으로는
-       별도 기즈모로 진입 — allowedFromForms 조건 충족)
+       어빌리티: 수인 변신 (1단계)
+       인간 → 수인. 수인 상태에서 addAbilities로 FullBeast 진입 가능.
        ====================================================== -->
-  <AbilityDef>
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_Beastkin</defName>
     <label>beastkin shift</label>
-    <description>수인 형태로 변신한다. 수인 상태에서는 기즈모로 완전한 야수 형태로 2단 변신 가능.</description>
-    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <description>수인 형태로 변신한다. 수인 상태에서는 2단 변신(완전 야수)이 가능.</description>
     <cooldownTicksRange>1200</cooldownTicksRange>
-    <hostile>false</hostile>
-    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
-    <targetRequired>false</targetRequired>
-    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
-    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>510</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
@@ -142,20 +109,31 @@
   </AbilityDef>
 
   <!-- ======================================================
-       7) 조건부 변신 어빌리티: 수호자 폼
-       마력의 돌 OR FibrousMechanites 필요
+       어빌리티: 완전 야수 변신 (2단계)
+       수인 상태의 addAbilities로 부여됨
        ====================================================== -->
-  <AbilityDef>
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
+    <defName>SSFTest_Ability_FullBeast</defName>
+    <label>full beast shift</label>
+    <description>완전한 야수 형태로 변신한다. 수인 상태에서만 사용 가능.</description>
+    <cooldownTicksRange>0</cooldownTicksRange>
+    <displayOrder>511</displayOrder>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+        <formDefName>SSFTest_FullBeastForm</formDefName>
+        <successChance>1.0</successChance>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       어빌리티: 수호자 폼
+       ====================================================== -->
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_Guardian</defName>
     <label>guardian shift</label>
-    <description>수호자 형태로 변신한다. 마력의 돌 소지 또는 FibrousMechanites 보유 시에만 사용 가능.</description>
-    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <description>수호자 형태로 변신한다.</description>
     <cooldownTicksRange>1500</cooldownTicksRange>
-    <hostile>false</hostile>
-    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
-    <targetRequired>false</targetRequired>
-    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
-    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>530</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
@@ -177,20 +155,13 @@
   </AbilityDef>
 
   <!-- ======================================================
-       8) 비주얼 오버라이드 어빌리티: 유령 폼
-       head Replace + Transparent 셰이더 + bodyType 변경
+       어빌리티: 유령 폼
        ====================================================== -->
-  <AbilityDef>
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_Phantom</defName>
     <label>phantom shift</label>
     <description>유령 형태로 변신한다. 반투명 머리, 마른 체형.</description>
-    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>1500</cooldownTicksRange>
-    <hostile>false</hostile>
-    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
-    <targetRequired>false</targetRequired>
-    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
-    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>531</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
@@ -212,20 +183,14 @@
   </AbilityDef>
 
   <!-- ======================================================
-       9) 종족 제한 어빌리티: 인간 전용 강화 폼
-       allowedRaces=Human, headType 고정
+       어빌리티: 종족 제한 (인간 전용)
+       allowedRaces를 comp에서 처리
        ====================================================== -->
-  <AbilityDef>
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_RaceLocked</defName>
     <label>race-locked shift</label>
     <description>인간 전용 강화 변신. 비인간 종족은 사용 불가.</description>
-    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>1500</cooldownTicksRange>
-    <hostile>false</hostile>
-    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
-    <targetRequired>false</targetRequired>
-    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
-    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <displayOrder>532</displayOrder>
     <verbProperties>
       <verbClass>Verb_CastAbility</verbClass>
@@ -242,6 +207,10 @@
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
         <formDefName>SSFTest_RaceLockedForm</formDefName>
         <successChance>1.0</successChance>
+        <!-- 종족 제한: 인간만 -->
+        <allowedRaces>
+          <li>Human</li>
+        </allowedRaces>
       </li>
     </comps>
   </AbilityDef>

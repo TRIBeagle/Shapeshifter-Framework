@@ -72,7 +72,7 @@ namespace ShapeshifterFramework.Hediffs
                 // 1. 폰에게 Shapeshifter 컴프가 없거나
                 // 2. 변신 상태가 아니거나
                 // 3. 부여된 헤디프가 현재 폼의 공식 헤디프가 아니면 삭제
-                if (comp == null || !comp.isTransformed || comp.currentForm == null || comp.currentForm.generatedStatHediff != this.def)
+                if (comp == null || !comp.isTransformed || comp.currentForm == null || comp.currentForm.mainHediff != this.def)
                 {
                     return true;
                 }

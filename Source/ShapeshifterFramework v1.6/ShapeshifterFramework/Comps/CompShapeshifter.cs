@@ -59,13 +59,9 @@ namespace ShapeshifterFramework.Comps
         // 폼 전용 VerbTracker (폼 verbs/tools용)
         private VerbTracker shapeshiftVerbTracker;
 
-        // Form 선택용 Gizmo 캐시
-        private const int GizmoCacheInterval = 90;
+        // Gizmo 캐시 (변신 해제 시 갱신)
         private int gizmoCacheTick = -9999;
         private List<ShapeshiftFormDef> gizmoFormsCache = new List<ShapeshiftFormDef>();
-
-        // Ability 부여/회수 추적 (Auto/Custom 모드에서 프레임워크가 부여한 Ability)
-        private readonly List<AbilityDef> grantedFormAbilities = new List<AbilityDef>();
 
         // 틱(Tick) 에러 스팸 방지용 플래그
         private bool verbTickErrorLogged = false;
@@ -341,18 +337,12 @@ namespace ShapeshifterFramework.Comps
 
         #region Ticking/Inspect
 
-        /// <summary>매 틱: 타이머/사망/VerbTracker/Ability동기화 처리.</summary>
+        /// <summary>매 틱: 타이머/사망/mainHediff 모니터링/sustain 검사/VerbTracker 처리.</summary>
         public override void CompTick()
         {
             base.CompTick();
             Pawn pawn = parent as Pawn;
             if (pawn == null) return;
-
-            // 90틱마다 백그라운드에서 Ability 조건 검사 및 부여/회수
-            if (pawn.IsHashIntervalTick(GizmoCacheInterval))
-            {
-                UpdateEligibilityAndSyncAbilities(pawn);
-            }
 
             // 로드 후 장비 참조 복원
             if (needsGearResolve)
@@ -386,7 +376,6 @@ namespace ShapeshifterFramework.Comps
                         for (int i = 0; i < allThings.Count; i++)
                         {
                             var t = allThings[i];
-                            // 이미 인벤에서 찾은 ID는 HashSet에서 제거됨
                             if (__tmpPrevApIds != null && __tmpPrevApIds.Contains(t.ThingID) && t is Apparel ap)
                             {
                                 prevApparels.Add(ap);
@@ -400,7 +389,6 @@ namespace ShapeshifterFramework.Comps
                         }
                     }
 
-                    // 임시 데이터 정리
                     __tmpPrevApIds = null;
                     __tmpPrevWpIds = null;
                 }
@@ -408,15 +396,14 @@ namespace ShapeshifterFramework.Comps
 
             if (isTransformed && currentForm != null)
             {
-                // 스탯 헤디프 외부 삭제 시 변신 해제
-                if (currentForm.generatedStatHediff != null
-                    && pawn != null
-                    && pawn.health?.hediffSet?.GetFirstHediffOfDef(currentForm.generatedStatHediff) == null)
+                // mainHediff 외부 삭제 시 변신 해제
+                if (currentForm.mainHediff != null
+                    && pawn.health?.hediffSet?.GetFirstHediffOfDef(currentForm.mainHediff) == null)
                 {
                     RemoveForm();
                     return;
                 }
-                if (pawn != null && pawn.Dead)
+                if (pawn.Dead)
                 {
                     RemoveForm();
                     return;
@@ -426,7 +413,7 @@ namespace ShapeshifterFramework.Comps
                     transformTimer--;
                     if (transformTimer <= 0) RemoveForm();
                 }
-                // 60틱마다 유지 요건 검사
+                // 60틱마다 유지 요건(sustain) 검사
                 if (pawn.IsHashIntervalTick(60))
                 {
                     // 코어 아이템 유실 검사
@@ -452,44 +439,12 @@ namespace ShapeshifterFramework.Comps
                         }
                     }
 
-                    // 헤디프 조건 유실 검사 (requirementsMode 반영)
-                    if (currentForm.requiredHediffs != null && currentForm.requiredHediffs.Count > 0 && pawn.health != null)
+                    // sustain 조건 검사: sustainApparels/sustainWeapons/sustainHediffs
+                    if (!CheckSustainConditions(pawn, currentForm))
                     {
-                        var mode = currentForm.requirementsMode ?? RequirementMatchMode.All;
-                        if (mode == RequirementMatchMode.All)
-                        {
-                            // ALL: 하나라도 없으면 해제
-                            for (int i = 0; i < currentForm.requiredHediffs.Count; i++)
-                            {
-                                if (pawn.health.hediffSet.GetFirstHediffOfDef(currentForm.requiredHediffs[i]) == null)
-                                {
-                                    Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
-                                    RemoveForm();
-                                    return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // ANY: 모두 없어야 해제 (하나라도 있으면 유지)
-                            bool anyHeld = false;
-                            for (int i = 0; i < currentForm.requiredHediffs.Count; i++)
-                            {
-                                if (pawn.health.hediffSet.GetFirstHediffOfDef(currentForm.requiredHediffs[i]) != null)
-                                { anyHeld = true; break; }
-                            }
-                            // Any 모드에서는 다른 조건(아이템 등)도 확인
-                            if (!anyHeld)
-                            {
-                                bool anyItemHeld = sourceItems != null && sourceItems.Count > 0;
-                                if (!anyItemHeld)
-                                {
-                                    Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
-                                    RemoveForm();
-                                    return;
-                                }
-                            }
-                        }
+                        Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
+                        RemoveForm();
+                        return;
                     }
                 }
                 try
@@ -505,6 +460,70 @@ namespace ShapeshifterFramework.Comps
                     }
                 }
             }
+        }
+
+        /// <summary>sustain 조건 충족 여부 검사. 조건이 없으면 true.</summary>
+        private static bool CheckSustainConditions(Pawn pawn, ShapeshiftFormDef form)
+        {
+            bool hasApparels = form.sustainApparels != null && form.sustainApparels.Count > 0;
+            bool hasWeapons = form.sustainWeapons != null && form.sustainWeapons.Count > 0;
+            bool hasHediffs = form.sustainHediffs != null && form.sustainHediffs.Count > 0;
+
+            if (!hasApparels && !hasWeapons && !hasHediffs) return true;
+
+            var mode = form.sustainMode ?? SustainMode.All;
+
+            bool apparelMet = !hasApparels || CheckSustainApparels(pawn, form.sustainApparels);
+            bool weaponMet = !hasWeapons || CheckSustainWeapons(pawn, form.sustainWeapons);
+            bool hediffMet = !hasHediffs || CheckSustainHediffs(pawn, form.sustainHediffs);
+
+            if (mode == SustainMode.All)
+                return apparelMet && weaponMet && hediffMet;
+            else // Any
+                return apparelMet || weaponMet || hediffMet;
+        }
+
+        private static bool CheckSustainApparels(Pawn pawn, List<ThingDef> required)
+        {
+            if (pawn.apparel == null) return false;
+            var worn = pawn.apparel.WornApparel;
+            for (int i = 0; i < required.Count; i++)
+            {
+                bool found = false;
+                for (int j = 0; j < worn.Count; j++)
+                {
+                    if (worn[j].def == required[i]) { found = true; break; }
+                }
+                if (!found) return false;
+            }
+            return true;
+        }
+
+        private static bool CheckSustainWeapons(Pawn pawn, List<ThingDef> required)
+        {
+            if (pawn.equipment == null) return false;
+            var eqs = pawn.equipment.AllEquipmentListForReading;
+            for (int i = 0; i < required.Count; i++)
+            {
+                bool found = false;
+                for (int j = 0; j < eqs.Count; j++)
+                {
+                    if (eqs[j].def == required[i]) { found = true; break; }
+                }
+                if (!found) return false;
+            }
+            return true;
+        }
+
+        private static bool CheckSustainHediffs(Pawn pawn, List<HediffDef> required)
+        {
+            if (pawn.health == null) return false;
+            for (int i = 0; i < required.Count; i++)
+            {
+                if (pawn.health.hediffSet.GetFirstHediffOfDef(required[i]) == null)
+                    return false;
+            }
+            return true;
         }
 
         // 남은 변신 틱
@@ -538,15 +557,14 @@ namespace ShapeshifterFramework.Comps
 
         #endregion
 
-        #region 변신 가능 판정/지즈모 폼 캐시
+        #region 변신 가능 판정
 
-        /// <summary>변신 가능 여부 판정.</summary>
+        /// <summary>기본 변신 가능 여부 판정 (같은 폼 재변신·사망 차단).</summary>
         public bool CanTransform(Pawn pawn, ShapeshiftFormDef form)
         {
             if (pawn == null || form == null) return false;
             string prev = (isTransformed && currentForm != null) ? currentForm.defName : null;
-            if (!ShapeshiftEligibility.PassBasicFilters(pawn, form, prev)) return false;
-            return ShapeshiftEligibility.PassConditional(pawn, form);
+            return ShapeshiftEligibility.CanTransformBasic(pawn, form, prev);
         }
 
         // 지즈모 캐시 무효화
@@ -554,117 +572,6 @@ namespace ShapeshifterFramework.Comps
         {
             gizmoCacheTick = -9999;
             gizmoFormsCache = null;
-        }
-
-        // 사용 가능 폼 캐싱 반환 (UpdateEligibilityAndSyncAbilities 재활용)
-        IEnumerable<ShapeshiftFormDef> GetAvailableFormsCached(Pawn pawn)
-        {
-            int now = Find.TickManager.TicksGame;
-            if (gizmoFormsCache == null || now - gizmoCacheTick > GizmoCacheInterval)
-            {
-                UpdateEligibilityAndSyncAbilities(pawn);
-            }
-            return gizmoFormsCache;
-        }
-
-        /// <summary>90틱마다 CompTick에서 호출. 조건 검사 + Ability 부여/회수.</summary>
-        private void UpdateEligibilityAndSyncAbilities(Pawn pawn)
-        {
-            var all = DefDatabase<ShapeshiftFormDef>.AllDefsListForReading;
-            List<ShapeshiftFormDef> eligibleList = new List<ShapeshiftFormDef>(all.Count);
-
-            for (int i = 0; i < all.Count; i++)
-            {
-                var f = all[i];
-                if (f != null && CanTransform(pawn, f))
-                    eligibleList.Add(f);
-            }
-
-            gizmoFormsCache = eligibleList;
-            gizmoCacheTick = Find.TickManager.TicksGame;
-
-            SyncFormAbilities(pawn, eligibleList);
-        }
-
-        /// <summary>폼 조건에 따라 Ability 부여/회수.</summary>
-        private void SyncFormAbilities(Pawn pawn, List<ShapeshiftFormDef> eligibleForms)
-        {
-            if (pawn == null || pawn.abilities == null) return;
-
-            // 부여: eligible + ResolvedAbility가 있지만 아직 없는 경우
-            for (int i = 0; i < eligibleForms.Count; i++)
-            {
-                var form = eligibleForms[i];
-                if (form.abilityMode == AbilityMode.None) continue;
-                var aDef = form.ResolvedAbility;
-                if (aDef == null) continue;
-                if (pawn.abilities.GetAbility(aDef) != null) continue;
-
-                pawn.abilities.GainAbility(aDef);
-                if (!grantedFormAbilities.Contains(aDef))
-                    grantedFormAbilities.Add(aDef);
-            }
-
-            // 회수: 부여했지만 더 이상 eligible이 아닌 경우
-            // 변신 중에는 ShouldHideGizmo가 기즈모를 숨기므로 능력 제거 건너뜀
-            if (!isTransformed)
-            {
-                for (int i = grantedFormAbilities.Count - 1; i >= 0; i--)
-                {
-                    var aDef = grantedFormAbilities[i];
-                    if (aDef == null) { grantedFormAbilities.RemoveAt(i); continue; }
-
-                    bool stillEligible = false;
-                    for (int j = 0; j < eligibleForms.Count; j++)
-                    {
-                        if (eligibleForms[j].ResolvedAbility == aDef)
-                        { stillEligible = true; break; }
-                    }
-
-                    if (!stillEligible)
-                    {
-                        pawn.abilities.RemoveAbility(aDef);
-                        grantedFormAbilities.RemoveAt(i);
-                    }
-                }
-            }
-        }
-
-        /// <summary>폼 변신 조건을 만족시킨 코어 아이템 탐색.</summary>
-        private List<Thing> FindSourceItemsForForm(ShapeshiftFormDef form)
-        {
-            List<Thing> found = new List<Thing>();
-            var pawn = parent as Pawn;
-            if (pawn == null || form == null) return found;
-
-            // 1. 의류 검사
-            if (form.requiredApparels != null && form.requiredApparels.Count > 0 && pawn.apparel != null)
-            {
-                foreach (var ap in pawn.apparel.WornApparel)
-                {
-                    if (form.requiredApparels.Contains(ap.def)) found.Add(ap);
-                }
-            }
-
-            // 2. 무기 검사
-            if (form.requiredWeapons != null && form.requiredWeapons.Count > 0 && pawn.equipment != null)
-            {
-                foreach (var eq in pawn.equipment.AllEquipmentListForReading)
-                {
-                    if (form.requiredWeapons.Contains(eq.def)) found.Add(eq);
-                }
-            }
-
-            // 3. 일반 아이템(인벤토리 소지품) 검사
-            if (form.requiredItems != null && form.requiredItems.Count > 0 && pawn.inventory?.innerContainer != null)
-            {
-                foreach (var t in pawn.inventory.innerContainer)
-                {
-                    if (form.requiredItems.Contains(t.def)) found.Add(t);
-                }
-            }
-
-            return found;
         }
 
         #endregion
@@ -682,9 +589,8 @@ namespace ShapeshifterFramework.Comps
 
             string prev = prevOverride ?? ((isTransformed && currentForm != null) ? currentForm.defName : null);
 
-            // 실시간 재검증
-            if (!ShapeshiftEligibility.PassBasicFilters(pawn, form, prev) ||
-                !ShapeshiftEligibility.PassConditional(pawn, form))
+            // 실시간 재검증 (기본: 같은 폼 재변신·사망 차단)
+            if (!ShapeshiftEligibility.CanTransformBasic(pawn, form, prev))
             {
                 try { Messages.Message("SSF_Message_CannotTransform".Translate(form.LabelCap), MessageTypeDefOf.RejectInput, false); } catch { }
                 return;
@@ -757,16 +663,16 @@ namespace ShapeshifterFramework.Comps
             // 상태 적용
             currentForm = form;
 
-            // 스탯 헤디프 부여
-            if (form.generatedStatHediff != null && pawn.health != null)
+            // 메인 헤디프 부여 (변신 상태 마커 + 스탯/능력치)
+            if (form.mainHediff != null && pawn.health != null)
             {
-                if (pawn.health.hediffSet.GetFirstHediffOfDef(form.generatedStatHediff) == null)
+                if (pawn.health.hediffSet.GetFirstHediffOfDef(form.mainHediff) == null)
                 {
-                    Hediff statHediff = pawn.health.AddHediff(form.generatedStatHediff);
-                    if (statHediff != null)
+                    Hediff mainH = pawn.health.AddHediff(form.mainHediff);
+                    if (mainH != null)
                     {
-                        tempAddedHediffs.Add(statHediff);
-                        tempAddedHediffsDefCache.Add(form.generatedStatHediff);
+                        tempAddedHediffs.Add(mainH);
+                        tempAddedHediffsDefCache.Add(form.mainHediff);
                     }
                 }
             }
@@ -1623,21 +1529,6 @@ namespace ShapeshifterFramework.Comps
             Scribe_Collections.Look(ref generatedApparel, "generatedApparel", LookMode.Reference);
             Scribe_Collections.Look(ref generatedWeapons, "generatedWeapons", LookMode.Reference);
 
-            // grantedFormAbilities (Def 참조)
-            List<AbilityDef> __tmpGranted = null;
-            if (Scribe.mode == LoadSaveMode.Saving) __tmpGranted = grantedFormAbilities;
-            Scribe_Collections.Look(ref __tmpGranted, "grantedFormAbilities", LookMode.Def);
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
-            {
-                grantedFormAbilities.Clear();
-                if (__tmpGranted != null)
-                {
-                    for (int i = 0; i < __tmpGranted.Count; i++)
-                    {
-                        if (__tmpGranted[i] != null) grantedFormAbilities.Add(__tmpGranted[i]);
-                    }
-                }
-            }
             // PostLoadInit
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -1696,9 +1587,6 @@ namespace ShapeshifterFramework.Comps
             // 플레이어 조종 Pawn만
             if (!pawn.IsColonistPlayerControlled)
                 yield break;
-
-            // Ability 동기화를 위해 캐시 갱신 트리거
-            GetAvailableFormsCached(pawn);
 
             // 변신 중: 해제 기즈모
             if (isTransformed && currentForm != null)

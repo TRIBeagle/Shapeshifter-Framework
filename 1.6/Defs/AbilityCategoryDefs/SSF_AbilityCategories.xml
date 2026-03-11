@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Defs>
 
-  <!-- 변신 Ability 카테고리: Auto 모드로 자동생성된 Ability를 그룹화 -->
+  <!-- 변신 Ability 카테고리: Shapeshift 어빌리티 그룹화 -->
   <AbilityCategoryDef>
     <defName>SSF_Shapeshift</defName>
     <label>Shapeshift</label>

@@ -1,6 +1,8 @@
-﻿// ShapeshifterFramework | Root | ShapeshiftFormDef.cs
-// 목적 : 변신 폼(Form)의 모든 동작을 정의하는 최상위 XML 데이터 구조체(Schema).
-// 용도 : 외형 스케일/오프셋, 렌더링 숨김/대체 규칙, 스탯 및 능력치 보정, 변신 요구 조건, 부가 효과(능력/헤디프/FX/사운드), 타 모드(HAR/FA) 호환성 등 폼에 관한 모든 정적(Static) 데이터를 보관함.
+// ShapeshifterFramework | Root | ShapeshiftFormDef.cs
+// 목적 : 변신 폼(Form)의 비주얼·장비·도구·사운드·VFX 등 정적 데이터를 정의하는 최상위 XML 데이터 구조체(Schema).
+// 용도 : 스탯/능력치 보정은 mainHediff의 HediffDef stages에서 바닐라 패턴으로 정의.
+//        어빌리티 부여는 유전자/헤디프/아이템(CompGiveAbility_SSF) 등 소스가 담당.
+//        캐스트 조건(종족/뮤턴트/제노타입)은 AbilityDef의 CompAbilityEffect_ShiftTarget에서 검사.
 // 주의 : 이 클래스의 데이터는 XML 로드 시 확정되며, 런타임 게임 플레이 도중 수정(오염)되지 않도록 철저히 읽기 전용(Read-only) 데이터로 취급해야 함.
 
 using RimWorld;
@@ -46,14 +48,8 @@ namespace ShapeshifterFramework
         public PartOverrideOption female = null;
     }
 
-    // 조건 컨디션 모드
-    public enum RequirementMatchMode { All, Any }
-
-    // Ability 생성 모드
-    // Auto : 프레임워크가 AbilityDef를 자동 생성 (기본값)
-    // Custom : 모더가 직접 작성한 AbilityDef를 linkedAbility로 연결
-    // None : Ability를 생성하지 않음 (약물/아이템/외부 코드 전용)
-    public enum AbilityMode { Auto, Custom, None }
+    // sustain 조건 집계 모드
+    public enum SustainMode { All, Any }
 
     // 변신 시 기존 장비 처리 모드(의복/무기 각자 지정)
     public enum GearHandling { Keep, Inventory, Drop }
@@ -90,9 +86,13 @@ namespace ShapeshifterFramework
         public AddedPartPolicy addedPartPolicy = AddedPartPolicy.ForceAdd;
     }
 
-    /// <summary>변신 폼 Def. 외형/필터/요건/버튼/지속/부여물 일괄 관리.</summary>
+    /// <summary>변신 폼 Def. 비주얼/장비/도구/사운드/VFX 및 변신 상태(mainHediff) 정의.</summary>
     public class ShapeshiftFormDef : Def
     {
+        // ── 메인 헤디프: 변신 상태를 나타냄. 제거 시 자동 해제.
+        // 스탯/능력치 보정은 이 HediffDef의 stages에서 바닐라 패턴으로 정의.
+        public HediffDef mainHediff;
+
         // 스케일/오프셋(렌더 보정용)
         public float? bodyDrawScale;   // 몸 전체 스케일 배수 (예: 5.0이면 5배) 비우면 1
         public float? headDrawScale;   // 헤드 추가 배수 (바디 스케일에 곱해짐) 비우면 1
@@ -165,28 +165,11 @@ namespace ShapeshifterFramework
         public Color? hairColor;
         public Color? skinColor;
 
-        // 수치 변경
-        public List<StatModifier> statOffsets;
-        public List<StatModifier> statFactors;
-        public List<PawnCapacityModifier> capMods;
-
-        // ── 변신 요건(카테고리 내부는 ALL-of, 카테고리 집계는 requirementsMode 적용)
-        public List<ThingDef> requiredItems;
-        public List<ThingDef> requiredApparels;
-        public List<ThingDef> requiredWeapons;
-        public List<HediffDef> requiredHediffs;
-
-        // ──조건 집계와 무관, 항상 선행 필터
-        public List<ThingDef> allowedRaces;
-        public List<ThingDef> disallowedRaces;
-        [MayRequire("Ludeon.RimWorld.Anomaly")] public List<MutantDef> allowedMutants;
-        [MayRequire("Ludeon.RimWorld.Anomaly")] public List<MutantDef> disallowedMutants;
-        [MayRequire("Ludeon.RimWorld.Biotech")] public List<XenotypeDef> allowedXenotypes;
-        [MayRequire("Ludeon.RimWorld.Biotech")] public List<XenotypeDef> disallowedXenotypes;
-        public List<string> allowedFromForms; // defName 리스트
-
-        // ── 카테고리 집계 모드(기본 All)
-        public RequirementMatchMode? requirementsMode; // 기본 All
+        // ── 변신 유지 조건 (sustain): 변신 중 이 조건이 깨지면 자동 해제
+        public List<ThingDef> sustainApparels;   // 이 의류를 착용 유지해야 함
+        public List<ThingDef> sustainWeapons;    // 이 무기를 장비 유지해야 함
+        public List<HediffDef> sustainHediffs;   // 이 헤디프가 유지되어야 함
+        public SustainMode? sustainMode;         // 기본 All: 모두 충족 / Any: 하나라도 충족
 
         // 변신 중 부여
         public List<HediffAddEntry> addHediffs;
@@ -237,16 +220,8 @@ namespace ShapeshifterFramework
         public int transformExitFxDelayTicks = 0;   // Exit  FX 재생 지연
         public int transformFxCooldownTicks = 30;   // 동일 단계 쿨다운(틱)
 
-        // Ability 모드 (Auto: 자동생성, Custom: 모더 AbilityDef 연결, None: 약물/아이템 전용)
-        public AbilityMode abilityMode = AbilityMode.Auto;
-        // Custom 모드: 모더가 XML에서 지정하는 AbilityDef ([Unsaved] 절대 금지 — XML 로더가 무시함)
-        public AbilityDef linkedAbility;
-        // Auto 모드: 프레임워크가 런타임에 생성하는 AbilityDef
-        [Unsaved(false)]
-        public AbilityDef generatedAbility;
-
         // 버튼/기타
-        public string gizmoIconPathEnter;   // 변신 버튼 아이콘 (Auto 모드에서 Ability 아이콘으로도 사용)
+        public string gizmoIconPathEnter;   // 변신 버튼 아이콘
         public string gizmoIconPathRevert;  // 해제 버튼 아이콘
         public int? durationTicks = null;      // 지속 틱(null=무제한)
         public bool canRevertVoluntarily = true; // false면 유저가 기즈모로 해제 불가(강제 변신용)
@@ -268,10 +243,6 @@ namespace ShapeshifterFramework
         public ThingDef bloodSmearDef;
         public FleshTypeDef fleshType;
 
-        // 런타임 자동 생성된 스탯 헤디프 (세이브 불필요, 매 시작 재생성)
-        [Unsaved(false)]
-        public HediffDef generatedStatHediff;
-
         // HAR 옵션
         [MayRequire("erdelf.HumanoidAlienRaces")] public bool showHarAddons = false;
 
@@ -285,32 +256,9 @@ namespace ShapeshifterFramework
         [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor;
         [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor2;
 
-        /// <summary>Def 로드 완료 후 호출. 동적 HediffDef/AbilityDef를 DefDatabase에 등록.</summary>
         public override void ResolveReferences()
         {
             base.ResolveReferences();
-            ShapeshifterFramework.Utilities.ShapeshiftStatHediffGenerator.TryGenerateFor(this);
-            ShapeshifterFramework.Utilities.ShapeshiftAbilityGenerator.TryGenerateFor(this);
-
-            // Custom 모드: linkedAbility → generatedAbility에 복사 (외부에서 generatedAbility만 참조)
-            if (abilityMode == AbilityMode.Custom)
-            {
-                if (linkedAbility != null)
-                {
-                    generatedAbility = linkedAbility;
-                }
-                else
-                {
-                    Log.Error($"[SSF] ShapeshiftFormDef '{defName}' has abilityMode=Custom but linkedAbility is null. Falling back to None.");
-                    abilityMode = AbilityMode.None;
-                }
-            }
-        }
-
-        /// <summary>이 폼에 연결된 AbilityDef 반환. Auto/Custom 모두 이 프로퍼티로 통일 접근.</summary>
-        public AbilityDef ResolvedAbility
-        {
-            get { return generatedAbility; }
         }
     }
 }

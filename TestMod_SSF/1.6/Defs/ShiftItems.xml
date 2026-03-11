@@ -62,11 +62,11 @@
        아이템 정의
        ====================================================== -->
 
-  <!-- 마력의 돌 — requiredItems 조건 테스트용 -->
+  <!-- 마력의 돌 — CompGiveAbility_SSF 테스트: 소지만으로 Guardian 어빌리티 부여 -->
   <ThingDef ParentName="ResourceBase">
     <defName>SSFTest_MagicStone</defName>
     <label>Test: 마력의 돌</label>
-    <description>인벤토리에 소지하기만 해도 변신 기즈모를 활성화해 주는 신비한 돌입니다. 바닥에 버리면 변신이 풀립니다.</description>
+    <description>인벤토리에 소지하기만 해도 수호자 변신 어빌리티가 부여되는 신비한 돌입니다. 바닥에 버리면 어빌리티가 사라집니다.</description>
     <graphicData>
       <texPath>Things/Item/Resource/Jade</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -78,6 +78,12 @@
     <thingCategories>
       <li>Manufactured</li>
     </thingCategories>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_SSF">
+        <ability>SSFTest_Ability_Guardian</ability>
+        <requireEquipped>false</requireEquipped>
+      </li>
+    </comps>
   </ThingDef>
 
   <!-- ======================================================

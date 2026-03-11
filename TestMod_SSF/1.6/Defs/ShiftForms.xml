@@ -6,12 +6,13 @@
        ====================================================== -->
 
   <!-- 1) 베어 폼 (동물형) — 약물/아이템 전용, 어빌리티 바에 표시 안 함
-       ★ 체형 교체 텍스처, hediff, capMods, 이펙트 통합 테스트 -->
+       ★ 체형 교체 텍스처, hediff, 이펙트 통합 테스트
+       ★ 스탯/능력치 → mainHediff(SSFTest_BearFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSFTest_BearForm</defName>
     <label>bear form</label>
     <description>테스트용 곰 변신. 동물형 완전 변신. 곰 텍스처로 체형 교체, 캐릭터 능력 보정, hediff 부여 테스트.</description>
-    <abilityMode>None</abilityMode>
+    <mainHediff>SSFTest_BearFormHediff</mainHediff>
     <!-- 체형 교체 텍스처 -->
     <body>
       <mode>Replace</mode>
@@ -23,20 +24,6 @@
     <bodyDrawScale>2.5</bodyDrawScale>
     <durationTicks>15000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
-    <statOffsets>
-      <MoveSpeed>1.5</MoveSpeed>
-    </statOffsets>
-    <statFactors>
-      <MeleeHitChance>1.20</MeleeHitChance>
-      <MeleeDodgeChance>1.15</MeleeDodgeChance>
-    </statFactors>
-    <!-- 능력치 보정 -->
-    <capMods>
-      <li><capacity>Manipulation</capacity><setMax>0.2</setMax></li>
-      <li><capacity>Talking</capacity><postFactor>0.1</postFactor></li>
-      <li><capacity>Moving</capacity><postFactor>1.30</postFactor></li>
-      <li><capacity>Sight</capacity><postFactor>1.10</postFactor></li>
-    </capMods>
     <!-- hediff 부여 -->
     <addHediffs>
       <li>
@@ -78,35 +65,23 @@
     <transformExitFleckCount>1</transformExitFleckCount>
     <transformExitFleckScale>1.8</transformExitFleckScale>
     <transformExitSound>PsychicSootheGlobal</transformExitSound>
-    <!-- 2단 변신: 수인 폼에서도 진입 가능 -->
-    <allowedFromForms>
-      <li>None</li>
-      <li>SSFTest_BeastkinForm</li>
-    </allowedFromForms>
     <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
 
   <!-- 2) 곰 전사 폼 (아머드형) — 버프 어빌리티용 동료 강화
-       ★ 사운드 오버라이드 통합 테스트 -->
+       ★ 사운드 오버라이드 통합 테스트
+       ★ 스탯 → mainHediff(SSFTest_BearWarriorFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
     <defName>SSFTest_BearWarriorForm</defName>
     <label>bear warrior form</label>
     <description>테스트용 곰 전사 변신. 장비 유지하면서 스탯 강화. 곰 사운드 오버라이드.</description>
-    <abilityMode>Custom</abilityMode>
-    <linkedAbility>SSFTest_Ability_BuffAlly</linkedAbility>
+    <mainHediff>SSFTest_BearWarriorFormHediff</mainHediff>
     <bodyDrawScale>1.3</bodyDrawScale>
     <durationTicks>15000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
-    <statOffsets>
-      <MoveSpeed>0.5</MoveSpeed>
-      <MeleeDodgeChance>10</MeleeDodgeChance>
-    </statOffsets>
-    <statFactors>
-      <IncomingDamageFactor>0.8</IncomingDamageFactor>
-    </statFactors>
-    <!-- 사운드 오버라이드 (비근접 계열: 차지블라스터/EMP/사이더 — 즉시 구분 가능) -->
+    <!-- 사운드 오버라이드 -->
     <soundAngry>Pawn_Bear_Angry</soundAngry>
     <soundMeleeHitPawn>Shot_Charge_Blaster</soundMeleeHitPawn>
     <soundMeleeHitBuilding>Explosion_EMP</soundMeleeHitBuilding>
@@ -114,18 +89,17 @@
     <!-- 이펙트 -->
     <transformEnterEffecter>Vaporize_Heatwave</transformEnterEffecter>
     <transformExitEffecter>ImpactSmallDustCloud</transformExitEffecter>
-    <!-- ★ 아이콘 테스트: 테스트용 아이콘 -->
     <gizmoIconPathEnter>UI/Commands/SSF_Shift_Entertest</gizmoIconPathEnter>
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Reverttest</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- 3) 양 폼 (동물형) — 디버프/범위형용. 해제 불가 -->
+  <!-- 3) 양 폼 (동물형) — 디버프/범위형용. 해제 불가
+       ★ 스탯 → mainHediff(SSFTest_SheepFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSFTest_SheepForm</defName>
     <label>sheep form</label>
     <description>테스트용 양 변신. 전투력 상실, 자발적 해제 불가.</description>
-    <abilityMode>Custom</abilityMode>
-    <linkedAbility>SSFTest_Ability_DebuffEnemy</linkedAbility>
+    <mainHediff>SSFTest_SheepFormHediff</mainHediff>
     <!-- 양 텍스처로 체형 교체 -->
     <body>
       <mode>Replace</mode>
@@ -137,9 +111,6 @@
     <bodyDrawScale>0.6</bodyDrawScale>
     <durationTicks>10000</durationTicks>
     <canRevertVoluntarily>false</canRevertVoluntarily>
-    <statOffsets>
-      <MoveSpeed>-1.0</MoveSpeed>
-    </statOffsets>
     <disabledWorkTagsOnTransform>
       <li>Violent</li>
     </disabledWorkTagsOnTransform>
@@ -149,13 +120,13 @@
        장비 소환 변신 폼
        ====================================================== -->
 
-  <!-- 4) 암흑 기사 폼 (장비 소환형) — 전용 갑옷+무기 소환, 해제 시 자동 파괴 -->
+  <!-- 4) 암흑 기사 폼 (장비 소환형) — 전용 갑옷+무기 소환, 해제 시 자동 파괴
+       ★ 스탯 → mainHediff(SSFTest_DarkKnightFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
     <defName>SSFTest_DarkKnightForm</defName>
     <label>dark knight form</label>
     <description>암흑 기사로 변신. 전용 갑옷과 무기가 소환되며, 기존 장비는 인벤토리로 이동. 해제 시 소환 장비는 소멸.</description>
-    <abilityMode>Custom</abilityMode>
-    <linkedAbility>SSFTest_Ability_DarkKnight</linkedAbility>
+    <mainHediff>SSFTest_DarkKnightFormHediff</mainHediff>
     <bodyDrawScale>1.2</bodyDrawScale>
     <durationTicks>18000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
@@ -172,42 +143,27 @@
     <spawnApparelStuff>Plasteel</spawnApparelStuff>
     <spawnWeaponStuff>Plasteel</spawnWeaponStuff>
     <conflictingGearHandling>Inventory</conflictingGearHandling>
-    <statOffsets>
-      <MoveSpeed>-0.3</MoveSpeed>
-      <MeleeDodgeChance>15</MeleeDodgeChance>
-    </statOffsets>
-    <statFactors>
-      <IncomingDamageFactor>0.6</IncomingDamageFactor>
-      <MeleeWeapon_CooldownMultiplier>0.85</MeleeWeapon_CooldownMultiplier>
-    </statFactors>
-    <!-- ★ 아이콘 테스트: 테스트용 아이콘 -->
     <gizmoIconPathEnter>UI/Commands/SSF_Shift_Entertest</gizmoIconPathEnter>
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Reverttest</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- ======================================================
-       3단 변신 폼: 인간 → 수인 → 동물
+       다단 변신 폼: 인간 → 수인 → 야수
        ====================================================== -->
 
   <!-- 5a) 수인 폼 (휴머노이드형) — 1단계: 인간→수인
-       ★ 귀/꼬리 renderNodeProperties, 보이스, verb, verbGizmoOptions 통합 테스트 -->
+       ★ 귀/꼬리 renderNodeProperties, 보이스, verb, verbGizmoOptions 통합 테스트
+       ★ addAbilities에 FullBeast 어빌리티 추가 (2단 변신용)
+       ★ 스탯 → mainHediff(SSFTest_BeastkinFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
     <defName>SSFTest_BeastkinForm</defName>
     <label>beastkin form</label>
     <description>수인 형태. 귀/꼬리 그래픽 추가, 다양한 원거리 verb 통합 테스트. 수인 상태에서 2단 변신(완전 야수) 가능.</description>
-    <abilityMode>Custom</abilityMode>
-    <linkedAbility>SSFTest_Ability_Beastkin</linkedAbility>
+    <mainHediff>SSFTest_BeastkinFormHediff</mainHediff>
     <bodyDrawScale>1.20</bodyDrawScale>
     <headDrawScale>1.05</headDrawScale>
     <headOffset>(0.0, 0.03)</headOffset>
     <canRevertVoluntarily>true</canRevertVoluntarily>
-    <statOffsets>
-      <MoveSpeed>0.8</MoveSpeed>
-      <MeleeDodgeChance>5</MeleeDodgeChance>
-    </statOffsets>
-    <statFactors>
-      <MeleeHitChance>1.10</MeleeHitChance>
-    </statFactors>
     <apparelOnTransform>Inventory</apparelOnTransform>
     <weaponsOnTransform>Keep</weaponsOnTransform>
     <!-- hediff -->
@@ -216,10 +172,12 @@
         <hediff>FibrousMechanites</hediff>
       </li>
     </addHediffs>
+    <!-- addAbilities: 2단 변신(FullBeast) + 기타 -->
     <addAbilities>
       <li MayRequire="Ludeon.Royalty">Waterskip</li>
+      <li>SSFTest_Ability_FullBeast</li>
     </addAbilities>
-    <!-- 그래픽 표시 예외(휴머노이드 베이스의 Overhead 숨김을 덮어씀) -->
+    <!-- 그래픽 표시 예외 -->
     <renderShowApparelDefNames>
       <li>Apparel_Cape</li>
       <li>Apparel_Tuque</li>
@@ -269,7 +227,7 @@
         </drawData>
       </li>
     </renderNodeProperties>
-    <!-- ★ 기본 컬러 오버라이드 (텍스처 Replace 없이 색상만 변경) -->
+    <!-- ★ 기본 컬러 오버라이드 -->
     <hairColor>(0.85, 0.85, 0.95)</hairColor>
     <!-- ★ 보이스 오버라이드 -->
     <soundCall>Pawn_Furskin_Call</soundCall>
@@ -381,7 +339,7 @@
         </beamLineFleckChanceCurve>
       </li>
     </verbs>
-    <!-- ★ verbGizmoOptions: 각 verb별 아이콘/라벨/자동공격 설정 -->
+    <!-- ★ verbGizmoOptions -->
     <verbGizmoOptions>
       <li>
         <label>돌격소총</label>
@@ -438,23 +396,16 @@
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- 5b) 야수 폼 (동물형) — 2단계: 수인→동물 (수인 상태에서만 진입 가능, Auto로 자동생성) -->
+  <!-- 5b) 야수 폼 (동물형) — 2단계: 수인→야수 (수인의 addAbilities로 부여)
+       ★ 스탯 → mainHediff(SSFTest_FullBeastFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSFTest_FullBeastForm</defName>
     <label>full beast form</label>
-    <description>완전한 야수 형태. 수인 상태에서만 변신 가능.</description>
+    <description>완전한 야수 형태. 수인 상태에서만 변신 가능 (수인 폼의 addAbilities로 어빌리티 부여).</description>
+    <mainHediff>SSFTest_FullBeastFormHediff</mainHediff>
     <bodyDrawScale>1.0</bodyDrawScale>
     <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
-    <allowedFromForms>
-      <li>SSFTest_BeastkinForm</li>
-    </allowedFromForms>
-    <statOffsets>
-      <MoveSpeed>2.0</MoveSpeed>
-    </statOffsets>
-    <statFactors>
-      <IncomingDamageFactor>0.7</IncomingDamageFactor>
-    </statFactors>
     <tools>
       <li>
         <label>fangs</label>
@@ -478,52 +429,41 @@
        조건부 / 비주얼 / 종족제한 테스트 폼
        ====================================================== -->
 
-  <!-- 6) 수호자 폼 (조건부 변신) — requiredItems/requiredHediffs/requirementsMode 테스트
-       ★ portraitDrawScale, bodyOffset, shadowVolume/Offset 통합 테스트 -->
+  <!-- 6) 수호자 폼 — sustainHediffs로 FibrousMechanites 유지 조건
+       ★ portraitDrawScale, bodyOffset, shadowVolume/Offset 통합 테스트
+       ★ 스탯 → mainHediff(SSFTest_GuardianFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
     <defName>SSFTest_GuardianForm</defName>
     <label>guardian form</label>
     <description>수호자 형태. 마력의 돌 소지 또는 FibrousMechanites 보유 시 변신 가능. 큰 그림자와 포트레잇 확대 테스트.</description>
-    <abilityMode>Custom</abilityMode>
-    <linkedAbility>SSFTest_Ability_Guardian</linkedAbility>
+    <mainHediff>SSFTest_GuardianFormHediff</mainHediff>
     <bodyDrawScale>1.4</bodyDrawScale>
     <portraitDrawScale>1.3</portraitDrawScale>
     <bodyOffset>(0, -0.1)</bodyOffset>
     <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
-    <!-- 변신 조건: 마력의 돌 OR FibrousMechanites (Any 모드) -->
-    <requiredItems>
-      <li>SSFTest_MagicStone</li>
-    </requiredItems>
-    <requiredHediffs>
+    <!-- sustain: FibrousMechanites가 유지되어야 함 (Any 모드) -->
+    <sustainHediffs>
       <li>FibrousMechanites</li>
-    </requiredHediffs>
-    <requirementsMode>Any</requirementsMode>
+    </sustainHediffs>
+    <sustainMode>Any</sustainMode>
     <!-- 그림자 오버라이드 -->
     <body>
       <mode>Default</mode>
       <shadowVolume>(0.6, 1.0, 0.6)</shadowVolume>
       <shadowOffset>(0, 0, -0.05)</shadowOffset>
     </body>
-    <statOffsets>
-      <MoveSpeed>0.3</MoveSpeed>
-    </statOffsets>
-    <statFactors>
-      <IncomingDamageFactor>0.85</IncomingDamageFactor>
-    </statFactors>
     <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- 7) 유령 폼 (비주얼 오버라이드) — head Replace, 셰이더, bodyType, WorkTypeDef 차단 테스트
-       ★ FX delay, disabledWorkTypesOnTransform 통합 테스트 -->
+  <!-- 7) 유령 폼 (비주얼 오버라이드) — head Replace, 셰이더, bodyType, WorkTypeDef 차단
+       ★ 스탯 → mainHediff(SSFTest_PhantomFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
     <defName>SSFTest_PhantomForm</defName>
     <label>phantom form</label>
     <description>유령 형태. 반투명한 머리, 마른 체형. 소방 작업 불가. FX 지연 테스트.</description>
-    <abilityMode>Custom</abilityMode>
-    <linkedAbility>SSFTest_Ability_Phantom</linkedAbility>
-    <!-- 머리 텍스처 교체 + 반투명 셰이더 -->
+    <mainHediff>SSFTest_PhantomFormHediff</mainHediff>
     <head>
       <mode>Replace</mode>
       <replacementTexPath>Things/Pawn/Humanlike/Heads/Male/Male_AverageNormal</replacementTexPath>
@@ -532,19 +472,13 @@
     </head>
     <hair><mode>Hidden</mode></hair>
     <bodyType>Thin</bodyType>
-    <!-- ★ 기본 스킨컬러 오버라이드 (유령답게 창백한 푸른빛) -->
     <skinColor>(0.7, 0.8, 1.0)</skinColor>
     <bodyDrawScale>1.0</bodyDrawScale>
     <durationTicks>10000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
-    <statOffsets>
-      <MoveSpeed>1.0</MoveSpeed>
-    </statOffsets>
-    <!-- 소방 작업 차단 (WorkTypeDef 직접 지정) -->
     <disabledWorkTypesOnTransform>
       <li>Firefighter</li>
     </disabledWorkTypesOnTransform>
-    <!-- FX 지연 테스트 -->
     <transformEnterFxDelayTicks>30</transformEnterFxDelayTicks>
     <transformExitFxDelayTicks>15</transformExitFxDelayTicks>
     <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
@@ -559,32 +493,19 @@
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- 8) 종족 제한 폼 (종족 게이트) — allowedRaces, headType, 장비 잠금 혼합 테스트 -->
+  <!-- 8) 종족 제한 폼 — 종족 제한은 AbilityDef comp에서 처리
+       ★ 스탯 → mainHediff(SSFTest_RaceLockedFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
     <defName>SSFTest_RaceLockedForm</defName>
     <label>race locked form</label>
     <description>인간 전용 강화 폼. 의류 교체 잠금, 무기만 자유 교체 가능. 머리타입 고정.</description>
-    <abilityMode>Custom</abilityMode>
-    <linkedAbility>SSFTest_Ability_RaceLocked</linkedAbility>
+    <mainHediff>SSFTest_RaceLockedFormHediff</mainHediff>
     <bodyDrawScale>1.15</bodyDrawScale>
     <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
-    <!-- 종족 제한: 인간만 -->
-    <allowedRaces>
-      <li>Human</li>
-    </allowedRaces>
-    <!-- 머리타입 고정 -->
     <headType>Male_AverageNormal</headType>
-    <!-- 의류 잠금, 무기 자유 -->
     <apparelEquipLock>Locked</apparelEquipLock>
     <weaponEquipLock>Unlocked</weaponEquipLock>
-    <statOffsets>
-      <MoveSpeed>0.5</MoveSpeed>
-      <MeleeDodgeChance>10</MeleeDodgeChance>
-    </statOffsets>
-    <statFactors>
-      <IncomingDamageFactor>0.75</IncomingDamageFactor>
-    </statFactors>
     <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>

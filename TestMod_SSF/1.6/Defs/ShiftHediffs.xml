@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       폼별 메인 HediffDef: 변신 상태 마커 + 스탯/능력치 보정
+       hediffClass: ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm
+       ====================================================== -->
+
+  <!-- 1) 베어 폼 메인 헤디프 -->
+  <HediffDef>
+    <defName>SSFTest_BearFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>bear form</label>
+    <description>곰으로 변신한 상태. 이동 속도 증가, 근접 적중/회피 강화, 조작 능력 저하.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.4, 0.8, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>1.5</MoveSpeed>
+        </statOffsets>
+        <statFactors>
+          <MeleeHitChance>1.20</MeleeHitChance>
+          <MeleeDodgeChance>1.15</MeleeDodgeChance>
+        </statFactors>
+        <capMods>
+          <li><capacity>Manipulation</capacity><setMax>0.2</setMax></li>
+          <li><capacity>Talking</capacity><postFactor>0.1</postFactor></li>
+          <li><capacity>Moving</capacity><postFactor>1.30</postFactor></li>
+          <li><capacity>Sight</capacity><postFactor>1.10</postFactor></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 2) 곰 전사 폼 메인 헤디프 -->
+  <HediffDef>
+    <defName>SSFTest_BearWarriorFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>bear warrior form</label>
+    <description>곰 전사로 변신한 상태. 이동 속도, 회피 증가, 피해 경감.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.4, 0.8, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>0.5</MoveSpeed>
+          <MeleeDodgeChance>10</MeleeDodgeChance>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.8</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 3) 양 폼 메인 헤디프 -->
+  <HediffDef>
+    <defName>SSFTest_SheepFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>sheep form</label>
+    <description>양으로 변신한 상태. 이동 속도 감소.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.8, 0.8, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>-1.0</MoveSpeed>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 4) 암흑 기사 폼 메인 헤디프 -->
+  <HediffDef>
+    <defName>SSFTest_DarkKnightFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>dark knight form</label>
+    <description>암흑 기사로 변신한 상태. 이동 속도 감소, 회피 증가, 대폭 피해 경감.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.4, 0.4, 0.8)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>-0.3</MoveSpeed>
+          <MeleeDodgeChance>15</MeleeDodgeChance>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.6</IncomingDamageFactor>
+          <MeleeWeapon_CooldownMultiplier>0.85</MeleeWeapon_CooldownMultiplier>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 5a) 수인 폼 메인 헤디프 -->
+  <HediffDef>
+    <defName>SSFTest_BeastkinFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>beastkin form</label>
+    <description>수인으로 변신한 상태. 이동 속도, 회피, 근접 적중 증가.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.4, 0.8, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>0.8</MoveSpeed>
+          <MeleeDodgeChance>5</MeleeDodgeChance>
+        </statOffsets>
+        <statFactors>
+          <MeleeHitChance>1.10</MeleeHitChance>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 5b) 야수 폼 메인 헤디프 -->
+  <HediffDef>
+    <defName>SSFTest_FullBeastFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>full beast form</label>
+    <description>완전한 야수로 변신한 상태. 이동 속도 대폭 증가, 피해 경감.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>2.0</MoveSpeed>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.7</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 6) 수호자 폼 메인 헤디프 -->
+  <HediffDef>
+    <defName>SSFTest_GuardianFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>guardian form</label>
+    <description>수호자로 변신한 상태. 이동 속도 증가, 피해 경감.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.4, 0.8, 0.8)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>0.3</MoveSpeed>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.85</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 7) 유령 폼 메인 헤디프 -->
+  <HediffDef>
+    <defName>SSFTest_PhantomFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>phantom form</label>
+    <description>유령으로 변신한 상태. 이동 속도 증가.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.6, 0.7, 0.9)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>1.0</MoveSpeed>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 8) 종족 제한 폼 메인 헤디프 -->
+  <HediffDef>
+    <defName>SSFTest_RaceLockedFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>race locked form</label>
+    <description>인간 전용 강화 상태. 이동 속도, 회피 증가, 피해 경감.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.8, 0.6, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>0.5</MoveSpeed>
+          <MeleeDodgeChance>10</MeleeDodgeChance>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.75</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+</Defs>

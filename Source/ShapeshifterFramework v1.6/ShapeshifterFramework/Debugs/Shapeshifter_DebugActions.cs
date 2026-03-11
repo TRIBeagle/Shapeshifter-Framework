@@ -185,18 +185,6 @@ namespace ShapeshifterFramework.Debugs
 
                 sb.AppendLine($"── [{f+1}/{allForms.Count}] {form.defName} ──");
 
-                // 종족 제한 검증 (변신 전 체크)
-                if (form.allowedRaces != null && form.allowedRaces.Count > 0)
-                {
-                    bool raceAllowed = form.allowedRaces.Contains(pawn.def);
-                    sb.AppendLine($"  (i) allowedRaces check: pawn={pawn.def.defName} allowed={raceAllowed}");
-                }
-                if (form.disallowedRaces != null && form.disallowedRaces.Count > 0)
-                {
-                    bool raceBlocked = form.disallowedRaces.Contains(pawn.def);
-                    sb.AppendLine($"  (i) disallowedRaces check: pawn={pawn.def.defName} blocked={raceBlocked}");
-                }
-
                 // 변신 전 장비 스냅샷 (Drop/Inventory 검증용)
                 var prevApparelSnapshot = new List<Thing>();
                 var prevWeaponSnapshot = new List<Thing>();
@@ -224,17 +212,7 @@ namespace ShapeshifterFramework.Debugs
 
                 if (!comp.isTransformed || comp.currentForm != form)
                 {
-                    // 종족 제한으로 스킵된 경우 정상 동작으로 판정
-                    bool raceFiltered = false;
-                    if (form.allowedRaces != null && form.allowedRaces.Count > 0 && !form.allowedRaces.Contains(pawn.def))
-                        raceFiltered = true;
-                    if (form.disallowedRaces != null && form.disallowedRaces.Contains(pawn.def))
-                        raceFiltered = true;
-
-                    if (raceFiltered)
-                        sb.AppendLine($"  ✓ Correctly blocked by race filter (pawn={pawn.def.defName}){CL(form.defName, "raceFilter")}");
-                    else
-                        sb.AppendLine($"  - Skipped (eligibility filter or apply failed)");
+                    sb.AppendLine($"  - Skipped (eligibility filter or apply failed)");
                     totalSkip++;
                     sb.AppendLine();
                     continue;
@@ -246,13 +224,13 @@ namespace ShapeshifterFramework.Debugs
                 string fn = form.defName; // 체크리스트 매핑용 폼 이름
 
                 // 1. 스탯 hediff 존재
-                if (form.generatedStatHediff != null)
+                if (form.mainHediff != null)
                 {
                     checks++;
                     string cl = CL(fn, "statHediff");
-                    if (pawn.health?.hediffSet?.GetFirstHediffOfDef(form.generatedStatHediff) != null)
-                    { passed++; sb.AppendLine($"  ✓ Stat hediff OK: {form.generatedStatHediff.defName}{cl}"); }
-                    else sb.AppendLine($"  ✗ Stat hediff missing: {form.generatedStatHediff.defName}{cl}");
+                    if (pawn.health?.hediffSet?.GetFirstHediffOfDef(form.mainHediff) != null)
+                    { passed++; sb.AppendLine($"  ✓ Main hediff OK: {form.mainHediff.defName}{cl}"); }
+                    else sb.AppendLine($"  ✗ Main hediff missing: {form.mainHediff.defName}{cl}");
                 }
 
                 // 2. 체형 변경
@@ -608,13 +586,13 @@ namespace ShapeshifterFramework.Debugs
                 }
 
                 // 스탯 hediff 제거
-                if (form.generatedStatHediff != null)
+                if (form.mainHediff != null)
                 {
                     rc++;
                     string cl = CL(fn, "R.statHediff");
-                    if (pawn.health?.hediffSet?.GetFirstHediffOfDef(form.generatedStatHediff) == null)
-                    { rp++; sb.AppendLine($"  ✓ [Revert] Stat hediff removed{cl}"); }
-                    else sb.AppendLine($"  ✗ [Revert] Stat hediff not removed: {form.generatedStatHediff.defName}{cl}");
+                    if (pawn.health?.hediffSet?.GetFirstHediffOfDef(form.mainHediff) == null)
+                    { rp++; sb.AppendLine($"  ✓ [Revert] Main hediff removed{cl}"); }
+                    else sb.AppendLine($"  ✗ [Revert] Main hediff not removed: {form.mainHediff.defName}{cl}");
                 }
 
                 // 추가 hediff 제거 (addedPart 제외)

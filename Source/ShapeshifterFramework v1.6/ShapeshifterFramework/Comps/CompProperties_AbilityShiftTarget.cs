@@ -1,8 +1,11 @@
-﻿// ShapeshifterFramework | Comps | CompProperties_AbilityShiftTarget.cs
+// ShapeshifterFramework | Comps | CompProperties_AbilityShiftTarget.cs
 // 목적 : XML에서 Ability(초능력/마법)의 변신 효과를 정의하기 위한 속성(Properties) 클래스.
-// 용도 : 대상에게 적용할 폼의 defName(formDefName)과 변신 성공 확률(successChance, 기본값 1.0)을 설정값으로 보관하며, CompAbilityEffect_ShiftTarget과 연결(compClass)됨.
+// 용도 : 대상에게 적용할 폼의 defName(formDefName)과 변신 성공 확률(successChance)을 보관.
+//        캐스트 조건(종족/뮤턴트/제노타입)도 여기서 정의하여 ShouldHideGizmo/CanApplyOn에서 검사.
 
 using RimWorld;
+using System.Collections.Generic;
+using Verse;
 
 namespace ShapeshifterFramework.Comps
 {
@@ -11,6 +14,21 @@ namespace ShapeshifterFramework.Comps
     {
         public string formDefName;
         public float successChance = 1.0f;
+
+        // ── 캐스트 조건 (FormDef에서 이전) ──
+        // 조건 미충족 시 ShouldHideGizmo → true, CanApplyOn → false
+        public List<ThingDef> allowedRaces;
+        public List<ThingDef> disallowedRaces;
+
+        [MayRequire("Ludeon.RimWorld.Biotech")]
+        public List<XenotypeDef> allowedXenotypes;
+        [MayRequire("Ludeon.RimWorld.Biotech")]
+        public List<XenotypeDef> disallowedXenotypes;
+
+        [MayRequire("Ludeon.RimWorld.Anomaly")]
+        public List<MutantDef> allowedMutants;
+        [MayRequire("Ludeon.RimWorld.Anomaly")]
+        public List<MutantDef> disallowedMutants;
 
         public CompProperties_AbilityShiftTarget()
         {

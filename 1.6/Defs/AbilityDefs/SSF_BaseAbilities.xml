@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- 자기 대상 변신 어빌리티 베이스: 쿨다운0, 워밍업0, 비적대, SSF_Shapeshift 카테고리 -->
+  <AbilityDef Name="SSF_BaseSelfShiftAbility" Abstract="True">
+    <cooldownTicksRange>0</cooldownTicksRange>
+    <hostile>false</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <targetRequired>false</targetRequired>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <category>SSF_Shapeshift</category>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <violent>false</violent>
+      <warmupTime>0</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+  </AbilityDef>
+
+  <!-- 타인 대상 변신 어빌리티 베이스: 비적대, SSF_Shapeshift 카테고리 -->
+  <AbilityDef Name="SSF_BaseTargetedShiftAbility" Abstract="True">
+    <hostile>false</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <category>SSF_Shapeshift</category>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
+      <range>15</range>
+      <warmupTime>1.0</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetAnimals>false</canTargetAnimals>
+      </targetParams>
+    </verbProperties>
+  </AbilityDef>
+
+</Defs>
