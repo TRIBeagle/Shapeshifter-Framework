@@ -70,9 +70,10 @@
 
 ---
 
-## 2. SSFTest_BearWarriorForm (곰 전사) — 아머드형, Custom 어빌리티
+## 2. SSFTest_BearWarriorForm (곰 전사) — 아머드형
 
 ### 트리거
+> 획득: `SSFTest_Ability_BuffAlly`는 Dev mode로 직접 부여 (어빌리티 바 → Add ability)
 - [ ] #040 `[MANUAL]` `SSFTest_Ability_BuffAlly`로 아군 타겟 → 대상 곰 전사 변신
 - [ ] #041 `[MANUAL]` 자기 자신 타겟도 가능 (`canTargetSelf=true`)
 - [ ] #042 `[MANUAL]` 쿨다운 1500틱 적용
@@ -108,6 +109,7 @@
 ## 3. SSFTest_SheepForm (양 폼) — 동물형, 디버프/적대
 
 ### 트리거
+> 획득: `SSFTest_Ability_DebuffEnemy`, `SSFTest_Ability_MassPolymorph` 모두 Dev mode로 직접 부여
 - [ ] #057 `[MANUAL]` `SSFTest_Ability_DebuffEnemy` (hostile=true)로 적 타겟 → 75% 확률 양 변신
 - [ ] #058 `[MANUAL]` `SSFTest_Ability_MassPolymorph`로 범위 5칸 → 60% 확률 일괄 변신
 - [ ] #059 `[MANUAL]` 비폭력 폰은 DebuffEnemy/MassPolymorph 사용 불가
@@ -130,6 +132,7 @@
 ## 4. SSFTest_DarkKnightForm (암흑 기사) — 장비 소환형
 
 ### 트리거
+> 획득: `SSFTest_Ability_DarkKnight`는 Dev mode로 직접 부여
 - [ ] #067 `[MANUAL]` `SSFTest_Ability_DarkKnight` 자기변신 (range=0)
 - [ ] #068 `[MANUAL]` 쿨다운 3000틱
 
@@ -161,6 +164,7 @@
 ## 5a. SSFTest_BeastkinForm (수인 폼) — 휴머노이드형, 3단 변신 1단계
 
 ### 트리거
+> 획득: `SSFTest_Ability_Beastkin`은 Dev mode로 직접 부여
 - [ ] #084 `[MANUAL]` `SSFTest_Ability_Beastkin` 자기변신
 - [ ] #085 `[MANUAL]` 쿨다운 1200틱
 
@@ -229,7 +233,8 @@
 ## 5b. SSFTest_FullBeastForm (야수 폼) — 3단 변신 2단계, addAbilities 체인
 
 ### 트리거/폼 체이닝
-- [ ] #126 `[MANUAL]` 인간 상태에서 진입 **불가** (`allowedFromForms`에 `None` 없음)
+> 획득: `SSFTest_Ability_FullBeast`는 BeastkinForm의 `addAbilities`로 자동 부여 (수인 변신 시에만 존재)
+- [ ] #126 `[MANUAL]` 인간 상태에서 진입 **불가** (FullBeast 어빌리티 자체가 없음)
 - [ ] #127 `[MANUAL]` 수인(BeastkinForm) 상태에서만 진입 **가능**
 - [ ] #128 `[MANUAL]` 수인 폼의 `addAbilities`로 부여된 `SSFTest_Ability_FullBeast` 어빌리티 확인
 - [ ] #129 `[MANUAL]` 수인 폼 해제 시 `SSFTest_Ability_FullBeast` 어빌리티도 함께 제거
@@ -248,7 +253,8 @@
 
 ## 6. SSFTest_GuardianForm (수호자) — 조건부 변신
 
-### 변신 조건 (requirementsMode=Any)
+### 변신 조건 (sustainMode=Any)
+> 획득: `SSFTest_Ability_Guardian`은 `SSFTest_MagicStone` 소지 시 자동 부여 (`CompGiveAbility_SSF`, `requireEquipped=false`)
 - [ ] #136 `[MANUAL]` `SSFTest_MagicStone` 인벤토리 보유 시 → 변신 가능
 - [ ] #137 `[MANUAL]` `FibrousMechanites` hediff 보유 시 → 변신 가능
 - [ ] #138 `[MANUAL]` 둘 다 없으면 → 변신 불가 (어빌리티 비활성 or 실패)
@@ -271,6 +277,8 @@
 ---
 
 ## 7. SSFTest_PhantomForm (유령) — 비주얼 오버라이드
+
+> 획득: `SSFTest_Ability_Phantom`은 Dev mode로 직접 부여
 
 ### 비주얼
 - [ ] #148 `[MANUAL]` 머리 텍스처 `Male_AverageNormal`로 교체
@@ -300,6 +308,8 @@
 
 ## 8. SSFTest_RaceLockedForm (종족 제한) — 인간 전용
 
+> 획득: `SSFTest_Ability_RaceLocked`는 Dev mode로 직접 부여 (`allowedRaces: Human` — 비인간은 기즈모 자체가 숨겨짐)
+
 ### 종족 제한
 - [ ] #162 `[AUTO]` 인간(Human) 폰 → 변신 성공 → `raceFilter`
 - [ ] #163 `[AUTO]` 비인간 종족 폰 → 변신 불가 (차단 메시지) → `raceFilter`
@@ -319,6 +329,8 @@
 ---
 
 ## 9. AoE 투사체 (SSFTest_Ability_MassPolymorph)
+
+> 획득: Dev mode로 직접 부여
 
 - [ ] #170 `[MANUAL]` 사거리 25칸 투사체 발사
 - [ ] #171 `[MANUAL]` warmupTime 2.5초
