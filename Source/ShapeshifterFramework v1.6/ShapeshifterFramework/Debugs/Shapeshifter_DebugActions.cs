@@ -887,12 +887,13 @@ namespace ShapeshifterFramework.Debugs
             return $"Verbs/Tools: verbs={v}({rv}), tools={t}({rt})";
         }
 
-        /// <summary>스탯/캐퍼 요약.</summary>
+        /// <summary>스탯/캐퍼 요약 (mainHediff의 첫 번째 stage에서 참조).</summary>
         private static string SummarizeStatsCaps(ShapeshiftFormDef f)
         {
-            int so = f.statOffsets != null ? f.statOffsets.Count : 0;
-            int sf = f.statFactors != null ? f.statFactors.Count : 0;
-            int cm = f.capMods != null ? f.capMods.Count : 0;
+            var stage = f.mainHediff?.stages != null && f.mainHediff.stages.Count > 0 ? f.mainHediff.stages[0] : null;
+            int so = stage?.statOffsets != null ? stage.statOffsets.Count : 0;
+            int sf = stage?.statFactors != null ? stage.statFactors.Count : 0;
+            int cm = stage?.capMods != null ? stage.capMods.Count : 0;
             return $"Stats: offsets={so}, factors={sf}, caps={cm}";
         }
 
@@ -1070,13 +1071,14 @@ namespace ShapeshifterFramework.Debugs
             DumpTools(sb, f.tools);
             sb.AppendLine();
 
-            // 스탯/캐퍼
+            // 스탯/캐퍼 (mainHediff의 첫 번째 stage에서 참조)
+            var stage = f.mainHediff?.stages != null && f.mainHediff.stages.Count > 0 ? f.mainHediff.stages[0] : null;
             sb.AppendLine("== Stat Offsets ==");
-            DumpStatMods(sb, f.statOffsets);
+            DumpStatMods(sb, stage?.statOffsets);
             sb.AppendLine("== Stat Factors ==");
-            DumpStatMods(sb, f.statFactors);
+            DumpStatMods(sb, stage?.statFactors);
             sb.AppendLine("== Capacity Mods ==");
-            DumpCapMods(sb, f.capMods);
+            DumpCapMods(sb, stage?.capMods);
             sb.AppendLine();
 
             // 작업/이데올로기

@@ -60,7 +60,6 @@ namespace ShapeshifterFramework.Comps
         private VerbTracker shapeshiftVerbTracker;
 
         // Gizmo 캐시 (변신 해제 시 갱신)
-        private int gizmoCacheTick = -9999;
         private List<ShapeshiftFormDef> gizmoFormsCache = new List<ShapeshiftFormDef>();
 
         // 틱(Tick) 에러 스팸 방지용 플래그
@@ -570,7 +569,6 @@ namespace ShapeshifterFramework.Comps
         // 지즈모 캐시 무효화
         private void InvalidateGizmoCache()
         {
-            gizmoCacheTick = -9999;
             gizmoFormsCache = null;
         }
 
