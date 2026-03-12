@@ -135,9 +135,14 @@ namespace ShapeshifterFramework.Compat
             {
                 object v = ShapeshiftReflectionCache.GetInstanceField<object>(addon, "alignWithHead")
                            ?? ShapeshiftReflectionCache.GetInstanceProperty<object>(addon, "alignWithHead");
-                if (v != null)
+                if (v is bool b)
                 {
-                    try { if (Convert.ToBoolean(v)) return true; } catch { }
+                    if (b) return true;
+                }
+                else if (v != null)
+                {
+                    try { if (Convert.ToBoolean(v)) return true; }
+                    catch (Exception ex) { Log.Warning($"[SSF] HAR alignWithHead conversion failed: {v.GetType().Name} — {ex.Message}"); }
                 }
             }
 

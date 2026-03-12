@@ -354,12 +354,25 @@
 
 ---
 
+## 12. 디버그 액션 & 내부 로깅 검증
+
+- [ ] #191 `[MANUAL]` `SSF: Inspect Active Form` → 스탯/캐퍼 요약이 mainHediff 기준으로 정상 표시
+- [ ] #192 `[MANUAL]` `SSF: Dump Pawn State to Log` → Stat Offsets/Factors/Capacity Mods 섹션에 mainHediff.stages[0] 데이터 출력
+- [ ] #193 `[MANUAL]` AddedPart(ForceAdd) 적용 실패 시 `[SSF] RestorePart failed` 경고 로그 출력 (의도적 실패 유도)
+- [ ] #194 `[MANUAL]` Hediff severity 설정 실패 시 `[SSF] Set severity failed` 경고 로그 출력
+- [ ] #195 `[MANUAL]` RemoveHediff 실패 시 `[SSF] RemoveHediff failed` 경고 로그 출력
+- [ ] #196 `[MANUAL]` HAR 모드 활성 시 헤드 애드온 판정에서 `alignWithHead` boolean 검사 정상 작동
+- [ ] #197 `[MANUAL]` CompGiveAbility_SSF의 아이템 디스폰 시 어빌리티 정상 회수 (PostDeSpawn 1.6 시그니처)
+- [ ] #198 `[MANUAL]` 장시간 플레이(1일+) 후 로그 딕셔너리 메모리 누적 없음 (Dev 모드 프로파일러)
+
+---
+
 ## 요약
 
 | 구분 | 항목 수 | 비율 |
 |------|---------|------|
-| **[AUTO] 자동검증** | **70개** | **37%** |
-| **[MANUAL] 수동검증** | **120개** | **63%** |
+| **[AUTO] 자동검증** | **70개** | **35%** |
+| **[MANUAL] 수동검증** | **128개** | **65%** |
 
 ### Auto-Verify 체크 카테고리 → 체크리스트 매핑
 
@@ -389,5 +402,5 @@
 | `R.spawnApparel/Weapon` | 해제 시 소환 장비 파괴 | #081 |
 | `R.equipLock` | 해제 시 장비 잠금 해제 | #082 |
 
-> **총 190개 항목** | 8개 폼 + AoE + 아이템 + 공통 테스트
+> **총 198개 항목** | 8개 폼 + AoE + 아이템 + 공통 + 디버그/로깅 테스트
 > Auto-Verify 로그에서 각 ✓/✗ 줄 끝에 `[#nnn]` 형태로 체크리스트 번호가 표시됩니다.

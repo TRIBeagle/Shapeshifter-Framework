@@ -144,9 +144,15 @@
 - [ ] **N7** 인공 팔이 있는 폰에 BeastArm ForceAdd (기존 인공장기 제거 후 부착)
 - [ ] **N8** 결손 팔이 있는 폰에 BeastArm ForceAdd (복원 후 부착)
 
-### O. 디버그 액션
+### O. 디버그 액션 & 내부 로깅
 - [ ] **O1** SSF: Dump Form Info — 폼 정보 덤프 확인
 - [ ] **O2** SSF: Play Sound — 사운드 재생 확인
+- [ ] **O3** SSF: Inspect Active Form — 스탯/캐퍼 요약이 mainHediff.stages[0] 기반으로 정확히 표시
+- [ ] **O4** SSF: Dump Pawn State — Stat Offsets/Factors/Capacity Mods 섹션 mainHediff 기반 출력
+- [ ] **O5** AddedPart/Hediff 적용 실패 시 `[SSF]` 경고 로그 출력 (빈 catch 제거됨)
+- [ ] **O6** HAR BodyAddon alignWithHead 타입 판정 — `bool` 직접 비교 우선, fallback 시 경고 로그
+- [ ] **O7** CompGiveAbility_SSF PostDeSpawn — 1.6 시그니처(Map, DestroyMode) 정상 호출
+- [ ] **O8** DynamicPawnRenderNodeSetup 로그 딕셔너리 — 장시간 플레이 후 메모리 누적 없음
 
 ---
 
@@ -219,3 +225,6 @@ allowedRaces=Human + headType + 의류잠금/무기자유
 
 ### 15단계: 엣지 케이스 → N1-8
 사망/캐러밴/인공장기/결손/중복시도
+
+### 16단계: 디버그 액션 & 로깅 검증 → O1-8
+Dump Form Info/Pawn State → 스탯 mainHediff 기반 표시, 실패 로그 출력, HAR 호환, 메모리 안정성

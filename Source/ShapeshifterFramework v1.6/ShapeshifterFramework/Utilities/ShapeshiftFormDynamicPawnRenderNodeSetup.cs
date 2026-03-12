@@ -19,7 +19,8 @@ namespace ShapeshifterFramework.Utilities
         // Dev 로그 스로틀링
         static readonly Dictionary<int, int> lastLogTick = new Dictionary<int, int>();
         const int LogCooldownTicks = 120; // 2초 정도
-        const int LogDictCleanupThreshold = 256; // 딕셔너리 무한 성장 방지 임계값
+        const int LogDictCleanupThreshold = 128; // 딕셔너리 무한 성장 방지 임계값
+        static int lastCleanupTick;
 
         public override IEnumerable<(PawnRenderNode node, PawnRenderNode parent)> GetDynamicNodes(Pawn pawn, PawnRenderTree tree)
         {
@@ -52,12 +53,13 @@ namespace ShapeshifterFramework.Utilities
                 int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
                 int id = pawn.thingIDNumber;
 
-                // 딕셔너리가 임계값 초과 시 만료 엔트리 정리
-                if (lastLogTick.Count > LogDictCleanupThreshold)
+                // 딕셔너리가 임계값 초과 시 또는 일정 주기로 만료 엔트리 정리
+                if (lastLogTick.Count > LogDictCleanupThreshold || tick - lastCleanupTick > LogCooldownTicks * 50)
                 {
+                    lastCleanupTick = tick;
                     var staleKeys = new List<int>();
                     foreach (var kv in lastLogTick)
-                        if (tick - kv.Value > LogCooldownTicks * 10) staleKeys.Add(kv.Key);
+                        if (tick - kv.Value > LogCooldownTicks * 5) staleKeys.Add(kv.Key);
                     for (int k = 0; k < staleKeys.Count; k++)
                         lastLogTick.Remove(staleKeys[k]);
                 }

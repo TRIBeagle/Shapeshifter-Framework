@@ -99,11 +99,11 @@ namespace ShapeshifterFramework.Utilities
 
                         case AddedPartPolicy.RegrowFleshOnly:
                             if ((record.PreExistingAdded != null && record.PreExistingAdded.Count > 0) || childArtificial) return false;
-                            if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch { } }
+                            if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch (System.Exception ex) { Log.Warning($"[SSF] RestorePart failed (RegrowFleshOnly): {part.Label} — {ex.Message}"); } }
                             break;
 
                         case AddedPartPolicy.ForceAdd:
-                            if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch { } }
+                            if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch (System.Exception ex) { Log.Warning($"[SSF] RestorePart failed (ForceAdd): {part.Label} — {ex.Message}"); } }
                             RemoveExistingAddedParts(pawn, part, record.PreExistingAdded);
                             break;
                     }
@@ -133,7 +133,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 if (opt.severity.HasValue)
                 {
-                    try { existing.Severity = opt.severity.Value; } catch { }
+                    try { existing.Severity = opt.severity.Value; } catch (System.Exception ex) { Log.Warning($"[SSF] Set severity failed (existing): {opt.hediff.defName} — {ex.Message}"); }
                 }
                 ShapeshiftDiagnostics.Info($"Update existing: {opt.hediff.defName} {(part?.Label ?? "FullBody")}");
                 return false;
@@ -144,7 +144,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 if (opt.severity.HasValue)
                 {
-                    try { created.Severity = opt.severity.Value; } catch { }
+                    try { created.Severity = opt.severity.Value; } catch (System.Exception ex) { Log.Warning($"[SSF] Set severity failed (created): {opt.hediff.defName} — {ex.Message}"); }
                 }
                 if (outTempAddedHediffs != null) outTempAddedHediffs.Add(created);
                 if (outTempAddedHediffsDefCache != null) outTempAddedHediffsDefCache.Add(opt.hediff);
@@ -205,7 +205,7 @@ namespace ShapeshifterFramework.Utilities
                 }
                 if (!isTargetOrChild) continue;
 
-                try { pawn.health.RemoveHediff(h); } catch { }
+                try { pawn.health.RemoveHediff(h); } catch (System.Exception ex) { Log.Warning($"[SSF] RemoveHediff failed: {h.def?.defName ?? "null"} — {ex.Message}"); }
             }
         }
 
@@ -291,7 +291,7 @@ namespace ShapeshifterFramework.Utilities
                         pawn.health.RemoveHediff(h);
                         ShapeshiftDiagnostics.Info($"Cleanup null-part hediff: {h.def?.defName ?? "null"}");
                     }
-                    catch { }
+                    catch (System.Exception ex) { Log.Warning($"[SSF] RemoveHediff failed (cleanup): {h.def?.defName ?? "null"} — {ex.Message}"); }
                 }
             }
 
