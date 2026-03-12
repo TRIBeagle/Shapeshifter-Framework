@@ -367,12 +367,46 @@
 
 ---
 
+## 13. 어빌리티 부여/차단 조건 검증
+
+### 캐스트 조건 (CompProperties_AbilityShiftTarget)
+- [ ] #199 `[MANUAL]` `SSFTest_Ability_RaceLocked`: Human 폰 → 기즈모 표시, 캐스트 성공 (`allowedRaces: Human`)
+- [ ] #200 `[MANUAL]` `SSFTest_Ability_RaceLocked`: 비인간 종족 폰 → 기즈모 숨김 (`ShouldHideGizmo=true`)
+- [ ] #201 `[MANUAL]` `SSFTest_Ability_DebuffEnemy`: `successChance=0.75` → 반복 시전 시 약 25% 실패 확인
+- [ ] #202 `[MANUAL]` 이미 같은 폼 변신 중인 폰에게 재시전 → 기즈모 숨김 + `CanApplyOn` 차단
+
+### 아이템 기반 어빌리티 부여 (CompGiveAbility_SSF)
+- [ ] #203 `[MANUAL]` `SSFTest_MagicStone` 인벤토리 소지 → `SSFTest_Ability_Guardian` 어빌리티 바에 표시 (`requireEquipped=false`)
+- [ ] #204 `[MANUAL]` `SSFTest_MagicStone` 바닥에 드롭 → Guardian 어빌리티 즉시 제거
+- [ ] #205 `[MANUAL]` `SSFTest_MagicStone` 재소지 → 어빌리티 재부여
+- [ ] #206 `[MANUAL]` 아이템 소유자 변경(다른 폰에게 전달) → 기존 소유자 어빌리티 제거, 새 소유자에게 부여
+
+### 폼 addAbilities (변신 중 부여)
+- [ ] #207 `[MANUAL]` BearForm 변신 → Royalty 활성 시 `Berserk` 어빌리티 부여 (`MayRequire` 조건부)
+- [ ] #208 `[MANUAL]` BearForm 변신 → Royalty 비활성 시 `Berserk` 어빌리티 미부여 (에러 없음)
+- [ ] #209 `[MANUAL]` BeastkinForm 변신 → `SSFTest_Ability_FullBeast` 어빌리티 바에 즉시 표시
+- [ ] #210 `[MANUAL]` BeastkinForm 변신 → Royalty 활성 시 `Waterskip`도 함께 부여 (`MayRequire` 조건부)
+- [ ] #211 `[MANUAL]` BeastkinForm 해제 → `SSFTest_Ability_FullBeast` + `Waterskip` 모두 제거
+
+### addAbilities 체인 (2단 변신 경로)
+- [ ] #212 `[MANUAL]` 인간 상태 → `SSFTest_Ability_FullBeast` 어빌리티 바에 없음 (폼 부여가 아니므로)
+- [ ] #213 `[MANUAL]` BeastkinForm 진입 → `SSFTest_Ability_FullBeast` 표시 → 사용 시 FullBeastForm 진입 성공
+- [ ] #214 `[MANUAL]` FullBeastForm 해제 → BeastkinForm 상태라면 다시 FullBeast 어빌리티 존재 여부 확인
+- [ ] #215 `[MANUAL]` BeastkinForm 해제 → FullBeast 어빌리티 소멸 → 인간 상태에서 FullBeast 사용 불가
+
+### 폼 유지 조건 (sustainHediffs/sustainMode)
+- [ ] #216 `[MANUAL]` GuardianForm: `sustainHediffs=FibrousMechanites`, `sustainMode=Any` → hediff 유지 시 변신 유지
+- [ ] #217 `[MANUAL]` GuardianForm: `sustainHediffs` 충족 + `SSFTest_MagicStone` 소지 → 둘 다 만족 OK (Any 모드)
+- [ ] #218 `[MANUAL]` GuardianForm: 변신 중 `FibrousMechanites` 치료(제거) 시 → 유지 조건 변화 확인
+
+---
+
 ## 요약
 
 | 구분 | 항목 수 | 비율 |
 |------|---------|------|
-| **[AUTO] 자동검증** | **70개** | **35%** |
-| **[MANUAL] 수동검증** | **128개** | **65%** |
+| **[AUTO] 자동검증** | **70개** | **32%** |
+| **[MANUAL] 수동검증** | **148개** | **68%** |
 
 ### Auto-Verify 체크 카테고리 → 체크리스트 매핑
 
@@ -402,5 +436,5 @@
 | `R.spawnApparel/Weapon` | 해제 시 소환 장비 파괴 | #081 |
 | `R.equipLock` | 해제 시 장비 잠금 해제 | #082 |
 
-> **총 198개 항목** | 8개 폼 + AoE + 아이템 + 공통 + 디버그/로깅 테스트
+> **총 218개 항목** | 8개 폼 + AoE + 아이템 + 공통 + 디버그/로깅 + 어빌리티 조건 테스트
 > Auto-Verify 로그에서 각 ✓/✗ 줄 끝에 `[#nnn]` 형태로 체크리스트 번호가 표시됩니다.
