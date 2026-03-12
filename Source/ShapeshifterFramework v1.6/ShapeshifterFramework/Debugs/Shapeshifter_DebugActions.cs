@@ -987,7 +987,17 @@ namespace ShapeshifterFramework.Debugs
             // ──────────────── 항상 표시: Blood / Flesh ────────────────
             sb.AppendLine("== Blood / Flesh ==");
             var raceProps = pawn?.def?.race;
-            sb.AppendLine($"  [Active] bloodDef={raceProps?.BloodDef?.defName ?? "null"}  fleshType={raceProps?.FleshType?.defName ?? "null"}");
+            // 런타임 캐시(패치가 실제 참조하는 값)를 우선 표시
+            ThingDef cachedBlood = null, cachedSmear = null;
+            FleshTypeDef cachedFlesh = null;
+            ShapeshiftRuntimeCaches.BloodByPawn.TryGetValue(pawn, out cachedBlood);
+            ShapeshiftRuntimeCaches.SmearByPawn.TryGetValue(pawn, out cachedSmear);
+            ShapeshiftRuntimeCaches.FleshTypeByPawn.TryGetValue(pawn, out cachedFlesh);
+            string activeBlood = (cachedBlood ?? raceProps?.BloodDef)?.defName ?? "null";
+            string activeSmear = cachedSmear?.defName ?? "(race default)";
+            string activeFlesh = (cachedFlesh ?? raceProps?.FleshType)?.defName ?? "null";
+            sb.AppendLine($"  [Active] bloodDef={activeBlood}  bloodSmearDef={activeSmear}  fleshType={activeFlesh}");
+            sb.AppendLine($"  [Race]   bloodDef={raceProps?.BloodDef?.defName ?? "null"}  fleshType={raceProps?.FleshType?.defName ?? "null"}");
             if (f != null)
                 sb.AppendLine($"  [Form]   bloodDef={f.bloodDef?.defName ?? "null"}  bloodSmearDef={f.bloodSmearDef?.defName ?? "null"}  fleshType={f.fleshType?.defName ?? "null"}");
             else
