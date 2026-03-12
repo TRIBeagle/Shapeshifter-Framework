@@ -5,13 +5,13 @@
 
 ---
 
-## 1. SSFTest_BearForm (곰 폼) — 동물형, abilityMode=None
+## 1. SSFTest_BearForm (곰 폼) — 동물형, 스크롤/약물 트리거
 
 ### 트리거
 - [ ] #001 `[MANUAL]` `SSFTest_ShiftScroll_Self` 사용 → 곰 폼 변신
 - [ ] #002 `[MANUAL]` `SSFTest_ShiftScroll_Target`으로 다른 폰 지정 → 대상 곰 변신
 - [ ] #003 `[MANUAL]` `SSFTest_BearElixir` 복용 → 85% 확률 곰 변신
-- [ ] #004 `[MANUAL]` 어빌리티 바에 변신 버튼 없음 (abilityMode=None)
+- [ ] #004 `[MANUAL]` 어빌리티 바에 곰 변신 버튼 없음 (스크롤/약물로만 트리거)
 
 ### 체형/텍스처
 - [ ] #005 `[MANUAL]` 곰 텍스처(`Things/Pawn/Animal/Bear/Bear`)로 교체됨
@@ -66,7 +66,7 @@
 ### 폼 체이닝 (스크롤/약물 경유로 테스트)
 - [ ] #037 `[MANUAL]` 인간 상태에서 스크롤/약물 사용 시 진입 가능 (`allowedFromForms`에 `None`)
 - [ ] #038 `[MANUAL]` `SSFTest_BeastkinForm` 상태에서 스크롤/약물 사용 시에도 진입 가능
-- [ ] #039 `[MANUAL]` (참고: abilityMode=None이라 어빌리티 바 버튼은 없음. 스크롤/약물로만 테스트)
+- [ ] #039 `[MANUAL]` (참고: 곰 폼 전용 어빌리티 없음. 스크롤/약물로만 테스트)
 
 ---
 
@@ -226,13 +226,13 @@
 
 ---
 
-## 5b. SSFTest_FullBeastForm (야수 폼) — 3단 변신 2단계, abilityMode=Auto
+## 5b. SSFTest_FullBeastForm (야수 폼) — 3단 변신 2단계, addAbilities 체인
 
 ### 트리거/폼 체이닝
 - [ ] #126 `[MANUAL]` 인간 상태에서 진입 **불가** (`allowedFromForms`에 `None` 없음)
 - [ ] #127 `[MANUAL]` 수인(BeastkinForm) 상태에서만 진입 **가능**
-- [ ] #128 `[MANUAL]` Auto 생성 어빌리티 `SSF_AutoAbility_SSFTest_FullBeastForm` 존재 확인
-- [ ] #129 `[MANUAL]` 로그에 `[SSF] Generated 1 additional ability def(s)` 출력
+- [ ] #128 `[MANUAL]` 수인 폼의 `addAbilities`로 부여된 `SSFTest_Ability_FullBeast` 어빌리티 확인
+- [ ] #129 `[MANUAL]` 수인 폼 해제 시 `SSFTest_Ability_FullBeast` 어빌리티도 함께 제거
 
 ### 스탯/도구
 - [ ] #130 `[AUTO]` 이동속도 +2.0 → `statHediff`

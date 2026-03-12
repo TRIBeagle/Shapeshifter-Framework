@@ -894,7 +894,8 @@ namespace ShapeshifterFramework.Debugs
             int so = stage?.statOffsets != null ? stage.statOffsets.Count : 0;
             int sf = stage?.statFactors != null ? stage.statFactors.Count : 0;
             int cm = stage?.capMods != null ? stage.capMods.Count : 0;
-            return $"Stats: offsets={so}, factors={sf}, caps={cm}";
+            string src = f.mainHediff?.defName ?? "none";
+            return $"Stats ({src}): offsets={so}, factors={sf}, caps={cm}";
         }
 
         /// <summary>사운드 요약 (defName 표시).</summary>
@@ -996,8 +997,8 @@ namespace ShapeshifterFramework.Debugs
             string activeBlood = (cachedBlood ?? raceProps?.BloodDef)?.defName ?? "null";
             string activeSmear = cachedSmear?.defName ?? "(race default)";
             string activeFlesh = (cachedFlesh ?? raceProps?.FleshType)?.defName ?? "null";
-            sb.AppendLine($"  [Active] bloodDef={activeBlood}  bloodSmearDef={activeSmear}  fleshType={activeFlesh}");
-            sb.AppendLine($"  [Race]   bloodDef={raceProps?.BloodDef?.defName ?? "null"}  fleshType={raceProps?.FleshType?.defName ?? "null"}");
+            sb.AppendLine($"  [Active]  bloodDef={activeBlood}  bloodSmearDef={activeSmear}  fleshType={activeFlesh}");
+            sb.AppendLine($"  [Race]    bloodDef={raceProps?.BloodDef?.defName ?? "null"}  fleshType={raceProps?.FleshType?.defName ?? "null"}");
             if (f != null)
                 sb.AppendLine($"  [Form]   bloodDef={f.bloodDef?.defName ?? "null"}  bloodSmearDef={f.bloodSmearDef?.defName ?? "null"}  fleshType={f.fleshType?.defName ?? "null"}");
             else
@@ -1006,27 +1007,28 @@ namespace ShapeshifterFramework.Debugs
 
             // ──────────────── 항상 표시: Sounds (실제 defName) ────────────────
             sb.AppendLine("== Sounds ==");
-            if (f != null)
-            {
-                sb.AppendLine("  [Form overrides]");
-                DumpSound(sb, "    call", f.soundCall);
-                DumpSound(sb, "    angry", f.soundAngry);
-                DumpSound(sb, "    wounded", f.soundWounded);
-                DumpSound(sb, "    death", f.soundDeath);
-                DumpSound(sb, "    eating", f.soundEating);
-                DumpSound(sb, "    meleeHitPawn", f.soundMeleeHitPawn);
-                DumpSound(sb, "    meleeHitBuilding", f.soundMeleeHitBuilding);
-                DumpSound(sb, "    meleeMiss", f.soundMeleeMiss);
-            }
-            sb.AppendLine("  [Runtime cache (active overrides)]");
             try
             {
-                sb.AppendLine($"    call={TryGetCachedName(ShapeshiftRuntimeCaches.CallByPawn, pawn)}");
-                sb.AppendLine($"    wounded={TryGetCachedName(ShapeshiftRuntimeCaches.WoundedByPawn, pawn)}");
-                sb.AppendLine($"    death={TryGetCachedName(ShapeshiftRuntimeCaches.DeathByPawn, pawn)}");
-                sb.AppendLine($"    angry={TryGetCachedName(ShapeshiftRuntimeCaches.AngryByPawn, pawn)}");
+                // 런타임 캐시(패치가 실제 참조하는 값)를 Active로 표시
+                sb.AppendLine("  [Active]  (런타임 캐시 — 패치가 실제 사용하는 값)");
+                sb.AppendLine($"    call     = {TryGetCachedName(ShapeshiftRuntimeCaches.CallByPawn, pawn)}");
+                sb.AppendLine($"    wounded  = {TryGetCachedName(ShapeshiftRuntimeCaches.WoundedByPawn, pawn)}");
+                sb.AppendLine($"    death    = {TryGetCachedName(ShapeshiftRuntimeCaches.DeathByPawn, pawn)}");
+                sb.AppendLine($"    angry    = {TryGetCachedName(ShapeshiftRuntimeCaches.AngryByPawn, pawn)}");
             }
             catch { sb.AppendLine("    [Error reading runtime cache]"); }
+            if (f != null)
+            {
+                sb.AppendLine("  [Form]    (폼 Def에 정의된 값)");
+                DumpSound(sb, "    call    ", f.soundCall);
+                DumpSound(sb, "    angry   ", f.soundAngry);
+                DumpSound(sb, "    wounded ", f.soundWounded);
+                DumpSound(sb, "    death   ", f.soundDeath);
+                DumpSound(sb, "    eating  ", f.soundEating);
+                DumpSound(sb, "    meleeHit", f.soundMeleeHitPawn);
+                DumpSound(sb, "    meleeBld", f.soundMeleeHitBuilding);
+                DumpSound(sb, "    meleeMis", f.soundMeleeMiss);
+            }
             sb.AppendLine();
 
             // ──────────────── 폼 전용 섹션: 변신 중일 때만 ────────────────
@@ -1083,11 +1085,12 @@ namespace ShapeshifterFramework.Debugs
 
             // 스탯/캐퍼 (mainHediff의 첫 번째 stage에서 참조)
             var stage = f.mainHediff?.stages != null && f.mainHediff.stages.Count > 0 ? f.mainHediff.stages[0] : null;
-            sb.AppendLine("== Stat Offsets ==");
+            sb.AppendLine($"== Stats/Caps (source: {f.mainHediff?.defName ?? "null"}) ==");
+            sb.AppendLine("  ── Stat Offsets ──");
             DumpStatMods(sb, stage?.statOffsets);
-            sb.AppendLine("== Stat Factors ==");
+            sb.AppendLine("  ── Stat Factors ──");
             DumpStatMods(sb, stage?.statFactors);
-            sb.AppendLine("== Capacity Mods ==");
+            sb.AppendLine("  ── Capacity Mods ──");
             DumpCapMods(sb, stage?.capMods);
             sb.AppendLine();
 
@@ -1159,23 +1162,27 @@ namespace ShapeshifterFramework.Debugs
 
         private static void DumpStatMods(StringBuilder sb, List<StatModifier> mods)
         {
-            if (mods == null) { sb.AppendLine("  (none)"); return; }
+            if (mods == null || mods.Count == 0) { sb.AppendLine("    (none)"); return; }
             for (int i = 0; i < mods.Count; i++)
             {
                 var m = mods[i];
                 if (m == null || m.stat == null) continue;
-                sb.AppendLine($"  - {m.stat.defName} = {m.value:0.###}");
+                sb.AppendLine($"    {m.stat.defName} = {m.value:+0.###;-0.###;0}");
             }
         }
 
         private static void DumpCapMods(StringBuilder sb, List<PawnCapacityModifier> caps)
         {
-            if (caps == null) { sb.AppendLine("  (none)"); return; }
+            if (caps == null || caps.Count == 0) { sb.AppendLine("    (none)"); return; }
             for (int i = 0; i < caps.Count; i++)
             {
                 var c = caps[i];
                 if (c == null || c.capacity == null) continue;
-                sb.AppendLine($"  - {c.capacity.defName}: offset={c.offset:0.###} setMax={c.setMax:0.###} postFactor={c.postFactor:0.###}");
+                var parts = new List<string>();
+                if (c.offset != 0f) parts.Add($"offset={c.offset:+0.###;-0.###;0}");
+                if (c.setMax < 999f) parts.Add($"setMax={c.setMax:0.###}");
+                if (c.postFactor != 1f) parts.Add($"postFactor={c.postFactor:0.###}");
+                sb.AppendLine($"    {c.capacity.defName}: {string.Join(", ", parts)}");
             }
         }
 

@@ -6,12 +6,12 @@
 
 | # | 폼 | 트리거 | 주요 테스트 항목 |
 |---|-----|--------|-----------------|
-| 1 | SSFTest_BearForm | 약물(BearElixir), 아이템(ShiftScroll) | body Replace+수영텍스처, 색상, statOffsets/Factors, capMods, addHediffs(AddedPart+일반), addAbilities, tools+replaceNativeTools, 혈흔/살점/fleshType, Fleck FX+Sound, allowedFromForms, duration, canRevertVoluntarily, apparelOnTransform=Drop, weaponsOnTransform=Drop, abilityMode=None |
-| 2 | SSFTest_BearWarriorForm | 어빌리티(BuffAlly, 대상지정) | Armored 베이스, abilityMode=Custom, soundAngry/melee 오버라이드, Effecter FX, gear Keep |
+| 1 | SSFTest_BearForm | 약물(BearElixir), 아이템(ShiftScroll) | body Replace+수영텍스처, 색상, mainHediff(statOffsets/Factors/capMods), addHediffs(AddedPart+일반), addAbilities, tools+replaceNativeTools, 혈흔/살점/fleshType, Fleck FX+Sound, allowedFromForms, duration, canRevertVoluntarily, apparelOnTransform=Drop, weaponsOnTransform=Drop |
+| 2 | SSFTest_BearWarriorForm | 어빌리티(BuffAlly, 대상지정) | Armored 베이스, 전용 어빌리티(Custom), soundAngry/melee 오버라이드, Effecter FX, gear Keep |
 | 3 | SSFTest_SheepForm | 어빌리티(DebuffEnemy, 적대), AoE투사체(MassPolymorph) | body Replace+성별 텍스처, canRevertVoluntarily=false, disabledWorkTags, 축소 스케일, hostile 어빌리티, successChance |
 | 4 | SSFTest_DarkKnightForm | 어빌리티(DarkKnight, 자기변신) | spawnApparel/Weapon+stuff, conflictingGearHandling, equipLock(Locked/Locked), Inventory 처리 |
 | 5a | SSFTest_BeastkinForm | 어빌리티(Beastkin, 자기변신) | Humanoid 베이스, renderNodeProperties(귀/꼬리), renderShowApparelDefNames, headDrawScale/Offset, 전체 보이스 오버라이드, verbs(5종)+verbGizmoOptions, tools, replaceNativeVerbs/Tools=false, disabledWorkTags(리스트), 혈흔/살점 |
-| 5b | SSFTest_FullBeastForm | Auto 자동생성 어빌리티 | allowedFromForms 체인(수인→야수), abilityMode=Auto, 2단변신 |
+| 5b | SSFTest_FullBeastForm | 수인 폼의 addAbilities 체인 | allowedFromForms 체인(수인→야수), addAbilities 기반 2단변신 |
 
 ### 신규 폼 (추가됨)
 
@@ -32,7 +32,7 @@
 - [ ] **A4** 어빌리티(대상): BuffAlly로 동료에게 BearWarriorForm 부여
 - [ ] **A5** 어빌리티(적대): DebuffEnemy로 적에게 SheepForm 부여 (75% 확률)
 - [ ] **A6** 어빌리티(자기): DarkKnight 자기 변신
-- [ ] **A7** 어빌리티(자동생성): FullBeastForm의 Auto 어빌리티 확인
+- [ ] **A7** 어빌리티(addAbilities 체인): 수인 폼에서 부여된 SSFTest_Ability_FullBeast로 야수 진입
 - [ ] **A8** AoE 투사체: MassPolymorph 발사 → 반경5칸 내 양 변신 (60% 확률)
 
 ### B. 외형 & 렌더링
@@ -156,21 +156,22 @@
 
 ---
 
-## Auto 어빌리티 자동생성 검증
+## addAbilities 체인 검증 (2단 변신)
 
-abilityMode=Auto인 폼(FullBeastForm)은 프레임워크가 런타임에 AbilityDef를 자동생성함.
+FullBeastForm은 수인 폼(BeastkinForm)의 `addAbilities`에서 `SSFTest_Ability_FullBeast`를 부여받아 진입함.
 
 ```
-FormDef (abilityMode=Auto)
-  → ResolveReferences() → ShapeshiftAbilityGenerator.TryGenerateFor()
-  → "SSF_AutoAbility_{defName}" 생성 → DefDatabase 등록
-  → 90틱 주기 SyncFormAbilities()로 eligible 폰에 GainAbility()
+BeastkinForm 적용
+  → addAbilities: [Waterskip, SSFTest_Ability_FullBeast]
+  → 폰에 SSFTest_Ability_FullBeast 부여
+  → 수인 상태에서 어빌리티 사용 → FullBeastForm 적용
+  → BeastkinForm 해제 시 SSFTest_Ability_FullBeast 제거
 ```
 
-- [ ] 게임 로드 시 `[SSF] Generated N auto-ability` 로그 확인
-- [ ] FullBeastForm: 수인 폼 상태에서 어빌리티 바에 표시
-- [ ] 비변신 상태에서 allowedFromForms 미충족 → 어빌리티 미표시
-- [ ] 세이브/로드 후 자동생성 AbilityDef 재생성 확인
+- [ ] 수인 폼 변신 시 `SSFTest_Ability_FullBeast` 어빌리티 바에 표시
+- [ ] 비변신 상태에서 어빌리티 미표시 (수인 폼에서만 부여)
+- [ ] 야수 폼 진입 → allowedFromForms 검증 통과
+- [ ] 세이브/로드 후 어빌리티 체인 정상 작동
 
 ---
 
@@ -193,8 +194,8 @@ BuffAlly(대상) → BearWarrior / DebuffEnemy(적대) → SheepForm
 ### 4단계: 장비 소환 (DarkKnight) → A6, E5-8
 DarkKnight 변신 → 소환 장비 → equipLock → 해제 시 소멸
 
-### 5단계: 3단 변신 + Auto 어빌리티 → A7, B6-8, E2, K1-2, N3
-Beastkin → renderNode/head → FullBeast Auto 어빌리티 → 2단 해제
+### 5단계: 3단 변신 + addAbilities 체인 → A7, B6-8, E2, K1-2, N3
+Beastkin → renderNode/head → FullBeast (addAbilities 체인) → 2단 해제
 
 ### 6단계: 전투 verb (BeastkinForm) → F1-9
 5종 verb 발사 + verbGizmo + 근접 tool
