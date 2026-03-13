@@ -20,4 +20,12 @@
   <SSFTest_Weapon_CursedBow.label>저주받은 활</SSFTest_Weapon_CursedBow.label>
   <SSFTest_Weapon_CursedBow.description>저주가 깃든 활. 화살에 맞은 대상이 40% 확률로 양으로 변신한다.</SSFTest_Weapon_CursedBow.description>
 
+  <!-- 장착 무기: 암흑의 검 -->
+  <SSFTest_Weapon_DarkBlade.label>암흑의 검</SSFTest_Weapon_DarkBlade.label>
+  <SSFTest_Weapon_DarkBlade.description>암흑의 힘이 깃든 검. 장비하면 암흑 기사 변신 어빌리티가 부여된다. 장비 해제 시 어빌리티가 사라진다.</SSFTest_Weapon_DarkBlade.description>
+
+  <!-- 장착 의류: 유령의 망토 -->
+  <SSFTest_Apparel_PhantomCloak.label>유령의 망토</SSFTest_Apparel_PhantomCloak.label>
+  <SSFTest_Apparel_PhantomCloak.description>유령의 힘이 깃든 망토. 착용하면 유령 변신 어빌리티가 부여된다. 벗으면 어빌리티가 사라진다.</SSFTest_Apparel_PhantomCloak.description>
+
 </LanguageData>

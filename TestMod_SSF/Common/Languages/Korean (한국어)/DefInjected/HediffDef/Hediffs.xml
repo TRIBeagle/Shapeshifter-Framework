@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- 변신술사의 축복 -->
+  <SSFTest_Hediff_ShiftBlessing.label>변신술사의 축복</SSFTest_Hediff_ShiftBlessing.label>
+  <SSFTest_Hediff_ShiftBlessing.description>변신술사의 축복. 이 축복이 깃든 동안 곰 전사 변신 어빌리티를 사용할 수 있다.</SSFTest_Hediff_ShiftBlessing.description>
+
+  <!-- 종족적 각성 -->
+  <SSFTest_Hediff_RacialAwakening.label>종족적 각성</SSFTest_Hediff_RacialAwakening.label>
+  <SSFTest_Hediff_RacialAwakening.description>종족적 각성. 이 상태에서는 종족 제한 변신 어빌리티를 사용할 수 있다. (인간 전용)</SSFTest_Hediff_RacialAwakening.description>
+
+</LanguageData>

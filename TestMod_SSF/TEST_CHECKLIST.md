@@ -413,12 +413,60 @@
 
 ---
 
+## 14. 어빌리티 획득 수단 다양화 테스트 (ShiftSources)
+
+> AbilityDef 체제 전환 후 각 경로별 어빌리티 부여/회수가 정상 동작하는지 검증
+
+### 유전자 (GeneDef) — Biotech DLC
+- [ ] #219 `[MANUAL]` `SSFTest_Gene_BeastkinShift` 유전자 보유 폰 → `SSFTest_Ability_Beastkin` 어빌리티 바에 표시
+- [ ] #220 `[MANUAL]` 유전자 보유 폰 → 수인 변신 정상 작동 (어빌리티 → 폼 진입 → 효과 적용)
+- [ ] #221 `[MANUAL]` 유전자 제거(Dev mode) → 수인 변신 어빌리티 즉시 제거
+- [ ] #222 `[MANUAL]` `SSFTest_Gene_PhantomShift` 유전자 보유 폰 → `SSFTest_Ability_Phantom` 어빌리티 바에 표시
+- [ ] #223 `[MANUAL]` 유전자 보유 폰 → 유령 변신 정상 작동
+- [ ] #224 `[MANUAL]` 두 유전자 동시 보유 → 수인 + 유령 어빌리티 모두 표시
+- [ ] #225 `[MANUAL]` 유전자 어빌리티로 변신 중 → 유전자 UI에서 억제 유전자 디밍 표시 정상
+- [ ] #226 `[MANUAL]` Biotech DLC 미설치 시 유전자 정의 무시 (에러 없음, `MayRequire` 작동)
+
+### 장착 무기 (CompGiveAbility_SSF, requireEquipped=true)
+- [ ] #227 `[MANUAL]` `SSFTest_Weapon_DarkBlade` 장비 슬롯 장착 → `SSFTest_Ability_DarkKnight` 어빌리티 바에 표시
+- [ ] #228 `[MANUAL]` 무기 장착 상태 → 암흑 기사 변신 정상 작동
+- [ ] #229 `[MANUAL]` 무기 해제(다른 무기 장착 or 드롭) → 암흑 기사 어빌리티 즉시 제거
+- [ ] #230 `[MANUAL]` 변신 중 무기 해제 시도 → 변신 해제 후 어빌리티 회수 확인
+- [ ] #231 `[MANUAL]` 인벤토리에만 보유(장비 슬롯 아님) → 어빌리티 미부여 (`requireEquipped=true`)
+- [ ] #232 `[MANUAL]` 무기를 다른 폰에게 전달 → 기존 소유자 어빌리티 제거, 새 장착자에게 부여
+
+### 장착 의류 (CompGiveAbility_SSF, requireEquipped=true)
+- [ ] #233 `[MANUAL]` `SSFTest_Apparel_PhantomCloak` 착용 → `SSFTest_Ability_Phantom` 어빌리티 바에 표시
+- [ ] #234 `[MANUAL]` 망토 착용 상태 → 유령 변신 정상 작동
+- [ ] #235 `[MANUAL]` 망토 탈의 → 유령 어빌리티 즉시 제거
+- [ ] #236 `[MANUAL]` 인벤토리에만 보유(착용 아님) → 어빌리티 미부여 (`requireEquipped=true`)
+- [ ] #237 `[MANUAL]` 유령 변신 중 망토 상태 확인 (apparelOnTransform 동작과 겹침 확인)
+
+### Hediff 기반 어빌리티 (HediffComp_GiveAbility — 바닐라 패턴)
+- [ ] #238 `[MANUAL]` `SSFTest_Hediff_ShiftBlessing` 부여(Dev mode) → `SSFTest_Ability_BuffAlly` 어빌리티 바에 표시
+- [ ] #239 `[MANUAL]` 축복 헤디프 보유 → 곰 전사 버프 어빌리티 정상 작동 (아군 대상 변신)
+- [ ] #240 `[MANUAL]` 축복 헤디프 제거 → 곰 전사 어빌리티 즉시 제거
+- [ ] #241 `[MANUAL]` `SSFTest_Hediff_RacialAwakening` 부여(Dev mode) → `SSFTest_Ability_RaceLocked` 어빌리티 바에 표시
+- [ ] #242 `[MANUAL]` 종족 각성 + 인간 폰 → 종족 제한 변신 성공
+- [ ] #243 `[MANUAL]` 종족 각성 + 비인간 폰 → 종족 제한 변신 차단 (allowedRaces 필터 정상)
+- [ ] #244 `[MANUAL]` 종족 각성 헤디프 제거 → 종족 제한 어빌리티 제거
+
+### 크로스 경로 검증 (복합 테스트)
+- [ ] #245 `[MANUAL]` 같은 어빌리티를 여러 경로로 동시 부여 시 중복 확인 (유전자 + 아이템 동시 → 어빌리티 1개만)
+- [ ] #246 `[MANUAL]` 한 경로 제거 → 다른 경로가 살아있으면 어빌리티 유지 확인
+- [ ] #247 `[MANUAL]` 유전자 어빌리티로 변신 → 세이브/로드 후 유전자 경유 어빌리티 & 변신 상태 유지
+- [ ] #248 `[MANUAL]` 장착 아이템 어빌리티로 변신 → 세이브/로드 후 장착 상태 & 어빌리티 유지
+- [ ] #249 `[MANUAL]` Hediff 어빌리티로 변신 → 세이브/로드 후 헤디프 & 어빌리티 유지
+- [ ] #250 `[MANUAL]` 모든 경로(유전자/장착무기/장착의류/헤디프/소지아이템/약물/스크롤) 빨간 에러 없이 작동
+
+---
+
 ## 요약
 
 | 구분 | 항목 수 | 비율 |
 |------|---------|------|
-| **[AUTO] 자동검증** | **70개** | **32%** |
-| **[MANUAL] 수동검증** | **148개** | **68%** |
+| **[AUTO] 자동검증** | **70개** | **28%** |
+| **[MANUAL] 수동검증** | **180개** | **72%** |
 
 ### Auto-Verify 체크 카테고리 → 체크리스트 매핑
 
@@ -448,5 +496,5 @@
 | `R.spawnApparel/Weapon` | 해제 시 소환 장비 파괴 | #081 |
 | `R.equipLock` | 해제 시 장비 잠금 해제 | #082 |
 
-> **총 218개 항목** | 8개 폼 + AoE + 아이템 + 공통 + 디버그/로깅 + 어빌리티 조건 테스트
+> **총 250개 항목** | 8개 폼 + AoE + 아이템 + 공통 + 디버그/로깅 + 어빌리티 조건 + 획득 수단 다양화 테스트
 > Auto-Verify 로그에서 각 ✓/✗ 줄 끝에 `[#nnn]` 형태로 체크리스트 번호가 표시됩니다.
