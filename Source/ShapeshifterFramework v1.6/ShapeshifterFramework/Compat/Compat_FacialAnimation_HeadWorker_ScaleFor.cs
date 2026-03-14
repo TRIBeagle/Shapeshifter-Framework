@@ -5,6 +5,7 @@
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using Verse;
@@ -79,13 +80,13 @@ namespace ShapeshifterFramework.Compat
                 // 비변신 폰 즉시 스킵 — 렌더 핫패스에서 AllComps 순회/리플렉션 방지
                 if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
 
-                // FA 컨트롤러 없으면 스킵
-                if (!HasFAControllerComp(pawn)) return;
-
-                // FA 헤드 워커인지 판정
+                // FA 헤드 워커인지 먼저 판정 — 폰당 ~40개 노드 중 1개만 해당하므로 95%+ 탈락
                 object worker = TryGetWorker(node);
                 if (worker == null || !T_FAHeadWorker.IsAssignableFrom(worker.GetType()))
                     return;
+
+                // FA 컨트롤러 없으면 스킵 (캐시로 AllComps 순회 방지)
+                if (!HasFAControllerCompCached(pawn)) return;
 
                 float factor = 1f;
 
@@ -109,8 +110,26 @@ namespace ShapeshifterFramework.Compat
 
         #region Helpers
 
-        /// <summary>Pawn이 FA 컨트롤러 컴프를 보유하는지 검사.</summary>
-        private static bool HasFAControllerComp(Pawn pawn)
+        // FA 컨트롤러 보유 여부 캐시 — AllComps 순회 방지 (게임 중 FA 컴프는 변하지 않음)
+        private static readonly Dictionary<int, bool> _faCompCache = new Dictionary<int, bool>(256);
+
+        /// <summary>게임 로드/전환 시 FA 컴프 캐시 정리.</summary>
+        internal static void ClearFACompCache() { _faCompCache.Clear(); }
+
+        /// <summary>Pawn이 FA 컨트롤러 컴프를 보유하는지 캐시 조회. 최초 1회만 AllComps 순회.</summary>
+        private static bool HasFAControllerCompCached(Pawn pawn)
+        {
+            int id = pawn.thingIDNumber;
+            if (_faCompCache.TryGetValue(id, out bool has))
+                return has;
+
+            has = HasFAControllerCompScan(pawn);
+            _faCompCache[id] = has;
+            return has;
+        }
+
+        /// <summary>Pawn이 FA 컨트롤러 컴프를 보유하는지 실제 검사.</summary>
+        private static bool HasFAControllerCompScan(Pawn pawn)
         {
             if (T_FAComp == null || pawn == null) return false;
             try
