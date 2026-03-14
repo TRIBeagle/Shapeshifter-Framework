@@ -181,6 +181,7 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 **지속시간 & 해제:**
 * `<durationTicks>`: 변신 지속 시간. 비워두면 무제한입니다. (60,000틱 = 인게임 1일)
 * `<canRevertVoluntarily>`: `false`면 유저가 기즈모로 해제 불가 (강제 변신/디버프용). (기본값: `true`)
+* `<revertOnDowned>`: `true`면 의식 상실(Downed) 시 변신 자동 해제. (기본값: `false`)
 
 **기즈모 아이콘:**
 * `<gizmoIconPathEnter>` / `<gizmoIconPathRevert>`: 변신/해제 버튼의 아이콘 경로

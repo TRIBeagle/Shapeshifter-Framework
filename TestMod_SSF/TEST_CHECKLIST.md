@@ -409,6 +409,8 @@
 - [ ] #215 `[MANUAL]` BeastkinForm 해제 → FullBeast 어빌리티 소멸 → 인간 상태에서 FullBeast 사용 불가
 
 ### 폼 유지 조건 (sustainHediffs/sustainMode)
+- [ ] #215a `[MANUAL]` GuardianForm: `revertOnDowned=true` → 의식 상실(Downed) 시 변신 자동 해제
+- [ ] #215b `[MANUAL]` GuardianForm: Downed 상태가 아닌 일반 피격에서는 변신 유지
 - [ ] #216 `[MANUAL]` GuardianForm: `sustainHediffs=SSFTest_Hediff_GuardianMark`, `sustainMode=Any` → hediff 유지 시 변신 유지
 - [ ] #217 `[MANUAL]` GuardianForm: `sustainHediffs` 충족 + `SSFTest_MagicStone` 소지 → 둘 다 만족 OK (Any 모드)
 - [ ] #218 `[MANUAL]` GuardianForm: 변신 중 `SSFTest_Hediff_GuardianMark` 치료(제거) 시 → 유지 조건 변화 확인
@@ -479,6 +481,7 @@
 | `headType` | 머리형 변경/원복 | #160, #164~#165 |
 | `hairColor` | 머리색 변경/원복 | #112~#113 |
 | `skinColor` | 피부색 변경/원복 | #153~#154 |
+| `revertOnDowned` | 의식상실 시 변신 해제 | #215a~#215b |
 | `addHediff` | 추가 hediff 부여/제거 | #015~#016, #034, #119 |
 | `addAbility` | 추가 어빌리티 부여/제거 | #018~#019, #120 |
 | `spawnApparel` | 소환 의류 착용 | #071 |

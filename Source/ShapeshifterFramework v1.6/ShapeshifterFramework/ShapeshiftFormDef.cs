@@ -227,6 +227,7 @@ namespace ShapeshifterFramework
         public string gizmoIconPathRevert;  // 해제 버튼 아이콘
         public int? durationTicks = null;      // 지속 틱(null=무제한)
         public bool canRevertVoluntarily = true; // false면 유저가 기즈모로 해제 불가(강제 변신용)
+        public bool revertOnDowned = false;      // true면 의식 상실(Downed) 시 변신 자동 해제
 
         // 보이스
         public SoundDef soundCall;

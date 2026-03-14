@@ -442,6 +442,7 @@
     <bodyOffset>(0, -0.1)</bodyOffset>
     <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
+    <revertOnDowned>true</revertOnDowned>
     <!-- sustain: 수호자의 각인이 유지되어야 함 (Any 모드 — 돌 소지 or 각인 중 하나) -->
     <sustainHediffs>
       <li>SSFTest_Hediff_GuardianMark</li>

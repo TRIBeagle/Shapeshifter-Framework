@@ -407,6 +407,11 @@ namespace ShapeshifterFramework.Comps
                     RemoveForm();
                     return;
                 }
+                if (currentForm.revertOnDowned && pawn.Downed)
+                {
+                    RemoveForm();
+                    return;
+                }
                 if (currentForm.durationTicks.HasValue && currentForm.durationTicks.Value > 0)
                 {
                     transformTimer--;

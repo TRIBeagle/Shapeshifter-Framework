@@ -181,6 +181,7 @@ Grant temporary powers or status effects while transformed.
 **Duration & Revert:**
 * `<durationTicks>`: How long the form lasts. Leave blank for infinite. (60,000 ticks = 1 in-game day).
 * `<canRevertVoluntarily>`: If `false`, the pawn cannot manually revert via gizmo (for debuff/curse forms). (Default: `true`).
+* `<revertOnDowned>`: If `true`, the form is automatically reverted when the pawn is downed (incapacitated). (Default: `false`).
 
 **Gizmo Icons:**
 * `<gizmoIconPathEnter>` / `<gizmoIconPathRevert>`: Custom icons for the transform/revert buttons.
