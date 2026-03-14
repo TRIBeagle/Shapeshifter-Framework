@@ -66,24 +66,19 @@ namespace ShapeshifterFramework.Compat
         #region Postfix
 
         /// <summary>Postfix: 헤드 워커면 폼의 body*head 스케일 적용.</summary>
-        static void Postfix(ref Vector3 __result, PawnRenderNode __0, PawnDrawParms __1)
+        static void Postfix(PawnRenderNodeWorker __instance, ref Vector3 __result, PawnRenderNode __0, PawnDrawParms __1)
         {
             try
             {
-                var node = __0;
-                var parms = __1;
-                if (node == null) return;
+                // __instance가 곧 워커 — 리플렉션 없이 타입 체크만으로 FA 헤드 워커 판별
+                if (__instance == null || !T_FAHeadWorker.IsInstanceOfType(__instance))
+                    return;
 
-                Pawn pawn = parms.pawn;
+                Pawn pawn = __1.pawn;
                 if (pawn == null) return;
 
-                // 비변신 폰 즉시 스킵 — 렌더 핫패스에서 AllComps 순회/리플렉션 방지
+                // 비변신 폰 즉시 스킵
                 if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
-
-                // FA 헤드 워커인지 먼저 판정 — 폰당 ~40개 노드 중 1개만 해당하므로 95%+ 탈락
-                object worker = TryGetWorker(node);
-                if (worker == null || !T_FAHeadWorker.IsAssignableFrom(worker.GetType()))
-                    return;
 
                 // FA 컨트롤러 없으면 스킵 (캐시로 AllComps 순회 방지)
                 if (!HasFAControllerCompCached(pawn)) return;
@@ -149,18 +144,6 @@ namespace ShapeshifterFramework.Compat
                     CompatManager.FA.Failed("HasFAComp:Exception", e.Message);
             }
             return false;
-        }
-
-        /// <summary>PawnRenderNode에서 worker 인스턴스 획득(프로퍼티/필드 폴백).</summary>
-        private static object TryGetWorker(PawnRenderNode node)
-        {
-            if (node == null) return null;
-
-            // 캐시된 리플렉션 헬퍼 우선
-            var v = ShapeshiftReflectionCache.GetInstanceProperty<object>(node, "Worker");
-            if (v != null) return v;
-
-            return ShapeshiftReflectionCache.GetInstanceField<object>(node, "worker");
         }
 
         #endregion
