@@ -25,6 +25,10 @@ namespace ShapeshifterFramework.Comps
         [MayRequire("Ludeon.RimWorld.Anomaly")]
         public List<MutantDef> disallowedMutants;
 
+        // ── 변신 중 시전 허용 폼 (defName 문자열) ──
+        // null/비어있으면: 변신 중 시전 불가 (기즈모 비활성)
+        public List<string> allowedFromForms;
+
         public CompProperties_AbilityShiftTarget()
         {
             compClass = typeof(CompAbilityEffect_ShiftTarget);

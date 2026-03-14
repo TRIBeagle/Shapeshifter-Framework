@@ -122,6 +122,10 @@
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
         <formDefName>SSFTest_FullBeastForm</formDefName>
         <successChance>1.0</successChance>
+        <!-- 수인 폼에서만 2단 변신 허용 -->
+        <allowedFromForms>
+          <li>SSFTest_BeastkinForm</li>
+        </allowedFromForms>
       </li>
     </comps>
   </AbilityDef>

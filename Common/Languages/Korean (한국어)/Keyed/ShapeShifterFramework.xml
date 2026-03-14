@@ -67,4 +67,6 @@
 
   <SSF_Fallback_Transform>변신</SSF_Fallback_Transform>
 
+  <SSF_GizmoDisabled_AlreadyTransformed>이미 {0}(으)로 변신 중입니다. 다른 폼으로 변신할 수 없습니다.</SSF_GizmoDisabled_AlreadyTransformed>
+
 </LanguageData>

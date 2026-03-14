@@ -99,6 +99,44 @@ namespace ShapeshifterFramework.Comps
             ShapeshiftTargetUtility.TryShiftPawn(pawn, Props.formDefName, Props.successChance);
         }
 
+        /// <summary>변신 중 다른 폼 어빌리티 비활성화 (allowedFromForms 허용 시 제외).</summary>
+        public override bool GizmoDisabled(out string reason)
+        {
+            var caster = parent?.pawn;
+            if (caster == null) { reason = null; return false; }
+
+            var comp = caster.TryGetComp<CompShapeshifter>();
+            if (comp == null || !comp.isTransformed || comp.currentForm == null)
+            {
+                reason = null;
+                return false;
+            }
+
+            // 같은 폼은 ShouldHideGizmo에서 이미 숨김 → 여기선 패스
+            if (string.Equals(comp.currentForm.defName, Props.formDefName, System.StringComparison.Ordinal))
+            {
+                reason = null;
+                return false;
+            }
+
+            // allowedFromForms 체크
+            if (Active(Props.allowedFromForms))
+            {
+                for (int i = 0; i < Props.allowedFromForms.Count; i++)
+                {
+                    if (string.Equals(Props.allowedFromForms[i], comp.currentForm.defName, System.StringComparison.Ordinal))
+                    {
+                        reason = null;
+                        return false;
+                    }
+                }
+            }
+
+            // 변신 중이고 허용되지 않은 폼 → 비활성
+            reason = "SSF_GizmoDisabled_AlreadyTransformed".Translate(comp.currentForm.label ?? comp.currentForm.defName);
+            return true;
+        }
+
         #region 유틸리티 (조건 판정)
 
         private static bool Active<T>(List<T> list) => list != null && list.Count > 0;

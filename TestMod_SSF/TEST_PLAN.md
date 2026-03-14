@@ -4,7 +4,8 @@
 
 > **중요**: 스탯/능력치 보정은 `ShapeshiftFormDef`가 아닌 `mainHediff`의 HediffDef stages에서 바닐라 패턴으로 정의됩니다.
 > 캐스트 조건(종족/뮤턴트)은 `CompProperties_AbilityShiftTarget`에서 처리합니다.
-> `allowedFromForms`, `requiredItems`, `requiredHediffs`, `requirementsMode` 등은 FormDef에 존재하지 않습니다.
+> `allowedFromForms`는 `CompProperties_AbilityShiftTarget`에 `List<string>` (defName)으로 존재합니다 — 변신 중 시전 허용 폼 목록.
+> `requiredItems`, `requiredHediffs`, `requirementsMode` 등은 FormDef에 존재하지 않습니다.
 > 변신 유지 조건은 `sustainHediffs`/`sustainMode` 등 sustain 계열 필드를 사용합니다.
 
 ## 테스트 폼 & 커버리지 매핑
@@ -18,7 +19,7 @@
 | 3 | SSFTest_SheepForm | 어빌리티(DebuffEnemy, 적대), AoE투사체(MassPolymorph) | body Replace+성별 텍스처, canRevertVoluntarily=false, disabledWorkTags, 축소 스케일, hostile 어빌리티, successChance |
 | 4 | SSFTest_DarkKnightForm | 어빌리티(DarkKnight, 자기변신) | spawnApparel/Weapon+stuff, conflictingGearHandling, equipLock(Locked/Locked), Inventory 처리 |
 | 5a | SSFTest_BeastkinForm | 어빌리티(Beastkin, 자기변신) | Humanoid 베이스, renderNodeProperties(귀/꼬리), renderShowApparelDefNames, headDrawScale/Offset, 전체 보이스 오버라이드, verbs(5종)+verbGizmoOptions, tools, replaceNativeVerbs/Tools=false, disabledWorkTags(리스트), 혈흔/살점, hairColor 오버라이드 |
-| 5b | SSFTest_FullBeastForm | 수인 폼의 addAbilities 체인 | addAbilities 기반 2단변신 (수인→야수) |
+| 5b | SSFTest_FullBeastForm | 수인 폼의 addAbilities 체인 | addAbilities 기반 2단변신 (수인→야수), **allowedFromForms**(BeastkinForm) |
 
 ### 신규 폼 (추가됨)
 

@@ -235,7 +235,7 @@
 ### 트리거/폼 체이닝
 > 획득: `SSFTest_Ability_FullBeast`는 BeastkinForm의 `addAbilities`로 자동 부여 (수인 변신 시에만 존재)
 - [ ] #126 `[MANUAL]` 인간 상태에서 진입 **불가** (FullBeast 어빌리티 자체가 없음)
-- [ ] #127 `[MANUAL]` 수인(BeastkinForm) 상태에서만 진입 **가능**
+- [ ] #127 `[MANUAL]` 수인(BeastkinForm) 상태에서만 진입 **가능** (`allowedFromForms`에 BeastkinForm 허용)
 - [ ] #128 `[MANUAL]` 수인 폼의 `addAbilities`로 부여된 `SSFTest_Ability_FullBeast` 어빌리티 확인
 - [ ] #129 `[MANUAL]` 수인 폼 해제 시 `SSFTest_Ability_FullBeast` 어빌리티도 함께 제거
 
@@ -359,8 +359,10 @@
 - [ ] #184 `[MANUAL]` 세이브/로드 후 스탯/hediff/텍스처/컬러 정상
 - [ ] #185 `[MANUAL]` 변신 중 사망 → 시체 텍스처/혈액 정상
 - [ ] #186 `[MANUAL]` 변신 중 징집/비징집 전환
-- [ ] #187 `[MANUAL]` 이미 변신 중 같은 폼 재사용 시도 → 차단 or 갱신
-- [ ] #188 `[MANUAL]` 이미 변신 중 다른 폼 사용 → 기존 폼 해제 → 새 폼 적용
+- [ ] #187 `[MANUAL]` 이미 변신 중 같은 폼 재사용 시도 → 기즈모 숨김 (ShouldHideGizmo)
+- [ ] #188 `[MANUAL]` 이미 변신 중 다른 폼 기즈모 → 비활성(회색) + "이미 X(으)로 변신 중" 툴팁 (GizmoDisabled)
+- [ ] #188a `[MANUAL]` `allowedFromForms`에 허용된 폼 → 변신 중에도 기즈모 활성 (BeastkinForm→FullBeast)
+- [ ] #188b `[MANUAL]` `allowedFromForms` 허용 폼에서 시전 → 기존 폼 해제 → 새 폼 적용
 - [ ] #189 `[MANUAL]` 카라반 이동 중 변신 타이머 만료
 - [ ] #190 `[MANUAL]` 빨간 에러 로그 없음 (전 테스트 과정)
 

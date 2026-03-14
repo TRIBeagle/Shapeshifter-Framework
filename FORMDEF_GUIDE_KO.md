@@ -245,6 +245,7 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
 * `<successChance>`: 변신 성공 확률 (0.0–1.0, 기본값: 1.0)
 * `<allowedRaces>` / `<disallowedRaces>`: 캐스터 종족 제한 (`ThingDef` 목록)
 * `<allowedMutants>` / `<disallowedMutants>`: 캐스터 뮤턴트 제한 (`MutantDef` 목록, Anomaly DLC)
+* `<allowedFromForms>`: 변신 중 시전 허용 폼 목록 (`string` — FormDef defName). null/비어있으면 변신 중 기즈모 **비활성(회색)** 처리. 같은 폼 재시전은 항상 숨김.
 
 ### 어빌리티 획득 경로
 
@@ -258,10 +259,12 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
 | **투사체** | `PolymorphProjectileExtension` | 투사체 명중 시 변신. 필드: `formDefName`, `successChance`, `aoeRadius`, `affectAllies`. |
 
 ### 다단 변신 (addAbilities 체인)
-`<addAbilities>`를 사용하여 1단계 폼 상태에서만 2단계 변신 어빌리티를 부여할 수 있습니다:
+`<addAbilities>`를 사용하여 1단계 폼 상태에서만 2단계 변신 어빌리티를 부여할 수 있습니다.
+**중요**: 2단계 어빌리티의 comp에 `<allowedFromForms>`로 1단계 폼을 명시해야 합니다. 그렇지 않으면 변신 중 기즈모가 비활성(회색) 처리됩니다.
 ```
 1단계 (BeastkinForm) → addAbilities: [FullBeast 어빌리티]
   → 폰이 수인 상태에서 FullBeast 어빌리티 획득
+  → FullBeast 어빌리티에 allowedFromForms: [BeastkinForm] 설정
   → FullBeast 어빌리티 사용 → FullBeastForm 진입
   → BeastkinForm 해제 시 → FullBeast 어빌리티 제거
 ```

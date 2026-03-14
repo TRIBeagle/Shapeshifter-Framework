@@ -245,6 +245,7 @@ Attached to an `AbilityDef`'s `<comps>` to define the shift effect:
 * `<successChance>`: Probability of transformation (0.0–1.0, Default: 1.0).
 * `<allowedRaces>` / `<disallowedRaces>`: List of `ThingDef` — restrict which races can cast.
 * `<allowedMutants>` / `<disallowedMutants>`: List of `MutantDef` (Anomaly DLC) — restrict by mutant type.
+* `<allowedFromForms>`: List of `string` (FormDef defNames) — while transformed, only allow casting from these forms. If null/empty: ability is **disabled (grayed out)** while transformed. Same-form recast is always hidden regardless.
 
 ### Ability Acquisition Sources
 
@@ -258,10 +259,12 @@ Attached to an `AbilityDef`'s `<comps>` to define the shift effect:
 | **Projectile** | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `formDefName`, `successChance`, `aoeRadius`, `affectAllies`. |
 
 ### Multi-Stage Transformation (addAbilities chain)
-Use `<addAbilities>` to grant a stage-2 transformation ability only while in stage-1 form:
+Use `<addAbilities>` to grant a stage-2 transformation ability only while in stage-1 form.
+**Important**: The stage-2 ability must have `<allowedFromForms>` listing the stage-1 form, otherwise it will be grayed out while transformed.
 ```
 Stage 1 (BeastkinForm) → addAbilities: [FullBeast ability]
   → Pawn gains FullBeast ability while in Beastkin form
+  → FullBeast ability has allowedFromForms: [BeastkinForm]
   → Using FullBeast ability → enters FullBeastForm
   → Reverting BeastkinForm → removes FullBeast ability
 ```
