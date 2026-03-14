@@ -9,4 +9,8 @@
   <SSFTest_Hediff_RacialAwakening.label>종족적 각성</SSFTest_Hediff_RacialAwakening.label>
   <SSFTest_Hediff_RacialAwakening.description>종족적 각성. 이 상태에서는 종족 제한 변신 어빌리티를 사용할 수 있다. (인간 전용)</SSFTest_Hediff_RacialAwakening.description>
 
+  <!-- 수호자의 각인 -->
+  <SSFTest_Hediff_GuardianMark.label>수호자의 각인</SSFTest_Hediff_GuardianMark.label>
+  <SSFTest_Hediff_GuardianMark.description>수호자의 각인. 이 표식이 남아있는 동안 수호자 변신 상태를 유지할 수 있다. 표식이 사라지면 변신이 해제된다.</SSFTest_Hediff_GuardianMark.description>
+
 </LanguageData>

@@ -192,4 +192,26 @@
     </stages>
   </HediffDef>
 
+  <!-- ======================================================
+       sustain 조건 테스트용 헤디프 — GuardianForm 유지 조건
+       FibrousMechanites 대신 커스텀 헤디프로 교체하여 독립적 테스트
+       ====================================================== -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_GuardianMark</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>guardian's mark</label>
+    <description>수호자의 각인. 이 표식이 남아있는 동안 수호자 변신 상태를 유지할 수 있다. 표식이 사라지면 변신이 해제된다.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.3, 0.8, 0.6)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <stages>
+      <li>
+        <label>marked</label>
+        <statOffsets>
+          <PsychicSensitivity>0.05</PsychicSensitivity>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
 </Defs>

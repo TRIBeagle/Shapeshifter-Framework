@@ -429,22 +429,22 @@
        조건부 / 비주얼 / 종족제한 테스트 폼
        ====================================================== -->
 
-  <!-- 6) 수호자 폼 — sustainHediffs로 FibrousMechanites 유지 조건
+  <!-- 6) 수호자 폼 — sustainHediffs로 유지 조건
        ★ portraitDrawScale, bodyOffset, shadowVolume/Offset 통합 테스트
        ★ 스탯 → mainHediff(SSFTest_GuardianFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
     <defName>SSFTest_GuardianForm</defName>
     <label>guardian form</label>
-    <description>수호자 형태. 마력의 돌 소지 또는 FibrousMechanites 보유 시 변신 가능. 큰 그림자와 포트레잇 확대 테스트.</description>
+    <description>수호자 형태. 마력의 돌 소지 또는 수호자의 각인 보유 시 변신 유지. 큰 그림자와 포트레잇 확대 테스트.</description>
     <mainHediff>SSFTest_GuardianFormHediff</mainHediff>
     <bodyDrawScale>1.4</bodyDrawScale>
     <portraitDrawScale>1.3</portraitDrawScale>
     <bodyOffset>(0, -0.1)</bodyOffset>
     <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
-    <!-- sustain: FibrousMechanites가 유지되어야 함 (Any 모드) -->
+    <!-- sustain: 수호자의 각인이 유지되어야 함 (Any 모드 — 돌 소지 or 각인 중 하나) -->
     <sustainHediffs>
-      <li>FibrousMechanites</li>
+      <li>SSFTest_Hediff_GuardianMark</li>
     </sustainHediffs>
     <sustainMode>Any</sustainMode>
     <!-- 그림자 오버라이드 -->

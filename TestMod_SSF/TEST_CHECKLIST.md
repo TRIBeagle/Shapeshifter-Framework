@@ -256,7 +256,7 @@
 ### 변신 조건 (sustainMode=Any)
 > 획득: `SSFTest_Ability_Guardian`은 `SSFTest_MagicStone` 소지 시 자동 부여 (`CompGiveAbility_SSF`, `requireEquipped=false`)
 - [ ] #136 `[MANUAL]` `SSFTest_MagicStone` 인벤토리 보유 시 → 변신 가능
-- [ ] #137 `[MANUAL]` `FibrousMechanites` hediff 보유 시 → 변신 가능
+- [ ] #137 `[MANUAL]` `SSFTest_Hediff_GuardianMark` hediff 보유 시 → 변신 가능
 - [ ] #138 `[MANUAL]` 둘 다 없으면 → 변신 불가 (어빌리티 비활성 or 실패)
 - [ ] #139 `[MANUAL]` 둘 다 있어도 OK (Any 모드이므로)
 
@@ -407,9 +407,9 @@
 - [ ] #215 `[MANUAL]` BeastkinForm 해제 → FullBeast 어빌리티 소멸 → 인간 상태에서 FullBeast 사용 불가
 
 ### 폼 유지 조건 (sustainHediffs/sustainMode)
-- [ ] #216 `[MANUAL]` GuardianForm: `sustainHediffs=FibrousMechanites`, `sustainMode=Any` → hediff 유지 시 변신 유지
+- [ ] #216 `[MANUAL]` GuardianForm: `sustainHediffs=SSFTest_Hediff_GuardianMark`, `sustainMode=Any` → hediff 유지 시 변신 유지
 - [ ] #217 `[MANUAL]` GuardianForm: `sustainHediffs` 충족 + `SSFTest_MagicStone` 소지 → 둘 다 만족 OK (Any 모드)
-- [ ] #218 `[MANUAL]` GuardianForm: 변신 중 `FibrousMechanites` 치료(제거) 시 → 유지 조건 변화 확인
+- [ ] #218 `[MANUAL]` GuardianForm: 변신 중 `SSFTest_Hediff_GuardianMark` 치료(제거) 시 → 유지 조건 변화 확인
 
 ---
 

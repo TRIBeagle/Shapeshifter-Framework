@@ -131,7 +131,7 @@
 - [ ] **K2** 비변신 상태에서 BearForm 진입 가능 (약물/스크롤 트리거)
 - [ ] **K3** canRevertVoluntarily=false: SheepForm 해제 기즈모 비활성
 - [ ] **K4** durationTicks: 시간 경과 후 자동 해제
-- [ ] **K5** sustainHediffs: GuardianForm — FibrousMechanites 유지 조건
+- [ ] **K5** sustainHediffs: GuardianForm — SSFTest_Hediff_GuardianMark 유지 조건
 - [ ] **K6** sustainMode=Any: 조건 중 하나만 충족하면 변신 유지
 - [ ] **K7** CompGiveAbility_SSF: SSFTest_MagicStone 소지 시 Guardian 어빌리티 자동 부여
 - [ ] **K8** allowedRaces (AbilityDef comp): RaceLockedForm — Human만 변신 가능
