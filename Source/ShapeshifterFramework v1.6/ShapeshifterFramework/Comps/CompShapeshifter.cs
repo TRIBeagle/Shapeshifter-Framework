@@ -65,6 +65,9 @@ namespace ShapeshifterFramework.Comps
         // 틱(Tick) 에러 스팸 방지용 플래그
         private bool verbTickErrorLogged = false;
 
+        // 기즈모 verb 중복 방지용 재사용 HashSet (GC 할당 방지)
+        private readonly HashSet<Verb> _tmpSeenVerbs = new HashSet<Verb>();
+
         // verb 자동공격 토글 상태 (키: formDefName#index)
         private readonly Dictionary<string, bool> verbAutoToggle = new Dictionary<string, bool>();
 
@@ -1658,7 +1661,8 @@ namespace ShapeshifterFramework.Comps
 
             bool canViolent = !pawn.WorkTagIsDisabled(WorkTags.Violent);
             bool showToggle = ShapeshifterFrameworkMod.Settings?.showVerbAutoToggle ?? true;
-            var seen = new HashSet<Verb>();
+            _tmpSeenVerbs.Clear();
+            var seen = _tmpSeenVerbs;
 
             var verbs = vt.AllVerbs;
             for (int i = 0; i < verbs.Count; i++)

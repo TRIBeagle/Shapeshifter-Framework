@@ -23,8 +23,9 @@ namespace ShapeshifterFramework.Hediffs
                 if (_cachedComp == null && pawn != null)
                 {
                     if (ShapeshiftRegistry.TryGet(pawn, out var regComp, out _))
-                        return regComp;
-                    _cachedComp = pawn.TryGetComp<CompShapeshifter>();
+                        _cachedComp = regComp;
+                    else
+                        _cachedComp = pawn.TryGetComp<CompShapeshifter>();
                 }
                 return _cachedComp;
             }
