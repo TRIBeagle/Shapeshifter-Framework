@@ -6,6 +6,7 @@
 // 주의 : 이 클래스의 데이터는 XML 로드 시 확정되며, 런타임 게임 플레이 도중 수정(오염)되지 않도록 철저히 읽기 전용(Read-only) 데이터로 취급해야 함.
 
 using RimWorld;
+using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -246,6 +247,22 @@ namespace ShapeshifterFramework
         public ThingDef bloodSmearDef;
         public FleshTypeDef fleshType;
 
+        // ── 사전 컴파일된 렌더 필터 (ResolveReferences에서 빌드, 세이브 제외) ──
+        [Unsaved] internal CompiledFilterSet cHideApparelLayers;
+        [Unsaved] internal CompiledFilterSet cHideApparelDefNames;
+        [Unsaved] internal CompiledFilterSet cShowApparelLayers;
+        [Unsaved] internal CompiledFilterSet cShowApparelDefNames;
+        [Unsaved] internal CompiledFilterSet cHideWeaponTags;
+        [Unsaved] internal CompiledFilterSet cHideWeaponDefNames;
+        [Unsaved] internal CompiledFilterSet cShowWeaponTags;
+        [Unsaved] internal CompiledFilterSet cShowWeaponDefNames;
+        [Unsaved] internal CompiledFilterSet cHideGeneExclusionTags;
+        [Unsaved] internal CompiledFilterSet cHideGeneDefNames;
+        [Unsaved] internal CompiledFilterSet cShowGeneExclusionTags;
+        [Unsaved] internal CompiledFilterSet cShowGeneDefNames;
+        [Unsaved] internal CompiledFilterSet cHideHediffDefNames;
+        [Unsaved] internal CompiledFilterSet cShowHediffDefNames;
+
         // HAR 옵션
         [MayRequire("erdelf.HumanoidAlienRaces")] public bool showHarAddons = false;
 
@@ -262,6 +279,22 @@ namespace ShapeshifterFramework
         public override void ResolveReferences()
         {
             base.ResolveReferences();
+
+            // 렌더 필터 와일드카드 사전 컴파일 — 렌더 루프에서 문자열 파싱 제거
+            cHideApparelLayers = CompiledFilterSet.Compile(renderHideApparelLayers);
+            cHideApparelDefNames = CompiledFilterSet.Compile(renderHideApparelDefNames);
+            cShowApparelLayers = CompiledFilterSet.Compile(renderShowApparelLayers);
+            cShowApparelDefNames = CompiledFilterSet.Compile(renderShowApparelDefNames);
+            cHideWeaponTags = CompiledFilterSet.Compile(renderHideWeaponTags);
+            cHideWeaponDefNames = CompiledFilterSet.Compile(renderHideWeaponDefNames);
+            cShowWeaponTags = CompiledFilterSet.Compile(renderShowWeaponTags);
+            cShowWeaponDefNames = CompiledFilterSet.Compile(renderShowWeaponDefNames);
+            cHideGeneExclusionTags = CompiledFilterSet.Compile(renderHideGeneExclusionTags);
+            cHideGeneDefNames = CompiledFilterSet.Compile(renderHideGeneDefNames);
+            cShowGeneExclusionTags = CompiledFilterSet.Compile(renderShowGeneExclusionTags);
+            cShowGeneDefNames = CompiledFilterSet.Compile(renderShowGeneDefNames);
+            cHideHediffDefNames = CompiledFilterSet.Compile(renderHideHediffDefNames);
+            cShowHediffDefNames = CompiledFilterSet.Compile(renderShowHediffDefNames);
         }
     }
 }

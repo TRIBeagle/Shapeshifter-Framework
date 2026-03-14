@@ -5,6 +5,7 @@
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using Verse;
 
@@ -17,9 +18,7 @@ namespace ShapeshifterFramework.Patches
         {
             if (__instance == null || workType == null || __result == null) return;
 
-            var comp = __instance.TryGetComp<CompShapeshifter>();
-            var form = (comp != null && comp.isTransformed) ? comp.currentForm : null;
-            if (form == null) return;
+            if (!ShapeshiftRegistry.TryGet(__instance, out var comp, out var form)) return;
 
             bool disabledByType = form.disabledWorkTypesOnTransform != null
                 && form.disabledWorkTypesOnTransform.Contains(workType);

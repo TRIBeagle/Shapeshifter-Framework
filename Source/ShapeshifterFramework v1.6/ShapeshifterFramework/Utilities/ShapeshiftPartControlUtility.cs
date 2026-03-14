@@ -19,10 +19,7 @@ namespace ShapeshifterFramework.Utilities
             form = null;
             if (pawn == null) return false;
 
-            var comp = ShapeshiftUtility.GetShapeShiftComp(pawn);
-            if (comp == null || !comp.isTransformed || comp.currentForm == null) return false;
-
-            form = comp.currentForm;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out form)) return false;
             return true;
         }
 

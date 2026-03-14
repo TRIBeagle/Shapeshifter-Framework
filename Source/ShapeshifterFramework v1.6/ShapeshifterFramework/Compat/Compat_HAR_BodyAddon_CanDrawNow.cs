@@ -74,8 +74,7 @@ namespace ShapeshifterFramework.Compat
                 Pawn pawn = __1.pawn;
                 if (pawn == null) return true;
 
-                var comp = ShapeshiftUtility.GetShapeShiftComp(pawn);
-                if (comp?.currentForm != null && !comp.currentForm.showHarAddons)
+                if (ShapeshiftRegistry.TryGet(pawn, out var comp, out var form) && !form.showHarAddons)
                 {
                     __result = false;
                     return false;

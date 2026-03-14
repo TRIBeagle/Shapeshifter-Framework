@@ -7,6 +7,7 @@
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using Verse;
 
@@ -22,11 +23,8 @@ namespace ShapeshifterFramework.Patches
                 var pawn = __instance.Pawn;
                 if (pawn == null) return true;
 
-                var comp = pawn.TryGetComp<CompShapeshifter>();
-                if (comp == null || !comp.isTransformed) return true;
-
-                var form = comp.currentForm;
-                if (form == null || form.tools == null || form.tools.Count == 0) return true;
+                if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return true;
+                if (form.tools == null || form.tools.Count == 0) return true;
 
                 bool replaceNative = form.replaceNativeTools.HasValue && form.replaceNativeTools.Value;
 
@@ -63,11 +61,8 @@ namespace ShapeshifterFramework.Patches
                 var pawn = __instance.Pawn;
                 if (pawn == null) return;
 
-                var comp = pawn.TryGetComp<CompShapeshifter>();
-                if (comp == null || !comp.isTransformed) return;
-
-                var form = comp.currentForm;
-                if (form == null || form.tools == null || form.tools.Count == 0) return;
+                if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
+                if (form.tools == null || form.tools.Count == 0) return;
 
                 // replaceNativeTools=true는 Prefix에서 이미 처리됨
                 if (form.replaceNativeTools.HasValue && form.replaceNativeTools.Value) return;

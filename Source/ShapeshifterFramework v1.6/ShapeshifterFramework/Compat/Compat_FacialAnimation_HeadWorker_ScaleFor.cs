@@ -84,9 +84,7 @@ namespace ShapeshifterFramework.Compat
                 if (worker == null || !T_FAHeadWorker.IsAssignableFrom(worker.GetType()))
                     return;
 
-                var comp = ShapeshiftUtility.GetShapeShiftComp(pawn);
-                var form = comp?.currentForm;
-                if (comp == null || !comp.isTransformed || form == null) return;
+                if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
 
                 float factor = 1f;
 

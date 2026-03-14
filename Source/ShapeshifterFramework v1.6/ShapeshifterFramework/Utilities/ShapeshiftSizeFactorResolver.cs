@@ -37,9 +37,7 @@ namespace ShapeshifterFramework.Utilities
                 bodySizeFactor = baseBodyFac
             };
 
-            var comp = pawn != null ? pawn.TryGetComp<CompShapeshifter>() : null;
-            var form = comp != null ? comp.currentForm : null;
-            if (comp == null || !comp.isTransformed || form == null) return false;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return false;
 
             // 입력 배수(비우면 1)
             float sBody = form.bodyDrawScale.HasValue ? Mathf.Max(0.01f, form.bodyDrawScale.Value) : 1f;

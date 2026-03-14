@@ -28,8 +28,7 @@ namespace ShapeshifterFramework.Patches
             if (pawn == null) return;
             if (!pawn.RaceProps.Humanlike) return;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            if (comp == null || !comp.isTransformed) return;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
 
             bool lockApparel = ShapeshiftEquipRules.LockApparel(comp);
             bool lockWeapon = ShapeshiftEquipRules.LockWeapons(comp);

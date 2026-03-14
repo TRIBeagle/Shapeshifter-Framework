@@ -6,6 +6,7 @@
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
 using Verse;
@@ -28,8 +29,7 @@ namespace ShapeshifterFramework.Patches
                 }
 
                 // 2) 변신 중이면 토글 상태에 따라 verb 선택
-                var comp = __instance.TryGetComp<CompShapeshifter>();
-                if (comp != null && comp.isTransformed)
+                if (ShapeshiftRegistry.TryGet(__instance, out var comp, out var form))
                 {
                     var vt = comp.ShapeshiftVerbTracker;
                     if (vt != null)
@@ -50,8 +50,7 @@ namespace ShapeshifterFramework.Patches
                         }
 
                         // 2b) 원거리가 없으면 폼 근접 도구 공급 (replaceNativeTools 시 네이티브가 제거된 상태)
-                        var form = comp.currentForm;
-                        if (form != null && form.tools != null && form.tools.Count > 0)
+                        if (form.tools != null && form.tools.Count > 0)
                         {
                             var bestMelee = FindBestFormMelee(verbs);
                             if (bestMelee != null)

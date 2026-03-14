@@ -21,8 +21,7 @@ namespace ShapeshifterFramework.Patches
             Pawn pawn = __instance.pawn;
             if (pawn == null) return true;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            if (comp != null && comp.isTransformed && ShapeshiftEquipRules.LockWeapons(comp))
+            if (ShapeshiftRegistry.TryGet(pawn, out var comp, out var form) && ShapeshiftEquipRules.LockWeapons(comp))
             {
                 if (!comp.suppressEquipLock && pawn.IsColonistPlayerControlled)
                 {

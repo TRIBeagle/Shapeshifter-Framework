@@ -6,6 +6,7 @@
 
 using HarmonyLib;
 using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
 using System.Reflection;
 using Verse;
 
@@ -26,11 +27,7 @@ namespace ShapeshifterFramework.Patches
             var pawn = instigator as Pawn;
             if (pawn == null) return;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            if (comp == null || !comp.isTransformed) return;
-
-            var form = comp.currentForm;
-            if (form == null) return;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
             if (form.tools == null || form.tools.Count == 0) return;
 
             // 장비로 공격 중이면 건드리지 않음

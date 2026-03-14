@@ -5,6 +5,7 @@
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
 using Verse;
 
 namespace ShapeshifterFramework.Patches
@@ -14,9 +15,7 @@ namespace ShapeshifterFramework.Patches
     {
         static void Postfix(Pawn p, ref bool __result)
         {
-            var comp = p?.TryGetComp<CompShapeshifter>();
-            var form = (comp != null && comp.isTransformed) ? comp.currentForm as ShapeshiftFormDef : null;
-            if (form != null && form.suppressIdeologyUncoveredThoughts)
+            if (ShapeshiftRegistry.TryGet(p, out var comp, out var form) && form.suppressIdeologyUncoveredThoughts)
                 __result = false;
         }
     }

@@ -240,3 +240,8 @@ allowedRaces=Human (AbilityDef comp) + headType + 의류잠금/무기자유
 
 ### 16단계: 디버그 액션 & 로깅 검증 → O1-8
 Dump Form Info/Pawn State → 스탯 mainHediff 기반 표시, 실패 로그 출력, HAR 호환, 메모리 안정성
+
+### 17단계: ShapeshiftRegistry 성능 최적화 검증 → P1-13
+변신/해제 → 레지스트리 Register/Unregister 동작, 세이브/로드 재등록(PostLoadInit),
+상단/동면관/포드 생명주기(PostSpawnSetup 재등록), 사망 정리(PostDestroy),
+와일드카드 사전 컴파일 필터 동작, VerbTracker 단일 패스 통합 동작
