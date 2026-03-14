@@ -19,6 +19,9 @@ namespace ShapeshifterFramework.Patches
             Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
             if (pawn == null) return;
 
+            // 비변신 폰 즉시 스킵 — 렌더 핫패스에서 SizeFactorResolver/리플렉션 방지
+            if (!ShapeshiftRegistry.IsActive(pawn)) return;
+
             // 1) bodySizeFactor 보정
             var ls = pawn.ageTracker != null ? pawn.ageTracker.CurLifeStage : null;
             float vanilla = Mathf.Max(0.01f, ls != null ? ls.bodySizeFactor : 1f);

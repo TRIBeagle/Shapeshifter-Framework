@@ -18,6 +18,9 @@ namespace ShapeshifterFramework.Patches
             // 오버레이 워커만 처리
             if (!(__instance is PawnRenderNodeWorker_Overlay)) return;
 
+            // 비변신 폰 즉시 스킵 — 오버레이 워커에서도 리플렉션/스케일 연산 방지
+            if (!ShapeshiftRegistry.IsActive(parms.pawn)) return;
+
             PawnRenderNodeProperties props;
             if (!ShapeshiftReflectionCache.TryGetPropsFromNode(node, out props)) return;
 
