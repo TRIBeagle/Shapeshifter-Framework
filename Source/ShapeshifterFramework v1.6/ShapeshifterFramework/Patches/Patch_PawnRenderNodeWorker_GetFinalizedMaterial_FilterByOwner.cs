@@ -18,11 +18,17 @@ namespace ShapeshifterFramework.Patches
         // Gene 타입 캐시
         static readonly Type T_Gene = AccessTools.TypeByName("RimWorld.Gene");
 
+        // Gene exclusionTags 수집용 재사용 리스트 — 렌더 핫패스 GC 할당 방지
+        static readonly List<string> _tmpTags = new List<string>(8);
+
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void Postfix(PawnRenderNodeWorker __instance, PawnRenderNode node, PawnDrawParms parms, ref Material __result)
         {
             if (__result == null) return;
             Pawn pawn = parms.pawn; if (pawn == null) return;
+
+            // 비변신 폰은 즉시 스킵 — 렌더 핫패스에서 불필요한 리플렉션/할당 방지
+            if (!ShapeshiftRegistry.IsActive(pawn)) return;
 
             // owner 탐색
             object owner = ShapeshiftReflectionCache.TryGetOwnerFromNode(node);
@@ -40,26 +46,28 @@ namespace ShapeshifterFramework.Patches
 
             if (isGeneOwner)
             {
-                // exclusionTags 수집
-                List<string> tags = null;
+                // exclusionTags 수집 (재사용 리스트)
+                _tmpTags.Clear();
 
                 object geneDef = ShapeshiftReflectionCache.GetInstanceProperty<object>(gene, "def");
                 var tagsA = ShapeshiftReflectionCache.TryGetExclusionTags(geneDef);
-                if (tagsA != null && tagsA.Count > 0) tags = new List<string>(tagsA);
+                if (tagsA != null)
+                    for (int i = 0; i < tagsA.Count; i++) _tmpTags.Add(tagsA[i]);
 
                 object props = ShapeshiftReflectionCache.TryGetPropsFromNode(node);
                 var tagsB = ShapeshiftReflectionCache.TryGetExclusionTags(props);
-                if (tagsB != null && tagsB.Count > 0)
+                if (tagsB != null)
                 {
-                    if (tags == null) tags = new List<string>(tagsB);
-                    else
+                    for (int i = 0; i < tagsB.Count; i++)
                     {
-                        for (int i = 0; i < tagsB.Count; i++)
-                            if (!tags.Contains(tagsB[i])) tags.Add(tagsB[i]);
+                        bool dup = false;
+                        for (int j = 0; j < _tmpTags.Count; j++)
+                            if (string.Equals(_tmpTags[j], tagsB[i], StringComparison.Ordinal)) { dup = true; break; }
+                        if (!dup) _tmpTags.Add(tagsB[i]);
                     }
                 }
 
-                if (ShapeshiftVisualFilter.ShouldHideGeneByDefOrTags(pawn, gene, tags))
+                if (ShapeshiftVisualFilter.ShouldHideGeneByDefOrTags(pawn, gene, _tmpTags.Count > 0 ? (IList<string>)_tmpTags : null))
                     __result = null;
                 return;
             }
