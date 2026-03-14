@@ -414,8 +414,8 @@ namespace ShapeshifterFramework.Comps
                 }
                 if (currentForm.durationTicks.HasValue && currentForm.durationTicks.Value > 0)
                 {
+                    if (transformTimer <= 0) { RemoveForm(); return; }
                     transformTimer--;
-                    if (transformTimer <= 0) RemoveForm();
                 }
                 // 60틱마다 유지 요건(sustain) 검사
                 if (pawn.IsHashIntervalTick(60))
@@ -444,7 +444,9 @@ namespace ShapeshifterFramework.Comps
                     }
 
                     // sustain 조건 검사: sustainApparels/sustainWeapons/sustainHediffs
-                    if (!CheckSustainConditions(pawn, currentForm))
+                    // 어빌리티 시전 중(warmup)에는 sustain 해제를 유예하여 중단 방지
+                    if (!CheckSustainConditions(pawn, currentForm)
+                        && !(pawn.stances?.curStance is Stance_Warmup))
                     {
                         Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
                         RemoveForm();

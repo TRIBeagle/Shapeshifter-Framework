@@ -112,12 +112,8 @@ namespace ShapeshifterFramework.Comps
                 return false;
             }
 
-            // 같은 폼은 ShouldHideGizmo에서 이미 숨김 → 여기선 패스
-            if (string.Equals(comp.currentForm.defName, Props.formDefName, System.StringComparison.Ordinal))
-            {
-                reason = null;
-                return false;
-            }
+            // 같은 폼은 ShouldHideGizmo에서 이미 숨겨져 여기 도달하지 않음.
+            // 다른 폼일 때만 allowedFromForms 체크.
 
             // allowedFromForms 체크
             if (Active(Props.allowedFromForms))
