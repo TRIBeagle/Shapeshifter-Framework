@@ -22,12 +22,4 @@
   <SSFTest_Ability_Beastkin.description>수인 형태로 변신한다. 수인 상태에서는 기즈모로 완전한 야수 형태로 2단 변신할 수 있다.</SSFTest_Ability_Beastkin.description>
 
 
-  <!-- 제노타입 화이트리스트: Baseliner 전용 수호자 -->
-  <SSFTest_Ability_XenoAllowed.label>베이스라이너 수호자 변신</SSFTest_Ability_XenoAllowed.label>
-  <SSFTest_Ability_XenoAllowed.description>베이스라이너 전용 수호자 변신. Baseliner 제노타입만 사용할 수 있다.</SSFTest_Ability_XenoAllowed.description>
-
-  <!-- 제노타입 블랙리스트: 비흡혈귀 곰 전사 -->
-  <SSFTest_Ability_XenoBlocked.label>비흡혈귀 곰 전사 변신</SSFTest_Ability_XenoBlocked.label>
-  <SSFTest_Ability_XenoBlocked.description>비흡혈귀 전용 곰 전사 변신. Sanguophage 제노타입은 사용할 수 없다.</SSFTest_Ability_XenoBlocked.description>
-
 </LanguageData>

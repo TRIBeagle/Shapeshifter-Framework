@@ -63,7 +63,7 @@ Grant temporary powers or status effects while transformed.
 Restrict who can transform into this form.
 * **Strict Filters:**
     * `<allowedRaces>` / `<disallowedRaces>`
-    * `<allowedMutants>` / `<allowedXenotypes>`
+    * `<allowedMutants>`
     * `<allowedFromForms>`: Restricts transformation to only happen from specific other forms.
 * **Condition Requirements:**
     * `<requiredGenes>`, `<requiredItems>`, `<requiredApparels>`, `<requiredWeapons>`, `<requiredAbilities>`, `<requiredHediffs>`.

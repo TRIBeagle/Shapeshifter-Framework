@@ -1,6 +1,6 @@
 // ShapeshifterFramework | Comps | CompAbilityEffect_ShiftTarget.cs
 // 목적 : Ability를 사용하여 대상(Pawn)을 변신시키는 효과(Effect) 컴포넌트.
-// 용도 : - ShouldHideGizmo: 캐스터의 종족/뮤턴트/제노타입 조건 + 같은 폼 재시전 차단
+// 용도 : - ShouldHideGizmo: 캐스터의 종족/뮤턴트 조건 + 같은 폼 재시전 차단
 //        - CanApplyOn: 대상 유효성 판별
 //        - Apply: ShapeshiftTargetUtility.TryShiftPawn을 호출하여 변신 시도
 
@@ -44,21 +44,6 @@ namespace ShapeshifterFramework.Comps
                 // 종족 필터
                 if (!PassAllowDisallow(caster.def, Props.allowedRaces, Props.disallowedRaces))
                     return true;
-
-                // 제노타입 필터 (Biotech)
-                if (Active(Props.allowedXenotypes) || Active(Props.disallowedXenotypes))
-                {
-                    if (!ModsConfig.BiotechActive)
-                    {
-                        if (Active(Props.allowedXenotypes)) return true;
-                    }
-                    else
-                    {
-                        var xeno = TryGetXenotype(caster);
-                        if (!PassAllowDisallow(xeno, Props.allowedXenotypes, Props.disallowedXenotypes))
-                            return true;
-                    }
-                }
 
                 // 뮤턴트 필터 (Anomaly)
                 if (Active(Props.allowedMutants) || Active(Props.disallowedMutants))
@@ -137,11 +122,6 @@ namespace ShapeshifterFramework.Comps
                     if (disallow[i] == value) return false;
             }
             return true;
-        }
-
-        private static XenotypeDef TryGetXenotype(Pawn pawn)
-        {
-            try { return pawn?.genes?.Xenotype; } catch { return null; }
         }
 
         private static bool PassMutantFilter(Pawn pawn, List<MutantDef> allow, List<MutantDef> disallow)

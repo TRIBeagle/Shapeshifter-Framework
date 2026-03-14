@@ -44,25 +44,6 @@
   </GeneDef>
 
   <!-- ======================================================
-       2c) 유전자 (GeneDef) — 제노타입 제한 어빌리티 부여
-       유전자가 어빌리티를 주지만, 어빌리티 자체에 xenotype 화이트리스트가 걸림
-       ★ 유전자 + 제노타입 제한 복합 테스트
-       ====================================================== -->
-  <GeneDef MayRequire="Ludeon.RimWorld.Biotech">
-    <defName>SSFTest_Gene_XenoGuardian</defName>
-    <label>xeno-guardian gene</label>
-    <description>수호자 변신 유전자. 단, Baseliner 제노타입만 이 변신을 사용할 수 있다. 유전자는 보유하지만 제노타입이 맞지 않으면 기즈모가 숨겨진다.</description>
-    <iconPath>UI/Icons/Genes/Gene_Robust</iconPath>
-    <displayCategory>Miscellaneous</displayCategory>
-    <displayOrderInCategory>102</displayOrderInCategory>
-    <biostatCpx>1</biostatCpx>
-    <biostatMet>0</biostatMet>
-    <abilities>
-      <li>SSFTest_Ability_XenoAllowed</li>
-    </abilities>
-  </GeneDef>
-
-  <!-- ======================================================
        3) 장착 무기 (requireEquipped=true)
        이 검을 장비 슬롯에 장착해야만 암흑 기사 변신 어빌리티 부여
        무기를 내려놓으면 어빌리티 즉시 회수

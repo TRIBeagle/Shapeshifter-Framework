@@ -63,7 +63,7 @@
 누가 이 폼으로 변신할 수 있는지 결정합니다.
 * **필터 (항상 엄격하게 적용됨):**
     * `<allowedRaces>` / `<disallowedRaces>`: 허용/차단할 종족
-    * `<allowedMutants>` / `<allowedXenotypes>`: 허용할 돌연변이/제노타입
+    * `<allowedMutants>`: 허용할 돌연변이
     * `<allowedFromForms>`: 이 폼으로 변환 가능한 이전 폼 제한
 * **조건 (요구사항):**
     * `<requiredGenes>`, `<requiredItems>`, `<requiredApparels>`, `<requiredWeapons>`, `<requiredAbilities>`, `<requiredHediffs>`

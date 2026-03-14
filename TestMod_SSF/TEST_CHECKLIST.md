@@ -451,21 +451,6 @@
 - [ ] #243 `[MANUAL]` 종족 각성 + 비인간 폰 → 종족 제한 변신 차단 (allowedRaces 필터 정상)
 - [ ] #244 `[MANUAL]` 종족 각성 헤디프 제거 → 종족 제한 어빌리티 제거
 
-### 제노타입 제한 테스트 (allowedXenotypes / disallowedXenotypes) — Biotech DLC
-- [ ] #251 `[MANUAL]` `SSFTest_Ability_XenoAllowed` Dev mode 부여 + Baseliner 폰 → 기즈모 표시, 수호자 변신 성공
-- [ ] #252 `[MANUAL]` `SSFTest_Ability_XenoAllowed` + 비Baseliner 폰(예: Sanguophage, Hussar) → 기즈모 숨김 (`ShouldHideGizmo=true`)
-- [ ] #253 `[MANUAL]` `SSFTest_Ability_XenoBlocked` Dev mode 부여 + Baseliner 폰 → 기즈모 표시, 곰 전사 변신 성공
-- [ ] #254 `[MANUAL]` `SSFTest_Ability_XenoBlocked` + Sanguophage 폰 → 기즈모 숨김 (차단)
-- [ ] #255 `[MANUAL]` `SSFTest_Ability_XenoBlocked` + Sanguophage가 아닌 다른 커스텀 제노타입 → 기즈모 표시 (블랙리스트에 없으므로 통과)
-- [ ] #256 `[MANUAL]` Biotech DLC 미설치 시: `allowedXenotypes` 설정된 어빌리티 → 기즈모 숨김 (DLC 없으면 xenotype 체크 불가)
-- [ ] #257 `[MANUAL]` Biotech DLC 미설치 시: `disallowedXenotypes`만 설정된 어빌리티 → 기즈모 표시 (차단 대상이 없으므로 통과)
-
-### 유전자 + 제노타입 제한 복합 테스트
-- [ ] #258 `[MANUAL]` `SSFTest_Gene_XenoGuardian` 유전자 보유 + Baseliner → 어빌리티 바에 표시, 수호자 변신 성공
-- [ ] #259 `[MANUAL]` `SSFTest_Gene_XenoGuardian` 유전자 보유 + 비Baseliner → 어빌리티 바에는 표시되나 기즈모 숨김 (유전자가 어빌리티를 주지만 xenotype 조건 미충족)
-- [ ] #260 `[MANUAL]` Dev mode로 제노타입을 Baseliner로 변경 → 기즈모 즉시 표시 (런타임 제노타입 변경 반영)
-- [ ] #261 `[MANUAL]` 유전자 제거 → 어빌리티 자체가 사라짐 (제노타입 무관)
-
 ### 크로스 경로 검증 (복합 테스트)
 - [ ] #245 `[MANUAL]` 같은 어빌리티를 여러 경로로 동시 부여 시 중복 확인 (유전자 + 아이템 동시 → 어빌리티 1개만)
 - [ ] #246 `[MANUAL]` 한 경로 제거 → 다른 경로가 살아있으면 어빌리티 유지 확인

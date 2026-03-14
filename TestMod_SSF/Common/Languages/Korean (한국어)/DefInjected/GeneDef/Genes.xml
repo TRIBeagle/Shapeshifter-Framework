@@ -10,8 +10,4 @@
   <SSFTest_Gene_PhantomShift.description>유령 변신 능력이 내재된 유전자. 이 유전자를 보유한 폰은 유령 변신 어빌리티를 사용할 수 있다.</SSFTest_Gene_PhantomShift.description>
 
 
-  <!-- 제노타입 제한 수호자 유전자 -->
-  <SSFTest_Gene_XenoGuardian.label>제노 수호자 유전자</SSFTest_Gene_XenoGuardian.label>
-  <SSFTest_Gene_XenoGuardian.description>수호자 변신 유전자. 단, Baseliner 제노타입만 이 변신을 사용할 수 있다. 유전자는 보유하지만 제노타입이 맞지 않으면 기즈모가 숨겨진다.</SSFTest_Gene_XenoGuardian.description>
-
 </LanguageData>
