@@ -501,5 +501,28 @@
 | `R.spawnApparel/Weapon` | 해제 시 소환 장비 파괴 | #081 |
 | `R.equipLock` | 해제 시 장비 잠금 해제 | #082 |
 
-> **총 261개 항목** | 8개 폼 + AoE + 아이템 + 공통 + 디버그/로깅 + 어빌리티 조건 + 획득 수단 다양화 + 제노타입 제한 테스트
+---
+
+## 16. ShapeshiftRegistry 생명주기 (성능 최적화 검증)
+
+### 레지스트리 등록/해제
+- [ ] #262 `[MANUAL]` 변신 → 해제 후 모든 패치가 정상 동작 (레지스트리 Register/Unregister 경로)
+- [ ] #263 `[MANUAL]` 세이브 → 로드 후 변신 상태 유지 (PostLoadInit에서 레지스트리 재등록 확인)
+- [ ] #264 `[MANUAL]` 변신 중 상단(Caravan) 출발 → 목적지 도착 후 변신 유지 (PostSpawnSetup 재등록)
+- [ ] #265 `[MANUAL]` 변신 중 동면관(Cryptosleep casket) 진입 → 해제 후 변신 유지
+- [ ] #266 `[MANUAL]` 변신 중 수송포드(Transport pod) 탑승 → 착륙 후 변신 유지
+- [ ] #267 `[MANUAL]` 변신 중 폰 사망 → 레지스트리 정리 (Notify_Killed → RemoveForm → Unregister)
+
+### 와일드카드 사전 컴파일
+- [ ] #268 `[MANUAL]` 의상 hide/show 와일드카드 필터 동작 (기존과 동일 동작 확인)
+- [ ] #269 `[MANUAL]` 무기 hide/show 와일드카드 필터 동작
+- [ ] #270 `[MANUAL]` 유전자 hide/show 와일드카드 필터 동작
+- [ ] #271 `[MANUAL]` 헤디프 hide/show 와일드카드 필터 동작
+
+### VerbTracker 최적화
+- [ ] #272 `[MANUAL]` 폼 전용 근접 공격(tools) 주입 정상 (단일 패스 통합 확인)
+- [ ] #273 `[MANUAL]` replaceNativeTools=true + tools 있는 폼 → 네이티브 근접 verb 제거 후 폼 verb 주입
+- [ ] #274 `[MANUAL]` replaceNativeTools=true + tools 없는 폼 → 네이티브 verb 보존 (안전장치)
+
+> **총 274개 항목** | 8개 폼 + AoE + 아이템 + 공통 + 디버그/로깅 + 어빌리티 조건 + 획득 수단 다양화 + 제노타입 제한 + 성능 최적화 검증 테스트
 > Auto-Verify 로그에서 각 ✓/✗ 줄 끝에 `[#nnn]` 형태로 체크리스트 번호가 표시됩니다.
