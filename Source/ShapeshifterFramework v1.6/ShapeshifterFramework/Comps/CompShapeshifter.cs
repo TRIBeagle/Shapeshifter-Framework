@@ -467,19 +467,21 @@ namespace ShapeshifterFramework.Comps
             bool hasApparels = form.sustainApparels != null && form.sustainApparels.Count > 0;
             bool hasWeapons = form.sustainWeapons != null && form.sustainWeapons.Count > 0;
             bool hasHediffs = form.sustainHediffs != null && form.sustainHediffs.Count > 0;
+            bool hasGenes = ModsConfig.BiotechActive && form.sustainGenes != null && form.sustainGenes.Count > 0;
 
-            if (!hasApparels && !hasWeapons && !hasHediffs) return true;
+            if (!hasApparels && !hasWeapons && !hasHediffs && !hasGenes) return true;
 
             var mode = form.sustainMode ?? SustainMode.All;
 
             bool apparelMet = !hasApparels || CheckSustainApparels(pawn, form.sustainApparels);
             bool weaponMet = !hasWeapons || CheckSustainWeapons(pawn, form.sustainWeapons);
             bool hediffMet = !hasHediffs || CheckSustainHediffs(pawn, form.sustainHediffs);
+            bool geneMet = !hasGenes || CheckSustainGenes(pawn, form.sustainGenes);
 
             if (mode == SustainMode.All)
-                return apparelMet && weaponMet && hediffMet;
+                return apparelMet && weaponMet && hediffMet && geneMet;
             else // Any
-                return apparelMet || weaponMet || hediffMet;
+                return apparelMet || weaponMet || hediffMet || geneMet;
         }
 
         private static bool CheckSustainApparels(Pawn pawn, List<ThingDef> required)
@@ -520,6 +522,17 @@ namespace ShapeshifterFramework.Comps
             for (int i = 0; i < required.Count; i++)
             {
                 if (pawn.health.hediffSet.GetFirstHediffOfDef(required[i]) == null)
+                    return false;
+            }
+            return true;
+        }
+
+        private static bool CheckSustainGenes(Pawn pawn, List<GeneDef> required)
+        {
+            if (pawn.genes == null) return false;
+            for (int i = 0; i < required.Count; i++)
+            {
+                if (pawn.genes.GetGene(required[i]) == null)
                     return false;
             }
             return true;

@@ -169,6 +169,8 @@ namespace ShapeshifterFramework
         public List<ThingDef> sustainApparels;   // 이 의류를 착용 유지해야 함
         public List<ThingDef> sustainWeapons;    // 이 무기를 장비 유지해야 함
         public List<HediffDef> sustainHediffs;   // 이 헤디프가 유지되어야 함
+        [MayRequire("Ludeon.RimWorld.Biotech")]
+        public List<GeneDef> sustainGenes;       // 이 유전자가 유지되어야 함 (Biotech)
         public SustainMode? sustainMode;         // 기본 All: 모두 충족 / Any: 하나라도 충족
 
         // 변신 중 부여
