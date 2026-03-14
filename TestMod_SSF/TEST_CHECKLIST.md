@@ -64,8 +64,8 @@
 - [ ] #036 `[AUTO]` 해제 후 스탯/capMod 원상복귀 → `R.statHediff`
 
 ### 폼 체이닝 (스크롤/약물 경유로 테스트)
-- [ ] #037 `[MANUAL]` 인간 상태에서 스크롤/약물 사용 시 진입 가능 (`allowedFromForms`에 `None`)
-- [ ] #038 `[MANUAL]` `SSFTest_BeastkinForm` 상태에서 스크롤/약물 사용 시에도 진입 가능
+- [ ] #037 `[MANUAL]` 인간 상태에서 스크롤/약물 사용 시 진입 가능
+- [ ] #038 `[MANUAL]` `SSFTest_BeastkinForm` 상태에서 스크롤/약물 사용 시에도 진입 가능 (기존 폼 해제 → 새 폼 적용)
 - [ ] #039 `[MANUAL]` (참고: 곰 폼 전용 어빌리티 없음. 스크롤/약물로만 테스트)
 
 ---

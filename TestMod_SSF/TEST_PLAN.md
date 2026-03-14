@@ -1,25 +1,32 @@
 # ShapeshifterFramework 전체 기능 테스트 플랜
 
+## 아키텍처 참고
+
+> **중요**: 스탯/능력치 보정은 `ShapeshiftFormDef`가 아닌 `mainHediff`의 HediffDef stages에서 바닐라 패턴으로 정의됩니다.
+> 캐스트 조건(종족/뮤턴트)은 `CompProperties_AbilityShiftTarget`에서 처리합니다.
+> `allowedFromForms`, `requiredItems`, `requiredHediffs`, `requirementsMode` 등은 FormDef에 존재하지 않습니다.
+> 변신 유지 조건은 `sustainHediffs`/`sustainMode` 등 sustain 계열 필드를 사용합니다.
+
 ## 테스트 폼 & 커버리지 매핑
 
 ### 기존 폼 (ShiftForms.xml)
 
 | # | 폼 | 트리거 | 주요 테스트 항목 |
 |---|-----|--------|-----------------|
-| 1 | SSFTest_BearForm | 약물(BearElixir), 아이템(ShiftScroll) | body Replace+수영텍스처, 색상, mainHediff(statOffsets/Factors/capMods), addHediffs(AddedPart+일반), addAbilities, tools+replaceNativeTools, 혈흔/살점/fleshType, Fleck FX+Sound, allowedFromForms, duration, canRevertVoluntarily, apparelOnTransform=Drop, weaponsOnTransform=Drop |
+| 1 | SSFTest_BearForm | 약물(BearElixir), 아이템(ShiftScroll) | body Replace+수영텍스처, 색상, mainHediff(statOffsets/Factors/capMods), addHediffs(AddedPart+일반), addAbilities, tools+replaceNativeTools, 혈흔/살점/fleshType, Fleck FX+Sound, duration, canRevertVoluntarily, apparelOnTransform=Drop, weaponsOnTransform=Drop |
 | 2 | SSFTest_BearWarriorForm | 어빌리티(BuffAlly, 대상지정) | Armored 베이스, 전용 어빌리티(Custom), soundAngry/melee 오버라이드, Effecter FX, gear Keep |
 | 3 | SSFTest_SheepForm | 어빌리티(DebuffEnemy, 적대), AoE투사체(MassPolymorph) | body Replace+성별 텍스처, canRevertVoluntarily=false, disabledWorkTags, 축소 스케일, hostile 어빌리티, successChance |
 | 4 | SSFTest_DarkKnightForm | 어빌리티(DarkKnight, 자기변신) | spawnApparel/Weapon+stuff, conflictingGearHandling, equipLock(Locked/Locked), Inventory 처리 |
-| 5a | SSFTest_BeastkinForm | 어빌리티(Beastkin, 자기변신) | Humanoid 베이스, renderNodeProperties(귀/꼬리), renderShowApparelDefNames, headDrawScale/Offset, 전체 보이스 오버라이드, verbs(5종)+verbGizmoOptions, tools, replaceNativeVerbs/Tools=false, disabledWorkTags(리스트), 혈흔/살점 |
-| 5b | SSFTest_FullBeastForm | 수인 폼의 addAbilities 체인 | allowedFromForms 체인(수인→야수), addAbilities 기반 2단변신 |
+| 5a | SSFTest_BeastkinForm | 어빌리티(Beastkin, 자기변신) | Humanoid 베이스, renderNodeProperties(귀/꼬리), renderShowApparelDefNames, headDrawScale/Offset, 전체 보이스 오버라이드, verbs(5종)+verbGizmoOptions, tools, replaceNativeVerbs/Tools=false, disabledWorkTags(리스트), 혈흔/살점, hairColor 오버라이드 |
+| 5b | SSFTest_FullBeastForm | 수인 폼의 addAbilities 체인 | addAbilities 기반 2단변신 (수인→야수) |
 
 ### 신규 폼 (추가됨)
 
 | # | 폼 | 트리거 | 미테스트 기능 커버 |
 |---|-----|--------|-------------------|
-| 6 | SSFTest_GuardianForm | 어빌리티(Guardian) | **requiredItems**, **requiredHediffs**, **requirementsMode=Any**, portraitDrawScale, bodyOffset, shadowVolume/Offset |
-| 7 | SSFTest_PhantomForm | 어빌리티(Phantom) | **head Replace**, **shaderTypeDefName**(Transparent), **disabledWorkTypesOnTransform**, **bodyType** 오버라이드, hair Hidden 명시, FX delay ticks |
-| 8 | SSFTest_RaceLockedForm | 어빌리티(RaceLocked) | **allowedRaces**, **headType** 오버라이드, weaponEquipLock=Unlocked+apparelEquipLock=Locked |
+| 6 | SSFTest_GuardianForm | 어빌리티(Guardian) | **sustainHediffs**, **sustainMode=Any**, portraitDrawScale, bodyOffset, shadowVolume/Offset |
+| 7 | SSFTest_PhantomForm | 어빌리티(Phantom) | **head Replace**, **shaderTypeDefName**(Transparent), **disabledWorkTypesOnTransform**, **bodyType** 오버라이드, **skinColor** 오버라이드, hair Hidden 명시, FX delay ticks |
+| 8 | SSFTest_RaceLockedForm | 어빌리티(RaceLocked) | **allowedRaces** (AbilityDef comp에서 처리), **headType** 오버라이드, weaponEquipLock=Unlocked+apparelEquipLock=Locked |
 
 ---
 
@@ -40,32 +47,34 @@
 - [ ] **B2** body Replace 성별: 양 텍스처 남/여 구분 확인 (SheepForm)
 - [ ] **B3** 수영 텍스처: BearForm으로 물에 들어가면 SwimmingBear 텍스처
 - [ ] **B4** 수영 색상: swimmingColor 적용 확인
-- [ ] **B5** bodyDrawScale: BearForm(1.6배), SheepForm(0.6배), BeastkinForm(1.2배)
+- [ ] **B5** bodyDrawScale: BearForm(2.5배), SheepForm(0.6배), BeastkinForm(1.2배)
 - [ ] **B6** headDrawScale + headOffset: BeastkinForm에서 머리 크기/위치 확인
 - [ ] **B7** renderNodeProperties: BeastkinForm 귀/꼬리 표시
 - [ ] **B8** renderShowApparelDefNames: BeastkinForm에서 망토/투크 표시
 - [ ] **B9** renderHideApparelLayers=All: BearForm에서 모든 의류 그래픽 숨김
 - [ ] **B10** renderHideWeaponDefNames=All: BearForm에서 무기 그래픽 숨김
 - [ ] **B11** head/hair/beard Hidden: Animal 베이스에서 머리/헤어/수염 숨김
-- [ ] **B12** portraitDrawScale: GuardianForm 정보창에서 크기 확인 (신규)
-- [ ] **B13** bodyOffset: GuardianForm 바디 위치 보정 확인 (신규)
-- [ ] **B14** shadowVolume/Offset: GuardianForm 그림자 크기/위치 (신규)
-- [ ] **B15** head Replace: PhantomForm 머리 텍스처 교체 (신규)
-- [ ] **B16** shaderTypeDefName: PhantomForm 반투명 셰이더 (신규)
-- [ ] **B17** bodyType 오버라이드: PhantomForm 체형 교체 (신규)
-- [ ] **B18** headType 오버라이드: RaceLockedForm 머리타입 교체 (신규)
+- [ ] **B12** portraitDrawScale: GuardianForm 정보창에서 크기 확인
+- [ ] **B13** bodyOffset: GuardianForm 바디 위치 보정 확인
+- [ ] **B14** shadowVolume/Offset: GuardianForm 그림자 크기/위치
+- [ ] **B15** head Replace: PhantomForm 머리 텍스처 교체
+- [ ] **B16** shaderTypeDefName: PhantomForm 반투명 셰이더
+- [ ] **B17** bodyType 오버라이드: PhantomForm 체형 교체 (Thin)
+- [ ] **B18** headType 오버라이드: RaceLockedForm 머리타입 교체 (Male_AverageNormal)
+- [ ] **B19** hairColor 오버라이드: BeastkinForm 머리카락 색상 (0.85, 0.85, 0.95)
+- [ ] **B20** skinColor 오버라이드: PhantomForm 피부색 (0.7, 0.8, 1.0)
 
-### C. 스탯 & 능력치
+### C. 스탯 & 능력치 (mainHediff 기반)
 - [ ] **C1** statOffsets: 이동속도 변화 확인 (정보창에서 수치)
 - [ ] **C2** statFactors: 근접명중률/회피율 배수 확인
 - [ ] **C3** capMods: 조작/대화/이동/시력 능력치 보정 (BearForm — Manipulation setMax=0.2)
-- [ ] **C4** 동적 HediffDef: 정보창 건강 탭에 SSF_FormStats 헤디프 표시
+- [ ] **C4** mainHediff: 정보창 건강 탭에 폼별 Hediff_ShapeshiftForm 표시
 
 ### D. Hediff & Ability 부여
 - [ ] **D1** addHediffs 일반: FibrousMechanites 부여 확인 (BearForm)
 - [ ] **D2** addHediffs AddedPart: BeastArm 양팔 부착 (ForceAdd 정책)
 - [ ] **D3** addHediffs severity: FibrousMechanites severity 0.5 설정 확인
-- [ ] **D4** addAbilities: Berserk 어빌리티 부여 (Royalty 필요)
+- [ ] **D4** addAbilities: Berserk 어빌리티 부여 (Royalty MayRequire)
 - [ ] **D5** 해제 시 hediff/ability 제거 확인
 
 ### E. 장비 처리
@@ -103,6 +112,7 @@
 - [ ] **H3** transformEnterSound/ExitSound: 변신 시작/해제 사운드
 - [ ] **H4** transformEnterEffecter/ExitEffecter: BearWarriorForm Effecter
 - [ ] **H5** transformFxCooldownTicks: 연속 변신 시 FX 중복 방지
+- [ ] **H6** transformEnterFxDelayTicks/ExitFxDelayTicks: PhantomForm FX 지연 (30틱/15틱)
 
 ### I. 혈흔 & 살점
 - [ ] **I1** bloodDef: BearForm/BeastkinForm 피격 시 곤충형 혈흔
@@ -113,18 +123,18 @@
 - [ ] **J1** disabledWorkTagsOnTransform: SheepForm Violent 태그 차단 (징집 불가)
 - [ ] **J2** disabledWorkTagsOnTransform 복수: BeastkinForm Crafting+Cooking 차단
 - [ ] **J3** 작업 탭 툴팁에 차단 사유 표시 확인
-- [ ] **J4** disabledWorkTypesOnTransform: 특정 WorkTypeDef 차단 (신규 PhantomForm)
+- [ ] **J4** disabledWorkTypesOnTransform: PhantomForm Firefighter 차단
 - [ ] **J5** 해제 시 작업 제한 해제 확인
 
 ### K. 변신 조건 & 제한
-- [ ] **K1** allowedFromForms: FullBeastForm은 BeastkinForm 상태에서만 진입 가능
-- [ ] **K2** allowedFromForms에 "None" 포함: BearForm은 비변신 상태에서도 진입 가능
+- [ ] **K1** addAbilities 체인: FullBeastForm은 BeastkinForm의 addAbilities로 부여된 어빌리티로만 진입 가능
+- [ ] **K2** 비변신 상태에서 BearForm 진입 가능 (약물/스크롤 트리거)
 - [ ] **K3** canRevertVoluntarily=false: SheepForm 해제 기즈모 비활성
 - [ ] **K4** durationTicks: 시간 경과 후 자동 해제
-- [ ] **K5** requiredItems: GuardianForm — 마력의 돌 인벤토리 소지 필요 (신규)
-- [ ] **K6** requiredHediffs: GuardianForm — 특정 hediff 필요 (신규)
-- [ ] **K7** requirementsMode=Any: 조건 중 하나만 충족하면 변신 가능 (신규)
-- [ ] **K8** allowedRaces: RaceLockedForm — Human만 변신 가능 (신규)
+- [ ] **K5** sustainHediffs: GuardianForm — FibrousMechanites 유지 조건
+- [ ] **K6** sustainMode=Any: 조건 중 하나만 충족하면 변신 유지
+- [ ] **K7** CompGiveAbility_SSF: SSFTest_MagicStone 소지 시 Guardian 어빌리티 자동 부여
+- [ ] **K8** allowedRaces (AbilityDef comp): RaceLockedForm — Human만 변신 가능
 
 ### L. 이념 (Ideology DLC)
 - [ ] **L1** suppressIdeologyUncoveredThoughts: 동물형 변신 시 알몸 무드 페널티 없음
@@ -170,7 +180,7 @@ BeastkinForm 적용
 
 - [ ] 수인 폼 변신 시 `SSFTest_Ability_FullBeast` 어빌리티 바에 표시
 - [ ] 비변신 상태에서 어빌리티 미표시 (수인 폼에서만 부여)
-- [ ] 야수 폼 진입 → allowedFromForms 검증 통과
+- [ ] 야수 폼 진입 → addAbilities 체인 검증 통과
 - [ ] 세이브/로드 후 어빌리티 체인 정상 작동
 
 ---
@@ -180,7 +190,7 @@ BeastkinForm 적용
 ### 준비
 1. TestMod_SSF + ShapeshifterFramework 활성화, 개발자 모드 ON
 2. 새 게임 (자유지대, 식민자 3명+)
-3. 로그에서 `[SSF]` 에러 체크 → `SSF: Dump Form Info`로 9개 폼 로드 확인
+3. 로그에서 `[SSF]` 에러 체크 → `SSF: Dump Form Info`로 8개 폼 로드 확인
 
 ### 1단계: 기본 변신 (BearForm) → A1, B1, B5, B9-11, C1-4, D1-5, E1, H1-3
 약물 복용 → 곰 텍스처/스탯/hediff/FX → 기즈모 해제 → duration 자동해제
@@ -194,8 +204,8 @@ BuffAlly(대상) → BearWarrior / DebuffEnemy(적대) → SheepForm
 ### 4단계: 장비 소환 (DarkKnight) → A6, E5-8
 DarkKnight 변신 → 소환 장비 → equipLock → 해제 시 소멸
 
-### 5단계: 3단 변신 + addAbilities 체인 → A7, B6-8, E2, K1-2, N3
-Beastkin → renderNode/head → FullBeast (addAbilities 체인) → 2단 해제
+### 5단계: 2단 변신 + addAbilities 체인 → A7, B6-8, B19, E2, K1, N3
+Beastkin → renderNode/head/hairColor → FullBeast (addAbilities 체인) → 2단 해제
 
 ### 6단계: 전투 verb (BeastkinForm) → F1-9
 5종 verb 발사 + verbGizmo + 근접 tool
@@ -212,14 +222,14 @@ MassPolymorph → 반경 5칸 양 변신 (60%)
 ### 10단계: 수영 텍스처 → B3-4
 BearForm + 물 타일 → SwimmingBear 텍스처
 
-### 11단계: 조건부 변신 (Guardian) → K5-7, B12-14
-requiredItems/requiredHediffs (Any 모드) + portrait/offset/shadow
+### 11단계: 변신 유지 조건 (Guardian) → K5-7, B12-14
+sustainHediffs/sustainMode(Any) + portrait/offset/shadow + CompGiveAbility_SSF 아이템 경로
 
-### 12단계: 비주얼 오버라이드 (Phantom) → B15-17, J4, H5
-head Replace + Transparent 셰이더 + bodyType + FX delay + WorkType 차단
+### 12단계: 비주얼 오버라이드 (Phantom) → B15-17, B20, J4, H6
+head Replace + Transparent 셰이더 + bodyType + skinColor + FX delay + WorkType 차단
 
 ### 13단계: 종족 제한 (RaceLocked) → K8, B18, E7
-allowedRaces=Human + headType + 의류잠금/무기자유
+allowedRaces=Human (AbilityDef comp) + headType + 의류잠금/무기자유
 
 ### 14단계: 세이브/로드 → M1-3
 다중 변신 상태 세이브 → 로드 → 해제 복원
