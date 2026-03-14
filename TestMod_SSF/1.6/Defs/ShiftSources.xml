@@ -152,7 +152,7 @@
     </stages>
     <comps>
       <li Class="HediffCompProperties_GiveAbility">
-        <ability>SSFTest_Ability_BuffAlly</ability>
+        <abilityDef>SSFTest_Ability_BuffAlly</abilityDef>
       </li>
     </comps>
   </HediffDef>
@@ -176,7 +176,7 @@
     </stages>
     <comps>
       <li Class="HediffCompProperties_GiveAbility">
-        <ability>SSFTest_Ability_RaceLocked</ability>
+        <abilityDef>SSFTest_Ability_RaceLocked</abilityDef>
       </li>
     </comps>
   </HediffDef>
