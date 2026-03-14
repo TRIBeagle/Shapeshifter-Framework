@@ -25,4 +25,16 @@
   <SSFTest_FullBeastForm.label>완전 야수 변신</SSFTest_FullBeastForm.label>
   <SSFTest_FullBeastForm.description>완전한 야수 형태로 변신한다. 수인 상태에서만 진입 가능하다.</SSFTest_FullBeastForm.description>
 
+  <!-- 수호자 폼 -->
+  <SSFTest_GuardianForm.label>수호자 변신</SSFTest_GuardianForm.label>
+  <SSFTest_GuardianForm.description>수호자 형태. 마력의 돌 소지 또는 수호자의 각인 보유 시 변신 유지. 큰 그림자와 포트레잇 확대.</SSFTest_GuardianForm.description>
+
+  <!-- 유령 폼 -->
+  <SSFTest_PhantomForm.label>유령 변신</SSFTest_PhantomForm.label>
+  <SSFTest_PhantomForm.description>유령 형태. 반투명한 머리, 마른 체형. 소방 작업 불가.</SSFTest_PhantomForm.description>
+
+  <!-- 종족 제한 폼 -->
+  <SSFTest_RaceLockedForm.label>종족 제한 변신</SSFTest_RaceLockedForm.label>
+  <SSFTest_RaceLockedForm.description>인간 전용 강화 폼. 의류 교체 잠금, 무기만 자유 교체 가능. 머리타입 고정.</SSFTest_RaceLockedForm.description>
+
 </LanguageData>

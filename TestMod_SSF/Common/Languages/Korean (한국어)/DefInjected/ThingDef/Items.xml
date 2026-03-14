@@ -5,13 +5,19 @@
   <SSFTest_BearElixir.label>곰 영약</SSFTest_BearElixir.label>
   <SSFTest_BearElixir.description>복용하면 곰으로 변신하는 영약. 85% 확률로 성공한다.</SSFTest_BearElixir.description>
 
+  <!-- 마력의 돌 -->
+  <SSFTest_MagicStone.label>마력의 돌</SSFTest_MagicStone.label>
+  <SSFTest_MagicStone.description>인벤토리에 소지하기만 해도 수호자 변신 어빌리티가 부여되는 신비한 돌입니다. 바닥에 버리면 어빌리티가 사라집니다.</SSFTest_MagicStone.description>
+
   <!-- 아이템: 자기 자신 -->
   <SSFTest_ShiftScroll_Self.label>변신 주문서 (자신)</SSFTest_ShiftScroll_Self.label>
   <SSFTest_ShiftScroll_Self.description>사용하면 자기 자신이 늑대로 변신하는 주문서.</SSFTest_ShiftScroll_Self.description>
+  <SSFTest_ShiftScroll_Self.comps.CompProperties_Usable.useLabel>변신 주문서 사용 (자신)</SSFTest_ShiftScroll_Self.comps.CompProperties_Usable.useLabel>
 
   <!-- 아이템: 대상 지정 -->
   <SSFTest_ShiftScroll_Target.label>변신 주문서 (대상)</SSFTest_ShiftScroll_Target.label>
   <SSFTest_ShiftScroll_Target.description>대상을 선택하여 늑대로 변신시키는 주문서. 대상을 클릭하면 걸어가서 사용한다.</SSFTest_ShiftScroll_Target.description>
+  <SSFTest_ShiftScroll_Target.comps.CompProperties_Usable.useLabel>변신 주문서 사용...</SSFTest_ShiftScroll_Target.comps.CompProperties_Usable.useLabel>
 
   <!-- 투사체 -->
   <SSFTest_Projectile_CursedArrow.label>저주받은 화살</SSFTest_Projectile_CursedArrow.label>

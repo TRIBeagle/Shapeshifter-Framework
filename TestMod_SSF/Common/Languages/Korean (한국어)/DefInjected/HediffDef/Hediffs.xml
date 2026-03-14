@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
 
+  <!-- 폼 메인 헤디프 -->
+  <SSFTest_BearFormHediff.label>곰 변신</SSFTest_BearFormHediff.label>
+  <SSFTest_BearFormHediff.description>곰으로 변신한 상태. 이동 속도 증가, 근접 적중/회피 강화, 조작 능력 저하.</SSFTest_BearFormHediff.description>
+
+  <SSFTest_BearWarriorFormHediff.label>곰 전사 변신</SSFTest_BearWarriorFormHediff.label>
+  <SSFTest_BearWarriorFormHediff.description>곰 전사로 변신한 상태. 이동 속도, 회피 증가, 피해 경감.</SSFTest_BearWarriorFormHediff.description>
+
+  <SSFTest_SheepFormHediff.label>양 변신</SSFTest_SheepFormHediff.label>
+  <SSFTest_SheepFormHediff.description>양으로 변신한 상태. 이동 속도 감소.</SSFTest_SheepFormHediff.description>
+
+  <SSFTest_DarkKnightFormHediff.label>암흑 기사 변신</SSFTest_DarkKnightFormHediff.label>
+  <SSFTest_DarkKnightFormHediff.description>암흑 기사로 변신한 상태. 이동 속도 감소, 회피 증가, 대폭 피해 경감.</SSFTest_DarkKnightFormHediff.description>
+
+  <SSFTest_BeastkinFormHediff.label>수인 변신</SSFTest_BeastkinFormHediff.label>
+  <SSFTest_BeastkinFormHediff.description>수인으로 변신한 상태. 이동 속도, 회피, 근접 적중 증가.</SSFTest_BeastkinFormHediff.description>
+
+  <SSFTest_FullBeastFormHediff.label>완전 야수 변신</SSFTest_FullBeastFormHediff.label>
+  <SSFTest_FullBeastFormHediff.description>완전한 야수로 변신한 상태. 이동 속도 대폭 증가, 피해 경감.</SSFTest_FullBeastFormHediff.description>
+
+  <SSFTest_GuardianFormHediff.label>수호자 변신</SSFTest_GuardianFormHediff.label>
+  <SSFTest_GuardianFormHediff.description>수호자로 변신한 상태. 이동 속도 증가, 피해 경감.</SSFTest_GuardianFormHediff.description>
+
+  <SSFTest_PhantomFormHediff.label>유령 변신</SSFTest_PhantomFormHediff.label>
+  <SSFTest_PhantomFormHediff.description>유령으로 변신한 상태. 이동 속도 증가.</SSFTest_PhantomFormHediff.description>
+
+  <SSFTest_RaceLockedFormHediff.label>종족 제한 변신</SSFTest_RaceLockedFormHediff.label>
+  <SSFTest_RaceLockedFormHediff.description>인간 전용 강화 상태. 이동 속도, 회피 증가, 피해 경감.</SSFTest_RaceLockedFormHediff.description>
+
+  <!-- 야수 팔 -->
+  <SSFTest_BeastArm.label>야수 팔</SSFTest_BeastArm.label>
+  <SSFTest_BeastArm.description>변신으로 이식된 돌연변이 야수 팔.</SSFTest_BeastArm.description>
+
   <!-- 변신술사의 축복 -->
   <SSFTest_Hediff_ShiftBlessing.label>변신술사의 축복</SSFTest_Hediff_ShiftBlessing.label>
   <SSFTest_Hediff_ShiftBlessing.description>변신술사의 축복. 이 축복이 깃든 동안 곰 전사 변신 어빌리티를 사용할 수 있다.</SSFTest_Hediff_ShiftBlessing.description>
