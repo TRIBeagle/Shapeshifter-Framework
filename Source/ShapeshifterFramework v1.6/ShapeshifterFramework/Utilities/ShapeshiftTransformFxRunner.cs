@@ -45,6 +45,13 @@ namespace ShapeshifterFramework.Utilities
 
         public ShapeshiftTransformFxRunner(Game game) { }
 
+        /// <summary>게임 로드/시작 완료 시 전역 캐시 정리 — 이전 세션 잔여 데이터 누수 방지.</summary>
+        public override void FinalizeInit()
+        {
+            base.FinalizeInit();
+            ShapeshiftRuntimeCaches.ClearAll();
+        }
+
         public override void GameComponentTick()
         {
             if (_queue.Count == 0 && _cooldowns.Count == 0) return;

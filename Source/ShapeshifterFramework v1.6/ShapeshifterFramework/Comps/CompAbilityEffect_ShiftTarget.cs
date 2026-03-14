@@ -158,13 +158,16 @@ namespace ShapeshifterFramework.Comps
             return true;
         }
 
+        // 뮤턴트 수집용 재사용 리스트 — UI 렌더 경로(ShouldHideGizmo)에서 GC 할당 방지
+        private static readonly List<MutantDef> _tmpPawnMutants = new List<MutantDef>(4);
+
         private static bool PassMutantFilter(Pawn pawn, List<MutantDef> allow, List<MutantDef> disallow)
         {
             var hediffs = pawn?.health?.hediffSet?.hediffs;
             if (hediffs == null) return !Active(allow); // allow 있으면 실패
 
-            // Pawn의 뮤턴트 수집
-            var pawnMutants = new List<MutantDef>(2);
+            // Pawn의 뮤턴트 수집 (재사용 리스트)
+            _tmpPawnMutants.Clear();
             var allMutants = DefDatabase<MutantDef>.AllDefsListForReading;
             for (int i = 0; i < hediffs.Count; i++)
             {
@@ -174,7 +177,7 @@ namespace ShapeshifterFramework.Comps
                 {
                     if (allMutants[j]?.hediff == h.def)
                     {
-                        pawnMutants.Add(allMutants[j]);
+                        _tmpPawnMutants.Add(allMutants[j]);
                         break;
                     }
                 }
@@ -184,18 +187,18 @@ namespace ShapeshifterFramework.Comps
             if (Active(allow))
             {
                 bool found = false;
-                for (int i = 0; i < pawnMutants.Count && !found; i++)
+                for (int i = 0; i < _tmpPawnMutants.Count && !found; i++)
                     for (int j = 0; j < allow.Count && !found; j++)
-                        if (pawnMutants[i] == allow[j]) found = true;
+                        if (_tmpPawnMutants[i] == allow[j]) found = true;
                 if (!found) return false;
             }
 
             // disallow 체크: pawnMutants ∩ disallow = ∅
             if (Active(disallow))
             {
-                for (int i = 0; i < pawnMutants.Count; i++)
+                for (int i = 0; i < _tmpPawnMutants.Count; i++)
                     for (int j = 0; j < disallow.Count; j++)
-                        if (pawnMutants[i] == disallow[j]) return false;
+                        if (_tmpPawnMutants[i] == disallow[j]) return false;
             }
 
             return true;
