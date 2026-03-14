@@ -76,6 +76,9 @@ namespace ShapeshifterFramework.Compat
                 Pawn pawn = parms.pawn;
                 if (pawn == null) return;
 
+                // 비변신 폰 즉시 스킵 — 렌더 핫패스에서 AllComps 순회/리플렉션 방지
+                if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
+
                 // FA 컨트롤러 없으면 스킵
                 if (!HasFAControllerComp(pawn)) return;
 
@@ -83,8 +86,6 @@ namespace ShapeshifterFramework.Compat
                 object worker = TryGetWorker(node);
                 if (worker == null || !T_FAHeadWorker.IsAssignableFrom(worker.GetType()))
                     return;
-
-                if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
 
                 float factor = 1f;
 
