@@ -26,9 +26,7 @@ namespace ShapeshifterFramework.Utilities
         {
             var outList = new List<ValueTuple<PawnRenderNode, PawnRenderNode>>();
 
-            var comp = pawn?.TryGetComp<CompShapeshifter>();
-            var form = (comp != null && comp.isTransformed) ? comp.currentForm : null;
-            if (form == null)
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form))
                 return outList;
 
             var extras = form.renderNodeProperties;

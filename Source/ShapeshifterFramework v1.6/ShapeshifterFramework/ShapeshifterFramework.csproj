@@ -127,6 +127,7 @@
     <Compile Include="Utilities\ShapeshiftPartControlUtility.cs" />
     <Compile Include="Utilities\ShapeshiftWaterTileGraphicsDirty.cs" />
     <Compile Include="Utilities\ShapeshiftVoiceUtility.cs" />
+    <Compile Include="Utilities\ShapeshiftRegistry.cs" />
     <Compile Include="Utilities\ShapeshiftRuntimeCaches.cs" />
     <Compile Include="Utilities\ShapeshiftTransformFxUtility.cs" />
     <Compile Include="Utilities\ShapeshiftTransformFxRunner.cs" />

@@ -23,9 +23,7 @@ namespace ShapeshifterFramework.Patches
             if (pawn == null) return;
 
             // ShapeShift Comp/Form
-            var comp = ShapeshiftUtility.GetShapeShiftComp(pawn);
-            if (comp == null || !comp.isTransformed || comp.currentForm == null) return;
-            var form = comp.currentForm;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
 
             // A) 수영 중 NoBody 해제 (헤드 숨김 폼 투명화 방지)
             if (pawn.Swimming && (flags & PawnRenderFlags.NoBody) != 0)

@@ -47,6 +47,9 @@ namespace ShapeshifterFramework.Utilities
         /// <summary>전체 리셋(맵 전환/디버그용)</summary>
         public static void ClearAll()
         {
+            // 변신 레지스트리 초기화
+            ShapeshiftRegistry.Clear();
+
             // ConditionalWeakTable은 Clear()가 없으므로 새 인스턴스로 교체
             CallByPawn = new ConditionalWeakTable<Pawn, SoundDef>();
             WoundedByPawn = new ConditionalWeakTable<Pawn, SoundDef>();

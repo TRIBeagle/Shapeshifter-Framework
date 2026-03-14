@@ -711,13 +711,16 @@ namespace ShapeshifterFramework.Comps
             // 런타임 캐시 등록
             ApplyRuntimeCaches(pawn, form);
 
+            // 레지스트리 등록 — O(1) 조회 활성화
+            ShapeshiftRegistry.Register(pawn, this);
+
             // VerbTracker 리셋
             shapeshiftVerbTracker = null;
 
             // 배타적 토글 초기화: 첫 번째 ranged verb만 ON
             InitAutoToggleForForm();
 
-            RefreshPawn(pawn);
+            RefreshPawn(pawn, this);
             InvalidateGizmoCache();
         }
 
@@ -887,10 +890,13 @@ namespace ShapeshifterFramework.Comps
 
             currentForm = null;
 
+            // 레지스트리 해제
+            ShapeshiftRegistry.Unregister(pawn);
+
             // 캐시 정리
             ShapeshiftRuntimeCaches.ClearFor(pawn);
 
-            RefreshPawn(pawn);
+            RefreshPawn(pawn, this);
             InvalidateGizmoCache();
         }
 
@@ -932,6 +938,27 @@ namespace ShapeshifterFramework.Comps
             {
                 ShapeshiftDiagnostics.Info($"{pawn.LabelShort} killed, shapeshift forcibly deactivated.");
             }
+        }
+
+        #endregion
+
+        #region 생명주기 오버라이드
+
+        /// <summary>맵 스폰(상단 복귀, 포드 하차, 동면관 해제 등) 시 변신 중이면 레지스트리 재등록.</summary>
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            var pawn = parent as Pawn;
+            if (pawn != null && isTransformed && currentForm != null)
+                ShapeshiftRegistry.Register(pawn, this);
+        }
+
+        /// <summary>폰 완전 파괴 시 레지스트리 방어적 해제. PostDeSpawn은 사용하지 않음 (상단/동면관/포드 진입 시 레지스트리 누락 방지).</summary>
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
+        {
+            var pawn = parent as Pawn;
+            ShapeshiftRegistry.Unregister(pawn);
+            base.PostDestroy(mode, previousMap);
         }
 
         #endregion
@@ -1322,10 +1349,13 @@ namespace ShapeshifterFramework.Comps
             if (form.fleshType != null) ShapeshiftRuntimeCaches.SetCache(ShapeshiftRuntimeCaches.FleshTypeByPawn, pawn, form.fleshType);
         }
 
-        /// <summary>캐시/그래픽/Verb 재초기화.</summary>
-        public static void RefreshPawn(Pawn pawn, bool forceReinitPawnVerbs = true, bool resetShapeshiftVerbs = true, bool refreshSelection = true)
+        /// <summary>캐시/그래픽/Verb 재초기화. compHint를 전달하면 TryGetComp 호출을 생략.</summary>
+        public static void RefreshPawn(Pawn pawn, CompShapeshifter compHint = null, bool forceReinitPawnVerbs = true, bool resetShapeshiftVerbs = true, bool refreshSelection = true)
         {
             if (pawn == null) return;
+
+            // comp 한 번만 조회 (호출자가 전달하면 재사용, 아니면 레지스트리 → TryGetComp 폴백)
+            var comp = compHint ?? ShapeshiftUtility.GetShapeShiftComp(pawn);
 
             // 캐시 더럽히기
             try { pawn.health?.capacities?.Notify_CapacityLevelsDirty(); } catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Capacity) error: {ex}"); }
@@ -1350,7 +1380,6 @@ namespace ShapeshifterFramework.Comps
             // 폼 전용 VerbTracker 재초기화
             try
             {
-                var comp = pawn.TryGetComp<CompShapeshifter>();
                 if (comp != null && resetShapeshiftVerbs)
                 {
                     comp.shapeshiftVerbTracker = null;
@@ -1369,10 +1398,9 @@ namespace ShapeshifterFramework.Comps
             // (pawn.verbTracker에 직접 주입하면 MVCF 등 타 모드와 충돌)
             try
             {
-                var comp2 = pawn.TryGetComp<CompShapeshifter>();
-                if (comp2 != null && comp2.isTransformed && comp2.currentForm != null && forceReinitPawnVerbs)
+                if (comp != null && comp.isTransformed && comp.currentForm != null && forceReinitPawnVerbs)
                 {
-                    var form = comp2.currentForm;
+                    var form = comp.currentForm;
                     bool replaceNative = form.replaceNativeTools.HasValue && form.replaceNativeTools.Value;
 
                     if (replaceNative && form.tools != null && form.tools.Count > 0 && pawn.verbTracker != null)
@@ -1403,7 +1431,6 @@ namespace ShapeshifterFramework.Comps
             // 에러 로그 플래그 리셋
             try
             {
-                var comp = pawn.TryGetComp<CompShapeshifter>();
                 if (comp != null)
                 {
                     comp.verbTickErrorLogged = false;
@@ -1588,6 +1615,7 @@ namespace ShapeshifterFramework.Comps
                 else if (isTransformed && currentForm != null && pawn != null)
                 {
                     ApplyRuntimeCaches(pawn, currentForm);
+                    ShapeshiftRegistry.Register(pawn, this);
                 }
             }
         }

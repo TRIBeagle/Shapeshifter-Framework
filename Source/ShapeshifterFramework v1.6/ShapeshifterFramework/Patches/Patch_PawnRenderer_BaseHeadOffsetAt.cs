@@ -30,9 +30,7 @@ namespace ShapeshifterFramework.Patches
             }
 
             // 2) 헤드 오프셋 적용
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            var form = comp != null ? comp.currentForm : null;
-            if (comp == null || !comp.isTransformed || form == null) return;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
 
             Vector2 add2 = form.headOffset.HasValue ? form.headOffset.Value : Vector2.zero;
             if (add2 == Vector2.zero) return;

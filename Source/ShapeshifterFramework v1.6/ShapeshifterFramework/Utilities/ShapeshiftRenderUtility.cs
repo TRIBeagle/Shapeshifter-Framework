@@ -14,8 +14,7 @@ namespace ShapeshifterFramework.Utilities
         {
             if (pawn == null) return 1f;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            if (comp == null || !comp.isTransformed || comp.currentForm == null) return 1f;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return 1f;
 
             var ls = pawn.ageTracker?.CurLifeStage;
             var eff = ShapeshiftSizeFactorResolver.Effective(pawn);

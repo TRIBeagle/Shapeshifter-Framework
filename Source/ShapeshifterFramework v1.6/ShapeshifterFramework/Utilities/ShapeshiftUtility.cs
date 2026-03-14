@@ -9,10 +9,16 @@ namespace ShapeshifterFramework.Utilities
 {
     public static class ShapeshiftUtility
     {
-        /// <summary>Pawn에 CompShapeshifter가 붙어 있으면 반환, 없으면 null.</summary>
+        /// <summary>Pawn에 CompShapeshifter가 붙어 있으면 반환, 없으면 null. 레지스트리 우선 조회 후 AllComps 폴백.</summary>
         public static CompShapeshifter GetShapeShiftComp(Pawn pawn)
         {
             if (pawn == null) return null;
+
+            // 레지스트리 O(1) 조회 (변신 중인 폰은 즉시 반환)
+            if (ShapeshiftRegistry.TryGet(pawn, out var regComp, out _))
+                return regComp;
+
+            // 폴백: 비변신 상태에서도 Comp 접근이 필요한 경우 (CanTransform 판정 등)
             var comps = pawn.AllComps;
             if (comps == null) return null;
             for (int i = 0; i < comps.Count; i++)
@@ -20,11 +26,10 @@ namespace ShapeshifterFramework.Utilities
             return null;
         }
 
-        /// <summary>Pawn이 변신 중인지(Comp 존재 + currentForm 보유) 여부.</summary>
+        /// <summary>Pawn이 변신 중인지(레지스트리 O(1) 판정) 여부.</summary>
         public static bool IsShapeShifting(Pawn pawn)
         {
-            var comp = GetShapeShiftComp(pawn);
-            return comp != null && comp.isTransformed;
+            return ShapeshiftRegistry.IsActive(pawn);
         }
 
         /// <summary>TryGet 패턴 오버로드(오류 해소용): 컴프 존재 여부 + out 반환.</summary>

@@ -73,10 +73,11 @@ namespace ShapeshifterFramework.Patches
             Widgets.DrawBox(geneRect, 1);
 
             // 툴팁
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            string formLabel = (comp != null && comp.isTransformed && comp.currentForm != null && !string.IsNullOrEmpty(comp.currentForm.label))
-                ? comp.currentForm.label
-                : "SSF_Fallback_Transform".Translate().ToString();
+            string formLabel;
+            if (ShapeshiftRegistry.TryGet(pawn, out var comp, out var form) && !string.IsNullOrEmpty(form.label))
+                formLabel = form.label;
+            else
+                formLabel = "SSF_Fallback_Transform".Translate().ToString();
             TooltipHandler.TipRegion(geneRect, "SSF_Inspect_GeneHidden".Translate(formLabel));
 
             GUI.color = prevCol;

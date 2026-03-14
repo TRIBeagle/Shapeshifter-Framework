@@ -6,6 +6,7 @@ using HarmonyLib;
 using RimWorld;
 using Verse;
 using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
 
 namespace ShapeshifterFramework.Patches
 {
@@ -16,8 +17,7 @@ namespace ShapeshifterFramework.Patches
         {
             if (__instance.pawn != null)
             {
-                var comp = __instance.pawn.TryGetComp<CompShapeshifter>();
-                if (comp != null && comp.isTransformed && !comp.suppressEquipLock)
+                if (ShapeshiftRegistry.TryGet(__instance.pawn, out var comp, out var form) && !comp.suppressEquipLock)
                 {
                     if (comp.IsGeneratedWeapon(eq))
                     {

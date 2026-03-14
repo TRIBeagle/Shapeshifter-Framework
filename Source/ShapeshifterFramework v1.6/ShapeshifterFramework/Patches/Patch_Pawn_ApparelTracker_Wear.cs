@@ -21,8 +21,8 @@ namespace ShapeshifterFramework.Patches
             Pawn pawn = __instance.pawn;
             if (pawn == null) return true;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            if (comp != null && comp.isTransformed && ShapeshiftEquipRules.LockApparel(comp))
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out _)) return true;
+            if (ShapeshiftEquipRules.LockApparel(comp))
             {
                 if (!comp.suppressEquipLock && pawn.IsColonistPlayerControlled)
                 {

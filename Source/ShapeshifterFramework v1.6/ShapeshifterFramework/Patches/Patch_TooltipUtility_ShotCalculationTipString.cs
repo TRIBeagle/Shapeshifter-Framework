@@ -31,8 +31,8 @@ namespace ShapeshifterFramework.Patches
                 // 비폭력 Pawn이면 계산 스킵
                 if (sel.WorkTagIsDisabled(WorkTags.Violent)) return;
 
-                var comp = sel.TryGetComp<CompShapeshifter>();
-                var vt = comp?.ShapeshiftVerbTracker;
+                if (!ShapeshiftRegistry.TryGet(sel, out var comp, out var form)) return;
+                var vt = comp.ShapeshiftVerbTracker;
                 if (vt == null) return;
 
                 Verb picked = null;

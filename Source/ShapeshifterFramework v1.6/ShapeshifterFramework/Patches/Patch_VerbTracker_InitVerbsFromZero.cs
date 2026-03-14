@@ -1,6 +1,7 @@
 ﻿// ShapeshifterFramework | Patches | Patch_VerbTracker_InitVerbsFromZero.cs
 // 목적 : 폼에 지정된 근접 공격(Tools) 데이터를 런타임에 폰의 기본 공격 목록(NativeVerb)에 동적으로 주입.
 // 용도 : 장비나 헤디프가 아닌 순수 폰(NativeVerb) 소유일 때만 작동하며, replaceNativeTools 옵션에 따라 기존 종족의 맨손 공격을 지우고 폼 전용 발톱/이빨 공격 등을 주입함 (근접 공격이 0개가 되는 상황을 철저히 방어).
+// 주의 : ManeuverDef를 requiredCapacity별로 정적 캐시하여 O(N) 전체 스캔을 O(1) 조회로 최적화. 기존 PredictAddCount 2패스 구조를 수집-후-주입 단일 패스로 통합.
 
 using HarmonyLib;
 using RimWorld;
@@ -15,6 +16,44 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(VerbTracker), "InitVerbsFromZero")]
     internal static class Patch_VerbTracker_InitVerbsFromZero
     {
+        // ManeuverDef를 requiredCapacity별로 그룹화한 정적 캐시 (DefDatabase는 로드 후 불변)
+        private static Dictionary<ToolCapacityDef, List<ManeuverDef>> _maneuversByCapacity;
+
+        private static Dictionary<ToolCapacityDef, List<ManeuverDef>> ManeuversByCapacity
+        {
+            get
+            {
+                if (_maneuversByCapacity == null)
+                {
+                    _maneuversByCapacity = new Dictionary<ToolCapacityDef, List<ManeuverDef>>();
+                    var all = DefDatabase<ManeuverDef>.AllDefsListForReading;
+                    for (int i = 0; i < all.Count; i++)
+                    {
+                        var m = all[i];
+                        if (m?.requiredCapacity == null) continue;
+                        if (!_maneuversByCapacity.TryGetValue(m.requiredCapacity, out var list))
+                        {
+                            list = new List<ManeuverDef>();
+                            _maneuversByCapacity[m.requiredCapacity] = list;
+                        }
+                        list.Add(m);
+                    }
+                }
+                return _maneuversByCapacity;
+            }
+        }
+
+        // 수집 단계에서 사용하는 임시 구조체 (힙 할당 최소화)
+        private struct VerbEntry
+        {
+            public Tool tool;
+            public ManeuverDef maneuver;
+            public VerbProperties verbProps;
+        }
+
+        // 수집용 재사용 리스트 (스레드 안전: RimWorld는 단일 스레드)
+        private static readonly List<VerbEntry> _collected = new List<VerbEntry>(16);
+
         static void Postfix(VerbTracker __instance, ref List<Verb> ___verbs, IVerbOwner ___directOwner)
         {
             try
@@ -38,11 +77,9 @@ namespace ShapeshifterFramework.Patches
                 // Pawn 직접 소유 트래커만 처리. ShapeshiftVerbOwner 등 다른 NativeVerb 소유자는 스킵.
                 if (!(owner is Pawn)) return;
 
-                var comp = pawn.TryGetComp<CompShapeshifter>();
-                var form = (comp != null && comp.isTransformed) ? comp.currentForm : null;
-                if (form == null)
+                if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form))
                 {
-                    ShapeshiftDiagnostics.Info($"InitVerbsFromZero Postfix: pawn={pawn.LabelShort}, no form (isTransformed={comp?.isTransformed}, currentForm={comp?.currentForm?.defName ?? "null"})");
+                    ShapeshiftDiagnostics.Info($"InitVerbsFromZero Postfix: pawn={pawn.LabelShort}, no active form");
                     return;
                 }
 
@@ -50,16 +87,41 @@ namespace ShapeshifterFramework.Patches
                 bool replaceNative = form.replaceNativeTools.HasValue && form.replaceNativeTools.Value;
                 var tools = form.tools;
 
-                // 3) 이번 주입에서 "실제로 추가될 근접 Verb 수"를 예측
-                int willAdd = PredictAddCount(tools);
+                // 3) 단일 패스로 주입 대상을 수집 (Verb 객체 생성 전에 개수 확정)
+                _collected.Clear();
+                if (tools != null && tools.Count > 0)
+                {
+                    var cache = ManeuversByCapacity;
+                    for (int ti = 0; ti < tools.Count; ti++)
+                    {
+                        var tool = tools[ti]; if (tool == null) continue;
+                        var caps = tool.capacities; if (caps == null || caps.Count == 0) continue;
 
+                        for (int ci = 0; ci < caps.Count; ci++)
+                        {
+                            var cap = caps[ci]; if (cap == null) continue;
+                            if (!cache.TryGetValue(cap, out var maneuvers)) continue;
+
+                            for (int mi = 0; mi < maneuvers.Count; mi++)
+                            {
+                                var man = maneuvers[mi];
+                                if (man == null) continue;
+                                var vp = man.verb; if (vp == null) continue;
+                                if (!vp.IsMeleeAttack) continue;
+
+                                _collected.Add(new VerbEntry { tool = tool, maneuver = man, verbProps = vp });
+                            }
+                        }
+                    }
+                }
+
+                int willAdd = _collected.Count;
                 ShapeshiftDiagnostics.Info($"InitVerbsFromZero Postfix: pawn={pawn.LabelShort}, form={form.defName}, replaceNative={replaceNative}, willAdd={willAdd}, verbsBefore={___verbs.Count}");
 
                 // 4) Replace더라도 willAdd==0이면 제거하지 않는다 (안전 가드)
                 int removedCount = 0;
                 if (replaceNative && willAdd > 0)
                 {
-                    // 네이티브 근접 verb 제거 (이 트래커는 네이티브 전용임)
                     for (int i = ___verbs.Count - 1; i >= 0; i--)
                     {
                         var v = ___verbs[i];
@@ -73,83 +135,35 @@ namespace ShapeshifterFramework.Patches
                     }
                 }
 
-                // 5) Tool -> Maneuver -> Verb_MeleeAttack 주입
+                // 5) 수집된 항목으로 Verb_MeleeAttack 생성 및 주입
                 int addedCount = 0;
-                if (willAdd > 0)
+                for (int i = 0; i < _collected.Count; i++)
                 {
-                    // Maneuver 목록 캐시
-                    var maneuvers = DefDatabase<ManeuverDef>.AllDefsListForReading;
-                    for (int ti = 0; ti < tools.Count; ti++)
+                    var entry = _collected[i];
+                    var verb = CreateVerb(__instance, owner, entry.verbProps, pawn);
+                    if (verb == null) continue;
+
+                    var vma = verb as Verb_MeleeAttack;
+                    if (vma != null)
                     {
-                        var tool = tools[ti]; if (tool == null) continue;
-                        var caps = tool.capacities; if (caps == null || caps.Count == 0) continue;
-
-                        for (int ci = 0; ci < caps.Count; ci++)
-                        {
-                            var cap = caps[ci]; if (cap == null) continue;
-
-                            for (int mi = 0; mi < maneuvers.Count; mi++)
-                            {
-                                var man = maneuvers[mi];
-                                if (man == null || man.requiredCapacity != cap) continue;
-
-                                var vp = man.verb; if (vp == null) continue;
-                                if (!vp.IsMeleeAttack) continue; // 근접만
-
-                                var verb = CreateVerb(__instance, owner, vp, pawn);
-                                if (verb == null) continue;
-
-                                var vma = verb as Verb_MeleeAttack;
-                                if (vma != null)
-                                {
-                                    vma.tool = tool;
-                                    vma.maneuver = man;
-                                }
-
-                                // 바닐라 규칙에 맞는 loadID 부여
-                                verb.loadID = Verb.CalculateUniqueLoadID(owner, ___verbs.Count);
-                                ___verbs.Add(verb);
-                                addedCount++;
-                            }
-                        }
+                        vma.tool = entry.tool;
+                        vma.maneuver = entry.maneuver;
                     }
+
+                    // 바닐라 규칙에 맞는 loadID 부여
+                    verb.loadID = Verb.CalculateUniqueLoadID(owner, ___verbs.Count);
+                    ___verbs.Add(verb);
+                    addedCount++;
                 }
 
+                _collected.Clear();
+
                 ShapeshiftDiagnostics.Info($"  Result: removed={removedCount}, added={addedCount}, verbsAfter={___verbs.Count}");
-                // willAdd==0이고 replaceNative==true였더라도, 4)에서 제거 자체를 하지 않았기 때문에
-                // 근접 Verb 0개 상태는 발생하지 않는다.
             }
             catch (Exception e)
             {
                 Log.Error("[SSF] InitVerbsFromZero Postfix failed: " + e);
             }
-        }
-
-        // tools로부터 실제로 추가될 "근접" Verb 개수를 예측
-        private static int PredictAddCount(List<Tool> tools)
-        {
-            if (tools == null || tools.Count == 0) return 0;
-
-            int add = 0;
-            var maneuvers = DefDatabase<ManeuverDef>.AllDefsListForReading;
-            for (int ti = 0; ti < tools.Count; ti++)
-            {
-                var tool = tools[ti]; if (tool == null) continue;
-                var caps = tool.capacities; if (caps == null || caps.Count == 0) continue;
-
-                for (int ci = 0; ci < caps.Count; ci++)
-                {
-                    var cap = caps[ci]; if (cap == null) continue;
-                    for (int mi = 0; mi < maneuvers.Count; mi++)
-                    {
-                        var man = maneuvers[mi];
-                        if (man == null || man.requiredCapacity != cap) continue;
-                        var vp = man.verb; if (vp == null) continue;
-                        if (vp.IsMeleeAttack) add++;
-                    }
-                }
-            }
-            return add;
         }
 
         // 생성 실패한 verbClass 캐시 — 같은 타입을 매번 재시도하지 않도록
