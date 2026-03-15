@@ -1,53 +1,64 @@
-# Shapeshifter Framework — ShapeshiftFormDef 매뉴얼
+# Shapeshifter Framework — FormDef 제작 가이드
 
-> **소스 코드 기준 자동 작성** — `ShapeshiftFormDef.cs` 및 관련 컴포넌트의 실제 C# 필드를 반영합니다.
+> 변신 폼 제작을 위한 완전 레퍼런스. `ShapeshiftFormDef.cs`의 실제 C# 필드를 반영합니다.
 
-이 문서는 `ShapeshifterFramework`를 사용하여 나만의 변신 폼(Form)을 만들 때 사용하는 XML 태그의 모든 기능을 설명합니다.
-모든 옵션은 **입력하지 않으면 바닐라(기본) 상태를 유지**하도록 설계되어 있으므로, 필요한 기능만 골라서 사용하시면 됩니다.
-
----
-
-## 아키텍처 개요
-
-Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
-
-| 컴포넌트 | 역할 |
-|----------|------|
-| **ShapeshiftFormDef** | 비주얼, 장비, 도구/Verb, 사운드, VFX, 지속시간, UI |
-| **linkedHediff (HediffDef)** | 스탯 합연산, 곱연산, 능력치(Capacity) 보정 (바닐라 패턴) |
-| **CompProperties_AbilityShapeshift** | 캐스트 조건 (종족, 뮤턴트), 성공 확률 |
-| **어빌리티 획득 소스** | 유전자, 헤디프, 아이템(CompGiveAbility_Shapeshift), 약물, 투사체 |
-
-스탯과 능력치 보정은 FormDef에 정의하지 **않습니다**. `linkedHediff`의 HediffDef stages에서 바닐라 HediffDef 패턴으로 정의합니다 (`statOffsets`, `statFactors`, `capMods`).
+모든 필드는 별도 표기 없는 한 **선택사항**입니다. 생략하면 바닐라 기본값이 적용됩니다.
 
 ---
 
-## 1. 기본 정보 (Basic Info)
-* `<defName>` (필수): 폼의 고유 ID입니다. 절대 중복될 수 없습니다.
-* `<label>`: 게임 내에 표시될 폼의 이름입니다.
-* `<description>`: 변신 폼에 대한 설명 및 툴팁입니다.
+## 빠른 시작
 
-## 2. 메인 헤디프 (스탯 & 능력치)
-* `<linkedHediff>`: (필수) 변신 상태를 나타내는 `HediffDef`입니다. 이 헤디프가 제거되면 자동으로 변신이 해제됩니다.
-* `<formAllowedRaces>`: (선택) 이 폼을 적용받을 수 있는 종족(`ThingDef`) 목록. 생략하거나 빈 목록이면 모든 종족 허용(기본 동작).
-* `<formDisallowedRaces>`: (선택) 이 폼을 적용받을 수 **없는** 종족(`ThingDef`) 목록. `formAllowedRaces`보다 우선합니다.
-
-> **참고**: 이 필드들은 **대상자**(폼을 받는 쪽) 필터입니다. `CompProperties_AbilityShapeshift.allowedRaces`/`disallowedRaces`는 **시전자**(캐스트하는 쪽) 필터입니다. FormDef 수준 필터는 **모든** 변신 경로(어빌리티/약물/스크롤/투사체)에서 작동합니다.
+최소한의 폼은 `defName`과 비주얼 설정만 있으면 됩니다:
 
 ```xml
-<formAllowedRaces>
-  <li>Human</li>
-</formAllowedRaces>
+<ShapeshifterFramework.ShapeshiftFormDef>
+  <defName>MyForm</defName>
+  <label>나의 폼</label>
+  <body>
+    <mode>Replace</mode>
+    <replacementTexPath>Things/Pawn/MyCreature/MyCreature</replacementTexPath>
+  </body>
+  <head><mode>Hidden</mode></head>
+  <durationTicks>30000</durationTicks>
+</ShapeshifterFramework.ShapeshiftFormDef>
 ```
 
-* `<formAllowedMutants>`: (선택, `MayRequire: Ludeon.RimWorld.Anomaly`) 이 폼을 적용받을 수 있는 뮤턴트(`MutantDef`) 목록. 생략하거나 빈 목록이면 뮤턴트 제한 없음.
-* `<formDisallowedMutants>`: (선택, `MayRequire: Ludeon.RimWorld.Anomaly`) 이 폼을 적용받을 수 **없는** 뮤턴트(`MutantDef`) 목록.
+스탯/능력치 보정이 필요하면 `linkedHediff`에 바닐라 HediffDef(stages에 `statOffsets`/`statFactors`/`capMods`)를 연결하면 됩니다.
 
-> **참고**: 이 필드들은 **대상자**(폼을 받는 쪽) 필터입니다. `CompProperties_AbilityShapeshift.allowedMutants`/`disallowedMutants`는 **시전자**(캐스트하는 쪽) 필터입니다. FormDef 수준 필터는 **모든** 변신 경로(어빌리티/약물/스크롤/투사체)에서 작동합니다.
+---
 
-**스탯과 능력치 보정은 linkedHediff의 HediffDef에서 정의합니다. FormDef가 아닙니다.** 바닐라 HediffDef 패턴을 사용합니다:
+## 추상 기본 폼
+
+`SSF_BaseForms.xml`에 3가지 기본 부모 폼이 제공됩니다:
+
+| 부모 | 장비 처리 | 그래픽 숨김 | 용도 |
+|------|-----------|------------|------|
+| `SSF_BaseForm_Animal` | Inventory | 모든 파츠·그래픽 숨김 | 동물형 완전 교체 |
+| `SSF_BaseForm_Humanoid` | Keep | 오버헤드 의류만 숨김 | 인간형 + 추가 요소 |
+| `SSF_BaseForm_Armored` | Keep | 숨김 없음 | 장비 중심 폼 |
+
+사용법: `<ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">`
+
+---
+
+## 필드 레퍼런스
+
+### 1. 기본 정보
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `defName` | string | **필수.** 고유 ID. |
+| `label` | string | 게임 내 표시 이름. |
+| `description` | string | 툴팁 및 설명. |
+
+### 2. 연동 헤디프
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `linkedHediff` | HediffDef | 선택. 변신 중 부여되는 hediff. 외부에서 제거하면 변신 자동 해제. 스탯/능력치 보정은 이 HediffDef의 stages에 정의. |
 
 ```xml
+<!-- 스탯이 필요하면 HediffDef에 정의 -->
 <HediffDef>
   <defName>MyForm_Hediff</defName>
   <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
@@ -55,80 +66,114 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
   <isBad>false</isBad>
   <stages>
     <li>
-      <statOffsets>
-        <MoveSpeed>1.5</MoveSpeed>
-      </statOffsets>
-      <statFactors>
-        <MeleeHitChance>1.20</MeleeHitChance>
-      </statFactors>
+      <statOffsets><MoveSpeed>1.5</MoveSpeed></statOffsets>
       <capMods>
         <li><capacity>Moving</capacity><postFactor>1.30</postFactor></li>
-        <li><capacity>Manipulation</capacity><setMax>0.2</setMax></li>
       </capMods>
     </li>
   </stages>
 </HediffDef>
+
+<!-- 그 다음 연결 -->
+<linkedHediff>MyForm_Hediff</linkedHediff>
 ```
 
-## 3. 크기 및 위치 보정 (Scale & Offset)
-렌더링되는 캐릭터의 크기와 위치를 조정합니다.
-* `<bodyDrawScale>`: 몸 전체의 렌더링 크기 배수 (기본값: 1.0)
-* `<headDrawScale>`: 머리의 추가 렌더링 배수 (몸 크기에 곱해집니다. 기본값: 1.0)
-* `<portraitDrawScale>`: 하단 UI 포트레잇(초상화) 창에서만 적용되는 크기 배수입니다. (캐릭터를 거대하게 키웠을 때 초상화 창에 맞추기 위해 사용)
-* `<bodyOffset>` / `<headOffset>`: 바디와 머리의 X, Z축 위치를 보정합니다. (예: `(0, 0.5)`)
+### 3. 종족 / 뮤턴트 필터
 
-## 4. 부위별 외형 제어 (Part Override Options)
-특정 신체 부위의 텍스처, 색상, 셰이더를 교체하거나 숨길 수 있습니다.
-지원하는 태그: `<body>`, `<head>`, `<hair>`, `<beard>`, `<tattooBody>`, `<tattooHead>`
+**대상자**(폼을 받는 쪽) 필터. 모든 트리거 경로(어빌리티, 약물, 스크롤, 투사체)에서 적용됩니다.
 
-**[내부 옵션]**
-* `<mode>`: `Default`(바닐라 유지), `Hidden`(숨김), `Replace`(텍스처 교체) 중 택 1
-* `<replacementTexPath>`: `Replace` 모드일 때 사용할 새 텍스처 경로
-* `<swimmingReplacementTexPath>`: 수영 중일 때 사용할 전용 텍스처 경로
-* `<color>` / `<swimmingColor>`: 텍스처에 덧씌울 색상 (예: `(112,82,65)` 또는 알파 포함 `(0.7, 0.8, 1.0, 0.5)`)
-* `<shaderTypeDefName>`: 셰이더 변경 (예: `Cutout`, `Transparent` 등)
-* `<swimmingShaderTypeDefName>`: 수영 중일 때 사용할 전용 셰이더. `shaderTypeDefName`으로 폴백, 둘 다 없으면 노드 기본값 사용.
-* `<shadowVolume>` / `<shadowOffset>`: 캐릭터 발밑의 그림자 크기와 위치 오버라이드 (**`<body>`에서만 유효**). 예: `(0.6, 1.0, 0.6)`
-* `<male>` / `<female>`: 성별에 따라 완전히 다른 옵션을 주고 싶을 때 내부에 동일한 구조로 작성 가능
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `formAllowedRaces` | List\<ThingDef\> | 이 종족만 변신 가능. 비우면 제한 없음. |
+| `formDisallowedRaces` | List\<ThingDef\> | 이 종족은 변신 불가. allowedRaces보다 우선. |
+| `formAllowedMutants` | List\<MutantDef\> | 이 뮤턴트만 변신 가능. (`MayRequire: Ludeon.RimWorld.Anomaly`) |
+| `formDisallowedMutants` | List\<MutantDef\> | 이 뮤턴트는 변신 불가. (`MayRequire: Ludeon.RimWorld.Anomaly`) |
 
-## 5. 그래픽 숨김 및 표시 규칙 (Render Hiding / Showing)
-변신 시 착용 중인 장비나 유전자 등을 강제로 숨기거나 보여줍니다.
-목록(`<li>`) 형태로 작성하며, **"All"** 이라고 적으면 해당 카테고리 전체에 적용됩니다.
+> **시전자 측** 필터(`allowedRaces`, `disallowedRaces`)는 `CompProperties_AbilityShapeshift`에서 설정합니다.
+
+### 4. 크기 및 위치
+
+| 필드 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `bodyDrawScale` | float? | 1.0 | 몸 전체 크기 배수. |
+| `headDrawScale` | float? | 1.0 | 머리 추가 배수 (bodyDrawScale에 곱해짐). |
+| `portraitDrawScale` | float? | 1.0 | 하단 UI 포트레잇에서만 적용되는 크기. |
+| `bodyOffset` | Vector2? | (0,0) | 바디 위치 보정 (X, Z). |
+| `headOffset` | Vector2? | (0,0) | 헤드 위치 보정 (X, Z). |
+
+### 5. 부위별 외형 제어
+
+`<body>`, `<head>`, `<hair>`, `<beard>`, `<tattooBody>`, `<tattooHead>` 각각에 적용합니다.
+
+각 태그는 `PartOverrideOption` 블록을 받습니다:
+
+| 필드 | 설명 |
+|------|------|
+| `mode` | `Default` / `Hidden` / `Replace` |
+| `replacementTexPath` | 교체 텍스처 경로 (`Replace` 모드 필요). |
+| `swimmingReplacementTexPath` | 수영 중 사용할 텍스처. |
+| `color` | 색상 틴트: `(R,G,B)` 또는 `(R,G,B,A)`. |
+| `swimmingColor` | 수영 중 색상. `color`로 폴백. |
+| `shaderTypeDefName` | 셰이더 오버라이드 (예: `Cutout`, `Transparent`). |
+| `swimmingShaderTypeDefName` | 수영 중 셰이더. `shaderTypeDefName`으로 폴백. |
+| `shadowVolume` | 그림자 타원 크기 (Vector3). **body에서만 유효.** |
+| `shadowOffset` | 그림자 위치 오프셋 (Vector3). **body에서만 유효.** |
+| `male` / `female` | 성별별 `PartOverrideOption` (동일 구조). |
+
+```xml
+<body>
+  <mode>Replace</mode>
+  <replacementTexPath>Things/Pawn/Animal/Wolf/Wolf</replacementTexPath>
+  <color>(112, 82, 65)</color>
+  <male>
+    <replacementTexPath>Things/Pawn/Animal/Wolf/WolfMale</replacementTexPath>
+  </male>
+</body>
+```
+
+### 6. 그래픽 숨김 / 표시
+
+변신 중 그래픽을 숨기거나 강제 표시합니다. `<li>All</li>`로 전체 카테고리에 적용 가능.
 
 **의류:**
-* `<renderHideApparelLayers>` / `<renderHideApparelDefNames>`: 특정 레이어(예: `OnSkin`, `Overhead`)나 특정 옷 숨김
-* `<renderShowApparelLayers>` / `<renderShowApparelDefNames>`: 예외 허용 — 숨김 규칙에도 불구하고 **계속 표시**할 항목
+- `renderHideApparelLayers` / `renderShowApparelLayers` — 레이어별 (예: `OnSkin`, `Overhead`)
+- `renderHideApparelDefNames` / `renderShowApparelDefNames` — defName별
 
 **무기:**
-* `<renderHideWeaponTags>` / `<renderHideWeaponDefNames>`: 특정 무기 태그나 defName 숨김
-* `<renderShowWeaponTags>` / `<renderShowWeaponDefNames>`: 예외 허용
+- `renderHideWeaponTags` / `renderShowWeaponTags` — 무기 태그별
+- `renderHideWeaponDefNames` / `renderShowWeaponDefNames` — defName별
 
 **유전자:**
-* `<renderHideGeneExclusionTags>` / `<renderHideGeneDefNames>`: 특정 유전자 그래픽 숨김
-* `<renderShowGeneExclusionTags>` / `<renderShowGeneDefNames>`: 예외 허용
+- `renderHideGeneExclusionTags` / `renderShowGeneExclusionTags`
+- `renderHideGeneDefNames` / `renderShowGeneDefNames`
 
 **헤디프:**
-* `<renderHideHediffDefNames>`: 특정 헤디프(예: 상처, 임플란트) 그래픽 숨김
-* `<renderShowHediffDefNames>`: 예외 허용
+- `renderHideHediffDefNames` / `renderShowHediffDefNames`
 
-> **팁:** `<renderHideApparelLayers><li>All</li></renderHideApparelLayers>`로 모든 의류 그래픽을 숨기고, `<renderShowApparelDefNames>`로 특정 아이템(예: 망토)만 선택적으로 표시할 수 있습니다.
+> **팁:** 전부 숨기고 예외만 표시: `<renderHideApparelLayers><li>All</li></renderHideApparelLayers>` + `<renderShowApparelDefNames><li>Apparel_Cape</li></renderShowApparelDefNames>`
 
-## 6. 장비 처리 규칙 (Equipment Handling)
-변신할 때 원래 입고 있던 옷과 무기를 어떻게 할지 결정합니다.
+### 7. 장비 처리
 
-**기본 처리:**
-* `<apparelOnTransform>` / `<weaponsOnTransform>`: 변신 시 처리 방법. `Keep`(그대로 착용), `Inventory`(인벤토리에 넣음), `Drop`(바닥에 떨어뜨림) 중 택 1 (기본값: `Keep`)
-* `<apparelEquipLock>` / `<weaponEquipLock>`: 변신 중 착용 변경 제한. `Auto`(위 옵션에 따라 자동 결정), `Locked`(무조건 변경 불가), `Unlocked`(자유롭게 변경 가능) (기본값: `Auto`)
+| 필드 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `apparelOnTransform` | GearHandling | Keep | `Keep` / `Inventory` / `Drop` |
+| `weaponsOnTransform` | GearHandling | Keep | `Keep` / `Inventory` / `Drop` |
+| `apparelEquipLock` | EquipLockMode | Auto | `Auto` / `Locked` / `Unlocked` — 변신 중 장비 교체 제한. |
+| `weaponEquipLock` | EquipLockMode | Auto | 위와 동일 (무기). |
 
-**소환 장비 (변신 시 생성, 해제 시 파괴):**
-* `<spawnApparelOnTransform>`: 변신 시 소환하여 강제 착용할 `ThingDef` 의류 목록
-* `<spawnWeaponOnTransform>`: 변신 시 소환하여 강제 장비할 `ThingDef` 무기 목록
-* `<spawnApparelStuff>` / `<spawnWeaponStuff>`: 소환 장비의 재질 `ThingDef` (예: `Plasteel`)
-* `<conflictingGearHandling>`: 소환 장비와 겹치는 기존 장비 처리 방법. `Keep`, `Inventory`, `Drop` 중 택 1 (기본값: `Inventory`)
+**소환 장비** (변신 시 생성, 해제 시 파괴):
 
-## 7. 렌더 노드 (Render Nodes)
-이 폼이 활성화된 동안에만 추가되는 커스텀 렌더 노드 (예: 귀, 꼬리).
-* `<renderNodeProperties>`: `PawnRenderNodeProperties` 목록. 림월드 표준 렌더 노드 시스템을 사용합니다.
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `spawnApparelOnTransform` | List\<ThingDef\> | 소환 후 강제 착용할 의류. |
+| `spawnWeaponOnTransform` | List\<ThingDef\> | 소환 후 강제 장비할 무기. |
+| `spawnApparelStuff` | ThingDef | 소환 의류 재질 (예: `Plasteel`). |
+| `spawnWeaponStuff` | ThingDef | 소환 무기 재질. |
+| `conflictingGearHandling` | GearHandling | `Inventory` | 소환 장비와 겹치는 기존 장비 처리. |
+
+### 8. 렌더 노드
+
+이 폼 활성 중에만 표시되는 커스텀 렌더 노드 (귀, 꼬리, 날개 등). 림월드 표준 `PawnRenderNodeProperties` 사용.
 
 ```xml
 <renderNodeProperties>
@@ -145,203 +190,213 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 </renderNodeProperties>
 ```
 
-## 8. 타입 및 컬러 오버라이드 (Type & Color Overrides)
-* `<bodyType>`: 특정 `BodyTypeDef` 강제 변경 (예: `Thin`, `Fat`, `Hulk`)
-* `<headType>`: 특정 `HeadTypeDef` 강제 변경 (예: `Male_AverageNormal`)
-* `<hairColor>`: 머리카락 색상 오버라이드 (예: `(0.85, 0.85, 0.95)`). 텍스처 Replace 모드 사용 시 무시됨.
-* `<skinColor>`: 피부 색상 오버라이드 (예: `(0.7, 0.8, 1.0)`). 텍스처 Replace 모드 사용 시 무시됨.
+### 9. 타입 및 컬러 오버라이드
 
-## 9. 변신 유지 조건 (Sustain Conditions)
-변신 상태를 유지하기 위해 계속 충족되어야 하는 조건입니다. 조건이 깨지면 자동으로 변신이 해제됩니다.
-* `<sustainApparels>`: 계속 착용하고 있어야 하는 `ThingDef` 의류 목록
-* `<sustainWeapons>`: 계속 장비하고 있어야 하는 `ThingDef` 무기 목록
-* `<sustainHediffs>`: 유지되어야 하는 `HediffDef` 목록
-* `<sustainGenes>`: 유지되어야 하는 `GeneDef` 목록 (Biotech DLC, `MayRequire`)
-* `<sustainMode>`: `All` (모든 조건 충족 필요) 또는 `Any` (하나라도 충족하면 유지)
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `bodyType` | BodyTypeDef | 체형 강제 변경 (예: `Thin`, `Hulk`). |
+| `headType` | HeadTypeDef | 머리 타입 강제 변경. |
+| `hairColor` | Color? | 머리카락 색상. hair 모드가 `Replace`면 무시됨. |
+| `skinColor` | Color? | 피부 색상. body 모드가 `Replace`면 무시됨. |
 
-## 10. 부여물 (Additions — Hediffs & Abilities)
-변신하는 동안 초능력이나 헤디프(상태이상/버프)를 부여합니다.
-* `<addAbilities>`: 부여할 `AbilityDef` 목록. DLC 조건부 어빌리티는 `MayRequire` 지원.
-* `<addHediffs>`: `HediffAddEntry` 목록:
-    * `<hediff>`: 부여할 상태이상 Def
-    * `<targetPart>`: 특정 `BodyPartDef` (일치하는 모든 파츠에 적용, 예: 양쪽 팔)
-    * `<targetGroups>`: `BodyPartGroupDef` 목록
-    * `<severity>`: 부여할 초기 수치
-    * `<addedPartPolicy>`: 인공장기나 결손 부위 처리 정책:
-        * `ForceAdd` — 무조건 덮어씀 (인공장기 파괴, 결손 복원 후 강제 부착)
-        * `StrictFleshOnly` — 생살에만 적용 (결손이거나 인공장기가 있으면 실패)
-        * `RegrowFleshOnly` — 결손은 복구하되 인공장기는 건드리지 않음
+### 10. 변신 유지 조건
 
-## 11. 전투 및 행동 (Combat & Work)
+변신 상태를 유지하기 위해 계속 충족해야 하는 조건. 깨지면 자동 해제.
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `sustainApparels` | List\<ThingDef\> | 계속 착용해야 함. |
+| `sustainWeapons` | List\<ThingDef\> | 계속 장비해야 함. |
+| `sustainHediffs` | List\<HediffDef\> | 유지되어야 함. |
+| `sustainGenes` | List\<GeneDef\> | 유지되어야 함 (Biotech). |
+| `sustainMode` | SustainMode? | `All` (모두 충족) 또는 `Any` (하나라도 충족). |
+
+### 11. 부여물 (헤디프 & 어빌리티)
+
+변신 중 부여. 해제 시 자동 제거.
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `addAbilities` | List\<AbilityDef\> | 변신 중 부여할 어빌리티. `MayRequire` 지원. |
+| `addHediffs` | List\<HediffAddEntry\> | 변신 중 부여할 hediff (추적 — 해제 시 자동 제거). |
+
+**HediffAddEntry 필드:**
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `hediff` | HediffDef | 부여할 hediff. |
+| `targetPart` | BodyPartDef | 대상 신체 부위 (일치하는 모든 파츠, 예: 양쪽 팔). |
+| `targetGroups` | List\<BodyPartGroupDef\> | 대상 그룹. |
+| `severity` | float? | 초기 심각도. |
+| `addedPartPolicy` | AddedPartPolicy | `ForceAdd` (인공장기 파괴/결손 복원 후 부착), `StrictFleshOnly` (인공장기/결손 시 실패), `RegrowFleshOnly` (결손 복원, 인공장기 유지). |
+
+### 12. 전투
+
 **Verb & Tool:**
-* `<verbs>`: 추가할 `VerbProperties` 목록 (원거리/근접 공격)
-* `<tools>`: 추가할 `Tool` 목록 (근접 도구)
-* `<replaceNativeVerbs>`: `true`로 설정하면 바닐라 종족이 가진 기본 Verb를 지우고 폼 Verb만 사용
-* `<replaceNativeTools>`: `true`로 설정하면 ThingDef의 기본 도구를 임시 교체 (해제 시 원복)
-* `<verbGizmoOptions>`: `<verbs>` 순서에 맞춰 매칭되는 `VerbGizmoOption` 목록:
-    * `<label>`: Verb 명령 라벨
-    * `<desc>`: Verb 명령 설명
-    * `<toggleLabel>` / `<toggleDesc>`: 자동공격 토글 버튼 라벨/설명
-    * `<iconPath>`: 커스텀 아이콘 경로
-    * `<autoAttackDefault>`: 자동공격 토글 초기값. `null`이면 첫 번째 원거리 verb만 ON, 나머지 OFF
-* `<damageSourceDef>`: 상처 라벨에 표시할 종족 `ThingDef` (예: `Warg` → "Warg teeth"). `null`이면 기본 폰 라벨 사용.
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `verbs` | List\<VerbProperties\> | 추가 공격 (원거리/근접). |
+| `tools` | List\<Tool\> | 추가 근접 도구. |
+| `replaceNativeVerbs` | bool? | `true` = 기존 verb 비활성화. |
+| `replaceNativeTools` | bool? | `true` = 기존 ThingDef 도구 임시 교체 (해제 시 원복). |
+| `damageSourceDef` | ThingDef | 상처 라벨에 표시할 종족 (예: `Warg` → "Warg teeth"). |
+
+**Verb 기즈모 옵션** (`verbGizmoOptions`, `verbs` 인덱스와 1:1 매칭):
+
+| 필드 | 설명 |
+|------|------|
+| `label` / `desc` | Verb 명령 라벨/설명. |
+| `toggleLabel` / `toggleDesc` | 자동공격 토글 라벨/설명. |
+| `iconPath` | 커스텀 아이콘 경로. |
+| `autoAttackDefault` | 자동공격 초기값. `null` = 첫 번째 원거리 verb만 ON, 나머지 OFF. |
 
 **작업 제한:**
-* `<disabledWorkTypesOnTransform>`: 변신 중 비활성화할 `WorkTypeDef` 목록 (예: `Firefighter`)
-* `<disabledWorkTagsOnTransform>`: 비활성화할 `WorkTags` 플래그 (예: `Violent`, `Crafting`). 여러 값을 `<li>` 태그로 나열 가능.
-* `<suppressIdeologyUncoveredThoughts>`: 변신 시 옷을 벗어서 생기는 '알몸' 관련 무드 페널티를 막아줍니다. (기본값: `true`)
 
-## 12. 이펙트, 사운드, UI (VFX, SFX & UI)
+| 필드 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `disabledWorkTypesOnTransform` | List\<WorkTypeDef\> | — | 변신 중 비활성화할 작업 타입. |
+| `disabledWorkTagsOnTransform` | WorkTags | None | 비활성화할 작업 태그 (예: `Violent`, `Crafting`). |
+| `suppressIdeologyUncoveredThoughts` | bool | true | 장비 제거로 인한 '알몸' 무드 페널티 억제. |
+
+### 13. 이펙트 및 사운드
 
 **지속시간 & 해제:**
-* `<durationTicks>`: 변신 지속 시간. 비워두면 무제한입니다. (60,000틱 = 인게임 1일)
-* `<canRevertVoluntarily>`: `false`면 유저가 기즈모로 해제 불가 (강제 변신/디버프용). (기본값: `true`)
-* `<revertOnDowned>`: `true`면 의식 상실(Downed) 시 변신 자동 해제. (기본값: `false`)
-* `<revertDrops>`: 변신 해제 시 드랍할 `ThingDefCountClass` 아이템 목록 (허물, 결정 등). 각 항목: `<thingDef>` + `<count>`.
-* `<revertAddHediffs>`: 변신 해제 시 부여할 `HediffDef` 목록 (피로, 탈진 등). 프레임워크가 **추적하지 않음** — 바닐라 hediff 수명 (자연 회복/소멸).
+
+| 필드 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `durationTicks` | int? | null (무제한) | 지속 틱. 60000 = 인게임 1일. |
+| `canRevertVoluntarily` | bool | true | `false` = 해제 기즈모 없음 (강제 변신). |
+| `revertOnDowned` | bool | false | 의식 상실 시 자동 해제. |
+| `revertDrops` | List\<ThingDefCountClass\> | — | 해제 시 드랍 아이템 (허물, 결정 등). |
+| `revertAddHediffs` | List\<HediffDef\> | — | 해제 시 부여 hediff (피로 등). **비추적** — 바닐라 수명. |
 
 **기즈모 아이콘:**
-* `<gizmoIconPathEnter>` / `<gizmoIconPathRevert>`: 변신/해제 버튼의 아이콘 경로
+- `gizmoIconPathEnter` / `gizmoIconPathRevert` — 변신/해제 버튼 아이콘.
 
-**변신 사운드:**
-* `<transformEnterSound>` / `<transformExitSound>`: 변신 시작/종료 시 사운드
+**변신 FX (진입/해제 시 원샷):**
 
-**변신 이펙터:**
-* `<transformEnterEffecter>` / `<transformExitEffecter>`: 변신/해제 시 이펙터 VFX
+| 필드 | 설명 |
+|------|------|
+| `transformEnterSound` / `transformExitSound` | 변신/해제 시 사운드. |
+| `transformEnterEffecter` / `transformExitEffecter` | 변신/해제 시 이펙터. |
+| `transformEnterFleck` / `transformExitFleck` | FleckDef 파티클. |
+| `transformEnterFleckCount` / `transformExitFleckCount` | 파티클 수 (0 = 비활성). |
+| `transformEnterFleckScale` / `transformExitFleckScale` | 파티클 크기 (기본 1.0). |
+| `transformEnterFxDelayTicks` / `transformExitFxDelayTicks` | FX 재생 딜레이. |
+| `transformFxCooldownTicks` | 동일 FX 쿨다운 (기본 30). |
 
-**변신 플렉(경량 파티클):**
-* `<transformEnterFleck>` / `<transformExitFleck>`: 생성할 `FleckDef`
-* `<transformEnterFleckCount>` / `<transformExitFleckCount>`: 플렉 파티클 수 (0 = 비활성)
-* `<transformEnterFleckScale>` / `<transformExitFleckScale>`: 플렉 파티클 크기 (기본값: 1.0)
+**앰비언트 VFX (변신 중 지속):**
 
-**타이밍 & 스팸 방지:**
-* `<transformEnterFxDelayTicks>` / `<transformExitFxDelayTicks>`: FX 재생 전 지연 (틱 단위)
-* `<transformFxCooldownTicks>`: 동일 FX 재생 쿨다운 (기본값: 30틱)
+| 필드 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `ambientEffecter` | EffecterDef | — | 매 틱 유지되는 지속형 이펙터 (오라, 연기). 해제 시 자동 정리. |
+| `ambientFleck` | FleckDef | — | 주기적 스폰 플렉 (스파크, 불꽃). |
+| `ambientFleckIntervalTicks` | int | 60 | 스폰 간격 (틱). |
+| `ambientFleckScale` | float | 1.0 | 플렉 크기. |
 
-**앰비언트 VFX (변신 중 지속 이펙트):**
-* `<ambientEffecter>`: 매 틱 `EffectTick`으로 유지되는 지속형 `EffecterDef` (오라, 연기 등). 자동 생성/정리.
-* `<ambientFleck>`: 주기적으로 폰 위치에 스폰되는 `FleckDef` (스파크, 불꽃 등).
-* `<ambientFleckIntervalTicks>`: `ambientFleck` 스폰 간격 (기본값: 60 = 1초).
-* `<ambientFleckScale>`: 앰비언트 플렉 크기 (기본값: 1.0).
+### 14. 보이스 & 혈액
 
-## 13. 보이스 & 혈액 (Voice & Blood)
-**보이스 오버라이드 (변신 중 폰 음성 교체):**
-* `<soundCall>`: 평시 울음소리
-* `<soundWounded>`: 부상 시 소리
-* `<soundDeath>`: 사망 시 소리
-* `<soundAngry>`: 분노 시 소리
-* `<soundEating>`: 식사 시 소리
+**보이스 (폰 음성 교체):**
+- `soundCall`, `soundWounded`, `soundDeath`, `soundAngry`, `soundEating`
 
 **근접 전투 사운드:**
-* `<soundMeleeHitPawn>`: 근접 히트(폰) 사운드
-* `<soundMeleeHitBuilding>`: 근접 히트(건물) 사운드
-* `<soundMeleeMiss>`: 근접 미스 사운드
+- `soundMeleeHitPawn`, `soundMeleeHitBuilding`, `soundMeleeMiss`
 
 **혈액/살점:**
-* `<bloodDef>`: 피격 시 생성되는 혈흔 `ThingDef`
-* `<bloodSmearDef>`: 기어갈 때 생성되는 혈흔 스미어 `ThingDef`
-* `<fleshType>`: `FleshTypeDef` 오버라이드 (예: `Insectoid`). 상처 텍스처 등 관련 동작 변경.
 
-## 14. 호환성 (Compatibility)
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `bloodDef` | ThingDef | 피격 시 혈흔. |
+| `bloodSmearDef` | ThingDef | 기어갈 때 혈흔 스미어. |
+| `fleshType` | FleshTypeDef | 살점 타입 오버라이드 (예: `Insectoid`). |
 
-**Humanoid Alien Races (HAR):**
-* `<showHarAddons>`: `true` 시 HAR 모드의 BodyAddon을 변신 후에도 보여줍니다. (기본값: `false`). `MayRequire: erdelf.HumanoidAlienRaces`
+### 15. 모드 호환성
+
+**HAR (Humanoid Alien Races):**
+- `showHarAddons` (bool, 기본 false) — 변신 후에도 BodyAddon 표시. `MayRequire: erdelf.HumanoidAlienRaces`
 
 **Facial Animation:**
-아래 필드는 모두 `MayRequire: Nals.FacialAnimation`:
-* `<faHeadTypeDef>`: 얼굴 머리 타입 교체
-* `<faEyeballTypeDef>`: 눈알 타입 교체
-* `<faLidTypeDef>`: 눈꺼풀 타입 교체
-* `<faBrowTypeDef>`: 눈썹 타입 교체
-* `<faMouthTypeDef>`: 입 타입 교체
-* `<faSkinTypeDef>`: 피부 타입 교체
-* `<faEyeColor>` / `<faEyeColor2>`: 눈 색상 오버라이드 (`ColorInt`)
+모든 필드 `MayRequire: Nals.FacialAnimation`:
+- `faHeadTypeDef`, `faEyeballTypeDef`, `faLidTypeDef`, `faBrowTypeDef`, `faMouthTypeDef`, `faSkinTypeDef`
+- `faEyeColor` / `faEyeColor2` (ColorInt)
 
-**Simple Sidearms:**
-* XML 필드 불필요. 자동으로 호환됩니다.
-* 변신 시: 폰의 사이드암 메모리를 백업 후 클리어하여, Simple Sidearms가 무기 교체 로직에 간섭하지 않도록 합니다.
-* 해제 시: 원래 사이드암 메모리를 복원하여, 변신 전과 동일한 무기를 기억합니다.
+**Simple Sidearms:** 자동 호환 — XML 설정 불필요. 변신 시 무기 메모리 백업, 해제 시 복원.
 
 ---
 
-## 어빌리티 & 트리거 시스템
+## 트리거 시스템
 
-FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**. 별도의 컴포넌트에서 처리합니다:
+FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되는지는 별도 컴포넌트에서 처리합니다.
 
 ### CompProperties_AbilityShapeshift
-`AbilityDef`의 `<comps>`에 부착하여 변신 효과를 정의합니다:
-* `<formDefName>`: 적용할 `ShapeshiftFormDef`의 defName
-* `<successChance>`: 변신 성공 확률 (0.0–1.0, 기본값: 1.0)
-* `<allowedRaces>` / `<disallowedRaces>`: 캐스터 종족 제한 (`ThingDef` 목록)
-* `<allowedMutants>` / `<disallowedMutants>`: 캐스터 뮤턴트 제한 (`MutantDef` 목록, Anomaly DLC)
-* `<allowedFromForms>`: 변신 중 시전 허용 폼 목록 (`string` — FormDef defName). null/비어있으면 변신 중 기즈모 **비활성(회색)** 처리. 같은 폼 재시전은 항상 숨김.
 
-### 어빌리티 획득 경로
+`AbilityDef`의 `<comps>`에 부착합니다:
 
-| 경로 | 컴포넌트 | 설명 |
-|------|----------|------|
-| **유전자** | `GeneDef.abilities` | Biotech DLC. 유전자가 어빌리티를 자동 부여. |
-| **헤디프** | `HediffCompProperties_GiveAbility` | 바닐라 패턴. 헤디프 보유 시 어빌리티 자동 부여. |
-| **아이템 (소지/장비)** | `CompProperties_GiveAbility_Shapeshift` | 커스텀. `requireEquipped=true`면 장비 시에만, `false`면 인벤토리 소지만으로 부여. |
-| **약물** | `IngestionOutcomeDoer_Shapeshift` | 약물 복용 시 직접 변신 (어빌리티 없이). 필드: `formDefName`, `successChance`. |
-| **스크롤/사용 아이템** | `CompProperties_UseEffect_Shapeshift` | 아이템 사용 시 직접 변신. 필드: `formDefName`, `successChance`. |
-| **투사체** | `PolymorphProjectileExtension` | 투사체 명중 시 변신. 필드: `formDefName`, `successChance`, `aoeRadius`, `affectAllies`. |
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `formDefName` | string | 적용할 FormDef defName. |
+| `successChance` | float | 성공 확률 (기본 1.0). |
+| `allowedRaces` / `disallowedRaces` | List\<ThingDef\> | 시전자 종족 필터. |
+| `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | 시전자 뮤턴트 필터 (Anomaly). |
+| `allowedFromForms` | List\<string\> | 변신 중 시전 허용 폼 목록. 비우면 변신 중 비활성(회색). |
+
+### 획득 경로
+
+| 경로 | 컴포넌트 | 트리거 |
+|------|----------|--------|
+| 유전자 | `GeneDef.abilities` | 유전자가 어빌리티 자동 부여 (Biotech). |
+| 헤디프 | `HediffCompProperties_GiveAbility` | hediff 보유 시 어빌리티 부여. |
+| 아이템 (장비) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=true`) | 장비 시 어빌리티 부여. |
+| 아이템 (소지) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=false`) | 인벤토리 소지 시 부여. |
+| 약물 | `IngestionOutcomeDoer_Shapeshift` | 복용 시 직접 변신. |
+| 스크롤/사용 | `CompProperties_UseEffect_Shapeshift` | 사용 시 직접 변신. |
+| 투사체 | `PolymorphProjectileExtension` | 명중 시 변신. `aoeRadius`, `affectAllies` 지원. |
 
 ### HediffComp_AutoShift (조건부 자동 변신)
-조건 충족 시 자동으로 변신하는 `HediffComp`입니다. 아무 `HediffDef`에나 부착 가능 — 유전자(`GeneDef.hediffDef`), 약물, 이벤트 등과 조합.
 
-**프로퍼티** (`HediffCompProperties_AutoShift`):
-* `<formDefName>`: 변신할 `ShapeshiftFormDef`의 defName
-* `<healthThreshold>`: 체력 비율이 이 값 미만이면 트리거. 미기입 시 미사용. 예: `0.3` = 30%
-* `<triggerMentalStates>`: `MentalStateDef` 목록 — 이 정신 상태 중 하나 발동 시 트리거 (예: `Berserk`)
-* `<triggerSunGlowBelow>`: SunGlow가 이 값 미만이면 트리거. 바이옴/계절 자동 반영. 미기입 시 미사용. 예: `0.5`=밤, `0.3`=깊은 밤
-* `<triggerInCombat>`: `true`면 전투 중(징집 또는 최근 피격) + 근처 적대 폰이 있을 때 트리거. 플레이어 폰과 NPC 모두 작동. (기본값: `false`)
-* `<checkIntervalTicks>`: 조건 검사 간격 (기본값: 120 = 2초)
-* `<successChance>`: 조건 충족 시 변신 성공 확률 (기본값: 1.0)
-* `<triggerOnce>`: `true`면 발동 후 hediff 자체 제거 — 1회성. (기본값: `false`)
+아무 HediffDef에 `HediffCompProperties_AutoShift`를 부착합니다. 조건 충족 시 자동 변신.
 
-**로직**: 모든 조건은 OR — 하나라도 충족하면 트리거. 이미 변신 중인 폰은 건너뜀.
+| 필드 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `formDefName` | string | — | 변신할 FormDef. |
+| `healthThreshold` | float | 0 (미사용) | 이 체력 % 미만 시 트리거. 예: `0.3` = 30%. |
+| `triggerMentalStates` | List\<MentalStateDef\> | — | 이 정신상태 진입 시 트리거. |
+| `triggerSunGlowBelow` | float | 0 (미사용) | 밝기가 이 값 미만이면 트리거. `0.5` = 밤. |
+| `triggerInCombat` | bool | false | 징집/피격 + 적 근처 시 트리거. |
+| `checkIntervalTicks` | int | 120 | 검사 간격 (120 = 2초). |
+| `successChance` | float | 1.0 | 검사당 성공 확률. |
+| `triggerOnce` | bool | false | 발동 후 hediff 자체 제거. |
+
+**로직:** 조건은 OR — 하나라도 충족하면 트리거. 이미 변신 중이면 건너뜀.
 
 ```xml
 <HediffDef>
   <defName>Curse_Werewolf</defName>
-  <label>werewolf curse</label>
   <hediffClass>HediffWithComps</hediffClass>
+  <label>werewolf curse</label>
   <isBad>false</isBad>
   <comps>
     <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
       <formDefName>WerewolfForm</formDefName>
       <healthThreshold>0.3</healthThreshold>
       <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
-      <checkIntervalTicks>120</checkIntervalTicks>
       <successChance>0.8</successChance>
     </li>
   </comps>
 </HediffDef>
 ```
 
-### 다단 변신 (addAbilities 체인)
-`<addAbilities>`를 사용하여 1단계 폼 상태에서만 2단계 변신 어빌리티를 부여할 수 있습니다.
-**중요**: 2단계 어빌리티의 comp에 `<allowedFromForms>`로 1단계 폼을 명시해야 합니다. 그렇지 않으면 변신 중 기즈모가 비활성(회색) 처리됩니다.
+### 다단 변신 체인
+
+`addAbilities`로 1단계 폼에서만 2단계 어빌리티를 부여합니다. 2단계 어빌리티에는 `allowedFromForms`로 1단계 폼을 명시해야 합니다.
+
 ```
-1단계 (BeastkinForm) → addAbilities: [FullBeast 어빌리티]
-  → 폰이 수인 상태에서 FullBeast 어빌리티 획득
+1단계 (BeastkinForm) → addAbilities로 [FullBeast 어빌리티] 부여
   → FullBeast 어빌리티에 allowedFromForms: [BeastkinForm] 설정
-  → FullBeast 어빌리티 사용 → FullBeastForm 진입
-  → BeastkinForm 해제 시 → FullBeast 어빌리티 제거
+  → FullBeast 사용 → FullBeastForm 진입
+  → BeastkinForm 해제 → FullBeast 어빌리티 제거
 ```
-
----
-
-## 추상 기본 폼 (Abstract Base Forms)
-
-프레임워크는 `SSF_BaseForms.xml`에 3가지 추상 기본 폼을 제공합니다:
-
-| 기본 폼 | 장비 처리 | 그래픽 숨김 | 용도 |
-|---------|-----------|------------|------|
-| `SSF_BaseForm_Animal` | 모두 Drop | 모든 의류/무기/머리/헤어/수염 숨김 | 동물형 완전 변신 |
-| `SSF_BaseForm_Humanoid` | 모두 Keep | 오버헤드 의류만 숨김 | 인간형 + 추가 요소 |
-| `SSF_BaseForm_Armored` | 모두 Keep | 숨김 없음 (모두 표시) | 장비 중심 폼 |
 
 ---
 
@@ -349,12 +404,11 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
 
 ```xml
 <Defs>
-  <!-- 1단계: 스탯용 메인 헤디프 정의 -->
+  <!-- 1. 스탯용 헤디프 (선택) -->
   <HediffDef>
     <defName>SSF_WolfFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>늑대 폼</label>
-    <description>늑대로 변신한 상태.</description>
     <isBad>false</isBad>
     <stages>
       <li>
@@ -362,32 +416,22 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
           <MoveSpeed>2.5</MoveSpeed>
           <ArmorRating_Sharp>0.4</ArmorRating_Sharp>
         </statOffsets>
-        <capMods>
-          <li><capacity>Moving</capacity><postFactor>1.30</postFactor></li>
-        </capMods>
       </li>
     </stages>
   </HediffDef>
 
-  <!-- 2단계: 폼 정의 -->
+  <!-- 2. 폼 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSF_WolfForm</defName>
     <label>늑대 폼</label>
-    <description>강력한 늑대 변신. 무기를 떨어뜨리고 빠르게 달린다.</description>
+    <description>강력한 늑대 변신.</description>
     <linkedHediff>SSF_WolfFormHediff</linkedHediff>
 
     <bodyDrawScale>1.5</bodyDrawScale>
-    <portraitDrawScale>0.8</portraitDrawScale>
-
-    <apparelOnTransform>Drop</apparelOnTransform>
-    <weaponsOnTransform>Drop</weaponsOnTransform>
-
     <body>
       <mode>Replace</mode>
       <replacementTexPath>Things/Pawn/Animal/Wolf/Wolf</replacementTexPath>
     </body>
-    <head><mode>Hidden</mode></head>
-    <hair><mode>Hidden</mode></hair>
 
     <replaceNativeTools>true</replaceNativeTools>
     <tools>
@@ -400,16 +444,13 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
       </li>
     </tools>
 
-    <transformEnterFleck>ExplosionFlash</transformEnterFleck>
-    <transformEnterFleckCount>3</transformEnterFleckCount>
     <soundWounded>Pawn_Dog_Injured</soundWounded>
     <bloodDef>Filth_Blood</bloodDef>
-
-    <gizmoIconPathEnter>UI/Commands/TransformWolf</gizmoIconPathEnter>
     <durationTicks>30000</durationTicks>
+    <gizmoIconPathEnter>UI/Commands/TransformWolf</gizmoIconPathEnter>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- 3단계: 어빌리티 정의 -->
+  <!-- 3. 어빌리티 -->
   <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSF_Ability_Wolf</defName>
     <label>늑대 변신</label>
@@ -418,7 +459,6 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSF_WolfForm</formDefName>
-        <successChance>1.0</successChance>
       </li>
     </comps>
   </AbilityDef>

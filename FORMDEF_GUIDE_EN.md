@@ -1,53 +1,64 @@
-# Shapeshifter Framework — ShapeshiftFormDef Manual
+# Shapeshifter Framework — FormDef Creation Guide
 
-> **Auto-generated from source code** — reflects the actual C# fields in `ShapeshiftFormDef.cs` and related components.
+> Complete reference for creating custom transformation forms. Reflects the actual C# fields in `ShapeshiftFormDef.cs`.
 
-This document details all XML tags used to create custom shapeshifting forms in the `ShapeshifterFramework`.
-All options **fall back to vanilla behavior if left blank**, so you only need to define the features you actually want to change.
-
----
-
-## Architecture Overview
-
-The Shapeshifter Framework separates concerns across multiple components:
-
-| Component | Responsibility |
-|-----------|---------------|
-| **ShapeshiftFormDef** | Visuals, equipment, tools/verbs, sounds, VFX, duration, UI |
-| **linkedHediff (HediffDef)** | Stat offsets, stat factors, capacity modifiers (vanilla pattern) |
-| **CompProperties_AbilityShapeshift** | Cast conditions (races, mutants), success chance |
-| **Ability acquisition sources** | Genes, hediffs, items (CompGiveAbility_Shapeshift), drugs, projectiles |
-
-Stats and capacities are **not** defined on the FormDef. They are defined on the `linkedHediff`'s HediffDef stages, using the vanilla HediffDef pattern (`statOffsets`, `statFactors`, `capMods`).
+All fields are **optional** unless noted otherwise. Omitted fields fall back to vanilla defaults.
 
 ---
 
-## 1. Basic Information
-* `<defName>` (Required): Unique ID of the form. Cannot be duplicated.
-* `<label>`: The display name of the form in-game.
-* `<description>`: Tooltip and description text.
+## Quick Start
 
-## 2. Main Hediff (Stats & Capacities)
-* `<linkedHediff>`: (Required) The `HediffDef` that marks the transformation state. Removing this hediff automatically ends the transformation.
-* `<formAllowedRaces>`: (Optional) List of `ThingDef` race defs that can receive this form. If omitted or empty, any race is allowed (default behavior).
-* `<formDisallowedRaces>`: (Optional) List of `ThingDef` race defs that **cannot** receive this form. Takes priority over `formAllowedRaces`.
-
-> **Note**: These filter the **target** (who receives the form). `CompProperties_AbilityShapeshift.allowedRaces`/`disallowedRaces` filter the **caster** (who can cast the ability). FormDef-level filters apply to **all** trigger paths (abilities, drugs, scrolls, projectiles).
+A minimal form only needs `defName` and visual settings:
 
 ```xml
-<formAllowedRaces>
-  <li>Human</li>
-</formAllowedRaces>
+<ShapeshifterFramework.ShapeshiftFormDef>
+  <defName>MyForm</defName>
+  <label>My Form</label>
+  <body>
+    <mode>Replace</mode>
+    <replacementTexPath>Things/Pawn/MyCreature/MyCreature</replacementTexPath>
+  </body>
+  <head><mode>Hidden</mode></head>
+  <durationTicks>30000</durationTicks>
+</ShapeshifterFramework.ShapeshiftFormDef>
 ```
 
-* `<formAllowedMutants>`: (Optional, `MayRequire: Ludeon.RimWorld.Anomaly`) List of `MutantDef` that can receive this form. If omitted or empty, no mutant restriction.
-* `<formDisallowedMutants>`: (Optional, `MayRequire: Ludeon.RimWorld.Anomaly`) List of `MutantDef` that **cannot** receive this form.
+For stat/capacity modifiers, add a `linkedHediff` pointing to a vanilla HediffDef with `statOffsets`/`statFactors`/`capMods` in its stages.
 
-> **Note**: These filter the **target** (who receives the form). `CompProperties_AbilityShapeshift.allowedMutants`/`disallowedMutants` filter the **caster** (who can cast the ability). FormDef-level filters apply to **all** trigger paths (abilities, drugs, scrolls, projectiles).
+---
 
-**Stats and capacities are defined in the linkedHediff's HediffDef, not in the FormDef.** Use the standard vanilla HediffDef pattern:
+## Abstract Base Forms
+
+Three pre-built parents in `SSF_BaseForms.xml`:
+
+| Parent | Equipment | Visual Hiding | Best For |
+|--------|-----------|---------------|----------|
+| `SSF_BaseForm_Animal` | Inventory | All parts hidden, all graphics hidden | Full creature replacement |
+| `SSF_BaseForm_Humanoid` | Keep | Overhead apparel hidden | Humanlike with extras |
+| `SSF_BaseForm_Armored` | Keep | None | Equipment-focused forms |
+
+Usage: `<ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">`
+
+---
+
+## Field Reference
+
+### 1. Identity
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `defName` | string | **Required.** Unique ID. |
+| `label` | string | Display name. |
+| `description` | string | Tooltip text. |
+
+### 2. Linked Hediff
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `linkedHediff` | HediffDef | Optional. Hediff applied during transformation. Removing it externally auto-reverts the form. Define stat/capacity modifiers in its HediffDef stages. |
 
 ```xml
+<!-- If you need stats, define them on the HediffDef -->
 <HediffDef>
   <defName>MyForm_Hediff</defName>
   <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
@@ -55,80 +66,114 @@ Stats and capacities are **not** defined on the FormDef. They are defined on the
   <isBad>false</isBad>
   <stages>
     <li>
-      <statOffsets>
-        <MoveSpeed>1.5</MoveSpeed>
-      </statOffsets>
-      <statFactors>
-        <MeleeHitChance>1.20</MeleeHitChance>
-      </statFactors>
+      <statOffsets><MoveSpeed>1.5</MoveSpeed></statOffsets>
       <capMods>
         <li><capacity>Moving</capacity><postFactor>1.30</postFactor></li>
-        <li><capacity>Manipulation</capacity><setMax>0.2</setMax></li>
       </capMods>
     </li>
   </stages>
 </HediffDef>
+
+<!-- Then reference it -->
+<linkedHediff>MyForm_Hediff</linkedHediff>
 ```
 
-## 3. Scale & Offset
-Adjusts the rendered size and position of the character.
-* `<bodyDrawScale>`: Overall body rendering scale multiplier (Default: 1.0).
-* `<headDrawScale>`: Additional head rendering multiplier (multiplied with body scale. Default: 1.0).
-* `<portraitDrawScale>`: Scale multiplier applied **only** in the bottom-left UI portrait window. Useful for fitting giant forms into the frame.
-* `<bodyOffset>` / `<headOffset>`: 2D Vector (X, Z) to adjust position (e.g., `(0, 0.5)`).
+### 3. Race / Mutant Filters
 
-## 4. Part Override Options
-Hide or replace textures, colors, and shaders for specific body parts.
-Supported tags: `<body>`, `<head>`, `<hair>`, `<beard>`, `<tattooBody>`, `<tattooHead>`
+These filter the **target** (who receives the form). They apply to all trigger paths (abilities, drugs, scrolls, projectiles).
 
-**[Inner Options]**
-* `<mode>`: Choose between `Default` (keep vanilla), `Hidden`, or `Replace`.
-* `<replacementTexPath>`: Path to the new texture (Requires `Replace` mode).
-* `<swimmingReplacementTexPath>`: Specific texture used when the pawn is in water.
-* `<color>` / `<swimmingColor>`: Color tint applied to the texture (e.g., `(112,82,65)` or `(0.7, 0.8, 1.0, 0.5)` with alpha).
-* `<shaderTypeDefName>`: Change the shader (e.g., `Cutout`, `Transparent`).
-* `<swimmingShaderTypeDefName>`: Specific shader to use while the pawn is swimming. Falls back to `shaderTypeDefName`, then to node default.
-* `<shadowVolume>` / `<shadowOffset>`: Override the drop shadow size and position (**Only valid in `<body>`**). e.g., `(0.6, 1.0, 0.6)`
-* `<male>` / `<female>`: Nest an identical structure inside these tags for gender-specific overrides.
+| Field | Type | Description |
+|-------|------|-------------|
+| `formAllowedRaces` | List\<ThingDef\> | Only these races can receive the form. Empty = no restriction. |
+| `formDisallowedRaces` | List\<ThingDef\> | These races cannot receive the form. Overrides allowed list. |
+| `formAllowedMutants` | List\<MutantDef\> | Only these mutants can receive the form. (`MayRequire: Ludeon.RimWorld.Anomaly`) |
+| `formDisallowedMutants` | List\<MutantDef\> | These mutants cannot receive the form. (`MayRequire: Ludeon.RimWorld.Anomaly`) |
 
-## 5. Render Hiding / Showing
-Forcefully hide or show worn apparel, weapons, genes, or hediffs during the transformation.
-Written as a list (`<li>`). You can use the special keyword **"All"** to apply to the entire category.
+> **Caster-side** filters (`allowedRaces`, `disallowedRaces`) are on `CompProperties_AbilityShapeshift`, not on the FormDef.
+
+### 4. Scale & Offset
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `bodyDrawScale` | float? | 1.0 | Body rendering scale multiplier. |
+| `headDrawScale` | float? | 1.0 | Head scale multiplier (applied on top of body scale). |
+| `portraitDrawScale` | float? | 1.0 | Scale in the bottom-left portrait only. |
+| `bodyOffset` | Vector2? | (0,0) | Body position offset (X, Z). |
+| `headOffset` | Vector2? | (0,0) | Head position offset (X, Z). |
+
+### 5. Part Overrides
+
+Control textures, colors, and shaders for body parts: `<body>`, `<head>`, `<hair>`, `<beard>`, `<tattooBody>`, `<tattooHead>`.
+
+Each accepts a `PartOverrideOption` block:
+
+| Field | Description |
+|-------|-------------|
+| `mode` | `Default` / `Hidden` / `Replace` |
+| `replacementTexPath` | Texture path (requires `Replace` mode). |
+| `swimmingReplacementTexPath` | Texture used while swimming. |
+| `color` | Color tint: `(R,G,B)` or `(R,G,B,A)`. |
+| `swimmingColor` | Color tint while swimming. Falls back to `color`. |
+| `shaderTypeDefName` | Shader override (e.g., `Cutout`, `Transparent`). |
+| `swimmingShaderTypeDefName` | Shader while swimming. Falls back to `shaderTypeDefName`. |
+| `shadowVolume` | Shadow ellipse size (Vector3). **Body only.** |
+| `shadowOffset` | Shadow position offset (Vector3). **Body only.** |
+| `male` / `female` | Gender-specific `PartOverrideOption` (same structure). |
+
+```xml
+<body>
+  <mode>Replace</mode>
+  <replacementTexPath>Things/Pawn/Animal/Wolf/Wolf</replacementTexPath>
+  <color>(112, 82, 65)</color>
+  <male>
+    <replacementTexPath>Things/Pawn/Animal/Wolf/WolfMale</replacementTexPath>
+  </male>
+</body>
+```
+
+### 6. Graphic Hiding / Showing
+
+Hide or force-show graphics during transformation. Use `<li>All</li>` for the entire category.
 
 **Apparel:**
-* `<renderHideApparelLayers>` / `<renderHideApparelDefNames>`: Hide specific layers (e.g., `OnSkin`, `Overhead`) or specific apparel defNames.
-* `<renderShowApparelLayers>` / `<renderShowApparelDefNames>`: Whitelist exceptions — items to **keep visible** despite hide rules.
+- `renderHideApparelLayers` / `renderShowApparelLayers` — by layer (e.g., `OnSkin`, `Overhead`)
+- `renderHideApparelDefNames` / `renderShowApparelDefNames` — by defName
 
 **Weapons:**
-* `<renderHideWeaponTags>` / `<renderHideWeaponDefNames>`: Hide specific weapon tags or defNames.
-* `<renderShowWeaponTags>` / `<renderShowWeaponDefNames>`: Whitelist exceptions.
+- `renderHideWeaponTags` / `renderShowWeaponTags` — by weapon tag
+- `renderHideWeaponDefNames` / `renderShowWeaponDefNames` — by defName
 
 **Genes:**
-* `<renderHideGeneExclusionTags>` / `<renderHideGeneDefNames>`: Hide gene graphics by exclusion tags or defNames.
-* `<renderShowGeneExclusionTags>` / `<renderShowGeneDefNames>`: Whitelist exceptions.
+- `renderHideGeneExclusionTags` / `renderShowGeneExclusionTags`
+- `renderHideGeneDefNames` / `renderShowGeneDefNames`
 
 **Hediffs:**
-* `<renderHideHediffDefNames>`: Hide hediff graphics (e.g., wounds, implants).
-* `<renderShowHediffDefNames>`: Whitelist exceptions.
+- `renderHideHediffDefNames` / `renderShowHediffDefNames`
 
-> **Tip:** Use `<renderHideApparelLayers><li>All</li></renderHideApparelLayers>` to hide all apparel graphics, then use `<renderShowApparelDefNames>` to selectively show specific items (e.g., capes).
+> **Tip:** Hide all, then whitelist: `<renderHideApparelLayers><li>All</li></renderHideApparelLayers>` + `<renderShowApparelDefNames><li>Apparel_Cape</li></renderShowApparelDefNames>`.
 
-## 6. Equipment Handling
-Defines what happens to the pawn's current apparel and weapons when they transform.
+### 7. Equipment Handling
 
-**Basic Handling:**
-* `<apparelOnTransform>` / `<weaponsOnTransform>`: Options are `Keep` (keep wearing), `Inventory` (move to inventory), or `Drop` (drop on floor). (Default: `Keep`).
-* `<apparelEquipLock>` / `<weaponEquipLock>`: Prevents changing gear while transformed. `Auto` (matches the above setting), `Locked`, or `Unlocked`. (Default: `Auto`).
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `apparelOnTransform` | GearHandling | Keep | `Keep` / `Inventory` / `Drop` |
+| `weaponsOnTransform` | GearHandling | Keep | `Keep` / `Inventory` / `Drop` |
+| `apparelEquipLock` | EquipLockMode | Auto | `Auto` / `Locked` / `Unlocked` — prevents gear changes while transformed. |
+| `weaponEquipLock` | EquipLockMode | Auto | Same as above for weapons. |
 
-**Spawned Equipment (summoned on transform, destroyed on revert):**
-* `<spawnApparelOnTransform>`: List of `ThingDef` apparel to spawn and force-equip.
-* `<spawnWeaponOnTransform>`: List of `ThingDef` weapons to spawn and force-equip.
-* `<spawnApparelStuff>` / `<spawnWeaponStuff>`: Material (`ThingDef`) for spawned equipment (e.g., `Plasteel`).
-* `<conflictingGearHandling>`: How to handle existing gear that conflicts with spawned equipment. Options: `Keep`, `Inventory`, `Drop`. (Default: `Inventory`).
+**Spawned Equipment** (created on transform, destroyed on revert):
 
-## 7. Render Nodes
-Custom render nodes added only while this form is active (e.g., ears, tails).
-* `<renderNodeProperties>`: List of `PawnRenderNodeProperties`. Uses the standard RimWorld render node system.
+| Field | Type | Description |
+|-------|------|-------------|
+| `spawnApparelOnTransform` | List\<ThingDef\> | Apparel to spawn and force-equip. |
+| `spawnWeaponOnTransform` | List\<ThingDef\> | Weapons to spawn and force-equip. |
+| `spawnApparelStuff` | ThingDef | Material for spawned apparel (e.g., `Plasteel`). |
+| `spawnWeaponStuff` | ThingDef | Material for spawned weapons. |
+| `conflictingGearHandling` | GearHandling | `Inventory` | How to handle existing gear that conflicts with spawned equipment. |
+
+### 8. Render Nodes
+
+Custom render nodes active only during this form (ears, tails, wings, etc.). Uses RimWorld's standard `PawnRenderNodeProperties`.
 
 ```xml
 <renderNodeProperties>
@@ -145,216 +190,225 @@ Custom render nodes added only while this form is active (e.g., ears, tails).
 </renderNodeProperties>
 ```
 
-## 8. Type & Color Overrides
-* `<bodyType>`: Force a specific `BodyTypeDef` (e.g., `Thin`, `Fat`, `Hulk`).
-* `<headType>`: Force a specific `HeadTypeDef` (e.g., `Male_AverageNormal`).
-* `<hairColor>`: Override hair color (e.g., `(0.85, 0.85, 0.95)`). Ignored if texture Replace mode is used.
-* `<skinColor>`: Override skin color (e.g., `(0.7, 0.8, 1.0)`). Ignored if texture Replace mode is used.
+### 9. Type & Color Overrides
 
-## 9. Sustain Conditions
-Conditions that must remain true to keep the transformation active. If conditions break, the form is automatically reverted.
-* `<sustainApparels>`: List of `ThingDef` apparel that must stay equipped.
-* `<sustainWeapons>`: List of `ThingDef` weapons that must stay equipped.
-* `<sustainHediffs>`: List of `HediffDef` that must remain on the pawn.
-* `<sustainGenes>`: List of `GeneDef` that must remain (Biotech DLC, `MayRequire`).
-* `<sustainMode>`: `All` (every condition must be met) or `Any` (at least one condition must be met).
+| Field | Type | Description |
+|-------|------|-------------|
+| `bodyType` | BodyTypeDef | Force body type (e.g., `Thin`, `Hulk`). |
+| `headType` | HeadTypeDef | Force head type. |
+| `hairColor` | Color? | Hair color override. Ignored if hair mode is `Replace`. |
+| `skinColor` | Color? | Skin color override. Ignored if body mode is `Replace`. |
 
-## 10. Additions (Hediffs & Abilities)
-Grant temporary powers or status effects while transformed.
-* `<addAbilities>`: List of `AbilityDef` to grant. Supports `MayRequire` for DLC-conditional abilities.
-* `<addHediffs>`: List of `HediffAddEntry`:
-    * `<hediff>`: The `HediffDef` to apply.
-    * `<targetPart>`: Specific `BodyPartDef` to target (applies to all matching parts, e.g., both arms).
-    * `<targetGroups>`: List of `BodyPartGroupDef` to target.
-    * `<severity>`: Initial severity value.
-    * `<addedPartPolicy>`: How to handle missing parts or bionics:
-        * `ForceAdd` — overwrite everything (destroy bionics, restore missing parts, then apply).
-        * `StrictFleshOnly` — fail if the part has bionics or is missing.
-        * `RegrowFleshOnly` — restore missing parts but leave bionics alone.
+### 10. Sustain Conditions
 
-## 11. Combat & Work
+Conditions that must stay true to keep the form active. Breaking them auto-reverts.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `sustainApparels` | List\<ThingDef\> | Must remain equipped. |
+| `sustainWeapons` | List\<ThingDef\> | Must remain equipped. |
+| `sustainHediffs` | List\<HediffDef\> | Must remain on pawn. |
+| `sustainGenes` | List\<GeneDef\> | Must remain (Biotech). |
+| `sustainMode` | SustainMode? | `All` (every condition) or `Any` (at least one). |
+
+### 11. Additions (Hediffs & Abilities)
+
+Granted while transformed. Automatically removed on revert.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `addAbilities` | List\<AbilityDef\> | Abilities granted during transformation. Supports `MayRequire`. |
+| `addHediffs` | List\<HediffAddEntry\> | Hediffs applied during transformation (tracked — removed on revert). |
+
+**HediffAddEntry fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `hediff` | HediffDef | The hediff to apply. |
+| `targetPart` | BodyPartDef | Apply to all matching body parts (e.g., both arms). |
+| `targetGroups` | List\<BodyPartGroupDef\> | Apply to parts in these groups. |
+| `severity` | float? | Initial severity. |
+| `addedPartPolicy` | AddedPartPolicy | `ForceAdd` (overwrite bionics/restore missing), `StrictFleshOnly` (fail if bionic/missing), `RegrowFleshOnly` (restore missing, skip bionics). |
+
+### 12. Combat
+
 **Verbs & Tools:**
-* `<verbs>`: List of `VerbProperties` to add (ranged/melee attacks).
-* `<tools>`: List of `Tool` to add (melee tools).
-* `<replaceNativeVerbs>`: Set to `true` to disable the pawn's original verbs and solely use the form's verbs.
-* `<replaceNativeTools>`: Set to `true` to replace the pawn's ThingDef tools (restored on revert).
-* `<verbGizmoOptions>`: List of `VerbGizmoOption` matched by index to `<verbs>`:
-    * `<label>`: Verb command label.
-    * `<desc>`: Verb command description.
-    * `<toggleLabel>` / `<toggleDesc>`: Auto-attack toggle button labels.
-    * `<iconPath>`: Custom icon path for the verb gizmo.
-    * `<autoAttackDefault>`: Auto-attack toggle initial value. `null` = first ranged verb ON, rest OFF.
-* `<damageSourceDef>`: `ThingDef` used as the damage source in wound labels (e.g., `Warg` → "Warg teeth"). `null` uses default pawn label.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `verbs` | List\<VerbProperties\> | Additional ranged/melee attacks. |
+| `tools` | List\<Tool\> | Additional melee tools. |
+| `replaceNativeVerbs` | bool? | `true` = disable pawn's original verbs. |
+| `replaceNativeTools` | bool? | `true` = replace pawn's ThingDef tools (restored on revert). |
+| `damageSourceDef` | ThingDef | Wound label source (e.g., `Warg` → "Warg teeth"). |
+
+**Verb Gizmo Options** (`verbGizmoOptions`, matched by index to `verbs`):
+
+| Field | Description |
+|-------|-------------|
+| `label` / `desc` | Verb command label and description. |
+| `toggleLabel` / `toggleDesc` | Auto-attack toggle button text. |
+| `iconPath` | Custom icon path. |
+| `autoAttackDefault` | Auto-attack toggle initial value. `null` = first ranged ON, rest OFF. |
 
 **Work Restrictions:**
-* `<disabledWorkTypesOnTransform>`: List of `WorkTypeDef` to disable (e.g., `Firefighter`).
-* `<disabledWorkTagsOnTransform>`: `WorkTags` flags to disable (e.g., `Violent`, `Crafting`). Multiple values can be listed with `<li>` tags.
-* `<suppressIdeologyUncoveredThoughts>`: Prevents negative mood thoughts about being "naked" when the form forces gear dropping. (Default: `true`).
 
-## 12. VFX, SFX & UI
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `disabledWorkTypesOnTransform` | List\<WorkTypeDef\> | — | Specific work types to disable. |
+| `disabledWorkTagsOnTransform` | WorkTags | None | Work tag flags to disable (e.g., `Violent`, `Crafting`). |
+| `suppressIdeologyUncoveredThoughts` | bool | true | Suppress "naked" mood thoughts from gear removal. |
+
+### 13. VFX & Sound
 
 **Duration & Revert:**
-* `<durationTicks>`: How long the form lasts. Leave blank for infinite. (60,000 ticks = 1 in-game day).
-* `<canRevertVoluntarily>`: If `false`, the pawn cannot manually revert via gizmo (for debuff/curse forms). (Default: `true`).
-* `<revertOnDowned>`: If `true`, the form is automatically reverted when the pawn is downed (incapacitated). (Default: `false`).
-* `<revertDrops>`: List of `ThingDefCountClass` items to drop when the form is reverted (e.g., shed skin, crystals). Each entry: `<thingDef>` + `<count>`.
-* `<revertAddHediffs>`: List of `HediffDef` to apply when the form is reverted (e.g., fatigue, exhaustion). These are **not tracked** by the framework — they follow vanilla hediff lifecycle (natural recovery/expiry).
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `durationTicks` | int? | null (infinite) | Form duration in ticks. 60000 = 1 in-game day. |
+| `canRevertVoluntarily` | bool | true | `false` = no revert gizmo (forced/curse forms). |
+| `revertOnDowned` | bool | false | Auto-revert on incapacitation. |
+| `revertDrops` | List\<ThingDefCountClass\> | — | Items dropped on revert (shed skin, crystals, etc.). |
+| `revertAddHediffs` | List\<HediffDef\> | — | Hediffs applied on revert (fatigue, etc.). **Not tracked** — follows vanilla lifecycle. |
 
 **Gizmo Icons:**
-* `<gizmoIconPathEnter>` / `<gizmoIconPathRevert>`: Custom icons for the transform/revert buttons.
+- `gizmoIconPathEnter` / `gizmoIconPathRevert` — custom button icons.
 
-**Transform Sounds:**
-* `<transformEnterSound>` / `<transformExitSound>`: Audio played upon transforming/reverting.
+**Transform FX (one-shot on enter/exit):**
 
-**Transform Effecters:**
-* `<transformEnterEffecter>` / `<transformExitEffecter>`: Effecter VFX played on transform/revert.
+| Field | Description |
+|-------|-------------|
+| `transformEnterSound` / `transformExitSound` | SoundDef on transform/revert. |
+| `transformEnterEffecter` / `transformExitEffecter` | EffecterDef on transform/revert. |
+| `transformEnterFleck` / `transformExitFleck` | FleckDef particles. |
+| `transformEnterFleckCount` / `transformExitFleckCount` | Particle count (0 = disabled). |
+| `transformEnterFleckScale` / `transformExitFleckScale` | Particle scale (default 1.0). |
+| `transformEnterFxDelayTicks` / `transformExitFxDelayTicks` | Delay before FX plays. |
+| `transformFxCooldownTicks` | Cooldown between same FX (default 30). |
 
-**Transform Flecks (lightweight particles):**
-* `<transformEnterFleck>` / `<transformExitFleck>`: `FleckDef` to spawn.
-* `<transformEnterFleckCount>` / `<transformExitFleckCount>`: Number of fleck particles (0 = disabled).
-* `<transformEnterFleckScale>` / `<transformExitFleckScale>`: Fleck particle scale (Default: 1.0).
+**Ambient VFX (continuous during transformation):**
 
-**Timing & Spam Prevention:**
-* `<transformEnterFxDelayTicks>` / `<transformExitFxDelayTicks>`: Delay before playing FX (in ticks).
-* `<transformFxCooldownTicks>`: Cooldown before the same FX can play again (Default: 30 ticks).
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `ambientEffecter` | EffecterDef | — | Persistent effecter, ticked every frame (aura, smoke). Auto-cleaned on revert. |
+| `ambientFleck` | FleckDef | — | Periodically spawned fleck (sparks, fire). |
+| `ambientFleckIntervalTicks` | int | 60 | Spawn interval in ticks. |
+| `ambientFleckScale` | float | 1.0 | Fleck scale. |
 
-**Ambient VFX (continuous effects during transformation):**
-* `<ambientEffecter>`: `EffecterDef` that plays every tick via `EffectTick` (aura, smoke, etc.). Automatically created/cleaned up.
-* `<ambientFleck>`: `FleckDef` spawned periodically at the pawn's position (sparks, fire puffs, etc.).
-* `<ambientFleckIntervalTicks>`: Interval in ticks between `ambientFleck` spawns (Default: 60 = 1 second).
-* `<ambientFleckScale>`: Scale of the ambient fleck (Default: 1.0).
+### 14. Voice & Blood
 
-## 13. Voice & Blood
-**Voice overrides (replace pawn vocalizations while transformed):**
-* `<soundCall>`: Idle call sound.
-* `<soundWounded>`: Pain/injured sound.
-* `<soundDeath>`: Death sound.
-* `<soundAngry>`: Anger sound.
-* `<soundEating>`: Eating sound.
+**Voice (replace pawn vocalizations):**
+- `soundCall`, `soundWounded`, `soundDeath`, `soundAngry`, `soundEating`
 
-**Melee combat sounds:**
-* `<soundMeleeHitPawn>`: Melee hit on pawn sound.
-* `<soundMeleeHitBuilding>`: Melee hit on building sound.
-* `<soundMeleeMiss>`: Melee miss sound.
+**Melee Sounds:**
+- `soundMeleeHitPawn`, `soundMeleeHitBuilding`, `soundMeleeMiss`
 
 **Blood & Flesh:**
-* `<bloodDef>`: `ThingDef` for blood filth when injured.
-* `<bloodSmearDef>`: `ThingDef` for blood smear when crawling.
-* `<fleshType>`: `FleshTypeDef` override (e.g., `Insectoid`). Changes wound textures and related behavior.
 
-## 14. Compatibility
+| Field | Type | Description |
+|-------|------|-------------|
+| `bloodDef` | ThingDef | Blood filth on injury. |
+| `bloodSmearDef` | ThingDef | Blood smear when crawling. |
+| `fleshType` | FleshTypeDef | Flesh type override (e.g., `Insectoid`). |
 
-**Humanoid Alien Races (HAR):**
-* `<showHarAddons>`: If `true`, HAR BodyAddons remain visible after transforming. (Default: `false`). `MayRequire: erdelf.HumanoidAlienRaces`
+### 15. Mod Compatibility
+
+**HAR (Humanoid Alien Races):**
+- `showHarAddons` (bool, default false) — keep BodyAddons visible. `MayRequire: erdelf.HumanoidAlienRaces`
 
 **Facial Animation:**
-All fields below use `MayRequire: Nals.FacialAnimation`:
-* `<faHeadTypeDef>`: Replace facial head type.
-* `<faEyeballTypeDef>`: Replace eyeball type.
-* `<faLidTypeDef>`: Replace eyelid type.
-* `<faBrowTypeDef>`: Replace eyebrow type.
-* `<faMouthTypeDef>`: Replace mouth type.
-* `<faSkinTypeDef>`: Replace skin type.
-* `<faEyeColor>` / `<faEyeColor2>`: Override eye colors (`ColorInt`).
+All fields `MayRequire: Nals.FacialAnimation`:
+- `faHeadTypeDef`, `faEyeballTypeDef`, `faLidTypeDef`, `faBrowTypeDef`, `faMouthTypeDef`, `faSkinTypeDef`
+- `faEyeColor` / `faEyeColor2` (ColorInt)
 
-**Simple Sidearms:**
-* No XML fields required. Compatibility is automatic.
-* On transformation: the pawn's sidearm memory is backed up and cleared to prevent Simple Sidearms from interfering with weapon swap logic.
-* On revert: the original sidearm memory is restored, so the pawn remembers the same weapons as before transformation.
+**Simple Sidearms:** Automatic — no XML needed. Weapon memory is backed up on transform and restored on revert.
 
 ---
 
-## Ability & Trigger System
+## Trigger System
 
-The FormDef itself does **not** contain cast conditions or trigger logic. These are handled by separate components:
+The FormDef defines **what** the form looks like. **How** and **when** it activates is handled separately:
 
 ### CompProperties_AbilityShapeshift
-Attached to an `AbilityDef`'s `<comps>` to define the shift effect:
-* `<formDefName>`: The `ShapeshiftFormDef` defName to apply.
-* `<successChance>`: Probability of transformation (0.0–1.0, Default: 1.0).
-* `<allowedRaces>` / `<disallowedRaces>`: List of `ThingDef` — restrict which races can cast.
-* `<allowedMutants>` / `<disallowedMutants>`: List of `MutantDef` (Anomaly DLC) — restrict by mutant type.
-* `<allowedFromForms>`: List of `string` (FormDef defNames) — while transformed, only allow casting from these forms. If null/empty: ability is **disabled (grayed out)** while transformed. Same-form recast is always hidden regardless.
 
-### Ability Acquisition Sources
+Attach to an `AbilityDef`'s `<comps>`:
 
-| Source | Component | Description |
-|--------|-----------|-------------|
-| **Gene** | `GeneDef.abilities` | Biotech DLC. Gene grants ability automatically. |
-| **Hediff** | `HediffCompProperties_GiveAbility` | Vanilla pattern. Hediff grants ability while present. |
-| **Item (inventory/equipped)** | `CompProperties_GiveAbility_Shapeshift` | Custom. `requireEquipped=true` for equipped only, `false` for inventory possession. |
-| **Drug** | `IngestionOutcomeDoer_Shapeshift` | Drug ingestion triggers shift directly (no ability). Fields: `formDefName`, `successChance`. |
-| **Scroll/UseItem** | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Fields: `formDefName`, `successChance`. |
-| **Projectile** | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `formDefName`, `successChance`, `aoeRadius`, `affectAllies`. |
+| Field | Type | Description |
+|-------|------|-------------|
+| `formDefName` | string | FormDef defName to apply. |
+| `successChance` | float | Success probability (default 1.0). |
+| `allowedRaces` / `disallowedRaces` | List\<ThingDef\> | Caster race filter. |
+| `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | Caster mutant filter (Anomaly). |
+| `allowedFromForms` | List\<string\> | Forms from which this ability can be cast while transformed. Empty = disabled while transformed. |
+
+### Acquisition Sources
+
+| Source | Component | Trigger |
+|--------|-----------|---------|
+| Gene | `GeneDef.abilities` | Gene grants ability (Biotech). |
+| Hediff | `HediffCompProperties_GiveAbility` | Hediff grants ability while present. |
+| Item (equipped) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=true`) | Equipped item grants ability. |
+| Item (inventory) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=false`) | Inventory item grants ability. |
+| Drug | `IngestionOutcomeDoer_Shapeshift` | Drug triggers shift directly. |
+| Scroll/UseItem | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. |
+| Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `aoeRadius`, `affectAllies`. |
 
 ### HediffComp_AutoShift (Conditional Auto-Shift)
-A `HediffComp` that automatically triggers transformation when conditions are met. Attach to any `HediffDef` — works with genes (via `GeneDef.hediffDef`), drugs, events, etc.
 
-**Properties** (`HediffCompProperties_AutoShift`):
-* `<formDefName>`: The `ShapeshiftFormDef` defName to transform into.
-* `<healthThreshold>`: Trigger when health percent falls below this value. Omit to disable. E.g., `0.3` = 30%.
-* `<triggerMentalStates>`: List of `MentalStateDef` — trigger when pawn enters one of these mental states (e.g., `Berserk`).
-* `<triggerSunGlowBelow>`: Trigger when `SunGlow` is below this value (adapts to biome/season). Omit to disable. E.g., `0.5` = night, `0.3` = deep night.
-* `<triggerInCombat>`: If `true`, trigger when pawn is in combat (drafted or recently attacked) and enemies are nearby. Works for both player pawns and NPCs. (Default: `false`).
-* `<checkIntervalTicks>`: How often to check conditions (Default: 120 = 2 seconds).
-* `<successChance>`: Probability of shift per check when conditions are met (Default: 1.0).
-* `<triggerOnce>`: If `true`, the hediff removes itself after triggering (Default: `false`).
+Attach `HediffCompProperties_AutoShift` to any HediffDef. Triggers transformation automatically when conditions are met.
 
-**Logic**: All conditions are OR — any single condition being met triggers the shift. Already-transformed pawns are skipped.
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `formDefName` | string | — | FormDef to shift into. |
+| `healthThreshold` | float | 0 (disabled) | Trigger below this health %. E.g., `0.3` = 30%. |
+| `triggerMentalStates` | List\<MentalStateDef\> | — | Trigger on these mental states. |
+| `triggerSunGlowBelow` | float | 0 (disabled) | Trigger when sun glow is below this value. `0.5` = night. |
+| `triggerInCombat` | bool | false | Trigger when drafted/attacked and enemies nearby. |
+| `checkIntervalTicks` | int | 120 | Check interval (120 = 2 seconds). |
+| `successChance` | float | 1.0 | Shift probability per check. |
+| `triggerOnce` | bool | false | Remove hediff after first trigger. |
+
+**Logic:** Conditions are OR — any single match triggers the shift. Already-transformed pawns are skipped.
 
 ```xml
 <HediffDef>
   <defName>Curse_Werewolf</defName>
-  <label>werewolf curse</label>
   <hediffClass>HediffWithComps</hediffClass>
+  <label>werewolf curse</label>
   <isBad>false</isBad>
   <comps>
     <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
       <formDefName>WerewolfForm</formDefName>
       <healthThreshold>0.3</healthThreshold>
       <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
-      <checkIntervalTicks>120</checkIntervalTicks>
       <successChance>0.8</successChance>
     </li>
   </comps>
 </HediffDef>
 ```
 
-### Multi-Stage Transformation (addAbilities chain)
-Use `<addAbilities>` to grant a stage-2 transformation ability only while in stage-1 form.
-**Important**: The stage-2 ability must have `<allowedFromForms>` listing the stage-1 form, otherwise it will be grayed out while transformed.
+### Multi-Stage Chains
+
+Use `addAbilities` to grant a stage-2 ability only while in stage-1 form. The stage-2 ability must list stage-1 in `allowedFromForms`.
+
 ```
-Stage 1 (BeastkinForm) → addAbilities: [FullBeast ability]
-  → Pawn gains FullBeast ability while in Beastkin form
+Stage 1 (BeastkinForm) → addAbilities grants [FullBeast ability]
   → FullBeast ability has allowedFromForms: [BeastkinForm]
-  → Using FullBeast ability → enters FullBeastForm
-  → Reverting BeastkinForm → removes FullBeast ability
+  → Pawn uses FullBeast → enters FullBeastForm
+  → Reverting BeastkinForm removes FullBeast ability
 ```
 
 ---
 
-## Abstract Base Forms
-
-The framework provides three abstract base forms in `SSF_BaseForms.xml`:
-
-| Base | Equipment | Apparel Hiding | Use Case |
-|------|-----------|----------------|----------|
-| `SSF_BaseForm_Animal` | Drop all | Hide all apparel/weapons/head/hair/beard | Full animal replacement |
-| `SSF_BaseForm_Humanoid` | Keep all | Hide overhead apparel only | Humanlike with additions |
-| `SSF_BaseForm_Armored` | Keep all | None (keep all visible) | Equipment-focused forms |
-
----
-
-## Complete XML Example
+## Complete Example
 
 ```xml
 <Defs>
-  <!-- Step 1: Define the main hediff for stats -->
+  <!-- 1. Hediff for stats (optional) -->
   <HediffDef>
     <defName>SSF_WolfFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>wolf form</label>
-    <description>Transformed into a wolf.</description>
     <isBad>false</isBad>
     <stages>
       <li>
@@ -362,32 +416,22 @@ The framework provides three abstract base forms in `SSF_BaseForms.xml`:
           <MoveSpeed>2.5</MoveSpeed>
           <ArmorRating_Sharp>0.4</ArmorRating_Sharp>
         </statOffsets>
-        <capMods>
-          <li><capacity>Moving</capacity><postFactor>1.30</postFactor></li>
-        </capMods>
       </li>
     </stages>
   </HediffDef>
 
-  <!-- Step 2: Define the form -->
+  <!-- 2. Form definition -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSF_WolfForm</defName>
     <label>Wolf Form</label>
-    <description>A powerful wolf form. Drops weapons and runs fast.</description>
+    <description>A powerful wolf form.</description>
     <linkedHediff>SSF_WolfFormHediff</linkedHediff>
 
     <bodyDrawScale>1.5</bodyDrawScale>
-    <portraitDrawScale>0.8</portraitDrawScale>
-
-    <apparelOnTransform>Drop</apparelOnTransform>
-    <weaponsOnTransform>Drop</weaponsOnTransform>
-
     <body>
       <mode>Replace</mode>
       <replacementTexPath>Things/Pawn/Animal/Wolf/Wolf</replacementTexPath>
     </body>
-    <head><mode>Hidden</mode></head>
-    <hair><mode>Hidden</mode></hair>
 
     <replaceNativeTools>true</replaceNativeTools>
     <tools>
@@ -400,16 +444,13 @@ The framework provides three abstract base forms in `SSF_BaseForms.xml`:
       </li>
     </tools>
 
-    <transformEnterFleck>ExplosionFlash</transformEnterFleck>
-    <transformEnterFleckCount>3</transformEnterFleckCount>
     <soundWounded>Pawn_Dog_Injured</soundWounded>
     <bloodDef>Filth_Blood</bloodDef>
-
-    <gizmoIconPathEnter>UI/Commands/TransformWolf</gizmoIconPathEnter>
     <durationTicks>30000</durationTicks>
+    <gizmoIconPathEnter>UI/Commands/TransformWolf</gizmoIconPathEnter>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- Step 3: Define the ability -->
+  <!-- 3. Ability to trigger the form -->
   <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSF_Ability_Wolf</defName>
     <label>wolf shift</label>
@@ -418,7 +459,6 @@ The framework provides three abstract base forms in `SSF_BaseForms.xml`:
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSF_WolfForm</formDefName>
-        <successChance>1.0</successChance>
       </li>
     </comps>
   </AbilityDef>

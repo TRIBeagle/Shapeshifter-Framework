@@ -1,9 +1,8 @@
 // ShapeshifterFramework | Root | ShapeshiftFormDef.cs
-// 목적 : 변신 폼(Form)의 비주얼·장비·도구·사운드·VFX 등 정적 데이터를 정의하는 최상위 XML 데이터 구조체(Schema).
-// 용도 : 스탯/능력치 보정은 linkedHediff의 HediffDef stages에서 바닐라 패턴으로 정의.
-//        어빌리티 부여는 유전자/헤디프/아이템(CompGiveAbility_Shapeshift) 등 소스가 담당.
-//        캐스트 조건(종족/뮤턴트/제노타입)은 AbilityDef의 CompAbilityEffect_Shapeshift에서 검사.
-// 주의 : 이 클래스의 데이터는 XML 로드 시 확정되며, 런타임 게임 플레이 도중 수정(오염)되지 않도록 철저히 읽기 전용(Read-only) 데이터로 취급해야 함.
+// 목적 : 변신 폼(Form)의 비주얼·장비·도구·사운드·VFX 등 정적 데이터를 정의하는 최상위 XML Def.
+// 용도 : 모더가 XML로 폼을 정의하면, CompShapeshifter가 이 데이터를 읽어 변신을 적용/해제.
+//        스탯 보정이 필요하면 linkedHediff(선택)에 바닐라 HediffDef stages를 설정.
+// 주의 : XML 로드 시 확정되는 읽기 전용 데이터. 런타임에 수정 금지.
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;
@@ -87,11 +86,12 @@ namespace ShapeshifterFramework
         public AddedPartPolicy addedPartPolicy = AddedPartPolicy.ForceAdd;
     }
 
-    /// <summary>변신 폼 Def. 비주얼/장비/도구/사운드/VFX 및 변신 상태(linkedHediff) 정의.</summary>
+    /// <summary>변신 폼 Def. 비주얼/장비/도구/사운드/VFX 등 폼 전체 정의.</summary>
     public class ShapeshiftFormDef : Def
     {
-        // ── 메인 헤디프: 변신 상태를 나타냄. 제거 시 자동 해제.
-        // 스탯/능력치 보정은 이 HediffDef의 stages에서 바닐라 패턴으로 정의.
+        // ── 연동 헤디프 (선택). 지정 시 변신 중 이 hediff가 부여되며, 외부에서 제거하면 변신이 자동 해제됨.
+        // 스탯/능력치 보정이 필요하면 이 HediffDef의 stages에 바닐라 패턴(statOffsets/statFactors/capMods)으로 정의.
+        // null이면 hediff 없이 변신만 적용 — 순수 비주얼/장비/도구 변신에 적합.
         public HediffDef linkedHediff;
 
         /// <summary>이 폼을 적용받을 수 있는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
