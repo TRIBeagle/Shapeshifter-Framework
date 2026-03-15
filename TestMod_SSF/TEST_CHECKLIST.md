@@ -70,7 +70,7 @@
 - [ ] `[A]` 2-AV3. timer(15000틱)
 
 ### 수동 확인
-- [ ] `[M]` 2-2. 근접 사운드: 히트(폰)=Shot_Charge_Blaster, 히트(건물)=Explosion_EMP, 미스=Pawn_Mech_Scyther_Call
+- [ ] `[M]` 2-2. 근접 사운드: 히트(폰)=SmallScratch_HitPawn, 히트(건물)=SmallScratch_HitBuilding, 미스=SmallScratch_Miss
 - [ ] `[M]` 2-3. 진입 Effecter Vaporize_Heatwave / 해제 ImpactSmallDustCloud
 - [ ] `[M]` 2-4. 커스텀 기즈모 아이콘
 - [ ] `[M]` 2-5. 장비 유지 (Keep)
