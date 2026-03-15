@@ -137,6 +137,9 @@ namespace ShapeshifterFramework.Utilities
                 {
                     try { existing.Severity = opt.severity.Value; } catch (System.Exception ex) { Log.Warning($"[SSF] Set severity failed (existing): {opt.hediff.defName} — {ex.Message}"); }
                 }
+                // 기존 hediff도 추적 리스트에 등록하여 해제 시 제거 가능하게 함
+                if (outTempAddedHediffs != null) outTempAddedHediffs.Add(existing);
+                if (outTempAddedHediffsDefCache != null) outTempAddedHediffsDefCache.Add(opt.hediff);
                 ShapeshiftDiagnostics.Info($"Update existing: {opt.hediff.defName} {(part?.Label ?? "FullBody")}");
                 return false;
             }
