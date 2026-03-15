@@ -29,7 +29,7 @@ namespace ShapeshifterFramework.Patches
             CellRect normalRect = viewRect.ExpandedBy(1);
 
             // 변신 폰 순회 — 보통 0~수 명이므로 성능 영향 무시 가능
-            foreach (var entry in ShapeshiftRegistry.ActiveEntries())
+            foreach (var entry in ShapeshiftRegistry.ActiveDict)
             {
                 Pawn pawn = entry.Key;
                 if (pawn == null || !pawn.Spawned || pawn.Map != ___map) continue;
@@ -55,7 +55,8 @@ namespace ShapeshifterFramework.Patches
                     // 안개(fog) 체크
                     if (___map.fogGrid != null && ___map.fogGrid.IsFogged(pos)) continue;
 
-                    pawn.Draw();
+                    // Thing.DrawNowOrLater 대신 DynamicDraw 호출
+                    ((Thing)pawn).DynamicDrawPhaseAt(DrawPhase.Draw, pawn.DrawPos, false);
                 }
             }
         }

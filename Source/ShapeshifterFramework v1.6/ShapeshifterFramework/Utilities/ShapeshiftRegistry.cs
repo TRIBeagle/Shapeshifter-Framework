@@ -54,11 +54,8 @@ namespace ShapeshifterFramework.Utilities
             return _active.Count > 0;
         }
 
-        /// <summary>활성 엔트리 순회용. DynamicDrawManager 보조 드로우 등에서 사용.</summary>
-        internal static Dictionary<Pawn, CompShapeshifter>.Enumerator ActiveEntries()
-        {
-            return _active.GetEnumerator();
-        }
+        /// <summary>활성 딕셔너리 직접 참조. DynamicDrawManager 보조 드로우 등에서 사용.</summary>
+        internal static Dictionary<Pawn, CompShapeshifter> ActiveDict => _active;
 
         /// <summary>게임 리셋/맵 전환 시 전체 초기화.</summary>
         internal static void Clear()
