@@ -15,7 +15,7 @@ namespace ShapeshifterFramework.Comps
         public string formDefName;
         public float successChance = 1.0f;
 
-        // ── 캐스트 조건 (FormDef에서 이전) ──
+        // ── 캐스트 조건: 종족/뮤턴트 필터 ──
         // 조건 미충족 시 ShouldHideGizmo → true, CanApplyOn → false
         public List<ThingDef> allowedRaces;
         public List<ThingDef> disallowedRaces;
