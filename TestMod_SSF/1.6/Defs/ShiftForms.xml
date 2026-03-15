@@ -90,7 +90,7 @@
     <canRevertVoluntarily>true</canRevertVoluntarily>
     <!-- 사운드 오버라이드 -->
     <soundAngry>Pawn_Bear_Angry</soundAngry>
-    <soundMeleeHitPawn>Shot_Charge_Blaster</soundMeleeHitPawn>
+    <soundMeleeHitPawn>Pawn_Melee_SmallScratch</soundMeleeHitPawn>
     <soundMeleeHitBuilding>Explosion_EMP</soundMeleeHitBuilding>
     <soundMeleeMiss>Pawn_Mech_Scyther_Call</soundMeleeMiss>
     <!-- 이펙트 -->
