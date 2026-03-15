@@ -54,9 +54,10 @@ namespace ShapeshifterFramework.Patches
                 if (target == null) continue;
 
                 bool isApparel = target is Apparel;
+                // def.IsWeapon 우선 체크 — true이면 TryGetComp 호출 불필요 (short-circuit)
                 bool isWeaponThing = target is ThingWithComps twc
                                      && twc.def != null
-                                     && (twc.def.IsWeapon || twc.TryGetComp<CompEquippable>() != null);
+                                     && twc.def.IsWeapon;
 
                 if ((isApparel && lockApparel) || (isWeaponThing && lockWeapon))
                 {

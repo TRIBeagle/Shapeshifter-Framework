@@ -119,14 +119,18 @@ namespace ShapeshifterFramework.Compat
         {
             if (!Active || pawn == null || dst == null) return;
 
-            dst.head = GetFADefName(pawn, "HeadControllerComp");
-            dst.eyeball = GetFADefName(pawn, "EyeballControllerComp");
-            dst.lid = GetFADefName(pawn, "LidControllerComp");
-            dst.brow = GetFADefName(pawn, "BrowControllerComp");
-            dst.mouth = GetFADefName(pawn, "MouthControllerComp");
-            dst.skin = GetFADefName(pawn, "SkinControllerComp");
+            // AllComps 1회 순회로 6개 컨트롤러 일괄 수집
+            var comps = GetTmpComps();
+            FindAllFAControllerComps(pawn, comps);
 
-            var eyeComp = FindFAControllerComp(pawn, "EyeballControllerComp");
+            dst.head = GetFADefName(comps[0]);
+            dst.eyeball = GetFADefName(comps[1]);
+            dst.lid = GetFADefName(comps[2]);
+            dst.brow = GetFADefName(comps[3]);
+            dst.mouth = GetFADefName(comps[4]);
+            dst.skin = GetFADefName(comps[5]);
+
+            var eyeComp = comps[1]; // EyeballControllerComp
             if (eyeComp != null)
             {
                 var c1 = ShapeshiftReflectionCache.GetInstanceProperty<Color>(eyeComp, "FaceColor");
@@ -141,17 +145,21 @@ namespace ShapeshifterFramework.Compat
         {
             if (!Active || pawn == null || form == null) return;
 
-            ApplyDefByName(pawn, "HeadControllerComp", form.faHeadTypeDef);
-            ApplyDefByName(pawn, "EyeballControllerComp", form.faEyeballTypeDef);
-            ApplyDefByName(pawn, "LidControllerComp", form.faLidTypeDef);
-            ApplyDefByName(pawn, "BrowControllerComp", form.faBrowTypeDef);
-            ApplyDefByName(pawn, "MouthControllerComp", form.faMouthTypeDef);
-            ApplyDefByName(pawn, "SkinControllerComp", form.faSkinTypeDef);
+            // AllComps 1회 순회로 6개 컨트롤러 일괄 수집
+            var comps = GetTmpComps();
+            FindAllFAControllerComps(pawn, comps);
+
+            ApplyDefByComp(comps[0], "HeadControllerComp", form.faHeadTypeDef);
+            ApplyDefByComp(comps[1], "EyeballControllerComp", form.faEyeballTypeDef);
+            ApplyDefByComp(comps[2], "LidControllerComp", form.faLidTypeDef);
+            ApplyDefByComp(comps[3], "BrowControllerComp", form.faBrowTypeDef);
+            ApplyDefByComp(comps[4], "MouthControllerComp", form.faMouthTypeDef);
+            ApplyDefByComp(comps[5], "SkinControllerComp", form.faSkinTypeDef);
 
             // 눈 색상 적용
             if (form.faEyeColor.HasValue || form.faEyeColor2.HasValue)
             {
-                var eyeComp = FindFAControllerComp(pawn, "EyeballControllerComp");
+                var eyeComp = comps[1]; // EyeballControllerComp
                 if (eyeComp != null)
                 {
                     bool any = false;
@@ -189,16 +197,20 @@ namespace ShapeshifterFramework.Compat
         {
             if (!Active || pawn == null || src == null || src.IsEmpty) return;
 
-            ApplyDefByName(pawn, "HeadControllerComp", src.head);
-            ApplyDefByName(pawn, "EyeballControllerComp", src.eyeball);
-            ApplyDefByName(pawn, "LidControllerComp", src.lid);
-            ApplyDefByName(pawn, "BrowControllerComp", src.brow);
-            ApplyDefByName(pawn, "MouthControllerComp", src.mouth);
-            ApplyDefByName(pawn, "SkinControllerComp", src.skin);
+            // AllComps 1회 순회로 6개 컨트롤러 일괄 수집
+            var comps = GetTmpComps();
+            FindAllFAControllerComps(pawn, comps);
+
+            ApplyDefByComp(comps[0], "HeadControllerComp", src.head);
+            ApplyDefByComp(comps[1], "EyeballControllerComp", src.eyeball);
+            ApplyDefByComp(comps[2], "LidControllerComp", src.lid);
+            ApplyDefByComp(comps[3], "BrowControllerComp", src.brow);
+            ApplyDefByComp(comps[4], "MouthControllerComp", src.mouth);
+            ApplyDefByComp(comps[5], "SkinControllerComp", src.skin);
 
             if (src.eyeColor.HasValue || src.eyeColor2.HasValue)
             {
-                var eyeComp = FindFAControllerComp(pawn, "EyeballControllerComp");
+                var eyeComp = comps[1]; // EyeballControllerComp
                 if (eyeComp != null)
                 {
                     bool any = false;
@@ -225,7 +237,61 @@ namespace ShapeshifterFramework.Compat
 
         #region helpers
 
-        /// <summary>Pawn에서 FA 컨트롤러 컴프를 이름으로 탐색.</summary>
+        // 6개 컨트롤러 suffix 상수
+        private static readonly string[] _controllerSuffixes = new[]
+        {
+            "HeadControllerComp", "EyeballControllerComp", "LidControllerComp",
+            "BrowControllerComp", "MouthControllerComp", "SkinControllerComp"
+        };
+
+        /// <summary>Pawn의 AllComps를 1회만 순회하여 6개 FA 컨트롤러를 한번에 수집.</summary>
+        private static void FindAllFAControllerComps(Pawn pawn, ThingComp[] results)
+        {
+            // results 배열은 _controllerSuffixes와 동일 인덱스 (크기 6)
+            for (int i = 0; i < results.Length; i++) results[i] = null;
+            if (pawn == null) return;
+
+            var list = (pawn as ThingWithComps)?.AllComps;
+            if (list == null) return;
+
+            int found = 0;
+            for (int i = 0; i < list.Count && found < 6; i++)
+            {
+                var c = list[i]; if (c == null) continue;
+                var full = c.GetType().FullName;
+                if (string.IsNullOrEmpty(full)
+                    || !full.StartsWith("FacialAnimation", System.StringComparison.Ordinal))
+                    continue;
+
+                for (int j = 0; j < _controllerSuffixes.Length; j++)
+                {
+                    if (results[j] == null && full.EndsWith(_controllerSuffixes[j], System.StringComparison.Ordinal))
+                    {
+                        results[j] = c;
+                        found++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 재사용 배열 — 폼 전환은 메인 스레드 단일 실행이므로 스레드 안전
+        [ThreadStatic] private static ThingComp[] _tmpComps;
+        private static ThingComp[] GetTmpComps()
+        {
+            if (_tmpComps == null) _tmpComps = new ThingComp[6];
+            return _tmpComps;
+        }
+
+        /// <summary>suffix 인덱스 조회.</summary>
+        private static int ControllerIndex(string controllerSuffix)
+        {
+            for (int i = 0; i < _controllerSuffixes.Length; i++)
+                if (_controllerSuffixes[i] == controllerSuffix) return i;
+            return -1;
+        }
+
+        /// <summary>Pawn에서 FA 컨트롤러 컴프를 이름으로 탐색 (단일 호출용 폴백).</summary>
         private static ThingComp FindFAControllerComp(Pawn pawn, string controllerSuffix)
         {
             if (pawn == null) return null;
@@ -245,9 +311,8 @@ namespace ShapeshifterFramework.Compat
         }
 
         /// <summary>faceType에서 defName 반환.</summary>
-        private static string GetFADefName(Pawn pawn, string controller)
+        private static string GetFADefName(ThingComp comp)
         {
-            var comp = FindFAControllerComp(pawn, controller);
             if (comp == null) return null;
 
             Def cur = ShapeshiftReflectionCache.GetInstanceField<Def>(comp, "faceType");
@@ -255,6 +320,13 @@ namespace ShapeshifterFramework.Compat
                 cur = ShapeshiftReflectionCache.GetInstanceProperty<Def>(comp, "FaceType");
 
             return cur != null ? cur.defName : null;
+        }
+
+        /// <summary>faceType에서 defName 반환 (단일 호출 폴백).</summary>
+        private static string GetFADefName(Pawn pawn, string controller)
+        {
+            var comp = FindFAControllerComp(pawn, controller);
+            return GetFADefName(comp);
         }
 
         /// <summary>컨트롤러명에서 Def 타입 매핑.</summary>
@@ -270,7 +342,47 @@ namespace ShapeshifterFramework.Compat
             return string.IsNullOrEmpty(name) ? null : ShapeshiftReflectionCache.TryType(name);
         }
 
-        /// <summary>DefName으로 Def 조회 후 faceType에 적용.</summary>
+        /// <summary>이미 수집된 컴프에 DefName으로 Def 조회 후 faceType에 적용. AllComps 재순회 없음.</summary>
+        private static void ApplyDefByComp(ThingComp comp, string controller, string defName)
+        {
+            if (string.IsNullOrEmpty(defName)) return;
+
+            if (comp == null)
+            {
+                ReportOnceFailed("ControllerMissing:" + controller, "controller comp not found");
+                return;
+            }
+
+            // Def 타입: faceType 우선, 없으면 매핑
+            var defType = (System.Type)null;
+            Def cur = ShapeshiftReflectionCache.GetInstanceField<Def>(comp, "faceType");
+            if (cur != null) defType = cur.GetType();
+            if (defType == null) defType = MapControllerToDefType(controller);
+            if (defType == null)
+            {
+                ReportOnceFailed("ResolveDefTypeFailed:" + controller, "cannot resolve target Def type");
+                return;
+            }
+
+            var target = GenDefDatabase.GetDef(defType, defName, false);
+            if (target == null)
+            {
+                ReportOnceFailed("InvalidFA:" + controller + ":" + defName,
+                    $"def '{defName}' not found for {defType.Name}");
+                return;
+            }
+
+            if (!ShapeshiftReflectionCache.TrySetInstanceField(comp, "faceType", target))
+            {
+                ReportOnceFailed("SetFaceTypeFailed:" + controller,
+                    "set faceType failed (field missing or type mismatch)");
+                return;
+            }
+
+            MarkDirty(comp);
+        }
+
+        /// <summary>DefName으로 Def 조회 후 faceType에 적용 (단일 호출 폴백).</summary>
         private static void ApplyDefByName(Pawn pawn, string controller, string defName)
         {
             if (string.IsNullOrEmpty(defName)) return;

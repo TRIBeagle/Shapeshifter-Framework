@@ -5,6 +5,7 @@
 
 using HarmonyLib;
 using RimWorld;
+using ShapeshifterFramework.Utilities;
 using Verse;
 
 namespace ShapeshifterFramework.Patches
@@ -27,8 +28,10 @@ namespace ShapeshifterFramework.Patches
             if (__instance == null || IsWeaponVerb(__instance)) return;
 
             var pawn = __instance.CasterPawn;
-            var form = pawn?.TryGetComp<ShapeshifterFramework.Comps.CompShapeshifter>()?.currentForm;
-            if (form != null && form.soundMeleeHitPawn != null)
+            if (pawn == null) return;
+            // ShapeshiftRegistry O(1) 조회로 TryGetComp 선형 탐색 대체
+            if (!ShapeshiftRegistry.TryGet(pawn, out _, out var form)) return;
+            if (form.soundMeleeHitPawn != null)
                 __result = form.soundMeleeHitPawn;
         }
 
@@ -40,8 +43,9 @@ namespace ShapeshifterFramework.Patches
             if (__instance == null || IsWeaponVerb(__instance)) return;
 
             var pawn = __instance.CasterPawn;
-            var form = pawn?.TryGetComp<ShapeshifterFramework.Comps.CompShapeshifter>()?.currentForm;
-            if (form != null && form.soundMeleeHitBuilding != null)
+            if (pawn == null) return;
+            if (!ShapeshiftRegistry.TryGet(pawn, out _, out var form)) return;
+            if (form.soundMeleeHitBuilding != null)
                 __result = form.soundMeleeHitBuilding;
         }
 
@@ -53,8 +57,9 @@ namespace ShapeshifterFramework.Patches
             if (__instance == null || IsWeaponVerb(__instance)) return;
 
             var pawn = __instance.CasterPawn;
-            var form = pawn?.TryGetComp<ShapeshifterFramework.Comps.CompShapeshifter>()?.currentForm;
-            if (form != null && form.soundMeleeMiss != null)
+            if (pawn == null) return;
+            if (!ShapeshiftRegistry.TryGet(pawn, out _, out var form)) return;
+            if (form.soundMeleeMiss != null)
                 __result = form.soundMeleeMiss;
         }
     }
