@@ -14,13 +14,13 @@ namespace ShapeshifterFramework.Utilities
         {
             if (target == null || target.Dead) return false;
 
-            if (!ShapeshiftUtility.TryGetComp(target, out var comp))
+            if (!ShapeshiftUtility.TryGetShapeshiftComp(target, out var comp))
             {
                 Messages.Message("SSF_ShiftTarget_NoComp".Translate(target.LabelShortCap), MessageTypeDefOf.RejectInput, false);
                 return false;
             }
 
-            var form = ShapeshiftUtility.GetDefSafe<ShapeshiftFormDef>(formDefName);
+            var form = string.IsNullOrEmpty(formDefName) ? null : DefDatabase<ShapeshiftFormDef>.GetNamedSilentFail(formDefName);
             if (form == null)
             {
                 Messages.Message("SSF_ShiftTarget_MissingForm".Translate(formDefName), MessageTypeDefOf.RejectInput, false);

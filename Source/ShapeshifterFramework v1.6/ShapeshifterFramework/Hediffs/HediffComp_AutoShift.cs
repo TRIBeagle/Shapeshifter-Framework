@@ -40,7 +40,7 @@ namespace ShapeshifterFramework.Hediffs
             if (pawn == null || pawn.Dead) return;
 
             // 이미 변신 중이면 건너뜀
-            if (ShapeshiftUtility.IsShapeShifting(pawn)) return;
+            if (ShapeshiftRegistry.IsActive(pawn)) return;
 
             // 조건 판정 (OR: 하나라도 충족 시 트리거)
             if (!AnyConditionMet(pawn)) return;
