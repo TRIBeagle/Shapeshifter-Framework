@@ -38,7 +38,14 @@
 - [ ] `[M]` 1-3. 수영 시 SwimmingBear 텍스처 + 수영색 (255,255,255)
 
 ### Auto-Verify
-> `[A]` linkedHediff 스탯(이동+1.5, 근접명중x1.20, 근접회피x1.15, capMods 4종), addHediff(FibrousMechanites sev0.5, BeastArm 양팔), addAbility(Berserk), gear(apparel=Drop, weapon=Drop), verbTracker(replaceNativeTools), bloodCache, timer(15000틱)
+- [ ] `[A]` 1-AV1. linkedHediff 스탯(이동+1.5, 근접명중x1.20, 근접회피x1.15, capMods 4종)
+- [ ] `[A]` 1-AV2. addHediff(FibrousMechanites sev0.5, BeastArm 양팔)
+- [ ] `[A]` 1-AV3. addAbility(Berserk)
+- [ ] `[A]` 1-AV4. gear(apparel=Drop, weapon=Drop)
+- [ ] `[A]` 1-AV5. verbTracker(replaceNativeTools)
+- [ ] `[A]` 1-AV6. bloodCache
+- [ ] `[A]` 1-AV7. timer(15000틱)
+- [ ] `[A]` 1-AV8. [Revert] hediff 제거, bodyType 원복, addAbility 제거
 
 ### 수동 확인
 - [ ] `[M]` 1-4. 물기(teeth) 근접공격만 사용
@@ -57,7 +64,9 @@
 - [ ] `[M]` 2-1. Ability_BuffAlly 아군/자기 타겟 변신 + 쿨다운 1500틱
 
 ### Auto-Verify
-> `[A]` linkedHediff 스탯(이동+0.5, 근접회피+10, 피해배율x0.8), soundCache(Pawn_Bear_Angry), timer(15000틱)
+- [ ] `[A]` 2-AV1. linkedHediff 스탯(이동+0.5, 근접회피+10, 피해배율x0.8)
+- [ ] `[A]` 2-AV2. soundCache(Pawn_Bear_Angry)
+- [ ] `[A]` 2-AV3. timer(15000틱)
 
 ### 수동 확인
 - [ ] `[M]` 2-2. 근접 사운드: 히트(폰)=Shot_Charge_Blaster, 히트(건물)=Explosion_EMP, 미스=Pawn_Mech_Scyther_Call
@@ -77,7 +86,9 @@
 - [ ] `[M]` 3-3. 성별 텍스처 분기 (SheepMale / SheepFemale) + bodyDrawScale 0.6
 
 ### Auto-Verify
-> `[A]` linkedHediff 스탯(이동-1.0), workTags(Violent), timer(10000틱)
+- [ ] `[A]` 3-AV1. linkedHediff 스탯(이동-1.0)
+- [ ] `[A]` 3-AV2. workTags(Violent)
+- [ ] `[A]` 3-AV3. timer(10000틱)
 
 ### 수동 확인
 - [ ] `[M]` 3-4. Revert 기즈모 없음 (canRevertVoluntarily=false)
@@ -90,7 +101,13 @@
 - [ ] `[M]` 4-1. Ability_DarkKnight 자기변신 + 쿨다운 3000틱
 
 ### Auto-Verify
-> `[A]` gear(apparel=Inventory, weapon=Inventory), spawnApparel(PlateArmor), spawnWeapon(LongSword), stuff(Plasteel), equipLock(apparel=Locked, weapon=Locked), timer(18000틱)
+- [ ] `[A]` 4-AV1. linkedHediff 스탯
+- [ ] `[A]` 4-AV2. gear(apparel=Inventory, weapon=Inventory)
+- [ ] `[A]` 4-AV3. spawnApparel(PlateArmor) + spawnWeapon(LongSword)
+- [ ] `[A]` 4-AV4. stuff(Plasteel)
+- [ ] `[A]` 4-AV5. equipLock(apparel=Locked, weapon=Locked)
+- [ ] `[A]` 4-AV6. timer(18000틱)
+- [ ] `[A]` 4-AV7. [Revert] 소환장비 소멸, equipLock 해제
 
 ### 수동 확인
 - [ ] `[M]` 4-2. 변신 중 장비 교체 시도 → 차단 메시지
@@ -110,7 +127,13 @@
 - [ ] `[M]` 5-4. 오버헤드 의류 숨김, Cape/Tuque만 표시
 
 ### Auto-Verify
-> `[A]` hairColor(0.85,0.85,0.95), verbTracker(돌격소총/수류탄/화염방사/화염분사/광선빔 + claws), gear(apparel=Inventory), addHediff(FibrousMechanites), addAbility(Waterskip), workTags(Crafting+Cooking)
+- [ ] `[A]` 5-AV1. hairColor(0.85,0.85,0.95)
+- [ ] `[A]` 5-AV2. verbTracker(돌격소총/수류탄/화염방사/화염분사/광선빔 + claws)
+- [ ] `[A]` 5-AV3. gear(apparel=Inventory)
+- [ ] `[A]` 5-AV4. addHediff(FibrousMechanites)
+- [ ] `[A]` 5-AV5. addAbility(Waterskip)
+- [ ] `[A]` 5-AV6. workTags(Crafting+Cooking)
+- [ ] `[A]` 5-AV7. [Revert] hairColor/addAbility 원복
 
 ### 수동 확인
 - [ ] `[M]` 5-5. 보이스: call/death/wounded/angry/eating/melee 커스텀 사운드
@@ -128,7 +151,9 @@
 - [ ] `[M]` 6-3. 수인 해제 시 FullBeast 어빌리티 제거
 
 ### Auto-Verify
-> `[A]` linkedHediff 스탯(이동+2.0, 피해배율x0.7), verbTracker(fangs+claws, replaceNativeTools), timer(12000틱)
+- [ ] `[A]` 6-AV1. linkedHediff 스탯(이동+2.0, 피해배율x0.7)
+- [ ] `[A]` 6-AV2. verbTracker(fangs+claws, replaceNativeTools)
+- [ ] `[A]` 6-AV3. timer(12000틱)
 
 ### 수동 확인
 - [ ] `[M]` 6-4. 야수 해제 후 복귀 동작 확인
@@ -152,7 +177,8 @@
 - [ ] `[M]` 7-8. 세이브/로드 후 앰비언트 자동 재생성
 
 ### Auto-Verify
-> `[A]` linkedHediff 스탯(이동+0.3, 피해배율x0.85), timer(12000틱)
+- [ ] `[A]` 7-AV1. linkedHediff 스탯(이동+0.3, 피해배율x0.85)
+- [ ] `[A]` 7-AV2. timer(12000틱)
 
 ### 수동 확인
 - [ ] `[M]` 7-9. revertOnDowned=true → 의식 상실 시 자동 해제
@@ -167,7 +193,11 @@
 - [ ] `[M]` 8-2. 머리색 (0.7,0.8,1.0,0.5) 푸른빛 + 머리카락 숨김
 
 ### Auto-Verify
-> `[A]` bodyType(Thin), skinColor(0.7,0.8,1.0), workTypes(Firefighter), timer(10000틱)
+- [ ] `[A]` 8-AV1. bodyType(Thin)
+- [ ] `[A]` 8-AV2. skinColor(0.7,0.8,1.0)
+- [ ] `[A]` 8-AV3. workTypes(Firefighter)
+- [ ] `[A]` 8-AV4. timer(10000틱)
+- [ ] `[A]` 8-AV5. [Revert] bodyType/skinColor/headType 원복
 
 ### 수동 확인
 - [ ] `[M]` 8-3. FX 딜레이: 진입 30틱 / 해제 15틱
@@ -178,7 +208,11 @@
 ## 9. RaceLockedForm — 종족 제한, 비대칭 잠금
 
 ### Auto-Verify
-> `[A]` raceFilter(Human 통과, 비인간 차단), headType(Male_AverageNormal), equipLock(apparel=Locked, weapon=Unlocked), linkedHediff 스탯, timer(12000틱)
+- [ ] `[A]` 9-AV1. raceFilter(Human 통과, 비인간 차단)
+- [ ] `[A]` 9-AV2. headType(Male_AverageNormal)
+- [ ] `[A]` 9-AV3. equipLock(apparel=Locked, weapon=Unlocked)
+- [ ] `[A]` 9-AV4. linkedHediff 스탯
+- [ ] `[A]` 9-AV5. timer(12000틱)
 
 ### 뮤턴트 필터 (Anomaly)
 - [ ] `[M]` 9-1. formAllowedMutants → 해당 뮤턴트만 변신 가능
@@ -281,9 +315,9 @@
 
 ## 요약
 
-| 구분 | 항목 수 |
-|------|---------|
-| **[A] Auto-Verify** | ~60개 (폼별 Auto-Verify 블록) |
-| **[M] 수동 확인** | ~80개 |
+| 구분 | 항목 수 | 넘버링 |
+|------|---------|--------|
+| **[A] Auto-Verify** | ~40개 (1-AV1 ~ 9-AV5) | `섹션-AV번호` |
+| **[M] 수동 확인** | ~80개 (1-1 ~ 13-4) | `섹션-번호` |
 
-> Auto-Verify 디버그 액션 실행 시 각 ✓/✗ 항목이 카테고리별로 자동 검증됩니다.
+> Auto-Verify 로그에 체크리스트 번호가 `[X-AVn]` 형식으로 표시됩니다. 에러 발생 시 해당 번호로 체크리스트를 바로 참조하세요.
