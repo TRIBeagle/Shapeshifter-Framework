@@ -295,7 +295,7 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
 * `<healthThreshold>`: 체력 비율이 이 값 미만이면 트리거. 미기입 시 미사용. 예: `0.3` = 30%
 * `<triggerMentalStates>`: `MentalStateDef` 목록 — 이 정신 상태 중 하나 발동 시 트리거 (예: `Berserk`)
 * `<triggerSunGlowBelow>`: SunGlow가 이 값 미만이면 트리거. 바이옴/계절 자동 반영. 미기입 시 미사용. 예: `0.5`=밤, `0.3`=깊은 밤
-* `<triggerInCombat>`: `true`면 징집 상태 + 근처 적대 폰이 있을 때 트리거. (기본값: `false`)
+* `<triggerInCombat>`: `true`면 전투 중(징집 또는 최근 피격) + 근처 적대 폰이 있을 때 트리거. 플레이어 폰과 NPC 모두 작동. (기본값: `false`)
 * `<checkIntervalTicks>`: 조건 검사 간격 (기본값: 120 = 2초)
 * `<successChance>`: 조건 충족 시 변신 성공 확률 (기본값: 1.0)
 * `<triggerOnce>`: `true`면 발동 후 hediff 자체 제거 — 1회성. (기본값: `false`)

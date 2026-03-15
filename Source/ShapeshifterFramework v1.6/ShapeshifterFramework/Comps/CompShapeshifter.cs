@@ -461,7 +461,9 @@ namespace ShapeshifterFramework.Comps
                     }
                 }
                 // ── 앰비언트 VFX (지속형 이펙트) ──
-                if (pawn.Spawned)
+                // 앰비언트 필드가 없는 폼(대다수)에서는 Spawned 체크 자체를 건너뛰어 틱 부하 최소화
+                if ((currentForm.ambientEffecter != null || currentForm.ambientFleck != null)
+                    && pawn.Spawned)
                 {
                     if (currentForm.ambientEffecter != null)
                     {

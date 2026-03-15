@@ -311,7 +311,7 @@ BeastkinForm 적용
 - [ ] `[M]` healthThreshold 조건: 체력 30% 미만 → 자동 변신 트리거
 - [ ] `[M]` triggerMentalStates 조건: 지정 정신상태(Berserk) 진입 → 트리거
 - [ ] `[M]` triggerSunGlowBelow 조건: 밝기 임계값 미만(예: 0.5=밤) → 트리거, 초과 시 → 미트리거
-- [ ] `[M]` triggerInCombat 조건: 징집+적대폰 근처 → 트리거
+- [ ] `[M]` triggerInCombat 조건: 징집 또는 최근 피격 + 적대폰 근처 → 트리거 (NPC 포함)
 - [ ] `[M]` 이미 변신 중인 폰 → 재트리거 건너뜀
 - [ ] `[M]` successChance < 1.0 → 확률적 발동 확인
 - [ ] `[M]` triggerOnce=true → 발동 후 hediff 자체 제거

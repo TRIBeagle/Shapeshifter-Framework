@@ -84,10 +84,13 @@ namespace ShapeshifterFramework.Hediffs
                     return true;
             }
 
-            // 전투 조건 (징집 + 근처 적대 폰)
+            // 전투 조건: 징집 상태이거나 최근 피격(5초 이내) + 근처 적대 폰
             if (Props.triggerInCombat && pawn.Spawned)
             {
-                if (pawn.Drafted && PawnUtility.EnemiesAreNearby(pawn))
+                bool inCombat = pawn.Drafted
+                    || (pawn.mindState != null
+                        && Find.TickManager.TicksGame - pawn.mindState.lastAttackTargetTick < 300);
+                if (inCombat && PawnUtility.EnemiesAreNearby(pawn))
                     return true;
             }
 

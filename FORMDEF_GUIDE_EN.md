@@ -295,7 +295,7 @@ A `HediffComp` that automatically triggers transformation when conditions are me
 * `<healthThreshold>`: Trigger when health percent falls below this value. Omit to disable. E.g., `0.3` = 30%.
 * `<triggerMentalStates>`: List of `MentalStateDef` — trigger when pawn enters one of these mental states (e.g., `Berserk`).
 * `<triggerSunGlowBelow>`: Trigger when `SunGlow` is below this value (adapts to biome/season). Omit to disable. E.g., `0.5` = night, `0.3` = deep night.
-* `<triggerInCombat>`: If `true`, trigger when pawn is drafted and enemies are nearby. (Default: `false`).
+* `<triggerInCombat>`: If `true`, trigger when pawn is in combat (drafted or recently attacked) and enemies are nearby. Works for both player pawns and NPCs. (Default: `false`).
 * `<checkIntervalTicks>`: How often to check conditions (Default: 120 = 2 seconds).
 * `<successChance>`: Probability of shift per check when conditions are met (Default: 1.0).
 * `<triggerOnce>`: If `true`, the hediff removes itself after triggering (Default: `false`).
