@@ -197,6 +197,19 @@ namespace ShapeshifterFramework.Debugs
                 if (pawn.equipment?.Primary != null)
                     prevWeaponSnapshot.Add(pawn.equipment.Primary);
 
+                // 변신 전 addHediff 기존 존재 여부 스냅샷
+                var preExistingAddHediffs = new HashSet<HediffDef>();
+                if (form.addHediffs != null && pawn.health?.hediffSet != null)
+                {
+                    for (int h = 0; h < form.addHediffs.Count; h++)
+                    {
+                        var entry = form.addHediffs[h];
+                        if (entry?.hediff == null || entry.hediff.addedPartProps != null) continue;
+                        if (pawn.health.hediffSet.GetFirstHediffOfDef(entry.hediff) != null)
+                            preExistingAddHediffs.Add(entry.hediff);
+                    }
+                }
+
                 // 변신 시도
                 try
                 {
@@ -595,13 +608,19 @@ namespace ShapeshifterFramework.Debugs
                     else sb.AppendLine($"  ✗ [Revert] Main hediff not removed: {form.linkedHediff.defName}{cl}");
                 }
 
-                // 추가 hediff 제거 (addedPart 제외)
+                // 추가 hediff 제거 (addedPart 제외, 변신 전 기존 존재분 스킵)
                 if (form.addHediffs != null)
                 {
                     for (int h = 0; h < form.addHediffs.Count; h++)
                     {
                         var entry = form.addHediffs[h];
                         if (entry?.hediff == null || entry.hediff.addedPartProps != null) continue;
+                        // 변신 전부터 존재했던 hediff는 폼이 생성하지 않았으므로 검증 스킵
+                        if (preExistingAddHediffs.Contains(entry.hediff))
+                        {
+                            sb.AppendLine($"  ⊘ [Revert] addHediff pre-existing (skip): {entry.hediff.defName}");
+                            continue;
+                        }
                         rc++;
                         string cl = CL(fn, "R.addHediff", entry.hediff.defName);
                         if (pawn.health?.hediffSet?.GetFirstHediffOfDef(entry.hediff) == null)
