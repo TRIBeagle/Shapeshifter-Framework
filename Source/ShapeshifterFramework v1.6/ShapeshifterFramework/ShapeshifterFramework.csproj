@@ -102,6 +102,7 @@
     <Compile Include="Patches\Patch_Pawn_GetDisabledWorkTypes.cs" />
     <Compile Include="Patches\Patch_Pawn_EquipmentTracker_AddEquipment.cs" />
     <Compile Include="Patches\Patch_Pawn_ApparelTracker_Wear.cs" />
+    <Compile Include="Patches\Patch_VerbTracker_ExposeData_StripFormVerbs.cs" />
     <Compile Include="Patches\Patch_VerbTracker_InitVerbsFromZero.cs" />
     <Compile Include="Patches\Patch_Pawn_TryGetAttackVerb.cs" />
     <Compile Include="Patches\Patch_Pawn_MeleeVerbs_TryGetUpdatedMeleeVerb.cs" />
