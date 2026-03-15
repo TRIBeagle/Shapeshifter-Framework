@@ -224,21 +224,13 @@ namespace ShapeshifterFramework.Comps
             return f + "#" + idx + "#" + vName;
         }
 
-        // 기본 자동공격 상태(없으면 true)
-        bool DefaultAutoOn(int index, Verb v)
-        {
-            var o = FindGizmoOption(index, v);
-            if (o != null && o.autoAttackDefault.HasValue) return o.autoAttackDefault.Value;
-            return true; // 기본 On
-        }
-
         /// <summary>verb 자동공격 활성 여부.</summary>
         public bool IsAutoAttackEnabled(int index, Verb v)
         {
             if (v == null) return true;
             bool val;
             if (verbAutoToggle.TryGetValue(AutoKey(v), out val)) return val;
-            return DefaultAutoOn(index, v);
+            return true; // 토글 미설정 시 기본 On
         }
 
         /// <summary>자동공격 토글 전환 (배타적: ON 시 다른 ranged verb 전부 OFF).</summary>
@@ -275,41 +267,21 @@ namespace ShapeshifterFramework.Comps
             verbAutoToggle[AutoKey(v)] = true;
         }
 
-        /// <summary>폼 적용 시 배타적 토글 초기화: 첫 번째 ranged verb만 ON.</summary>
+        /// <summary>폼 적용 시 배타적 토글 초기화: 첫 번째 ranged verb만 ON, 나머지 OFF.</summary>
         private void InitAutoToggleForForm()
         {
             var vt = ShapeshiftVerbTracker;
             if (vt == null) return;
 
-            // verbGizmoOptions에 autoAttackDefault=true인 verb를 우선 탐색
-            int defaultOnIndex = -1;
-            var verbs = vt.AllVerbs;
-
-            for (int i = 0; i < verbs.Count; i++)
-            {
-                var v = verbs[i];
-                if (v == null || v.verbProps == null || !v.verbProps.Ranged) continue;
-                var o = FindGizmoOption(i, v);
-                if (o != null && o.autoAttackDefault == true)
-                {
-                    defaultOnIndex = i;
-                    break;
-                }
-            }
-
             bool firstSet = false;
+            var verbs = vt.AllVerbs;
             for (int i = 0; i < verbs.Count; i++)
             {
                 var v = verbs[i];
                 if (v == null || v.verbProps == null) continue;
                 if (!v.verbProps.Ranged) continue;
 
-                bool on;
-                if (defaultOnIndex >= 0)
-                    on = (i == defaultOnIndex);
-                else
-                    on = !firstSet; // 명시 없으면 첫 번째만 ON
-
+                bool on = !firstSet; // 첫 번째만 ON
                 verbAutoToggle[AutoKey(v)] = on;
                 if (on) firstSet = true;
             }

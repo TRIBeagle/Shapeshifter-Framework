@@ -66,7 +66,6 @@ namespace ShapeshifterFramework
         public string toggleLabel;    // 토글 버튼 라벨(없으면 label 사용)
         public string toggleDesc;     // 토글 버튼 설명(없으면 기본)
         public string iconPath;       // 지정하면 v.UIIcon 대신 이 아이콘 사용(선택)
-        public bool? autoAttackDefault; // 자동공격 토글 초기값. null이면 첫 번째 ranged verb만 ON, 나머지 OFF
     }
 
     // AddedPart 정책

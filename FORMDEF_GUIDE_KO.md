@@ -250,7 +250,7 @@
 | `label` / `desc` | Verb 명령 라벨/설명. |
 | `toggleLabel` / `toggleDesc` | 자동공격 토글 라벨/설명. |
 | `iconPath` | 커스텀 아이콘 경로. |
-| `autoAttackDefault` | 자동공격 초기값. `null` = 첫 번째 원거리 verb만 ON, 나머지 OFF. |
+자동공격 기본값: 첫 번째 원거리 verb만 ON, 나머지 OFF. 하나를 ON하면 나머지는 자동 OFF (배타적).
 
 > **다중 선택 동작:** 여러 폰 선택 시 같은 폼+verb의 사격 기즈모(`Command_VerbTarget`)는 병합됩니다. 자동사격 토글은 다중 선택 시 숨김 — 개별 폰 선택에서 설정하세요.
 

@@ -351,38 +351,32 @@
         </beamLineFleckChanceCurve>
       </li>
     </verbs>
-    <!-- ★ verbGizmoOptions -->
     <!-- ★ verbGizmoOptions: verbLabel로 verb 매칭 (순서 무관) -->
     <verbGizmoOptions>
       <li>
         <verbLabel>AssaultRifle</verbLabel>
         <label>돌격소총</label>
         <iconPath>Things/Item/Equipment/WeaponRanged/AssaultRifle</iconPath>
-        <autoAttackDefault>true</autoAttackDefault>
       </li>
       <li>
         <verbLabel>FragGrenade</verbLabel>
         <label>파편수류탄</label>
         <iconPath>Things/Item/Equipment/WeaponRanged/Grenades</iconPath>
-        <autoAttackDefault>false</autoAttackDefault>
       </li>
       <li>
         <verbLabel>ArcSprayProjectile</verbLabel>
         <label>화염방사</label>
         <iconPath>Things/Item/Equipment/WeaponRanged/InfernoCannon</iconPath>
-        <autoAttackDefault>false</autoAttackDefault>
       </li>
       <li>
         <verbLabel>SpewFire</verbLabel>
         <label>화염 분사</label>
         <iconPath>Things/Item/Equipment/WeaponRanged/IncendiaryLauncher</iconPath>
-        <autoAttackDefault>false</autoAttackDefault>
       </li>
       <li>
         <verbLabel>ShootBeam</verbLabel>
         <label>광선 빔</label>
         <iconPath>Things/Item/Equipment/WeaponRanged/ThumpCannon</iconPath>
-        <autoAttackDefault>false</autoAttackDefault>
       </li>
     </verbGizmoOptions>
     <tools>

@@ -250,7 +250,7 @@ Granted while transformed. Automatically removed on revert.
 | `label` / `desc` | Verb command label and description. |
 | `toggleLabel` / `toggleDesc` | Auto-attack toggle button text. |
 | `iconPath` | Custom icon path. |
-| `autoAttackDefault` | Auto-attack toggle initial value. `null` = first ranged ON, rest OFF. |
+Auto-attack default: first ranged verb is ON, rest OFF. Toggling one verb ON turns all others OFF (exclusive).
 
 > **Multi-select behavior:** When multiple pawns are selected, verb attack gizmos (`Command_VerbTarget`) merge for pawns with the same form+verb. Auto-attack toggles are hidden during multi-select — configure per-pawn by selecting individually.
 
