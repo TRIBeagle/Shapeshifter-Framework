@@ -214,4 +214,57 @@
     </stages>
   </HediffDef>
 
+  <!-- ======================================================
+       조건부 자동 변신 테스트 — HediffComp_AutoShift
+       이 hediff를 부여하면, 밝기 0.5 미만(밤) 또는 체력 30% 이하 시
+       80% 확률로 곰 폼으로 자동 변신
+       ====================================================== -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_AutoShiftCurse</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>beast curse (auto-shift test)</label>
+    <description>야수의 저주. 밤이 되거나 체력이 30% 이하로 떨어지면 80% 확률로 곰으로 자동 변신한다.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.9, 0.4, 0.2)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <stages>
+      <li>
+        <label>cursed</label>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
+        <formDefName>SSFTest_BearForm</formDefName>
+        <healthThreshold>0.3</healthThreshold>
+        <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
+        <checkIntervalTicks>120</checkIntervalTicks>
+        <successChance>0.8</successChance>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- 전투 자동 변신 테스트 — triggerInCombat + triggerOnce -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_CombatAutoShift</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>combat instinct (auto-shift test)</label>
+    <description>전투 본능. 전투에 돌입하면 곰 전사로 1회 자동 변신한다.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.8, 0.3, 0.3)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <stages>
+      <li>
+        <label>instinct ready</label>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
+        <formDefName>SSFTest_BearWarriorForm</formDefName>
+        <triggerInCombat>true</triggerInCombat>
+        <checkIntervalTicks>60</checkIntervalTicks>
+        <triggerOnce>true</triggerOnce>
+      </li>
+    </comps>
+  </HediffDef>
+
 </Defs>

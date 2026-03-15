@@ -41,6 +41,13 @@
     </addAbilities>
     <apparelOnTransform>Drop</apparelOnTransform>
     <weaponsOnTransform>Drop</weaponsOnTransform>
+    <!-- ★ 해제 시 잔해 드랍 테스트: 곰 변신 해제 시 인시절로이드 젤리 2개 드랍 -->
+    <revertDrops>
+      <li>
+        <thingDef>InsectJelly</thingDef>
+        <count>2</count>
+      </li>
+    </revertDrops>
     <tools>
       <li>
         <label>teeth</label>
@@ -134,6 +141,10 @@
     <weaponsOnTransform>Inventory</weaponsOnTransform>
     <apparelEquipLock>Locked</apparelEquipLock>
     <weaponEquipLock>Locked</weaponEquipLock>
+    <!-- ★ 해제 시 hediff 부여 테스트: 암흑 기사 해제 시 바닐라 FibrousMechanites 부여 (비추적) -->
+    <revertAddHediffs>
+      <li>FibrousMechanites</li>
+    </revertAddHediffs>
     <spawnApparelOnTransform>
       <li>Apparel_PlateArmor</li>
     </spawnApparelOnTransform>
@@ -454,6 +465,10 @@
       <shadowVolume>(0.6, 1.0, 0.6)</shadowVolume>
       <shadowOffset>(0, 0, -0.05)</shadowOffset>
     </body>
+    <!-- ★ 앰비언트 VFX 테스트: 수호 오라 (Fleck 주기 스폰) -->
+    <ambientFleck>PsycastSkipInnerExit</ambientFleck>
+    <ambientFleckIntervalTicks>90</ambientFleckIntervalTicks>
+    <ambientFleckScale>0.6</ambientFleckScale>
     <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
