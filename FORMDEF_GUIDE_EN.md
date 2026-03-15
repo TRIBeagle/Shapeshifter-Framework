@@ -292,9 +292,9 @@ A `HediffComp` that automatically triggers transformation when conditions are me
 
 **Properties** (`HediffCompProperties_AutoShift`):
 * `<formDefName>`: The `ShapeshiftFormDef` defName to transform into.
-* `<healthThreshold>`: Trigger when health percent falls below this value (0 = disabled). E.g., `0.3` = 30%.
+* `<healthThreshold>`: Trigger when health percent falls below this value. Omit to disable. E.g., `0.3` = 30%.
 * `<triggerMentalStates>`: List of `MentalStateDef` — trigger when pawn enters one of these mental states (e.g., `Berserk`).
-* `<triggerAtNight>`: If `true`, trigger when `SunGlow < 0.5` (adapts to biome/season). (Default: `false`).
+* `<triggerSunGlowBelow>`: Trigger when `SunGlow` is below this value (adapts to biome/season). Omit to disable. E.g., `0.5` = night, `0.3` = deep night.
 * `<triggerInCombat>`: If `true`, trigger when pawn is drafted and enemies are nearby. (Default: `false`).
 * `<checkIntervalTicks>`: How often to check conditions (Default: 120 = 2 seconds).
 * `<successChance>`: Probability of shift per check when conditions are met (Default: 1.0).
@@ -312,7 +312,7 @@ A `HediffComp` that automatically triggers transformation when conditions are me
     <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
       <formDefName>WerewolfForm</formDefName>
       <healthThreshold>0.3</healthThreshold>
-      <triggerAtNight>true</triggerAtNight>
+      <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
       <checkIntervalTicks>120</checkIntervalTicks>
       <successChance>0.8</successChance>
     </li>

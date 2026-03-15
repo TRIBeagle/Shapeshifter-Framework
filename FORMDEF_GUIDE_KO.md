@@ -292,9 +292,9 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
 
 **프로퍼티** (`HediffCompProperties_AutoShift`):
 * `<formDefName>`: 변신할 `ShapeshiftFormDef`의 defName
-* `<healthThreshold>`: 체력 비율이 이 값 미만이면 트리거 (0 = 미사용). 예: `0.3` = 30%
+* `<healthThreshold>`: 체력 비율이 이 값 미만이면 트리거. 미기입 시 미사용. 예: `0.3` = 30%
 * `<triggerMentalStates>`: `MentalStateDef` 목록 — 이 정신 상태 중 하나 발동 시 트리거 (예: `Berserk`)
-* `<triggerAtNight>`: `true`면 `SunGlow < 0.5` (밤)일 때 트리거. 바이옴/계절 자동 반영. (기본값: `false`)
+* `<triggerSunGlowBelow>`: SunGlow가 이 값 미만이면 트리거. 바이옴/계절 자동 반영. 미기입 시 미사용. 예: `0.5`=밤, `0.3`=깊은 밤
 * `<triggerInCombat>`: `true`면 징집 상태 + 근처 적대 폰이 있을 때 트리거. (기본값: `false`)
 * `<checkIntervalTicks>`: 조건 검사 간격 (기본값: 120 = 2초)
 * `<successChance>`: 조건 충족 시 변신 성공 확률 (기본값: 1.0)
@@ -312,7 +312,7 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
     <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
       <formDefName>WerewolfForm</formDefName>
       <healthThreshold>0.3</healthThreshold>
-      <triggerAtNight>true</triggerAtNight>
+      <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
       <checkIntervalTicks>120</checkIntervalTicks>
       <successChance>0.8</successChance>
     </li>
