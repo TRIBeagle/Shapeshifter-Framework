@@ -329,6 +329,18 @@
 
 FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되는지는 별도 컴포넌트에서 처리합니다.
 
+### 베이스 AbilityDef (추상 부모)
+
+`ParentName`으로 지정하여 공통 설정을 상속받을 수 있습니다:
+
+| 베이스 | 용도 | 주요 기본값 |
+|--------|------|-------------|
+| `SSF_BaseSelfShiftAbility` | 자기 변신 (타겟 없음) | `hostile=false`, `targetRequired=false`, `range=0`, `warmupTime=0` |
+| `SSF_BaseTargetedShiftAbility` | 타인 대상 변신 | `hostile=false`, `range=15`, `warmupTime=1.0`, `canTargetPawns=true` |
+| `SSF_BaseAoEShiftAbility` | 범위 변신 (바닥/폰 타겟) | `hostile=true`, `range=25`, `warmupTime=2.5`, `canTargetLocations=true` |
+
+세 가지 모두 공통: `category=SSF_Shapeshift`, `iconPath=UI/Commands/SSF_Shift_Enter`, `casterMustBeCapableOfViolence=false`.
+
 ### CompProperties_AbilityShapeshift
 
 `AbilityDef`의 `<comps>`에 부착합니다:

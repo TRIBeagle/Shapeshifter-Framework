@@ -329,6 +329,18 @@ All fields `MayRequire: Nals.FacialAnimation`:
 
 The FormDef defines **what** the form looks like. **How** and **when** it activates is handled separately:
 
+### Base AbilityDefs (Abstract Parents)
+
+Use these as `ParentName` to inherit common settings:
+
+| Base | Purpose | Key Defaults |
+|------|---------|-------------|
+| `SSF_BaseSelfShiftAbility` | Self-cast shift (no target) | `hostile=false`, `targetRequired=false`, `range=0`, `warmupTime=0` |
+| `SSF_BaseTargetedShiftAbility` | Target another pawn | `hostile=false`, `range=15`, `warmupTime=1.0`, `canTargetPawns=true` |
+| `SSF_BaseAoEShiftAbility` | AoE ground/pawn target | `hostile=true`, `range=25`, `warmupTime=2.5`, `canTargetLocations=true` |
+
+All three share: `category=SSF_Shapeshift`, `iconPath=UI/Commands/SSF_Shift_Enter`, `casterMustBeCapableOfViolence=false`.
+
 ### CompProperties_AbilityShapeshift
 
 Attach to an `AbilityDef`'s `<comps>`:

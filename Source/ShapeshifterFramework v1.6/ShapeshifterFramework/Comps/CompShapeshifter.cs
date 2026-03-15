@@ -1719,6 +1719,8 @@ namespace ShapeshifterFramework.Comps
 
             bool canViolent = !pawn.WorkTagIsDisabled(WorkTags.Violent);
             bool showToggle = ShapeshifterFrameworkMod.Settings?.showVerbAutoToggle ?? true;
+            // 다중 선택 시 토글 숨김 — 토글 상태가 폰마다 다를 수 있어 병합 불가
+            bool multiSelected = Find.Selector != null && Find.Selector.NumSelected > 1;
             _tmpSeenVerbs.Clear();
             var seen = _tmpSeenVerbs;
 
@@ -1736,13 +1738,13 @@ namespace ShapeshifterFramework.Comps
 
                 bool projectileOk = !(v is Verb_LaunchProjectile) || v.verbProps.defaultProjectile != null;
 
+                // 다중 선택 시 같은 폼+verb끼리 병합 (바닐라 무기와 동일 동작)
                 var cmd = new Command_VerbTarget
                 {
                     defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: false),
                     defaultDesc = GetVerbDesc(idx, v, forToggle: false),
                     icon = GetVerbIcon(idx) ?? v.UIIcon,
                     verb = v,
-                    groupable = false,
                 };
                 if (!projectileOk)
                     cmd.Disable("SSF_Message_NoProjectile".Translate());
@@ -1752,6 +1754,9 @@ namespace ShapeshifterFramework.Comps
                     cmd.Disable("CommandCannotFire".Translate());
 
                 yield return cmd;
+
+                // 다중 선택 시 토글 숨김 — 개별 폰 선택에서만 설정 가능
+                if (multiSelected) continue;
 
                 if (showToggle)
                 {

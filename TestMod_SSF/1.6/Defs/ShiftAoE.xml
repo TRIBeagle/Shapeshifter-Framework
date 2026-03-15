@@ -5,29 +5,15 @@
        6) 범위형 변신 어빌리티 (바닐라 패턴)
        Ability_EffectRadius + CompAbilityShapeshift
        ====================================================== -->
-  <AbilityDef>
+  <AbilityDef ParentName="SSF_BaseAoEShiftAbility">
     <defName>SSFTest_Ability_MassPolymorph</defName>
     <label>mass polymorph</label>
     <description>반경 5칸 내 폰을 양으로 변신시키는 범위 마법. 60% 확률.</description>
-    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>6000</cooldownTicksRange>
-    <hostile>true</hostile>
     <displayOrder>520</displayOrder>
     <statBases>
       <Ability_EffectRadius>5</Ability_EffectRadius>
     </statBases>
-    <verbProperties>
-      <verbClass>Verb_CastAbility</verbClass>
-      <violent>false</violent>
-      <range>25</range>
-      <warmupTime>2.5</warmupTime>
-      <targetParams>
-        <canTargetSelf>false</canTargetSelf>
-        <canTargetPawns>true</canTargetPawns>
-        <canTargetLocations>true</canTargetLocations>
-        <canTargetBuildings>false</canTargetBuildings>
-      </targetParams>
-    </verbProperties>
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_SheepForm</formDefName>

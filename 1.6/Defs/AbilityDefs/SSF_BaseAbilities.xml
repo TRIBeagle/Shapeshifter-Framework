@@ -46,4 +46,26 @@
     </verbProperties>
   </AbilityDef>
 
+  <!-- AoE 범위 변신 어빌리티 베이스: 적대, 바닥+폰 타겟, SSF_Shapeshift 카테고리 -->
+  <AbilityDef Name="SSF_BaseAoEShiftAbility" Abstract="True">
+    <hostile>true</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <displayGizmoWhileUndrafted>false</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>true</disableGizmoWhileUndrafted>
+    <category>SSF_Shapeshift</category>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
+      <range>25</range>
+      <warmupTime>2.5</warmupTime>
+      <targetParams>
+        <canTargetSelf>false</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetLocations>true</canTargetLocations>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+  </AbilityDef>
+
 </Defs>
