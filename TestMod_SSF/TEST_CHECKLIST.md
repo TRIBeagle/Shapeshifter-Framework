@@ -141,8 +141,9 @@
 
 ### 수동 확인
 - [ ] `[M]` 5-5. 보이스: call/death/wounded/angry/eating/melee 커스텀 사운드
-- [ ] `[M]` 5-6. Verb 기즈모: 돌격소총 자동공격 ON / 나머지 4종 OFF + 커스텀 아이콘/라벨
+- [ ] `[M]` 5-6. Verb 기즈모: 돌격소총 자동공격 ON / 나머지 4종 OFF + verbLabel 매칭 커스텀 아이콘/라벨
 - [ ] `[M]` 5-9. 다중 선택 시 같은 폼 verb 기즈모 병합 + 토글 숨김
+- [ ] `[M]` 5-10. 모드옵션 showVerbAutoToggle OFF → 토글 기즈모 숨김 + 자동사격 전부 OFF
 - [ ] `[M]` 5-7. replaceNativeTools=false → 기존 도구 유지 + claws 추가
 - [ ] `[M]` 5-8. Insectoid 혈흔 + 진입/해제 Fleck
 

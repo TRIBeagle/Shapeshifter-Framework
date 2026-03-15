@@ -253,6 +253,8 @@ Granted while transformed. Automatically removed on revert.
 Auto-attack default: first ranged verb is ON, rest OFF. Toggling one verb ON turns all others OFF (exclusive).
 
 > **Multi-select behavior:** When multiple pawns are selected, verb attack gizmos (`Command_VerbTarget`) merge for pawns with the same form+verb. Auto-attack toggles are hidden during multi-select — configure per-pawn by selecting individually.
+>
+> **Mod settings:** If `showVerbAutoToggle` is disabled, toggle gizmos are hidden and all auto-attack is OFF. Pawns will only fire form verbs via manual target commands.
 
 **Work Restrictions:**
 
