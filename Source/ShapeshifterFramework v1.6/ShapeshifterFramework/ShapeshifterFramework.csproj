@@ -156,6 +156,7 @@
     <Compile Include="Comps\IngestionOutcomeDoer_Shapeshift.cs" />
     <Compile Include="HarmonyInit.cs" />
     <Compile Include="Patches\Patch_PawnRenderer_GetDrawParms.cs" />
+    <Compile Include="Patches\Patch_Thing_DrawSize.cs" />
     <Compile Include="Patches\Patch_HumanlikeMeshPoolUtility_Sizing.cs" />
     <Compile Include="Compat\Compat_HAR_BodyAddon_CanDrawNow.cs" />
     <Compile Include="Patches\Patch_PawnRenderer_GetBodyPos.cs" />

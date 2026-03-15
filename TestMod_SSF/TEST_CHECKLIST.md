@@ -35,6 +35,7 @@
 
 ### 비주얼
 - [ ] `[M]` 1-2. 곰 텍스처 + bodyDrawScale 2.5 + 기본색 (112,82,65)
+- [ ] `[M]` 1-2a. 줌아웃 시 곰 텍스처 잘림 없음 (DrawSize 컬링 바운드 확인)
 - [ ] `[M]` 1-3. 수영 시 SwimmingBear 텍스처 + 수영색 (255,255,255)
 
 ### Auto-Verify
@@ -174,7 +175,7 @@
 - [ ] `[M]` 7-3. 둘 다 없으면 변신 불가 / 둘 다 있어도 OK
 
 ### 비주얼
-- [ ] `[M]` 7-4. bodyDrawScale 1.4 + portraitDrawScale 1.3 + bodyOffset (0, -0.1)
+- [ ] `[M]` 7-4. bodyDrawScale 1.4 + portraitDrawScale 1.3 + bodyOffset (0, -0.1) + 줌아웃 잘림 없음
 - [ ] `[M]` 7-5. shadowVolume (0.6,1.0,0.6) + shadowOffset (0,0,-0.05)
 
 ### 앰비언트 VFX
