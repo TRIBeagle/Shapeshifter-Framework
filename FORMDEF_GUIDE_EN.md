@@ -15,8 +15,8 @@ The Shapeshifter Framework separates concerns across multiple components:
 |-----------|---------------|
 | **ShapeshiftFormDef** | Visuals, equipment, tools/verbs, sounds, VFX, duration, UI |
 | **linkedHediff (HediffDef)** | Stat offsets, stat factors, capacity modifiers (vanilla pattern) |
-| **CompProperties_AbilityShiftTarget** | Cast conditions (races, mutants), success chance |
-| **Ability acquisition sources** | Genes, hediffs, items (CompGiveAbility_SSF), drugs, projectiles |
+| **CompProperties_AbilityShapeshift** | Cast conditions (races, mutants), success chance |
+| **Ability acquisition sources** | Genes, hediffs, items (CompGiveAbility_Shapeshift), drugs, projectiles |
 
 Stats and capacities are **not** defined on the FormDef. They are defined on the `linkedHediff`'s HediffDef stages, using the vanilla HediffDef pattern (`statOffsets`, `statFactors`, `capMods`).
 
@@ -32,7 +32,7 @@ Stats and capacities are **not** defined on the FormDef. They are defined on the
 * `<formAllowedRaces>`: (Optional) List of `ThingDef` race defs that can receive this form. If omitted or empty, any race is allowed (default behavior).
 * `<formDisallowedRaces>`: (Optional) List of `ThingDef` race defs that **cannot** receive this form. Takes priority over `formAllowedRaces`.
 
-> **Note**: These filter the **target** (who receives the form). `CompProperties_AbilityShiftTarget.allowedRaces`/`disallowedRaces` filter the **caster** (who can cast the ability). FormDef-level filters apply to **all** trigger paths (abilities, drugs, scrolls, projectiles).
+> **Note**: These filter the **target** (who receives the form). `CompProperties_AbilityShapeshift.allowedRaces`/`disallowedRaces` filter the **caster** (who can cast the ability). FormDef-level filters apply to **all** trigger paths (abilities, drugs, scrolls, projectiles).
 
 ```xml
 <formAllowedRaces>
@@ -43,7 +43,7 @@ Stats and capacities are **not** defined on the FormDef. They are defined on the
 * `<formAllowedMutants>`: (Optional, `MayRequire: Ludeon.RimWorld.Anomaly`) List of `MutantDef` that can receive this form. If omitted or empty, no mutant restriction.
 * `<formDisallowedMutants>`: (Optional, `MayRequire: Ludeon.RimWorld.Anomaly`) List of `MutantDef` that **cannot** receive this form.
 
-> **Note**: These filter the **target** (who receives the form). `CompProperties_AbilityShiftTarget.allowedMutants`/`disallowedMutants` filter the **caster** (who can cast the ability). FormDef-level filters apply to **all** trigger paths (abilities, drugs, scrolls, projectiles).
+> **Note**: These filter the **target** (who receives the form). `CompProperties_AbilityShapeshift.allowedMutants`/`disallowedMutants` filter the **caster** (who can cast the ability). FormDef-level filters apply to **all** trigger paths (abilities, drugs, scrolls, projectiles).
 
 **Stats and capacities are defined in the linkedHediff's HediffDef, not in the FormDef.** Use the standard vanilla HediffDef pattern:
 
@@ -260,7 +260,7 @@ All fields below use `MayRequire: Nals.FacialAnimation`:
 
 The FormDef itself does **not** contain cast conditions or trigger logic. These are handled by separate components:
 
-### CompProperties_AbilityShiftTarget
+### CompProperties_AbilityShapeshift
 Attached to an `AbilityDef`'s `<comps>` to define the shift effect:
 * `<formDefName>`: The `ShapeshiftFormDef` defName to apply.
 * `<successChance>`: Probability of transformation (0.0–1.0, Default: 1.0).
@@ -274,9 +274,9 @@ Attached to an `AbilityDef`'s `<comps>` to define the shift effect:
 |--------|-----------|-------------|
 | **Gene** | `GeneDef.abilities` | Biotech DLC. Gene grants ability automatically. |
 | **Hediff** | `HediffCompProperties_GiveAbility` | Vanilla pattern. Hediff grants ability while present. |
-| **Item (inventory/equipped)** | `CompProperties_GiveAbility_SSF` | Custom. `requireEquipped=true` for equipped only, `false` for inventory possession. |
+| **Item (inventory/equipped)** | `CompProperties_GiveAbility_Shapeshift` | Custom. `requireEquipped=true` for equipped only, `false` for inventory possession. |
 | **Drug** | `IngestionOutcomeDoer_Shapeshift` | Drug ingestion triggers shift directly (no ability). Fields: `formDefName`, `successChance`. |
-| **Scroll/UseItem** | `CompProperties_UseEffect_ShiftTarget` | Item use triggers shift directly. Fields: `formDefName`, `successChance`. |
+| **Scroll/UseItem** | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Fields: `formDefName`, `successChance`. |
 | **Projectile** | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `formDefName`, `successChance`, `aoeRadius`, `affectAllies`. |
 
 ### Multi-Stage Transformation (addAbilities chain)
@@ -375,7 +375,7 @@ The framework provides three abstract base forms in `SSF_BaseForms.xml`:
     <description>Transform into a wolf.</description>
     <cooldownTicksRange>3000</cooldownTicksRange>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSF_WolfForm</formDefName>
         <successChance>1.0</successChance>
       </li>

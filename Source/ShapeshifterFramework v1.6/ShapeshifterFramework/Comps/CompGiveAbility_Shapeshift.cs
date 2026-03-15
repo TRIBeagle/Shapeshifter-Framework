@@ -1,8 +1,7 @@
-// ShapeshifterFramework | Comps | CompGiveAbility_SSF.cs
+// ShapeshifterFramework | Comps | CompGiveAbility_Shapeshift.cs
 // 목적 : 아이템(ThingDef)에 부착하여, 소지/장비 시 폰에 AbilityDef를 부여하는 범용 ThingComp.
 // 용도 : requireEquipped=false → 인벤토리 소지만으로 어빌리티 부여. requireEquipped=true → 착용/장착 시에만 부여.
 //        아이템이 드롭/해제되면 어빌리티 자동 회수.
-// _SSF 접미어: 림월드 에러로그/디버그인스펙터에서 네임스페이스가 잘리므로 프레임워크 소속을 명시.
 
 using RimWorld;
 using Verse;
@@ -10,9 +9,9 @@ using Verse;
 namespace ShapeshifterFramework.Comps
 {
     /// <summary>아이템 소지/장비 시 어빌리티를 부여하는 ThingComp.</summary>
-    public class CompGiveAbility_SSF : ThingComp
+    public class CompGiveAbility_Shapeshift : ThingComp
     {
-        public CompProperties_GiveAbility_SSF Props => (CompProperties_GiveAbility_SSF)props;
+        public CompProperties_GiveAbility_Shapeshift Props => (CompProperties_GiveAbility_Shapeshift)props;
 
         private Pawn boundPawn;
 

@@ -6,7 +6,7 @@
 
 - **ShapeshiftFormDef** → Visuals, equipment, tools, sounds, VFX, duration
 - **linkedHediff (HediffDef)** → Stats (`statOffsets`, `statFactors`, `capMods`) — vanilla pattern
-- **CompProperties_AbilityShiftTarget** → Cast conditions (races, mutants), success chance
+- **CompProperties_AbilityShapeshift** → Cast conditions (races, mutants), success chance
 - **Ability sources** → Genes, hediffs, items, drugs, scrolls, projectiles
 
 ## FormDef Fields Summary
@@ -64,7 +64,7 @@
   <defName>MyAbility</defName>
   <label>my shift</label>
   <comps>
-    <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+    <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
       <formDefName>MyForm</formDefName>
     </li>
   </comps>

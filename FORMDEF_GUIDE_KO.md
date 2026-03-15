@@ -15,8 +15,8 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 |----------|------|
 | **ShapeshiftFormDef** | 비주얼, 장비, 도구/Verb, 사운드, VFX, 지속시간, UI |
 | **linkedHediff (HediffDef)** | 스탯 합연산, 곱연산, 능력치(Capacity) 보정 (바닐라 패턴) |
-| **CompProperties_AbilityShiftTarget** | 캐스트 조건 (종족, 뮤턴트), 성공 확률 |
-| **어빌리티 획득 소스** | 유전자, 헤디프, 아이템(CompGiveAbility_SSF), 약물, 투사체 |
+| **CompProperties_AbilityShapeshift** | 캐스트 조건 (종족, 뮤턴트), 성공 확률 |
+| **어빌리티 획득 소스** | 유전자, 헤디프, 아이템(CompGiveAbility_Shapeshift), 약물, 투사체 |
 
 스탯과 능력치 보정은 FormDef에 정의하지 **않습니다**. `linkedHediff`의 HediffDef stages에서 바닐라 HediffDef 패턴으로 정의합니다 (`statOffsets`, `statFactors`, `capMods`).
 
@@ -32,7 +32,7 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 * `<formAllowedRaces>`: (선택) 이 폼을 적용받을 수 있는 종족(`ThingDef`) 목록. 생략하거나 빈 목록이면 모든 종족 허용(기본 동작).
 * `<formDisallowedRaces>`: (선택) 이 폼을 적용받을 수 **없는** 종족(`ThingDef`) 목록. `formAllowedRaces`보다 우선합니다.
 
-> **참고**: 이 필드들은 **대상자**(폼을 받는 쪽) 필터입니다. `CompProperties_AbilityShiftTarget.allowedRaces`/`disallowedRaces`는 **시전자**(캐스트하는 쪽) 필터입니다. FormDef 수준 필터는 **모든** 변신 경로(어빌리티/약물/스크롤/투사체)에서 작동합니다.
+> **참고**: 이 필드들은 **대상자**(폼을 받는 쪽) 필터입니다. `CompProperties_AbilityShapeshift.allowedRaces`/`disallowedRaces`는 **시전자**(캐스트하는 쪽) 필터입니다. FormDef 수준 필터는 **모든** 변신 경로(어빌리티/약물/스크롤/투사체)에서 작동합니다.
 
 ```xml
 <formAllowedRaces>
@@ -43,7 +43,7 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 * `<formAllowedMutants>`: (선택, `MayRequire: Ludeon.RimWorld.Anomaly`) 이 폼을 적용받을 수 있는 뮤턴트(`MutantDef`) 목록. 생략하거나 빈 목록이면 뮤턴트 제한 없음.
 * `<formDisallowedMutants>`: (선택, `MayRequire: Ludeon.RimWorld.Anomaly`) 이 폼을 적용받을 수 **없는** 뮤턴트(`MutantDef`) 목록.
 
-> **참고**: 이 필드들은 **대상자**(폼을 받는 쪽) 필터입니다. `CompProperties_AbilityShiftTarget.allowedMutants`/`disallowedMutants`는 **시전자**(캐스트하는 쪽) 필터입니다. FormDef 수준 필터는 **모든** 변신 경로(어빌리티/약물/스크롤/투사체)에서 작동합니다.
+> **참고**: 이 필드들은 **대상자**(폼을 받는 쪽) 필터입니다. `CompProperties_AbilityShapeshift.allowedMutants`/`disallowedMutants`는 **시전자**(캐스트하는 쪽) 필터입니다. FormDef 수준 필터는 **모든** 변신 경로(어빌리티/약물/스크롤/투사체)에서 작동합니다.
 
 **스탯과 능력치 보정은 linkedHediff의 HediffDef에서 정의합니다. FormDef가 아닙니다.** 바닐라 HediffDef 패턴을 사용합니다:
 
@@ -260,7 +260,7 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 
 FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**. 별도의 컴포넌트에서 처리합니다:
 
-### CompProperties_AbilityShiftTarget
+### CompProperties_AbilityShapeshift
 `AbilityDef`의 `<comps>`에 부착하여 변신 효과를 정의합니다:
 * `<formDefName>`: 적용할 `ShapeshiftFormDef`의 defName
 * `<successChance>`: 변신 성공 확률 (0.0–1.0, 기본값: 1.0)
@@ -274,9 +274,9 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
 |------|----------|------|
 | **유전자** | `GeneDef.abilities` | Biotech DLC. 유전자가 어빌리티를 자동 부여. |
 | **헤디프** | `HediffCompProperties_GiveAbility` | 바닐라 패턴. 헤디프 보유 시 어빌리티 자동 부여. |
-| **아이템 (소지/장비)** | `CompProperties_GiveAbility_SSF` | 커스텀. `requireEquipped=true`면 장비 시에만, `false`면 인벤토리 소지만으로 부여. |
+| **아이템 (소지/장비)** | `CompProperties_GiveAbility_Shapeshift` | 커스텀. `requireEquipped=true`면 장비 시에만, `false`면 인벤토리 소지만으로 부여. |
 | **약물** | `IngestionOutcomeDoer_Shapeshift` | 약물 복용 시 직접 변신 (어빌리티 없이). 필드: `formDefName`, `successChance`. |
-| **스크롤/사용 아이템** | `CompProperties_UseEffect_ShiftTarget` | 아이템 사용 시 직접 변신. 필드: `formDefName`, `successChance`. |
+| **스크롤/사용 아이템** | `CompProperties_UseEffect_Shapeshift` | 아이템 사용 시 직접 변신. 필드: `formDefName`, `successChance`. |
 | **투사체** | `PolymorphProjectileExtension` | 투사체 명중 시 변신. 필드: `formDefName`, `successChance`, `aoeRadius`, `affectAllies`. |
 
 ### 다단 변신 (addAbilities 체인)
@@ -375,7 +375,7 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
     <description>늑대로 변신한다.</description>
     <cooldownTicksRange>3000</cooldownTicksRange>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSF_WolfForm</formDefName>
         <successChance>1.0</successChance>
       </li>

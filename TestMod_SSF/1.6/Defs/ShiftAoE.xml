@@ -3,7 +3,7 @@
 
   <!-- ======================================================
        6) 범위형 변신 어빌리티 (바닐라 패턴)
-       Ability_EffectRadius + CompAbilityShiftTarget
+       Ability_EffectRadius + CompAbilityShapeshift
        ====================================================== -->
   <AbilityDef>
     <defName>SSFTest_Ability_MassPolymorph</defName>
@@ -28,7 +28,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_SheepForm</formDefName>
         <successChance>0.6</successChance>
       </li>

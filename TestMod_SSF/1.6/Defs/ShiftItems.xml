@@ -62,7 +62,7 @@
        아이템 정의
        ====================================================== -->
 
-  <!-- 마력의 돌 — CompGiveAbility_SSF 테스트: 소지만으로 Guardian 어빌리티 부여 -->
+  <!-- 마력의 돌 — CompGiveAbility_Shapeshift 테스트: 소지만으로 Guardian 어빌리티 부여 -->
   <ThingDef ParentName="ResourceBase">
     <defName>SSFTest_MagicStone</defName>
     <label>Test: 마력의 돌</label>
@@ -79,7 +79,7 @@
       <li>Manufactured</li>
     </thingCategories>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_SSF">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_Shapeshift">
         <ability>SSFTest_Ability_Guardian</ability>
         <requireEquipped>false</requireEquipped>
       </li>
@@ -112,7 +112,7 @@
         <useLabel>use shift scroll (self)</useLabel>
       </li>
       <li Class="CompProperties_UseEffectDestroySelf" />
-      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_Shapeshift">
         <formDefName>SSFTest_BearForm</formDefName>
         <successChance>1.0</successChance>
       </li>
@@ -145,7 +145,7 @@
         <useLabel>use shift scroll on...</useLabel>
       </li>
       <li Class="CompProperties_UseEffectDestroySelf" />
-      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_Shapeshift">
         <formDefName>SSFTest_BearForm</formDefName>
         <successChance>1.0</successChance>
       </li>

@@ -12,7 +12,7 @@
     <cooldownTicksRange>1500</cooldownTicksRange>
     <displayOrder>500</displayOrder>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_BearWarriorForm</formDefName>
         <successChance>1.0</successChance>
       </li>
@@ -43,7 +43,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_SheepForm</formDefName>
         <successChance>0.75</successChance>
       </li>
@@ -72,7 +72,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_DarkKnightForm</formDefName>
         <successChance>1.0</successChance>
       </li>
@@ -101,7 +101,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_BeastkinForm</formDefName>
         <successChance>1.0</successChance>
       </li>
@@ -119,7 +119,7 @@
     <cooldownTicksRange>0</cooldownTicksRange>
     <displayOrder>511</displayOrder>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_FullBeastForm</formDefName>
         <successChance>1.0</successChance>
         <!-- 수인 폼에서만 2단 변신 허용 -->
@@ -151,7 +151,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_GuardianForm</formDefName>
         <successChance>1.0</successChance>
       </li>
@@ -179,7 +179,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_PhantomForm</formDefName>
         <successChance>1.0</successChance>
       </li>
@@ -208,7 +208,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_RaceLockedForm</formDefName>
         <successChance>1.0</successChance>
         <!-- 종족 제한: 인간만 -->

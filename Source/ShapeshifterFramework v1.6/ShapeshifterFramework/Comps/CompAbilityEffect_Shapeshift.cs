@@ -1,4 +1,4 @@
-// ShapeshifterFramework | Comps | CompAbilityEffect_ShiftTarget.cs
+// ShapeshifterFramework | Comps | CompAbilityEffect_Shapeshift.cs
 // 목적 : Ability를 사용하여 대상(Pawn)을 변신시키는 효과(Effect) 컴포넌트.
 // 용도 : - ShouldHideGizmo: 캐스터의 종족/뮤턴트 조건 + 같은 폼 재시전 차단
 //        - CanApplyOn: 대상 유효성 판별
@@ -12,9 +12,9 @@ using Verse;
 namespace ShapeshifterFramework.Comps
 {
     /// <summary>대상 Pawn을 폼으로 변신시키는 Ability 효과.</summary>
-    public class CompAbilityEffect_ShiftTarget : CompAbilityEffect
+    public class CompAbilityEffect_Shapeshift : CompAbilityEffect
     {
-        public new CompProperties_AbilityShiftTarget Props => (CompProperties_AbilityShiftTarget)props;
+        public new CompProperties_AbilityShapeshift Props => (CompProperties_AbilityShapeshift)props;
 
         // 캐시: formDefName → ShapeshiftFormDef
         private ShapeshiftFormDef _cachedFormDef;

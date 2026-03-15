@@ -82,7 +82,7 @@
       </li>
     </tools>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_SSF">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_Shapeshift">
         <ability>SSFTest_Ability_DarkKnight</ability>
         <requireEquipped>true</requireEquipped>
       </li>
@@ -122,7 +122,7 @@
       </layers>
     </apparel>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_SSF">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_Shapeshift">
         <ability>SSFTest_Ability_Phantom</ability>
         <requireEquipped>true</requireEquipped>
       </li>

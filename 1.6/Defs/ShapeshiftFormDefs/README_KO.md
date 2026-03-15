@@ -6,7 +6,7 @@
 
 - **ShapeshiftFormDef** → 비주얼, 장비, 도구, 사운드, VFX, 지속시간
 - **linkedHediff (HediffDef)** → 스탯 (`statOffsets`, `statFactors`, `capMods`) — 바닐라 패턴
-- **CompProperties_AbilityShiftTarget** → 캐스트 조건 (종족, 뮤턴트), 성공 확률
+- **CompProperties_AbilityShapeshift** → 캐스트 조건 (종족, 뮤턴트), 성공 확률
 - **어빌리티 소스** → 유전자, 헤디프, 아이템, 약물, 스크롤, 투사체
 
 ## FormDef 필드 요약
@@ -64,7 +64,7 @@
   <defName>MyAbility</defName>
   <label>나의 변신</label>
   <comps>
-    <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShiftTarget">
+    <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
       <formDefName>MyForm</formDefName>
     </li>
   </comps>

@@ -5,9 +5,9 @@
 ## 아키텍처 참고
 
 - 스탯/능력치 보정: `linkedHediff`의 HediffDef stages (바닐라 패턴)
-- 캐스트 조건(종족/폼 제한): `CompProperties_AbilityShiftTarget`의 `allowedRaces`, `allowedFromForms`
+- 캐스트 조건(종족/폼 제한): `CompProperties_AbilityShapeshift`의 `allowedRaces`, `allowedFromForms`
 - 변신 유지 조건: `sustainHediffs` / `sustainMode` 필드
-- 어빌리티 부여: 유전자 / 장착아이템(CompGiveAbility_SSF) / Hediff / 폼 addAbilities
+- 어빌리티 부여: 유전자 / 장착아이템(CompGiveAbility_Shapeshift) / Hediff / 폼 addAbilities
 
 ## 폼 커버리지
 
@@ -235,7 +235,7 @@ BeastkinForm 적용
 - [ ] `[M]` 유전자 제거 → 어빌리티 즉시 제거 / 두 유전자 동시 보유 OK
 - [ ] `[M]` Biotech 미설치 시 에러 없음 (MayRequire)
 
-### 장착 아이템 (CompGiveAbility_SSF, requireEquipped=true)
+### 장착 아이템 (CompGiveAbility_Shapeshift, requireEquipped=true)
 - [ ] `[M]` Weapon_DarkBlade 장착 → DarkKnight 어빌리티 / 해제 시 제거
 - [ ] `[M]` Apparel_PhantomCloak 착용 → Phantom 어빌리티 / 탈의 시 제거
 - [ ] `[M]` 인벤토리만 보유 → 어빌리티 미부여
@@ -280,7 +280,7 @@ BeastkinForm 적용
 - [ ] `[M]` Inspect Active Form: linkedHediff 기준 스탯/캐퍼 표시
 - [ ] `[M]` Dump Pawn State: Stat Offsets/Factors/Capacity Mods 출력
 - [ ] `[M]` AddedPart/Hediff/RemoveHediff 실패 시 `[SSF]` 경고 로그
-- [ ] `[M]` HAR alignWithHead boolean 판정 + CompGiveAbility_SSF PostDeSpawn 1.6 시그니처
+- [ ] `[M]` HAR alignWithHead boolean 판정 + CompGiveAbility_Shapeshift PostDeSpawn 1.6 시그니처
 - [ ] `[M]` 장시간 플레이 후 로그 딕셔너리 메모리 누적 없음
 
 ---

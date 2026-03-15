@@ -1,4 +1,4 @@
-// ShapeshifterFramework | Comps | CompProperties_AbilityShiftTarget.cs
+// ShapeshifterFramework | Comps | CompProperties_AbilityShapeshift.cs
 // 목적 : XML에서 Ability(초능력/마법)의 변신 효과를 정의하기 위한 속성(Properties) 클래스.
 // 용도 : 대상에게 적용할 폼의 defName(formDefName)과 변신 성공 확률(successChance)을 보관.
 //        캐스트 조건(종족/뮤턴트)도 여기서 정의하여 ShouldHideGizmo/CanApplyOn에서 검사.
@@ -10,7 +10,7 @@ using Verse;
 namespace ShapeshifterFramework.Comps
 {
     /// <summary>Ability 변신 효과 속성 정의.</summary>
-    public class CompProperties_AbilityShiftTarget : CompProperties_AbilityEffect
+    public class CompProperties_AbilityShapeshift : CompProperties_AbilityEffect
     {
         public string formDefName;
         public float successChance = 1.0f;
@@ -29,9 +29,9 @@ namespace ShapeshifterFramework.Comps
         // null/비어있으면: 변신 중 시전 불가 (기즈모 비활성)
         public List<string> allowedFromForms;
 
-        public CompProperties_AbilityShiftTarget()
+        public CompProperties_AbilityShapeshift()
         {
-            compClass = typeof(CompAbilityEffect_ShiftTarget);
+            compClass = typeof(CompAbilityEffect_Shapeshift);
         }
     }
 }

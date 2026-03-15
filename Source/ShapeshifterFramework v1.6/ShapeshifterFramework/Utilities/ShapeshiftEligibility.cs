@@ -1,7 +1,7 @@
 // ShapeshifterFramework | Utilities | ShapeshiftEligibility.cs
 // 목적 : 기본적인 변신 가능 여부 판정 (종족/뮤턴트 필터, 같은 폼 재변신 방지, 사망 체크).
 // 용도 : 모든 변신 경로(어빌리티/약물/스크롤/투사체)에서 공통으로 사용하는 FormDef 수준 필터.
-//        어빌리티 시전자 조건(Comp.allowedRaces/allowedMutants)은 CompAbilityEffect_ShiftTarget에서 별도 처리.
+//        어빌리티 시전자 조건(Comp.allowedRaces/allowedMutants)은 CompAbilityEffect_Shapeshift에서 별도 처리.
 
 using RimWorld;
 using System.Collections.Generic;

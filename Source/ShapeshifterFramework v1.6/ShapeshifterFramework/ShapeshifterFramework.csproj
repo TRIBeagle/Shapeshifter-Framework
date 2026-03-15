@@ -69,10 +69,10 @@
     <Compile Include="Compat\Compat_HAR_AddComp.cs" />
     <Compile Include="Compat\Compat_FacialAnimation_HeadWorker_ScaleFor.cs" />
     <Compile Include="Compat\Compat_HAR_BodyAddon_ScaleFor.cs" />
-    <Compile Include="Comps\CompUseEffect_ShiftTarget.cs" />
-    <Compile Include="Comps\CompProperties_UseEffect_ShiftTarget.cs" />
-    <Compile Include="Comps\CompProperties_AbilityShiftTarget.cs" />
-    <Compile Include="Comps\CompAbilityEffect_ShiftTarget.cs" />
+    <Compile Include="Comps\CompAbilityEffect_Shapeshift.cs" />
+    <Compile Include="Comps\CompProperties_AbilityShapeshift.cs" />
+    <Compile Include="Comps\CompUseEffect_Shapeshift.cs" />
+    <Compile Include="Comps\CompProperties_UseEffect_Shapeshift.cs" />
     <Compile Include="Debugs\Shapeshifter_DebugActions.cs" />
     <Compile Include="Hediffs\Hediff_ShapeshiftForm.cs" />
     <Compile Include="Patches\Patch_Pawn_EquipmentTracker_TryDropEquipment.cs" />
@@ -113,8 +113,8 @@
     <Compile Include="Patches\Patch_GeneUtility_SortGenes.cs" />
     <Compile Include="Patches\Patch_Verb_ShootBeam.cs" />
     <Compile Include="Patches\Patch_TooltipUtility_ShotCalculationTipString.cs" />
-    <Compile Include="Comps\CompGiveAbility_SSF.cs" />
-    <Compile Include="Comps\CompProperties_GiveAbility_SSF.cs" />
+    <Compile Include="Comps\CompGiveAbility_Shapeshift.cs" />
+    <Compile Include="Comps\CompProperties_GiveAbility_Shapeshift.cs" />
     <Compile Include="Utilities\ShapeshiftTextureUtility.cs" />
     <Compile Include="Utilities\ShapeshiftRenderUtility.cs" />
     <Compile Include="Utilities\ShapeshiftPartRestoreRecord.cs" />

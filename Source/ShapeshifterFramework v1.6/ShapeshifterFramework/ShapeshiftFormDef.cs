@@ -1,8 +1,8 @@
 // ShapeshifterFramework | Root | ShapeshiftFormDef.cs
 // 목적 : 변신 폼(Form)의 비주얼·장비·도구·사운드·VFX 등 정적 데이터를 정의하는 최상위 XML 데이터 구조체(Schema).
 // 용도 : 스탯/능력치 보정은 linkedHediff의 HediffDef stages에서 바닐라 패턴으로 정의.
-//        어빌리티 부여는 유전자/헤디프/아이템(CompGiveAbility_SSF) 등 소스가 담당.
-//        캐스트 조건(종족/뮤턴트/제노타입)은 AbilityDef의 CompAbilityEffect_ShiftTarget에서 검사.
+//        어빌리티 부여는 유전자/헤디프/아이템(CompGiveAbility_Shapeshift) 등 소스가 담당.
+//        캐스트 조건(종족/뮤턴트/제노타입)은 AbilityDef의 CompAbilityEffect_Shapeshift에서 검사.
 // 주의 : 이 클래스의 데이터는 XML 로드 시 확정되며, 런타임 게임 플레이 도중 수정(오염)되지 않도록 철저히 읽기 전용(Read-only) 데이터로 취급해야 함.
 
 using RimWorld;
