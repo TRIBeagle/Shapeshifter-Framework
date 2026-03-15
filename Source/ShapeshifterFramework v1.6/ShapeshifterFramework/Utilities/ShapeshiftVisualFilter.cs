@@ -151,22 +151,22 @@ namespace ShapeshifterFramework.Utilities
             var layers = def.apparel?.layers;
 
             // 1) 화이트리스트 (Show)
-            if (form.cShowApparelDefNames.Matches(def.defName)) return false;
+            if (form._showApparelDefNames.Matches(def.defName)) return false;
             if (layers != null)
             {
                 for (int i = 0; i < layers.Count; i++)
-                    if (form.cShowApparelLayers.Matches(layers[i].defName)) return false;
+                    if (form._showApparelLayers.Matches(layers[i].defName)) return false;
             }
 
             // 2) 블랙리스트 - 이름/전체 (Hide Defs)
-            if (form.cHideApparelDefNames.hasAll || form.cHideApparelDefNames.Matches(def.defName)) return true;
+            if (form._hideApparelDefNames.hasAll || form._hideApparelDefNames.Matches(def.defName)) return true;
 
             // 3) 블랙리스트 - 레이어 (Hide Layers)
-            if (form.cHideApparelLayers.hasAll) return true;
+            if (form._hideApparelLayers.hasAll) return true;
             if (layers != null)
             {
                 for (int i = 0; i < layers.Count; i++)
-                    if (form.cHideApparelLayers.Matches(layers[i].defName)) return true;
+                    if (form._hideApparelLayers.Matches(layers[i].defName)) return true;
             }
 
             return false;
@@ -183,22 +183,22 @@ namespace ShapeshifterFramework.Utilities
             var tags = def.weaponTags;
 
             // 1) 화이트리스트 (Show)
-            if (form.cShowWeaponDefNames.Matches(def.defName)) return false;
+            if (form._showWeaponDefNames.Matches(def.defName)) return false;
             if (tags != null)
             {
                 for (int i = 0; i < tags.Count; i++)
-                    if (form.cShowWeaponTags.Matches(tags[i])) return false;
+                    if (form._showWeaponTags.Matches(tags[i])) return false;
             }
 
             // 2) 블랙리스트 - 이름/전체 (Hide Defs)
-            if (form.cHideWeaponDefNames.hasAll || form.cHideWeaponDefNames.Matches(def.defName)) return true;
+            if (form._hideWeaponDefNames.hasAll || form._hideWeaponDefNames.Matches(def.defName)) return true;
 
             // 3) 블랙리스트 - 태그 (Hide Tags)
-            if (form.cHideWeaponTags.hasAll) return true;
+            if (form._hideWeaponTags.hasAll) return true;
             if (tags != null)
             {
                 for (int i = 0; i < tags.Count; i++)
-                    if (form.cHideWeaponTags.Matches(tags[i])) return true;
+                    if (form._hideWeaponTags.Matches(tags[i])) return true;
             }
 
             return false;
@@ -212,22 +212,22 @@ namespace ShapeshifterFramework.Utilities
             if (!TryGetFormAndComp(pawn, out _, out var form)) return false;
 
             // 1) 화이트리스트 (Show)
-            if (form.cShowGeneDefNames.Matches(gene.def.defName)) return false;
+            if (form._showGeneDefNames.Matches(gene.def.defName)) return false;
             if (tagsFromNodeOrDef != null)
             {
                 for (int i = 0; i < tagsFromNodeOrDef.Count; i++)
-                    if (form.cShowGeneExclusionTags.Matches(tagsFromNodeOrDef[i])) return false;
+                    if (form._showGeneExclusionTags.Matches(tagsFromNodeOrDef[i])) return false;
             }
 
             // 2) 블랙리스트 - 이름/전체 (Hide Defs)
-            if (form.cHideGeneDefNames.hasAll || form.cHideGeneDefNames.Matches(gene.def.defName)) return true;
+            if (form._hideGeneDefNames.hasAll || form._hideGeneDefNames.Matches(gene.def.defName)) return true;
 
             // 3) 블랙리스트 - 태그 (Hide Tags)
-            if (form.cHideGeneExclusionTags.hasAll) return true;
+            if (form._hideGeneExclusionTags.hasAll) return true;
             if (tagsFromNodeOrDef != null)
             {
                 for (int i = 0; i < tagsFromNodeOrDef.Count; i++)
-                    if (form.cHideGeneExclusionTags.Matches(tagsFromNodeOrDef[i])) return true;
+                    if (form._hideGeneExclusionTags.Matches(tagsFromNodeOrDef[i])) return true;
             }
 
             return false;
@@ -241,10 +241,10 @@ namespace ShapeshifterFramework.Utilities
             if (!TryGetFormAndComp(pawn, out _, out var form)) return false;
 
             // 1) 화이트리스트 (Show)
-            if (form.cShowHediffDefNames.Matches(hediff.def.defName)) return false;
+            if (form._showHediffDefNames.Matches(hediff.def.defName)) return false;
 
             // 2) 블랙리스트 - 이름/전체 (Hide Defs)
-            if (form.cHideHediffDefNames.hasAll || form.cHideHediffDefNames.Matches(hediff.def.defName)) return true;
+            if (form._hideHediffDefNames.hasAll || form._hideHediffDefNames.Matches(hediff.def.defName)) return true;
 
             return false;
         }

@@ -156,10 +156,10 @@ namespace ShapeshifterFramework
         public EquipLockMode weaponEquipLock = EquipLockMode.Auto;
 
         // 변신 시 소환해서 강제로 입힐 전용 의류 목록 (해제 시 자동 파괴)
-        public List<ThingDef> spawnApparelOnTransform = new List<ThingDef>();
+        public List<ThingDef> spawnApparelOnTransform;
 
         // 변신 시 소환해서 강제로 들려줄 전용 무기 목록 (해제 시 자동 파괴)
-        public List<ThingDef> spawnWeaponOnTransform = new List<ThingDef>();
+        public List<ThingDef> spawnWeaponOnTransform;
 
         // 소환되는 의류/무기의 재질 (예: ThingDefOf.Plasteel).
         public ThingDef spawnApparelStuff;
@@ -278,20 +278,20 @@ namespace ShapeshifterFramework
         public FleshTypeDef fleshType;
 
         // ── 사전 컴파일된 렌더 필터 (ResolveReferences에서 빌드, 세이브 제외) ──
-        [Unsaved] internal CompiledFilterSet cHideApparelLayers;
-        [Unsaved] internal CompiledFilterSet cHideApparelDefNames;
-        [Unsaved] internal CompiledFilterSet cShowApparelLayers;
-        [Unsaved] internal CompiledFilterSet cShowApparelDefNames;
-        [Unsaved] internal CompiledFilterSet cHideWeaponTags;
-        [Unsaved] internal CompiledFilterSet cHideWeaponDefNames;
-        [Unsaved] internal CompiledFilterSet cShowWeaponTags;
-        [Unsaved] internal CompiledFilterSet cShowWeaponDefNames;
-        [Unsaved] internal CompiledFilterSet cHideGeneExclusionTags;
-        [Unsaved] internal CompiledFilterSet cHideGeneDefNames;
-        [Unsaved] internal CompiledFilterSet cShowGeneExclusionTags;
-        [Unsaved] internal CompiledFilterSet cShowGeneDefNames;
-        [Unsaved] internal CompiledFilterSet cHideHediffDefNames;
-        [Unsaved] internal CompiledFilterSet cShowHediffDefNames;
+        [Unsaved] internal CompiledFilterSet _hideApparelLayers;
+        [Unsaved] internal CompiledFilterSet _hideApparelDefNames;
+        [Unsaved] internal CompiledFilterSet _showApparelLayers;
+        [Unsaved] internal CompiledFilterSet _showApparelDefNames;
+        [Unsaved] internal CompiledFilterSet _hideWeaponTags;
+        [Unsaved] internal CompiledFilterSet _hideWeaponDefNames;
+        [Unsaved] internal CompiledFilterSet _showWeaponTags;
+        [Unsaved] internal CompiledFilterSet _showWeaponDefNames;
+        [Unsaved] internal CompiledFilterSet _hideGeneExclusionTags;
+        [Unsaved] internal CompiledFilterSet _hideGeneDefNames;
+        [Unsaved] internal CompiledFilterSet _showGeneExclusionTags;
+        [Unsaved] internal CompiledFilterSet _showGeneDefNames;
+        [Unsaved] internal CompiledFilterSet _hideHediffDefNames;
+        [Unsaved] internal CompiledFilterSet _showHediffDefNames;
 
         // HAR 옵션
         [MayRequire("erdelf.HumanoidAlienRaces")] public bool showHarAddons = false;
@@ -311,20 +311,20 @@ namespace ShapeshifterFramework
             base.ResolveReferences();
 
             // 렌더 필터 와일드카드 사전 컴파일 — 렌더 루프에서 문자열 파싱 제거
-            cHideApparelLayers = CompiledFilterSet.Compile(renderHideApparelLayers);
-            cHideApparelDefNames = CompiledFilterSet.Compile(renderHideApparelDefNames);
-            cShowApparelLayers = CompiledFilterSet.Compile(renderShowApparelLayers);
-            cShowApparelDefNames = CompiledFilterSet.Compile(renderShowApparelDefNames);
-            cHideWeaponTags = CompiledFilterSet.Compile(renderHideWeaponTags);
-            cHideWeaponDefNames = CompiledFilterSet.Compile(renderHideWeaponDefNames);
-            cShowWeaponTags = CompiledFilterSet.Compile(renderShowWeaponTags);
-            cShowWeaponDefNames = CompiledFilterSet.Compile(renderShowWeaponDefNames);
-            cHideGeneExclusionTags = CompiledFilterSet.Compile(renderHideGeneExclusionTags);
-            cHideGeneDefNames = CompiledFilterSet.Compile(renderHideGeneDefNames);
-            cShowGeneExclusionTags = CompiledFilterSet.Compile(renderShowGeneExclusionTags);
-            cShowGeneDefNames = CompiledFilterSet.Compile(renderShowGeneDefNames);
-            cHideHediffDefNames = CompiledFilterSet.Compile(renderHideHediffDefNames);
-            cShowHediffDefNames = CompiledFilterSet.Compile(renderShowHediffDefNames);
+            _hideApparelLayers = CompiledFilterSet.Compile(renderHideApparelLayers);
+            _hideApparelDefNames = CompiledFilterSet.Compile(renderHideApparelDefNames);
+            _showApparelLayers = CompiledFilterSet.Compile(renderShowApparelLayers);
+            _showApparelDefNames = CompiledFilterSet.Compile(renderShowApparelDefNames);
+            _hideWeaponTags = CompiledFilterSet.Compile(renderHideWeaponTags);
+            _hideWeaponDefNames = CompiledFilterSet.Compile(renderHideWeaponDefNames);
+            _showWeaponTags = CompiledFilterSet.Compile(renderShowWeaponTags);
+            _showWeaponDefNames = CompiledFilterSet.Compile(renderShowWeaponDefNames);
+            _hideGeneExclusionTags = CompiledFilterSet.Compile(renderHideGeneExclusionTags);
+            _hideGeneDefNames = CompiledFilterSet.Compile(renderHideGeneDefNames);
+            _showGeneExclusionTags = CompiledFilterSet.Compile(renderShowGeneExclusionTags);
+            _showGeneDefNames = CompiledFilterSet.Compile(renderShowGeneDefNames);
+            _hideHediffDefNames = CompiledFilterSet.Compile(renderHideHediffDefNames);
+            _showHediffDefNames = CompiledFilterSet.Compile(renderShowHediffDefNames);
         }
     }
 }
