@@ -10,6 +10,8 @@ namespace ShapeshifterFramework.Utilities
 {
     public static class ShapeshiftApplyHediffUtility
     {
+        private static readonly List<BodyPartRecord> EmptyParts = new List<BodyPartRecord>(0);
+
         public static void ApplyHediffEntries(
             Pawn pawn,
             List<HediffAddEntry> entries,
@@ -233,15 +235,15 @@ namespace ShapeshifterFramework.Utilities
                     var results = new List<BodyPartRecord>(4);
                     for (int i = 0; i < all.Count; i++)
                         if (all[i].def == opt.targetPart) results.Add(all[i]);
-                    return (results.Count == 0) ? new List<BodyPartRecord>() : results;
+                    return results.Count == 0 ? EmptyParts : results;
                 }
-                return new List<BodyPartRecord>();
+                return EmptyParts;
             }
 
             if (opt.targetGroups != null && opt.targetGroups.Count > 0)
             {
                 var all = pawn?.RaceProps?.body?.AllParts;
-                if (all == null || all.Count == 0) return new List<BodyPartRecord>();
+                if (all == null || all.Count == 0) return EmptyParts;
 
                 var set = new HashSet<BodyPartRecord>();
                 for (int i = 0; i < all.Count; i++)
@@ -259,7 +261,7 @@ namespace ShapeshifterFramework.Utilities
                         }
                     }
                 }
-                return (set.Count == 0) ? new List<BodyPartRecord>() : new List<BodyPartRecord>(set);
+                return set.Count == 0 ? EmptyParts : new List<BodyPartRecord>(set);
             }
 
             return null;

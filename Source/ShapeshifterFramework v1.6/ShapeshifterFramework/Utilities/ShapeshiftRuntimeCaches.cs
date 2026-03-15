@@ -89,13 +89,16 @@ namespace ShapeshifterFramework.Utilities
             _hediffToMutant = null;
 
             // 그림자 그래픽 캐시 정리
-            try { ShapeshifterFramework.Patches.Patch_PawnRenderer_DrawShadowInternal.ClearCache(); } catch { }
+            try { ShapeshifterFramework.Patches.Patch_PawnRenderer_DrawShadowInternal.ClearCache(); }
+            catch (System.Exception ex) { Log.Warning($"[SSF] ClearAll: DrawShadow cache clear failed: {ex.Message}"); }
 
             // FA 컨트롤러 보유 캐시 정리
-            try { ShapeshifterFramework.Compat.Compat_FacialAnimation_HeadWorker_ScaleFor.ClearFACompCache(); } catch { }
+            try { ShapeshifterFramework.Compat.Compat_FacialAnimation_HeadWorker_ScaleFor.ClearFACompCache(); }
+            catch (System.Exception ex) { Log.Warning($"[SSF] ClearAll: FA comp cache clear failed: {ex.Message}"); }
 
             // HAR 헤드 애드온 판정 캐시 정리
-            try { ShapeshifterFramework.Compat.Compat_HAR_BodyAddon_ScaleFor.ClearHeadAddonCache(); } catch { }
+            try { ShapeshifterFramework.Compat.Compat_HAR_BodyAddon_ScaleFor.ClearHeadAddonCache(); }
+            catch (System.Exception ex) { Log.Warning($"[SSF] ClearAll: HAR addon cache clear failed: {ex.Message}"); }
         }
     }
 }

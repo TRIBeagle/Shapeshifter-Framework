@@ -1071,12 +1071,10 @@ namespace ShapeshifterFramework.Comps
             if (form.apparelOnTransform != GearHandling.Keep && pawn.apparel != null)
             {
                 List<Apparel> worn = pawn.apparel.WornApparel;
-                List<Apparel> copy = new List<Apparel>(worn.Count);
-                for (int i = 0; i < worn.Count; i++) { if (worn[i] != null) copy.Add(worn[i]); }
 
-                for (int i = 0; i < copy.Count; i++)
+                for (int i = worn.Count - 1; i >= 0; i--)
                 {
-                    Apparel ap = copy[i];
+                    Apparel ap = worn[i];
                     if (ap == null) continue;
 
                     if ((sourceItems != null && sourceItems.Contains(ap)) || generatedApparel.Contains(ap)) continue;
@@ -1113,12 +1111,10 @@ namespace ShapeshifterFramework.Comps
             if (form.weaponsOnTransform != GearHandling.Keep && pawn.equipment != null)
             {
                 List<ThingWithComps> list = pawn.equipment.AllEquipmentListForReading;
-                List<ThingWithComps> copy = new List<ThingWithComps>(list.Count);
-                for (int i = 0; i < list.Count; i++) { if (list[i] != null) copy.Add(list[i]); }
 
-                for (int i = 0; i < copy.Count; i++)
+                for (int i = list.Count - 1; i >= 0; i--)
                 {
-                    ThingWithComps eq = copy[i];
+                    ThingWithComps eq = list[i];
                     if (eq == null) continue;
 
                     if ((sourceItems != null && sourceItems.Contains(eq)) || generatedWeapons.Contains(eq)) continue;

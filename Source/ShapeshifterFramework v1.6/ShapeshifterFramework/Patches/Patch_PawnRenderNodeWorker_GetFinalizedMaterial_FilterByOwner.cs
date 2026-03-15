@@ -19,7 +19,8 @@ namespace ShapeshifterFramework.Patches
         // Gene 타입 캐시
         static readonly Type T_Gene = AccessTools.TypeByName("RimWorld.Gene");
 
-        // Gene exclusionTags 수집용 재사용 리스트 — 렌더 핫패스 GC 할당 방지
+        // Gene exclusionTags 수집용 재사용 셋 — 렌더 핫패스 GC 할당 방지 및 O(1) 중복 검사
+        static readonly HashSet<string> _tmpTagSet = new HashSet<string>(StringComparer.Ordinal);
         static readonly List<string> _tmpTags = new List<string>(8);
 
         #region 노드 Owner 캐시 — 노드별 소유자(Gene/Apparel/Hediff)는 런타임에 변하지 않으므로 최초 1회만 탐색
@@ -120,26 +121,21 @@ namespace ShapeshifterFramework.Patches
                 {
                     var gene = (Gene)cached.owner;
 
-                    // exclusionTags 수집 (재사용 리스트)
+                    // exclusionTags 수집 (재사용 셋+리스트, O(1) 중복 검사)
+                    _tmpTagSet.Clear();
                     _tmpTags.Clear();
 
                     object geneDef = ShapeshiftReflectionCache.GetInstanceProperty<object>(gene, "def");
                     var tagsA = ShapeshiftReflectionCache.TryGetExclusionTags(geneDef);
                     if (tagsA != null)
-                        for (int i = 0; i < tagsA.Count; i++) _tmpTags.Add(tagsA[i]);
+                        for (int i = 0; i < tagsA.Count; i++)
+                            if (_tmpTagSet.Add(tagsA[i])) _tmpTags.Add(tagsA[i]);
 
                     object props = ShapeshiftReflectionCache.TryGetPropsFromNode(node);
                     var tagsB = ShapeshiftReflectionCache.TryGetExclusionTags(props);
                     if (tagsB != null)
-                    {
                         for (int i = 0; i < tagsB.Count; i++)
-                        {
-                            bool dup = false;
-                            for (int j = 0; j < _tmpTags.Count; j++)
-                                if (string.Equals(_tmpTags[j], tagsB[i], StringComparison.Ordinal)) { dup = true; break; }
-                            if (!dup) _tmpTags.Add(tagsB[i]);
-                        }
-                    }
+                            if (_tmpTagSet.Add(tagsB[i])) _tmpTags.Add(tagsB[i]);
 
                     if (ShapeshiftVisualFilter.ShouldHideGeneByDefOrTags(pawn, gene, _tmpTags.Count > 0 ? (IList<string>)_tmpTags : null))
                         __result = null;

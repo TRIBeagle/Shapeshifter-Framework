@@ -20,7 +20,7 @@ namespace ShapeshifterFramework.Patches
             __state = false;
 
             Pawn pawn = null;
-            try { pawn = PawnRef(__instance); } catch { pawn = null; }
+            try { pawn = PawnRef(__instance); } catch (System.Exception ex) { Log.Warning($"[SSF] PathFollower PawnRef failed: {ex.Message}"); pawn = null; }
             if (pawn == null || !pawn.Spawned || pawn.Map == null) return;
 
             var terr = pawn.Position.GetTerrain(pawn.Map);
@@ -30,7 +30,7 @@ namespace ShapeshifterFramework.Patches
         static void Postfix(Pawn_PathFollower __instance, bool __state)
         {
             Pawn pawn = null;
-            try { pawn = PawnRef(__instance); } catch { pawn = null; }
+            try { pawn = PawnRef(__instance); } catch (System.Exception ex) { Log.Warning($"[SSF] PathFollower PawnRef failed: {ex.Message}"); pawn = null; }
             if (pawn == null || !pawn.Spawned || pawn.Map == null) return;
 
             ShapeshiftFormDef form;
