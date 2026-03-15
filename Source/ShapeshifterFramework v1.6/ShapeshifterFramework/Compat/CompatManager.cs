@@ -27,7 +27,11 @@ namespace ShapeshifterFramework.Compat
             LogPrefix = logPrefix;
         }
 
-        internal bool IsActive => CompatManager.IsActive(PackageId);
+        /// <summary>추가 패키지 ID (구버전 등). null이면 무시.</summary>
+        internal string AltPackageId;
+
+        internal bool IsActive => CompatManager.IsActive(PackageId)
+            || (!string.IsNullOrEmpty(AltPackageId) && CompatManager.IsActive(AltPackageId));
 
         internal int OkCount => ok.Count;
 
@@ -98,7 +102,8 @@ namespace ShapeshifterFramework.Compat
         internal const string Pkg_HAR = "erdelf.HumanoidAlienRaces";
         internal const string Pkg_FA = "Nals.FacialAnimation";
         internal const string Pkg_SS = "PeteTimesSix.SimpleSidearms";
-        internal const string Pkg_Yayo = "com.yayo.combat3";
+        internal const string Pkg_Yayo = "Mlie.YayosCombat3";
+        internal const string Pkg_Yayo_Legacy = "com.yayo.combat3";
 
         internal const string LOG_HAR = "[SSF/HAR]";
         internal const string LOG_FA = "[SSF/FA]";
@@ -112,7 +117,7 @@ namespace ShapeshifterFramework.Compat
         internal static readonly CompatMod HAR = new CompatMod(Pkg_HAR, LOG_HAR);
         internal static readonly CompatMod FA = new CompatMod(Pkg_FA, LOG_FA);
         internal static readonly CompatMod SS = new CompatMod(Pkg_SS, LOG_SS);
-        internal static readonly CompatMod Yayo = new CompatMod(Pkg_Yayo, LOG_Yayo);
+        internal static readonly CompatMod Yayo = new CompatMod(Pkg_Yayo, LOG_Yayo) { AltPackageId = Pkg_Yayo_Legacy };
 
         /// <summary>Report 전 준비.</summary>
         private static void RegisterBeforeReport()
