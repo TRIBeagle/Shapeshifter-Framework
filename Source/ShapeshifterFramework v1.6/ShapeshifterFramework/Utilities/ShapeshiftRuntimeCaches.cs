@@ -30,7 +30,6 @@ namespace ShapeshifterFramework.Utilities
         private static Dictionary<HediffDef, MutantDef> _hediffToMutant;
 
         /// <summary>HediffDef에 대응하는 MutantDef를 O(1)로 조회. 최초 호출 시 역인덱스 자동 빌드.</summary>
-        [MayRequire("Ludeon.RimWorld.Anomaly")]
         internal static bool TryGetMutantDef(HediffDef hediffDef, out MutantDef mutant)
         {
             if (_hediffToMutant == null)
@@ -38,7 +37,6 @@ namespace ShapeshifterFramework.Utilities
             return _hediffToMutant.TryGetValue(hediffDef, out mutant);
         }
 
-        [MayRequire("Ludeon.RimWorld.Anomaly")]
         private static void BuildMutantIndex()
         {
             var all = DefDatabase<MutantDef>.AllDefsListForReading;
