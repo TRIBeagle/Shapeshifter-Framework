@@ -267,6 +267,9 @@ namespace ShapeshifterFramework.Comps
             var vt = ShapeshiftVerbTracker;
             if (vt == null) return;
 
+            // 모드옵션에서 토글 UI 숨김 → 자동사격 전부 OFF
+            bool toggleEnabled = ShapeshifterFrameworkMod.Settings?.showVerbAutoToggle ?? true;
+
             bool firstSet = false;
             var verbs = vt.AllVerbs;
             for (int i = 0; i < verbs.Count; i++)
@@ -275,7 +278,7 @@ namespace ShapeshifterFramework.Comps
                 if (v == null || v.verbProps == null) continue;
                 if (!v.verbProps.Ranged) continue;
 
-                bool on = !firstSet; // 첫 번째만 ON
+                bool on = toggleEnabled && !firstSet; // 토글 활성 시 첫 번째만 ON
                 verbAutoToggle[AutoKey(v)] = on;
                 if (on) firstSet = true;
             }
