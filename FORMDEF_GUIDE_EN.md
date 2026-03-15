@@ -29,7 +29,10 @@ Stats and capacities are **not** defined on the FormDef. They are defined on the
 
 ## 2. Main Hediff (Stats & Capacities)
 * `<linkedHediff>`: (Required) The `HediffDef` that marks the transformation state. Removing this hediff automatically ends the transformation.
-* `<formAllowedRaces>`: (Optional) List of `ThingDef` race defs that can receive this form. If omitted or empty, any race is allowed (default behavior). Note: this filters the **target** (who receives the form), while `CompProperties_AbilityShiftTarget.allowedRaces` filters the **caster** (who can cast the ability).
+* `<formAllowedRaces>`: (Optional) List of `ThingDef` race defs that can receive this form. If omitted or empty, any race is allowed (default behavior).
+* `<formDisallowedRaces>`: (Optional) List of `ThingDef` race defs that **cannot** receive this form. Takes priority over `formAllowedRaces`.
+
+> **Note**: These filter the **target** (who receives the form). `CompProperties_AbilityShiftTarget.allowedRaces`/`disallowedRaces` filter the **caster** (who can cast the ability). FormDef-level filters apply to **all** trigger paths (abilities, drugs, scrolls, projectiles).
 
 ```xml
 <formAllowedRaces>

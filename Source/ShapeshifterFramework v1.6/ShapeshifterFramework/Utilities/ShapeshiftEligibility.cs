@@ -11,12 +11,21 @@ namespace ShapeshifterFramework.Utilities
 {
     internal static class ShapeshiftEligibility
     {
-        /// <summary>폼의 formAllowedRaces에 대상 종족이 포함되는지 판정. null/빈 목록이면 제한 없음.</summary>
+        /// <summary>폼의 formAllowedRaces/formDisallowedRaces에 대상 종족이 부합하는지 판정. 둘 다 null/빈 목록이면 제한 없음.</summary>
         public static bool IsRaceAllowed(Pawn pawn, ShapeshiftFormDef form)
         {
             if (pawn == null || form == null) return false;
-            if (form.formAllowedRaces == null || form.formAllowedRaces.Count == 0) return true;
-            return form.formAllowedRaces.Contains(pawn.def);
+
+            // disallow 우선: 명시적 차단 목록에 있으면 즉시 거부
+            if (form.formDisallowedRaces != null && form.formDisallowedRaces.Count > 0
+                && form.formDisallowedRaces.Contains(pawn.def))
+                return false;
+
+            // allow: 목록이 있으면 포함되어야 통과
+            if (form.formAllowedRaces != null && form.formAllowedRaces.Count > 0)
+                return form.formAllowedRaces.Contains(pawn.def);
+
+            return true;
         }
 
         // 뮤턴트 수집용 재사용 리스트 — GC 할당 방지

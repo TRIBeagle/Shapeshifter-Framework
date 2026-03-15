@@ -97,6 +97,9 @@ namespace ShapeshifterFramework
         /// <summary>이 폼을 적용받을 수 있는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
         public List<ThingDef> formAllowedRaces;
 
+        /// <summary>이 폼을 적용받을 수 없는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        public List<ThingDef> formDisallowedRaces;
+
         /// <summary>이 폼을 적용받을 수 있는 뮤턴트(MutantDef) 목록. null/빈 목록이면 제한 없음.</summary>
         [MayRequire("Ludeon.RimWorld.Anomaly")]
         public List<MutantDef> formAllowedMutants;
