@@ -4,21 +4,27 @@
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
+using System.Collections.Generic;
+using System.Reflection;
 using Verse;
 
 namespace ShapeshifterFramework.Patches
 {
     /// <summary>DropBloodFilth / DropBloodSmear 전후로 FilthScope에 Pawn 세팅.</summary>
-    [HarmonyPatch(typeof(Pawn_HealthTracker))]
+    [HarmonyPatch]
     internal static class Patch_Pawn_HealthTracker_DropBloodFilth
     {
         // pawn 필드 접근자
         private static readonly AccessTools.FieldRef<Pawn_HealthTracker, Pawn> pawnFieldRef =
             AccessTools.FieldRefAccess<Pawn_HealthTracker, Pawn>("pawn");
 
-        [HarmonyPrefix]
-        [HarmonyPatch("DropBloodFilth")]
-        [HarmonyPatch("DropBloodSmear")]
+        /// <summary>DropBloodFilth, DropBloodSmear 두 메서드를 동시에 패치.</summary>
+        static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return AccessTools.Method(typeof(Pawn_HealthTracker), "DropBloodFilth");
+            yield return AccessTools.Method(typeof(Pawn_HealthTracker), "DropBloodSmear");
+        }
+
         static void Prefix(Pawn_HealthTracker __instance)
         {
             Pawn pawn = pawnFieldRef(__instance);
@@ -26,9 +32,6 @@ namespace ShapeshifterFramework.Patches
                 ShapeshiftFilthScope.CurrentPawn = pawn;
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch("DropBloodFilth")]
-        [HarmonyPatch("DropBloodSmear")]
         static void Postfix()
         {
             ShapeshiftFilthScope.CurrentPawn = null;
