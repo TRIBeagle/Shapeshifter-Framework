@@ -46,11 +46,12 @@
 - [ ] `[A]` 1-AV6. bloodCache
 - [ ] `[A]` 1-AV7. timer(15000틱)
 - [ ] `[A]` 1-AV8. [Revert] hediff 제거, bodyType 원복, addAbility 제거
+- [ ] `[A]` 1-AV9. transformFxCooldownTicks(30) 설정값 검증
 
 ### 수동 확인
 - [ ] `[M]` 1-4. 물기(teeth) 근접공격만 사용
 - [ ] `[M]` 1-5. 혈흔 Filth_BloodInsect + 크롤링 smear + fleshType Insectoid
-- [ ] `[M]` 1-6. 진입/해제 Fleck + Sound + FX 쿨다운 30틱
+- [ ] `[M]` 1-6. 진입/해제 Fleck + Sound 재생 확인
 - [ ] `[M]` 1-7. revertDrops: 해제 시 아이템 드랍 확인
 - [ ] `[M]` 1-8. Revert 기즈모 수동 해제 가능
 - [ ] `[M]` 1-9. 해제 후 텍스처/체형/스탯/hediff 전부 원복
