@@ -8,6 +8,7 @@
 // 주의 : 세이브 전용. 로드/ResolvingCrossRefs 시에는 아무 작업 안 함.
 
 using HarmonyLib;
+using RimWorld;
 using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using Verse;
