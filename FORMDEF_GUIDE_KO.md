@@ -340,6 +340,7 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 | `allowedRaces` / `disallowedRaces` | List\<ThingDef\> | 시전자 종족 필터. |
 | `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | 시전자 뮤턴트 필터 (Anomaly). |
 | `allowedFromForms` | List\<string\> | 변신 중 시전 허용 폼 목록. 비우면 변신 중 비활성(회색). |
+| `affectHostileOnly` | bool | true 시 AoE 어빌리티에서 캐스터에 적대인 폰만 적용. 기본 false. |
 
 ### 획득 경로
 

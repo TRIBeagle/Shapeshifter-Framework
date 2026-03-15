@@ -9,6 +9,7 @@
     <defName>SSFTest_Ability_MassPolymorph</defName>
     <label>mass polymorph</label>
     <description>반경 5칸 내 폰을 양으로 변신시키는 범위 마법. 60% 확률.</description>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
     <cooldownTicksRange>6000</cooldownTicksRange>
     <hostile>true</hostile>
     <displayOrder>520</displayOrder>
@@ -31,6 +32,7 @@
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <formDefName>SSFTest_SheepForm</formDefName>
         <successChance>0.6</successChance>
+        <affectHostileOnly>true</affectHostileOnly>
       </li>
       <li Class="CompProperties_AbilityFleckOnTarget">
         <fleckDef>PsycastPsychicEffect</fleckDef>

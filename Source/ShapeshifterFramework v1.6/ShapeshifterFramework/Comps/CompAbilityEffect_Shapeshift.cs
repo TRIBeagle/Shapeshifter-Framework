@@ -77,7 +77,12 @@ namespace ShapeshifterFramework.Comps
             if (!base.CanApplyOn(target, dest)) return false;
 
             var pawn = target.Pawn;
-            if (pawn == null || pawn.Dead) return false;
+
+            // AoE(바닥 클릭) — Pawn 없는 location 타겟은 통과시켜
+            // 바닐라 Ability_EffectRadius가 반경 내 폰에 개별 Apply를 호출하도록 함
+            if (pawn == null) return !target.HasThing;
+
+            if (pawn.Dead) return false;
 
             // 대상 종족이 폼의 formAllowedRaces에 없으면 차단
             var formDef = ResolvedFormDef;
@@ -100,6 +105,10 @@ namespace ShapeshifterFramework.Comps
         {
             var pawn = target.Pawn;
             if (pawn == null) return;
+
+            // affectHostileOnly: 캐스터에 적대가 아닌 폰은 스킵
+            if (Props.affectHostileOnly && parent?.pawn != null && !pawn.HostileTo(parent.pawn))
+                return;
 
             ShapeshiftTargetUtility.TryShiftPawn(pawn, Props.formDefName, Props.successChance);
         }

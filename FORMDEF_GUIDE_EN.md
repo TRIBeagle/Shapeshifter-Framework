@@ -340,6 +340,7 @@ Attach to an `AbilityDef`'s `<comps>`:
 | `allowedRaces` / `disallowedRaces` | List\<ThingDef\> | Caster race filter. |
 | `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | Caster mutant filter (Anomaly). |
 | `allowedFromForms` | List\<string\> | Forms from which this ability can be cast while transformed. Empty = disabled while transformed. |
+| `affectHostileOnly` | bool | If true, AoE abilities only apply to pawns hostile to the caster. Default false. |
 
 ### Acquisition Sources
 

@@ -82,6 +82,9 @@
 ### 트리거
 - [ ] `[M]` 3-1. Ability_DebuffEnemy 적 타겟 75% + Ability_MassPolymorph AoE 60%
 - [ ] `[M]` 3-2. 비폭력 폰 캐스트 불가
+- [ ] `[M]` 3-5. MassPolymorph 바닥 클릭(location 타겟) 시 캐스팅 정상 작동
+- [ ] `[M]` 3-6. MassPolymorph AoE 반경 내 아군 미적용 (affectHostileOnly=true)
+- [ ] `[M]` 3-7. MassPolymorph 기즈모 아이콘 정상 표시
 
 ### 비주얼
 - [ ] `[M]` 3-3. 성별 텍스처 분기 (SheepMale / SheepFemale) + bodyDrawScale 0.6

@@ -25,6 +25,10 @@ namespace ShapeshifterFramework.Comps
         [MayRequire("Ludeon.RimWorld.Anomaly")]
         public List<MutantDef> disallowedMutants;
 
+        // ── AoE 팩션 필터 ──
+        // true 시 캐스터에 적대인 폰만 Apply, 아군/중립 스킵
+        public bool affectHostileOnly;
+
         // ── 변신 중 시전 허용 폼 (defName 문자열) ──
         // null/비어있으면: 변신 중 시전 불가 (기즈모 비활성)
         public List<string> allowedFromForms;
