@@ -382,48 +382,6 @@ namespace ShapeshifterFramework.Compat
             MarkDirty(comp);
         }
 
-        /// <summary>DefName으로 Def 조회 후 faceType에 적용 (단일 호출 폴백).</summary>
-        private static void ApplyDefByName(Pawn pawn, string controller, string defName)
-        {
-            if (string.IsNullOrEmpty(defName)) return;
-
-            var comp = FindFAControllerComp(pawn, controller);
-            if (comp == null)
-            {
-                ReportOnceFailed("ControllerMissing:" + controller, "controller comp not found");
-                return;
-            }
-
-            // Def 타입: faceType 우선, 없으면 매핑
-            var defType = (System.Type)null;
-            Def cur = ShapeshiftReflectionCache.GetInstanceField<Def>(comp, "faceType");
-            if (cur != null) defType = cur.GetType();
-            if (defType == null) defType = MapControllerToDefType(controller);
-            if (defType == null)
-            {
-                ReportOnceFailed("ResolveDefTypeFailed:" + controller, "cannot resolve target Def type");
-                return;
-            }
-
-            var target = GenDefDatabase.GetDef(defType, defName, false);
-            if (target == null)
-            {
-                // 동일 오류 중복 보고 방지
-                ReportOnceFailed("InvalidFA:" + controller + ":" + defName,
-                    $"def '{defName}' not found for {defType.Name}");
-                return;
-            }
-
-            if (!ShapeshiftReflectionCache.TrySetInstanceField(comp, "faceType", target))
-            {
-                ReportOnceFailed("SetFaceTypeFailed:" + controller,
-                    "set faceType failed (field missing or type mismatch)");
-                return;
-            }
-
-            MarkDirty(comp);
-        }
-
         /// <summary>DirtyFlag를 true로 설정.</summary>
         private static void MarkDirty(object controllerComp)
         {

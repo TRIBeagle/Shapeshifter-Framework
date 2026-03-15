@@ -69,8 +69,8 @@ namespace ShapeshifterFramework.Patches
             return true; // 기본 원본 실행
         }
 
-        /// <summary>verbs 리스트에서 가장 파워 높은 근접 verb 반환.</summary>
-        private static Verb FindBestFormMelee(List<Verb> verbs)
+        /// <summary>verbs 리스트에서 가장 파워 높은 근접 verb 반환. TryGetMeleeVerb 패치에서도 공유.</summary>
+        internal static Verb FindBestFormMelee(List<Verb> verbs)
         {
             Verb best = null;
             float bestPower = -1f;

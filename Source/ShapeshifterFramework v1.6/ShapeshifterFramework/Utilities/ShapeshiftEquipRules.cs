@@ -12,7 +12,7 @@ namespace ShapeshifterFramework.Utilities
         {
             if (comp == null) return false;
             if (comp.suppressEquipLock) return false;
-            var def = comp.currentForm as ShapeshiftFormDef;
+            var def = comp.currentForm;
             if (def == null) return false;
 
             switch (def.apparelEquipLock)
@@ -29,7 +29,7 @@ namespace ShapeshifterFramework.Utilities
         {
             if (comp == null) return false;
             if (comp.suppressEquipLock) return false; // 내부 복구 중엔 잠금 해제
-            var def = comp.currentForm as ShapeshiftFormDef;
+            var def = comp.currentForm;
             if (def == null) return false;
 
             switch (def.weaponEquipLock)

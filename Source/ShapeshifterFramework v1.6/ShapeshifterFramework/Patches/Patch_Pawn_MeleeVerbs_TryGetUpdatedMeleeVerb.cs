@@ -35,7 +35,7 @@ namespace ShapeshifterFramework.Patches
                     var vt = comp.ShapeshiftVerbTracker;
                     if (vt == null) return true;
 
-                    var bestMelee = FindBestFormMelee(vt.AllVerbs);
+                    var bestMelee = Patch_Pawn_TryGetAttackVerb.FindBestFormMelee(vt.AllVerbs);
                     if (bestMelee != null)
                     {
                         __result = bestMelee;
@@ -70,7 +70,7 @@ namespace ShapeshifterFramework.Patches
                 var vt = comp.ShapeshiftVerbTracker;
                 if (vt == null) return;
 
-                var bestFormMelee = FindBestFormMelee(vt.AllVerbs);
+                var bestFormMelee = Patch_Pawn_TryGetAttackVerb.FindBestFormMelee(vt.AllVerbs);
                 if (bestFormMelee == null) return;
 
                 if (__result == null)
@@ -94,25 +94,5 @@ namespace ShapeshifterFramework.Patches
             }
         }
 
-        private static Verb FindBestFormMelee(List<Verb> verbs)
-        {
-            Verb best = null;
-            float bestPower = -1f;
-            for (int i = 0; i < verbs.Count; i++)
-            {
-                var v = verbs[i];
-                if (v == null || v.verbProps == null) continue;
-                if (!v.verbProps.IsMeleeAttack) continue;
-
-                var vma = v as Verb_MeleeAttack;
-                float power = (vma?.tool != null) ? vma.tool.power : 0f;
-                if (best == null || power > bestPower)
-                {
-                    best = v;
-                    bestPower = power;
-                }
-            }
-            return best;
-        }
     }
 }
