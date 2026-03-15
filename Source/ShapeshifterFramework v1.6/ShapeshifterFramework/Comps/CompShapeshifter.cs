@@ -261,12 +261,6 @@ namespace ShapeshifterFramework.Comps
             }
         }
 
-        /// <summary>자동공격 강제 활성.</summary>
-        public void ForceAutoAttackOn(int index, Verb v)
-        {
-            verbAutoToggle[AutoKey(v)] = true;
-        }
-
         /// <summary>폼 적용 시 배타적 토글 초기화: 첫 번째 ranged verb만 ON, 나머지 OFF.</summary>
         private void InitAutoToggleForForm()
         {
@@ -1765,10 +1759,8 @@ namespace ShapeshifterFramework.Comps
                         tgl.Disable("IsIncapableOfViolenceLower".Translate(pawn.LabelShort, pawn));
                     yield return tgl;
                 }
-                else
-                {
-                    ForceAutoAttackOn(idx, v);
-                }
+                // showToggle=false → 토글 UI 없음. InitAutoToggleForForm에서 설정한
+                // "첫 번째 ranged verb만 ON" 상태를 그대로 유지.
             }
         }
         #endregion
