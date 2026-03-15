@@ -3,6 +3,7 @@
 // 용도 : 이펙트 다중 호출로 인한 소음 스팸과 과부하를 막기 위해 큐(Queue)와 쿨다운을 적용하며, 매 프레임 발생하는 가비지(GC) 할당을 막기 위해 List 기반의 재사용 버퍼(_removeBuffer)를 활용함.
 
 using RimWorld;
+using ShapeshifterFramework.Comps;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,10 +47,33 @@ namespace ShapeshifterFramework.Utilities
         public ShapeshiftTransformFxRunner(Game game) { }
 
         /// <summary>게임 로드/시작 완료 시 전역 캐시 정리 — 이전 세션 잔여 데이터 누수 방지.</summary>
+        /// <remarks>
+        /// ClearAll()이 ShapeshiftRegistry를 비우므로, PostLoadInit/PostSpawnSetup에서 등록된 엔트리가 유실됨.
+        /// 따라서 캐시 정리 후 모든 맵의 변신 중 폰을 재등록해야 함.
+        /// </remarks>
         public override void FinalizeInit()
         {
             base.FinalizeInit();
             ShapeshiftRuntimeCaches.ClearAll();
+
+            // 캐시 클리어로 유실된 변신 폰 레지스트리 + 런타임 캐시 재등록
+            if (Find.Maps != null)
+            {
+                for (int m = 0; m < Find.Maps.Count; m++)
+                {
+                    var pawns = Find.Maps[m]?.mapPawns?.AllPawnsSpawned;
+                    if (pawns == null) continue;
+                    for (int i = 0; i < pawns.Count; i++)
+                    {
+                        var comp = pawns[i].TryGetComp<CompShapeshifter>();
+                        if (comp != null && comp.isTransformed && comp.currentForm != null)
+                        {
+                            ShapeshiftRegistry.Register(pawns[i], comp);
+                            CompShapeshifter.ReapplyRuntimeCaches(pawns[i], comp.currentForm);
+                        }
+                    }
+                }
+            }
         }
 
         public override void GameComponentTick()

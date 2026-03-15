@@ -1008,7 +1008,10 @@ namespace ShapeshifterFramework.Comps
             ShapeshiftRegistry.Register(pawn, this);
 
             // 로드 후 스폰: PostLoadInit 시점에는 Drawer가 없어 그래픽 dirty가 불가능.
-            // 여기서 체형/머리형/컬러를 안전하게 재적용하고 그래픽을 강제 갱신.
+            // 여기서 체형/머리형/컬러를 안전하게 재적용하고 그래픽만 강제 갱신.
+            // verb 재초기화는 하지 않음 — 폼 verbs/tools는 이미 ExposeData에서 복원 완료,
+            // VerbsNeedReinitOnLoad()를 호출하면 바닐라 ThingDef 기준으로 재빌드되어
+            // 폼의 custom verb가 유실되고 "Replaced verb" 에러 발생.
             if (respawningAfterLoad)
             {
                 var form = currentForm;
@@ -1019,7 +1022,11 @@ namespace ShapeshifterFramework.Comps
                     if (form.hairColor.HasValue) pawn.story.HairColor = form.hairColor.Value;
                     if (form.skinColor.HasValue) pawn.story.skinColorOverride = form.skinColor.Value;
                 }
-                RefreshPawn(pawn, this, forceReinitPawnVerbs: true, resetShapeshiftVerbs: false, refreshSelection: false);
+
+                // 그래픽 관련만 갱신 (verb 재초기화 없음)
+                try { pawn.Drawer?.renderer?.SetAllGraphicsDirty(); } catch (System.Exception) { }
+                try { PortraitsCache.SetDirty(pawn); } catch (System.Exception) { }
+                try { GlobalTextureAtlasManager.TryMarkPawnFrameSetDirty(pawn); } catch (System.Exception) { }
             }
         }
 
@@ -1395,6 +1402,12 @@ namespace ShapeshifterFramework.Comps
         #endregion
 
         #region 캐시/그래픽/버브 재초기화
+
+        /// <summary>런타임 캐시 재등록 (FinalizeInit에서 ClearAll 후 호출).</summary>
+        public static void ReapplyRuntimeCaches(Pawn pawn, ShapeshiftFormDef form)
+        {
+            ApplyRuntimeCaches(pawn, form);
+        }
 
         /// <summary>런타임 캐시 등록(사운드/혈흔/FleshType).</summary>
         private static void ApplyRuntimeCaches(Pawn pawn, ShapeshiftFormDef form)
