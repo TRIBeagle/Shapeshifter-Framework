@@ -234,6 +234,11 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 * `<faSkinTypeDef>`: 피부 타입 교체
 * `<faEyeColor>` / `<faEyeColor2>`: 눈 색상 오버라이드 (`ColorInt`)
 
+**Simple Sidearms:**
+* XML 필드 불필요. 자동으로 호환됩니다.
+* 변신 시: 폰의 사이드암 메모리를 백업 후 클리어하여, Simple Sidearms가 무기 교체 로직에 간섭하지 않도록 합니다.
+* 해제 시: 원래 사이드암 메모리를 복원하여, 변신 전과 동일한 무기를 기억합니다.
+
 ---
 
 ## 어빌리티 & 트리거 시스템

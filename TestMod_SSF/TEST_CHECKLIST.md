@@ -465,6 +465,18 @@
 
 ---
 
+## 15. 모드 호환성 (Simple Sidearms)
+
+- [ ] #251 `[MANUAL]` SS 활성 + 무기 2개 기억 상태 → 변신 (weaponsOnTransform=Inventory) → SS 메모리 클리어 확인 (SS가 드랍 무기 재장착 시도 안 함)
+- [ ] #252 `[MANUAL]` 변신 중 → SS 메모리에 폼 전용 무기가 등록되지 않음 확인
+- [ ] #253 `[MANUAL]` 변신 해제 → SS 메모리 원복 확인 (변신 전 기억했던 무기 목록 동일)
+- [ ] #254 `[MANUAL]` 변신 중 세이브 → 로드 → 변신 해제 → SS가 자연스럽게 장비 재인식 (에러 없음)
+- [ ] #255 `[MANUAL]` SS 비활성 시 → 호환 패치 미적용 (로그에 `[SSF/SS]` 없음, 에러 없음)
+- [ ] #256 `[MANUAL]` SS 활성 + weaponsOnTransform=Drop → 변신 → 바닥 무기에 SS 재장착 시도 없음
+- [ ] #257 `[MANUAL]` SS 활성 + weaponsOnTransform=Keep → 변신 → SS 메모리 정상 백업/복원
+
+---
+
 ## 요약
 
 | 구분 | 항목 수 | 비율 |

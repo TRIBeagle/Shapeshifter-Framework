@@ -234,6 +234,11 @@ All fields below use `MayRequire: Nals.FacialAnimation`:
 * `<faSkinTypeDef>`: Replace skin type.
 * `<faEyeColor>` / `<faEyeColor2>`: Override eye colors (`ColorInt`).
 
+**Simple Sidearms:**
+* No XML fields required. Compatibility is automatic.
+* On transformation: the pawn's sidearm memory is backed up and cleared to prevent Simple Sidearms from interfering with weapon swap logic.
+* On revert: the original sidearm memory is restored, so the pawn remembers the same weapons as before transformation.
+
 ---
 
 ## Ability & Trigger System

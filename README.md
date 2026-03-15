@@ -17,6 +17,9 @@ Not yet available. Will be released via Steam Workshop and GitHub when ready.
 ## Compatibility
 - Target: RimWorld 1.6
 - Should be loaded **before mods that depend on shapeshifting features**
+- **Humanoid Alien Races (HAR)**: Body addon visibility control during transformation
+- **Facial Animation**: Face type backup/restore and form-specific overrides
+- **Simple Sidearms**: Weapon memory backup/restore to prevent conflicts during transformation
 
 ## Credits
 - Developed by **TRIBeagle**
@@ -43,6 +46,9 @@ Not yet available. Will be released via Steam Workshop and GitHub when ready.
 ## 호환성
 - 대상 버전: RimWorld 1.6
 - 변신 기능을 사용하는 모드보다 먼저 로드해야 함
+- **Humanoid Alien Races (HAR)**: 변신 시 BodyAddon 표시 제어
+- **Facial Animation**: 얼굴 타입 백업/복원 및 폼별 오버라이드
+- **Simple Sidearms**: 변신 시 무기 메모리 백업/복원으로 충돌 방지
 
 ## 크레딧
 - 제작: **TRIBeagle**

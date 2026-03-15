@@ -97,9 +97,11 @@ namespace ShapeshifterFramework.Compat
     {
         internal const string Pkg_HAR = "erdelf.HumanoidAlienRaces";
         internal const string Pkg_FA = "Nals.FacialAnimation";
+        internal const string Pkg_SS = "PeteTimesSix.SimpleSidearms";
 
         internal const string LOG_HAR = "[SSF/HAR]";
         internal const string LOG_FA = "[SSF/FA]";
+        internal const string LOG_SS = "[SSF/SS]";
 
         /// <summary>모드 활성 확인.</summary>
         internal static bool IsActive(string packageId, bool ignorePostfix = false)
@@ -107,6 +109,7 @@ namespace ShapeshifterFramework.Compat
 
         internal static readonly CompatMod HAR = new CompatMod(Pkg_HAR, LOG_HAR);
         internal static readonly CompatMod FA = new CompatMod(Pkg_FA, LOG_FA);
+        internal static readonly CompatMod SS = new CompatMod(Pkg_SS, LOG_SS);
 
         /// <summary>Report 전 준비.</summary>
         private static void RegisterBeforeReport()
@@ -135,12 +138,14 @@ namespace ShapeshifterFramework.Compat
 
             if (HAR.IsActive) { anyActive = true; HAR.ReportOnce(); allOk &= (HAR.FailCount == 0); }
             if (FA.IsActive) { anyActive = true; FA.ReportOnce(); allOk &= (FA.FailCount == 0); }
+            if (SS.IsActive) { anyActive = true; SS.ReportOnce(); allOk &= (SS.FailCount == 0); }
 
             if (anyActive && allOk)
             {
                 var mods = new System.Collections.Generic.List<string>();
                 if (HAR.IsActive) mods.Add("HAR");
                 if (FA.IsActive) mods.Add("FA");
+                if (SS.IsActive) mods.Add("SS");
                 Log.Message($"[SSF] all compatibility patches active ({string.Join(", ", mods)}).");
             }
         }
