@@ -1415,9 +1415,8 @@ namespace ShapeshifterFramework.Comps
         {
             if (pawn == null) return;
 
-            // comp 한 번만 조회 (호출자가 전달하면 재사용, 아니면 레지스트리 → TryGetComp 폴백)
-            var comp = compHint;
-            if (comp == null) ShapeshiftUtility.TryGetShapeshiftComp(pawn, out comp);
+            // comp 한 번만 조회 (호출자가 전달하면 재사용, 아니면 바닐라 TryGetComp 폴백)
+            var comp = compHint ?? pawn.TryGetComp<CompShapeshifter>();
 
             // 캐시 더럽히기
             try { pawn.health?.capacities?.Notify_CapacityLevelsDirty(); } catch (System.Exception ex) { Log.Warning($"[SSF] RefreshPawn (Capacity) error: {ex}"); }

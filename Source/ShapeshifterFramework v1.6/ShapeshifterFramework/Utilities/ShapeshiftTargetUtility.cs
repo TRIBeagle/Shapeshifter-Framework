@@ -14,7 +14,8 @@ namespace ShapeshifterFramework.Utilities
         {
             if (target == null || target.Dead) return false;
 
-            if (!ShapeshiftUtility.TryGetShapeshiftComp(target, out var comp))
+            var comp = target.TryGetComp<Comps.CompShapeshifter>();
+            if (comp == null)
             {
                 Messages.Message("SSF_ShiftTarget_NoComp".Translate(target.LabelShortCap), MessageTypeDefOf.RejectInput, false);
                 return false;
