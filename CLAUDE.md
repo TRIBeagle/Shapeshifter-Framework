@@ -30,8 +30,7 @@ API 변경, 새 XML 필드 추가/삭제, 동작 변경 시 아래 문서를 동
 
 ### 테스트모드 반영
 새 기능이나 동작 변경 시:
-- `TestMod_SSF/TEST_CHECKLIST.md` — 해당 카테고리에 테스트 항목 추가/수정
-- `TestMod_SSF/TEST_PLAN.md` — 테스트 실행 계획 갱신
+- `TestMod_SSF/TEST_CHECKLIST.md` — 테스트 체크리스트 및 실행 계획 (단일 파일)
 - 필요 시 `TestMod_SSF/1.6/Defs/` 아래 테스트용 XML Def 추가
 
 ## 빌드
