@@ -1,6 +1,7 @@
 // ShapeshifterFramework | Compat | Compat_SimpleSidearms_MemoryHook.cs
 // 목적 : Simple Sidearms 모드의 CompSidearmMemory와 변신 시스템 간 무기 메모리 충돌 방지.
-// 용도 : 변신 시 SS 메모리 백업/클리어, 해제 시 원복. 폼 전용 무기가 SS 메모리에 잔류하지 않도록 관리.
+// 용도 : 변신 시 SS 메모리(rememberedWeapons + 선호 무기 필드) 백업/클리어, 해제 시 원복.
+//        폼 전용 무기가 SS 메모리에 잔류하지 않도록 관리.
 // 주의 : SS 어셈블리에 하드 참조 없이 리플렉션으로 접근. 메인 스레드 단일 실행 전제.
 
 using HarmonyLib;
@@ -75,6 +76,42 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
+        // ── 선호 무기 필드 리플렉션 캐시 ──
+        // 변신 시 이 필드들을 클리어하지 않으면 SS가 더 이상 존재하지 않는 무기를 강제 장착 시도할 수 있음.
+        private static readonly string[] _prefFieldNames = new[]
+        {
+            "forcedWeaponEx",              // ThingDefStuffDefPair? — 강제 장착 무기
+            "forcedWeaponWhileDraftedEx",   // ThingDefStuffDefPair? — 징집 시 강제 장착 무기
+            "defaultRangedWeaponEx",        // ThingDefStuffDefPair? — 기본 원거리 무기
+            "preferredMeleeWeaponEx",       // ThingDefStuffDefPair? — 선호 근접 무기
+        };
+
+        private static FieldInfo[] _prefFields;
+        private static bool _prefFieldsResolved;
+
+        /// <summary>선호 무기 필드 일괄 조회 (1회 캐싱). null 요소는 해당 필드 미발견.</summary>
+        private static FieldInfo[] PrefFields
+        {
+            get
+            {
+                if (!_prefFieldsResolved)
+                {
+                    _prefFieldsResolved = true;
+                    var t = CompMemoryType;
+                    if (t != null)
+                    {
+                        _prefFields = new FieldInfo[_prefFieldNames.Length];
+                        for (int i = 0; i < _prefFieldNames.Length; i++)
+                        {
+                            _prefFields[i] = t.GetField(_prefFieldNames[i],
+                                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        }
+                    }
+                }
+                return _prefFields;
+            }
+        }
+
         /// <summary>Pawn에서 CompSidearmMemory 찾기.</summary>
         internal static ThingComp GetMemoryComp(Pawn pawn)
         {
@@ -107,12 +144,30 @@ namespace ShapeshifterFramework.Compat
             // 원본 IList의 요소를 object로 보관 (ThingDefStuffDefPair 등 value type)
             internal readonly List<object> entries = new List<object>();
 
-            internal bool IsEmpty => entries.Count == 0;
+            // 선호 무기 필드 백업 (인덱스는 _prefFieldNames와 동일)
+            internal object[] prefValues;
 
-            internal void Clear() => entries.Clear();
+            internal bool IsEmpty => entries.Count == 0 && !HasPrefValues;
+
+            internal bool HasPrefValues
+            {
+                get
+                {
+                    if (prefValues == null) return false;
+                    for (int i = 0; i < prefValues.Length; i++)
+                        if (prefValues[i] != null) return true;
+                    return false;
+                }
+            }
+
+            internal void Clear()
+            {
+                entries.Clear();
+                prefValues = null;
+            }
         }
 
-        /// <summary>현재 SS 메모리를 백업.</summary>
+        /// <summary>현재 SS 메모리를 백업 (rememberedWeapons + 선호 무기 필드).</summary>
         internal static SSBackup BackupMemory(Pawn pawn)
         {
             var backup = new SSBackup();
@@ -121,20 +176,37 @@ namespace ShapeshifterFramework.Compat
             var comp = GetMemoryComp(pawn);
             if (comp == null) return backup;
 
+            // rememberedWeapons 백업
             var list = GetRememberedWeapons(comp);
-            if (list == null) return backup;
-
-            for (int i = 0; i < list.Count; i++)
+            if (list != null)
             {
-                var item = list[i];
-                if (item != null)
-                    backup.entries.Add(item);
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var item = list[i];
+                    if (item != null)
+                        backup.entries.Add(item);
+                }
+            }
+
+            // 선호 무기 필드 백업
+            var fields = PrefFields;
+            if (fields != null)
+            {
+                backup.prefValues = new object[fields.Length];
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    if (fields[i] != null)
+                    {
+                        try { backup.prefValues[i] = fields[i].GetValue(comp); }
+                        catch (Exception) { /* 접근 실패 — 무시 */ }
+                    }
+                }
             }
 
             return backup;
         }
 
-        /// <summary>SS 메모리 클리어.</summary>
+        /// <summary>SS 메모리 클리어 (rememberedWeapons + 선호 무기 필드).</summary>
         internal static void ClearMemory(Pawn pawn)
         {
             if (!Active) return;
@@ -142,13 +214,34 @@ namespace ShapeshifterFramework.Compat
             var comp = GetMemoryComp(pawn);
             if (comp == null) return;
 
+            // rememberedWeapons 클리어
             var list = GetRememberedWeapons(comp);
-            if (list == null) return;
+            list?.Clear();
 
-            list.Clear();
+            // 선호 무기 필드 클리어 — Nullable<T> 필드는 null 설정으로 비움
+            var fields = PrefFields;
+            if (fields != null)
+            {
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    if (fields[i] == null) continue;
+                    try
+                    {
+                        // Nullable<T> 필드 → null 설정, 비-Nullable → 기본값
+                        var ft = fields[i].FieldType;
+                        if (Nullable.GetUnderlyingType(ft) != null)
+                            fields[i].SetValue(comp, null);
+                        else if (ft.IsValueType)
+                            fields[i].SetValue(comp, Activator.CreateInstance(ft));
+                        else
+                            fields[i].SetValue(comp, null);
+                    }
+                    catch (Exception) { /* 접근 실패 — 무시 */ }
+                }
+            }
         }
 
-        /// <summary>백업에서 SS 메모리 복원.</summary>
+        /// <summary>백업에서 SS 메모리 복원 (rememberedWeapons + 선호 무기 필드).</summary>
         internal static void RestoreMemory(Pawn pawn, SSBackup backup)
         {
             if (!Active || backup == null || backup.IsEmpty) return;
@@ -156,16 +249,34 @@ namespace ShapeshifterFramework.Compat
             var comp = GetMemoryComp(pawn);
             if (comp == null) return;
 
-            var list = GetRememberedWeapons(comp);
-            if (list == null) return;
-
-            list.Clear();
-            for (int i = 0; i < backup.entries.Count; i++)
+            // rememberedWeapons 복원
+            if (backup.entries.Count > 0)
             {
-                try { list.Add(backup.entries[i]); }
-                catch (Exception)
+                var list = GetRememberedWeapons(comp);
+                if (list != null)
                 {
-                    // 타입 불일치 등 — 무시하고 계속
+                    list.Clear();
+                    for (int i = 0; i < backup.entries.Count; i++)
+                    {
+                        try { list.Add(backup.entries[i]); }
+                        catch (Exception)
+                        {
+                            // 타입 불일치 등 — 무시하고 계속
+                        }
+                    }
+                }
+            }
+
+            // 선호 무기 필드 복원
+            var fields = PrefFields;
+            if (fields != null && backup.prefValues != null)
+            {
+                int len = Math.Min(fields.Length, backup.prefValues.Length);
+                for (int i = 0; i < len; i++)
+                {
+                    if (fields[i] == null) continue;
+                    try { fields[i].SetValue(comp, backup.prefValues[i]); }
+                    catch (Exception) { /* 타입 불일치 — 무시 */ }
                 }
             }
         }
