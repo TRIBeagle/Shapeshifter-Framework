@@ -197,6 +197,8 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 * `<durationTicks>`: 변신 지속 시간. 비워두면 무제한입니다. (60,000틱 = 인게임 1일)
 * `<canRevertVoluntarily>`: `false`면 유저가 기즈모로 해제 불가 (강제 변신/디버프용). (기본값: `true`)
 * `<revertOnDowned>`: `true`면 의식 상실(Downed) 시 변신 자동 해제. (기본값: `false`)
+* `<revertDrops>`: 변신 해제 시 드랍할 `ThingDefCountClass` 아이템 목록 (허물, 결정 등). 각 항목: `<thingDef>` + `<count>`.
+* `<revertAddHediffs>`: 변신 해제 시 부여할 `HediffDef` 목록 (피로, 탈진 등). 프레임워크가 **추적하지 않음** — 바닐라 hediff 수명 (자연 회복/소멸).
 
 **기즈모 아이콘:**
 * `<gizmoIconPathEnter>` / `<gizmoIconPathRevert>`: 변신/해제 버튼의 아이콘 경로
@@ -215,6 +217,12 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 **타이밍 & 스팸 방지:**
 * `<transformEnterFxDelayTicks>` / `<transformExitFxDelayTicks>`: FX 재생 전 지연 (틱 단위)
 * `<transformFxCooldownTicks>`: 동일 FX 재생 쿨다운 (기본값: 30틱)
+
+**앰비언트 VFX (변신 중 지속 이펙트):**
+* `<ambientEffecter>`: 매 틱 `EffectTick`으로 유지되는 지속형 `EffecterDef` (오라, 연기 등). 자동 생성/정리.
+* `<ambientFleck>`: 주기적으로 폰 위치에 스폰되는 `FleckDef` (스파크, 불꽃 등).
+* `<ambientFleckIntervalTicks>`: `ambientFleck` 스폰 간격 (기본값: 60 = 1초).
+* `<ambientFleckScale>`: 앰비언트 플렉 크기 (기본값: 1.0).
 
 ## 13. 보이스 & 혈액 (Voice & Blood)
 **보이스 오버라이드 (변신 중 폰 음성 교체):**
@@ -278,6 +286,39 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
 | **약물** | `IngestionOutcomeDoer_Shapeshift` | 약물 복용 시 직접 변신 (어빌리티 없이). 필드: `formDefName`, `successChance`. |
 | **스크롤/사용 아이템** | `CompProperties_UseEffect_Shapeshift` | 아이템 사용 시 직접 변신. 필드: `formDefName`, `successChance`. |
 | **투사체** | `PolymorphProjectileExtension` | 투사체 명중 시 변신. 필드: `formDefName`, `successChance`, `aoeRadius`, `affectAllies`. |
+
+### HediffComp_AutoShift (조건부 자동 변신)
+조건 충족 시 자동으로 변신하는 `HediffComp`입니다. 아무 `HediffDef`에나 부착 가능 — 유전자(`GeneDef.hediffDef`), 약물, 이벤트 등과 조합.
+
+**프로퍼티** (`HediffCompProperties_AutoShift`):
+* `<formDefName>`: 변신할 `ShapeshiftFormDef`의 defName
+* `<healthThreshold>`: 체력 비율이 이 값 미만이면 트리거 (0 = 미사용). 예: `0.3` = 30%
+* `<triggerMentalStates>`: `MentalStateDef` 목록 — 이 정신 상태 중 하나 발동 시 트리거 (예: `Berserk`)
+* `<triggerAtNight>`: `true`면 `SunGlow < 0.5` (밤)일 때 트리거. 바이옴/계절 자동 반영. (기본값: `false`)
+* `<triggerInCombat>`: `true`면 징집 상태 + 근처 적대 폰이 있을 때 트리거. (기본값: `false`)
+* `<checkIntervalTicks>`: 조건 검사 간격 (기본값: 120 = 2초)
+* `<successChance>`: 조건 충족 시 변신 성공 확률 (기본값: 1.0)
+* `<triggerOnce>`: `true`면 발동 후 hediff 자체 제거 — 1회성. (기본값: `false`)
+
+**로직**: 모든 조건은 OR — 하나라도 충족하면 트리거. 이미 변신 중인 폰은 건너뜀.
+
+```xml
+<HediffDef>
+  <defName>Curse_Werewolf</defName>
+  <label>werewolf curse</label>
+  <hediffClass>HediffWithComps</hediffClass>
+  <isBad>false</isBad>
+  <comps>
+    <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
+      <formDefName>WerewolfForm</formDefName>
+      <healthThreshold>0.3</healthThreshold>
+      <triggerAtNight>true</triggerAtNight>
+      <checkIntervalTicks>120</checkIntervalTicks>
+      <successChance>0.8</successChance>
+    </li>
+  </comps>
+</HediffDef>
+```
 
 ### 다단 변신 (addAbilities 체인)
 `<addAbilities>`를 사용하여 1단계 폼 상태에서만 2단계 변신 어빌리티를 부여할 수 있습니다.

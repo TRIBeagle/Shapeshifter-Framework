@@ -83,6 +83,10 @@ namespace ShapeshifterFramework.Comps
         private readonly List<ShapeshifterFramework.Utilities.ShapeshiftPartRestoreRecord> tempPartRestoreRecords
             = new List<ShapeshifterFramework.Utilities.ShapeshiftPartRestoreRecord>(8);
 
+        // 앰비언트 VFX 런타임 상태 (저장 불필요 — 로드 후 CompTick에서 자동 재생성)
+        private Effecter ambientEffecterInstance;
+        private int ambientFleckNextTick;
+
         #endregion
 
         #region IVerbOwner 구현 (폼 verbs/tools → 전용 VerbTracker)
@@ -456,6 +460,25 @@ namespace ShapeshifterFramework.Comps
                         return;
                     }
                 }
+                // ── 앰비언트 VFX (지속형 이펙트) ──
+                if (pawn.Spawned)
+                {
+                    if (currentForm.ambientEffecter != null)
+                    {
+                        if (ambientEffecterInstance == null)
+                            ambientEffecterInstance = currentForm.ambientEffecter.Spawn();
+                        ambientEffecterInstance.EffectTick(pawn, pawn);
+                    }
+                    if (currentForm.ambientFleck != null
+                        && Find.TickManager.TicksGame >= ambientFleckNextTick)
+                    {
+                        FleckMaker.Static(pawn.DrawPos, pawn.Map, currentForm.ambientFleck,
+                            Mathf.Max(0.01f, currentForm.ambientFleckScale));
+                        ambientFleckNextTick = Find.TickManager.TicksGame
+                            + Mathf.Max(1, currentForm.ambientFleckIntervalTicks);
+                    }
+                }
+
                 try
                 {
                     ShapeshiftVerbTracker?.VerbsTick();
@@ -702,6 +725,10 @@ namespace ShapeshifterFramework.Comps
             if (form.durationTicks.HasValue && form.durationTicks.Value > 0)
                 transformTimer = form.durationTicks.Value;
 
+            // 앰비언트 VFX 초기화 (이전 폼 잔존 인스턴스 방지)
+            ambientEffecterInstance = null;
+            ambientFleckNextTick = 0;
+
             // 체형/머리형/컬러 적용
             if (pawn.story != null)
             {
@@ -890,6 +917,39 @@ namespace ShapeshifterFramework.Comps
             shapeshiftVerbTracker = null;
 
             ShapeshiftTransformFxUtility.PlayExitFx(pawn, __oldForm);
+
+            // 앰비언트 VFX 정리
+            if (ambientEffecterInstance != null)
+            {
+                ambientEffecterInstance.Cleanup();
+                ambientEffecterInstance = null;
+            }
+
+            // 해제 시 잔해 드랍
+            if (__oldForm.revertDrops != null && __oldForm.revertDrops.Count > 0
+                && pawn.Spawned && pawn.MapHeld != null)
+            {
+                for (int i = 0; i < __oldForm.revertDrops.Count; i++)
+                {
+                    var entry = __oldForm.revertDrops[i];
+                    if (entry?.thingDef == null || entry.count <= 0) continue;
+                    Thing thing = ThingMaker.MakeThing(entry.thingDef);
+                    thing.stackCount = entry.count;
+                    GenPlace.TryPlaceThing(thing, pawn.PositionHeld, pawn.MapHeld, ThingPlaceMode.Near);
+                }
+            }
+
+            // 해제 시 hediff 부여 (비추적 — 바닐라 라이프사이클)
+            if (__oldForm.revertAddHediffs != null && __oldForm.revertAddHediffs.Count > 0
+                && pawn.health != null && !pawn.Dead)
+            {
+                for (int i = 0; i < __oldForm.revertAddHediffs.Count; i++)
+                {
+                    HediffDef hd = __oldForm.revertAddHediffs[i];
+                    if (hd != null)
+                        pawn.health.AddHediff(hd);
+                }
+            }
 
             currentForm = null;
 

@@ -237,6 +237,22 @@ namespace ShapeshifterFramework
         public int transformExitFxDelayTicks = 0;   // Exit  FX 재생 지연
         public int transformFxCooldownTicks = 30;   // 동일 단계 쿨다운(틱)
 
+        // ── [VFX: 앰비언트] 변신 중 지속 재생 이펙트 ──
+        /// <summary>변신 중 매 틱 EffectTick으로 유지되는 지속형 Effecter (오라, 연기 등).</summary>
+        public EffecterDef ambientEffecter;
+        /// <summary>변신 중 주기적으로 스폰되는 일회성 Fleck (스파크, 불꽃 등).</summary>
+        public FleckDef ambientFleck;
+        /// <summary>ambientFleck 스폰 간격 (틱). 기본 60 = 1초.</summary>
+        public int ambientFleckIntervalTicks = 60;
+        /// <summary>ambientFleck 스케일. 기본 1.0.</summary>
+        public float ambientFleckScale = 1f;
+
+        // ── [변신 해제 시 부산물] ──
+        /// <summary>변신 해제 시 드랍할 아이템 목록 (허물, 결정 등).</summary>
+        public List<ThingDefCountClass> revertDrops;
+        /// <summary>변신 해제 시 부여할 hediff 목록. 프레임워크가 추적/제거하지 않음 (바닐라 수명).</summary>
+        public List<HediffDef> revertAddHediffs;
+
         // 버튼/기타
         public string gizmoIconPathEnter;   // 변신 버튼 아이콘
         public string gizmoIconPathRevert;  // 해제 버튼 아이콘

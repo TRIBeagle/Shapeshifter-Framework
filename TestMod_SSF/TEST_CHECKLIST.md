@@ -285,11 +285,47 @@ BeastkinForm 적용
 
 ---
 
+## 14. 신규 기능 (앰비언트 VFX / 해제 부산물 / 조건부 자동 변신)
+
+### 앰비언트 VFX
+- [ ] `[M]` ambientEffecter 설정 폼 → 변신 중 Effecter 지속 재생 확인
+- [ ] `[M]` ambientFleck 설정 폼 → 지정 간격(ambientFleckIntervalTicks)마다 Fleck 스폰 확인
+- [ ] `[M]` ambientFleckScale 적용 확인 (기본 1.0)
+- [ ] `[M]` 변신 해제 시 Effecter 정리 (Cleanup 호출) — 잔상 없음
+- [ ] `[M]` 맵 밖(캐러밴 등) 폰 → pawn.Spawned=false → VFX 미재생 + 에러 없음
+- [ ] `[M]` 세이브/로드 후 ambientEffecter 자동 재생성 (Effecter는 저장 불필요)
+
+### 해제 시 잔해 드랍 (revertDrops)
+- [ ] `[M]` revertDrops 설정 폼 해제 → 지정 아이템이 폰 위치 근처에 스폰
+- [ ] `[M]` 복수 항목 + 수량 정상 (예: WoodLog x5 + Steel x3)
+- [ ] `[M]` despawned 폰(캐러밴/수송포드) → 드랍 건너뜀 + 에러 없음
+- [ ] `[M]` 사망으로 인한 해제 → 드랍 정상 (사망 위치)
+
+### 해제 시 hediff 부여 (revertAddHediffs)
+- [ ] `[M]` revertAddHediffs 설정 폼 해제 → 지정 hediff 부여 확인
+- [ ] `[M]` 부여된 hediff가 프레임워크에 의해 제거되지 않음 (바닐라 수명 확인)
+- [ ] `[M]` 사망 상태 폰 → hediff 부여 건너뜀 + 에러 없음
+- [ ] `[M]` addHediffs(추적)와 revertAddHediffs(비추적) 동시 사용 시 독립 작동
+
+### 조건부 자동 변신 (HediffComp_AutoShift)
+- [ ] `[M]` healthThreshold 조건: 체력 30% 미만 → 자동 변신 트리거
+- [ ] `[M]` triggerMentalStates 조건: 지정 정신상태(Berserk) 진입 → 트리거
+- [ ] `[M]` triggerAtNight 조건: 밤(SunGlow<0.5) → 트리거, 낮 → 미트리거
+- [ ] `[M]` triggerInCombat 조건: 징집+적대폰 근처 → 트리거
+- [ ] `[M]` 이미 변신 중인 폰 → 재트리거 건너뜀
+- [ ] `[M]` successChance < 1.0 → 확률적 발동 확인
+- [ ] `[M]` triggerOnce=true → 발동 후 hediff 자체 제거
+- [ ] `[M]` triggerOnce=false → 해제 후 조건 재충족 시 재트리거
+- [ ] `[M]` checkIntervalTicks 간격 조절 정상 (60 vs 120 vs 240)
+- [ ] `[M]` 세이브/로드 후 hasTriggered 플래그 유지
+
+---
+
 ## 요약
 
 | 구분 | 항목 수 |
 |------|---------|
 | **[A] Auto-Verify** | **~60개** (폼별 Auto-Verify 블록) |
-| **[M] 수동확인** | **~65개** |
+| **[M] 수동확인** | **~90개** (기존 ~65 + 신규 ~25) |
 
 > Auto-Verify 디버그 액션 실행 시 각 ✓/✗ 항목이 카테고리별로 자동 검증됩니다.

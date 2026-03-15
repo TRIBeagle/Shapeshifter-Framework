@@ -197,6 +197,8 @@ Grant temporary powers or status effects while transformed.
 * `<durationTicks>`: How long the form lasts. Leave blank for infinite. (60,000 ticks = 1 in-game day).
 * `<canRevertVoluntarily>`: If `false`, the pawn cannot manually revert via gizmo (for debuff/curse forms). (Default: `true`).
 * `<revertOnDowned>`: If `true`, the form is automatically reverted when the pawn is downed (incapacitated). (Default: `false`).
+* `<revertDrops>`: List of `ThingDefCountClass` items to drop when the form is reverted (e.g., shed skin, crystals). Each entry: `<thingDef>` + `<count>`.
+* `<revertAddHediffs>`: List of `HediffDef` to apply when the form is reverted (e.g., fatigue, exhaustion). These are **not tracked** by the framework — they follow vanilla hediff lifecycle (natural recovery/expiry).
 
 **Gizmo Icons:**
 * `<gizmoIconPathEnter>` / `<gizmoIconPathRevert>`: Custom icons for the transform/revert buttons.
@@ -215,6 +217,12 @@ Grant temporary powers or status effects while transformed.
 **Timing & Spam Prevention:**
 * `<transformEnterFxDelayTicks>` / `<transformExitFxDelayTicks>`: Delay before playing FX (in ticks).
 * `<transformFxCooldownTicks>`: Cooldown before the same FX can play again (Default: 30 ticks).
+
+**Ambient VFX (continuous effects during transformation):**
+* `<ambientEffecter>`: `EffecterDef` that plays every tick via `EffectTick` (aura, smoke, etc.). Automatically created/cleaned up.
+* `<ambientFleck>`: `FleckDef` spawned periodically at the pawn's position (sparks, fire puffs, etc.).
+* `<ambientFleckIntervalTicks>`: Interval in ticks between `ambientFleck` spawns (Default: 60 = 1 second).
+* `<ambientFleckScale>`: Scale of the ambient fleck (Default: 1.0).
 
 ## 13. Voice & Blood
 **Voice overrides (replace pawn vocalizations while transformed):**
@@ -278,6 +286,39 @@ Attached to an `AbilityDef`'s `<comps>` to define the shift effect:
 | **Drug** | `IngestionOutcomeDoer_Shapeshift` | Drug ingestion triggers shift directly (no ability). Fields: `formDefName`, `successChance`. |
 | **Scroll/UseItem** | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Fields: `formDefName`, `successChance`. |
 | **Projectile** | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `formDefName`, `successChance`, `aoeRadius`, `affectAllies`. |
+
+### HediffComp_AutoShift (Conditional Auto-Shift)
+A `HediffComp` that automatically triggers transformation when conditions are met. Attach to any `HediffDef` — works with genes (via `GeneDef.hediffDef`), drugs, events, etc.
+
+**Properties** (`HediffCompProperties_AutoShift`):
+* `<formDefName>`: The `ShapeshiftFormDef` defName to transform into.
+* `<healthThreshold>`: Trigger when health percent falls below this value (0 = disabled). E.g., `0.3` = 30%.
+* `<triggerMentalStates>`: List of `MentalStateDef` — trigger when pawn enters one of these mental states (e.g., `Berserk`).
+* `<triggerAtNight>`: If `true`, trigger when `SunGlow < 0.5` (adapts to biome/season). (Default: `false`).
+* `<triggerInCombat>`: If `true`, trigger when pawn is drafted and enemies are nearby. (Default: `false`).
+* `<checkIntervalTicks>`: How often to check conditions (Default: 120 = 2 seconds).
+* `<successChance>`: Probability of shift per check when conditions are met (Default: 1.0).
+* `<triggerOnce>`: If `true`, the hediff removes itself after triggering (Default: `false`).
+
+**Logic**: All conditions are OR — any single condition being met triggers the shift. Already-transformed pawns are skipped.
+
+```xml
+<HediffDef>
+  <defName>Curse_Werewolf</defName>
+  <label>werewolf curse</label>
+  <hediffClass>HediffWithComps</hediffClass>
+  <isBad>false</isBad>
+  <comps>
+    <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
+      <formDefName>WerewolfForm</formDefName>
+      <healthThreshold>0.3</healthThreshold>
+      <triggerAtNight>true</triggerAtNight>
+      <checkIntervalTicks>120</checkIntervalTicks>
+      <successChance>0.8</successChance>
+    </li>
+  </comps>
+</HediffDef>
+```
 
 ### Multi-Stage Transformation (addAbilities chain)
 Use `<addAbilities>` to grant a stage-2 transformation ability only while in stage-1 form.

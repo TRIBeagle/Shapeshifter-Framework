@@ -14,6 +14,7 @@ A RimWorld 1.6 mod framework for shapeshifting mechanics. Define custom transfor
 - Multi-stage transformation chains via `addAbilities` (e.g., stage 1 → stage 2)
 - Duration timer, voluntary/forced revert, sustain conditions (`sustainHediffs`, `sustainMode`)
 - `revertOnDowned` — auto-revert on incapacitation
+- Revert byproducts: item drops (`revertDrops`) and hediff application (`revertAddHediffs`) on form removal
 
 **Visuals & Rendering**
 - Full body/head texture replacement with gender & swimming variants
@@ -34,14 +35,16 @@ A RimWorld 1.6 mod framework for shapeshifting mechanics. Define custom transfor
 
 **VFX & Sound**
 - Transform enter/exit: Fleck particles, Effecters, sounds with delay and cooldown
+- Ambient VFX: persistent Effecter and periodic Fleck during transformation
 - Voice overrides: call, wounded, death, angry, eating
 - Melee sound overrides: hit (pawn/building), miss
 - Blood/flesh type overrides
 
 **Ability Acquisition**
 - 6 trigger sources: Gene, Hediff, Item (equipped/inventory), Drug, Scroll/UseItem, AoE Projectile
-- Race/mutant cast restrictions via `CompProperties_AbilityShiftTarget`
-- Per-form race filtering (`formAllowedRaces`)
+- Conditional auto-shift: `HediffComp_AutoShift` triggers transformation on health/mental state/night/combat conditions
+- Race/mutant cast restrictions via `CompProperties_AbilityShapeshift`
+- Per-form race filtering (`formAllowedRaces`, `formDisallowedRaces`)
 
 ## Documentation
 - [FormDef Guide (English)](FORMDEF_GUIDE_EN.md)
@@ -79,6 +82,7 @@ Not yet available. Will be released via Steam Workshop and GitHub when ready.
 - `addAbilities` 기반 다단 변신 체인 (1단계 → 2단계)
 - 지속시간 타이머, 자발/강제 해제, 유지 조건 (`sustainHediffs`, `sustainMode`)
 - `revertOnDowned` — 의식 상실 시 자동 해제
+- 변신 해제 부산물: 아이템 드랍(`revertDrops`), hediff 부여(`revertAddHediffs`)
 
 **비주얼 & 렌더링**
 - 전신/머리 텍스처 교체 (성별/수영 분기 지원)
@@ -99,14 +103,16 @@ Not yet available. Will be released via Steam Workshop and GitHub when ready.
 
 **이펙트 & 사운드**
 - 변신 진입/해제: Fleck 파티클, Effecter, 사운드 (딜레이/쿨다운 지원)
+- 앰비언트 VFX: 변신 중 지속 Effecter + 주기적 Fleck
 - 보이스 오버라이드: 울음/부상/사망/분노/식사
 - 근접 사운드 오버라이드: 히트(폰/건물)/미스
 - 혈흔/살점 타입 오버라이드
 
 **어빌리티 획득**
 - 6가지 트리거 소스: 유전자, 헤디프, 아이템(장비/소지), 약물, 스크롤/사용아이템, AoE 투사체
-- 종족/뮤턴트 캐스트 제한 (`CompProperties_AbilityShiftTarget`)
-- 폼별 종족 필터링 (`formAllowedRaces`)
+- 조건부 자동 변신: `HediffComp_AutoShift` — 체력/정신상태/밤/전투 조건 충족 시 자동 변신
+- 종족/뮤턴트 캐스트 제한 (`CompProperties_AbilityShapeshift`)
+- 폼별 종족 필터링 (`formAllowedRaces`, `formDisallowedRaces`)
 
 ## 문서
 - [FormDef Guide (English)](FORMDEF_GUIDE_EN.md)

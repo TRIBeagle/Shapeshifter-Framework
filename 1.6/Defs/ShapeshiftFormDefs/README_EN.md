@@ -26,6 +26,8 @@
 | Combat | `verbs`, `tools`, `replaceNativeVerbs`, `replaceNativeTools`, `verbGizmoOptions`, `damageSourceDef` |
 | Work | `disabledWorkTypesOnTransform`, `disabledWorkTagsOnTransform`, `suppressIdeologyUncoveredThoughts` |
 | VFX/SFX | `transformEnterSound`/`ExitSound`, `transformEnterEffecter`/`ExitEffecter`, `transformEnterFleck`/`ExitFleck` (+Count, +Scale), FX delay/cooldown ticks |
+| Ambient VFX | `ambientEffecter`, `ambientFleck`, `ambientFleckIntervalTicks`, `ambientFleckScale` |
+| Revert | `revertDrops` (ThingDefCountClass list), `revertAddHediffs` (HediffDef list) |
 | UI | `gizmoIconPathEnter`/`Revert`, `durationTicks`, `canRevertVoluntarily` |
 | Voice | `soundCall`, `soundWounded`, `soundDeath`, `soundAngry`, `soundEating` |
 | Melee SFX | `soundMeleeHitPawn`, `soundMeleeHitBuilding`, `soundMeleeMiss` |
