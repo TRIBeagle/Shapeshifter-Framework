@@ -17,6 +17,7 @@ namespace ShapeshifterFramework.Patches
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void HumanlikeBodyWidthForPawn_Postfix(Pawn pawn, ref float __result)
         {
+            if (!ShapeshiftRegistry.IsActive(pawn)) return;
             __result = ShapeshiftSizeFactorResolver.Effective(pawn).bodyWidth;
         }
 
@@ -25,6 +26,8 @@ namespace ShapeshifterFramework.Patches
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void GetHumanlikeHeadSetForPawn_Postfix(Pawn pawn, float wFactor, float hFactor, ref GraphicMeshSet __result)
         {
+            if (!ShapeshiftRegistry.IsActive(pawn)) return;
+
             var story = pawn != null ? pawn.story : null;
             if (story == null || story.headType == null) return;
 
@@ -42,6 +45,8 @@ namespace ShapeshifterFramework.Patches
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void GetHumanlikeHairSetForPawn_Postfix(Pawn pawn, float wFactor, float hFactor, ref GraphicMeshSet __result)
         {
+            if (!ShapeshiftRegistry.IsActive(pawn)) return;
+
             var story = pawn != null ? pawn.story : null;
             if (story == null || story.headType == null) return;
 
@@ -60,6 +65,8 @@ namespace ShapeshifterFramework.Patches
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void GetHumanlikeBeardSetForPawn_Postfix(Pawn pawn, float wFactor, float hFactor, ref GraphicMeshSet __result)
         {
+            if (!ShapeshiftRegistry.IsActive(pawn)) return;
+
             var story = pawn != null ? pawn.story : null;
             if (story == null || story.headType == null) return;
 

@@ -98,10 +98,12 @@ namespace ShapeshifterFramework.Compat
         internal const string Pkg_HAR = "erdelf.HumanoidAlienRaces";
         internal const string Pkg_FA = "Nals.FacialAnimation";
         internal const string Pkg_SS = "PeteTimesSix.SimpleSidearms";
+        internal const string Pkg_Yayo = "com.yayo.combat3";
 
         internal const string LOG_HAR = "[SSF/HAR]";
         internal const string LOG_FA = "[SSF/FA]";
         internal const string LOG_SS = "[SSF/SS]";
+        internal const string LOG_Yayo = "[SSF/Yayo]";
 
         /// <summary>모드 활성 확인.</summary>
         internal static bool IsActive(string packageId, bool ignorePostfix = false)
@@ -110,6 +112,7 @@ namespace ShapeshifterFramework.Compat
         internal static readonly CompatMod HAR = new CompatMod(Pkg_HAR, LOG_HAR);
         internal static readonly CompatMod FA = new CompatMod(Pkg_FA, LOG_FA);
         internal static readonly CompatMod SS = new CompatMod(Pkg_SS, LOG_SS);
+        internal static readonly CompatMod Yayo = new CompatMod(Pkg_Yayo, LOG_Yayo);
 
         /// <summary>Report 전 준비.</summary>
         private static void RegisterBeforeReport()
@@ -126,6 +129,12 @@ namespace ShapeshifterFramework.Compat
                 try { FacialAnimationCompat.ValidateAllForms(); }
                 catch (System.Exception e) { Log.Warning($"{FA.LogPrefix} Compatibility failed to load: {e.Message}"); }
             }
+            // Yayo's Combat 감지
+            if (Yayo.IsActive)
+            {
+                try { Compat_YayoCombat.DetectAndLog(); }
+                catch (System.Exception e) { Log.Warning($"{Yayo.LogPrefix} Compatibility failed to load: {e.Message}"); }
+            }
         }
 
         /// <summary>모든 모드 보고(각 1회).</summary>
@@ -139,6 +148,7 @@ namespace ShapeshifterFramework.Compat
             if (HAR.IsActive) { anyActive = true; HAR.ReportOnce(); allOk &= (HAR.FailCount == 0); }
             if (FA.IsActive) { anyActive = true; FA.ReportOnce(); allOk &= (FA.FailCount == 0); }
             if (SS.IsActive) { anyActive = true; SS.ReportOnce(); allOk &= (SS.FailCount == 0); }
+            if (Yayo.IsActive) { anyActive = true; Yayo.ReportOnce(); allOk &= (Yayo.FailCount == 0); }
 
             if (anyActive && allOk)
             {
@@ -146,6 +156,7 @@ namespace ShapeshifterFramework.Compat
                 if (HAR.IsActive) mods.Add("HAR");
                 if (FA.IsActive) mods.Add("FA");
                 if (SS.IsActive) mods.Add("SS");
+                if (Yayo.IsActive) mods.Add("Yayo");
                 Log.Message($"[SSF] all compatibility patches active ({string.Join(", ", mods)}).");
             }
         }
