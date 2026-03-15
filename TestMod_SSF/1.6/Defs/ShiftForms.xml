@@ -90,9 +90,9 @@
     <canRevertVoluntarily>true</canRevertVoluntarily>
     <!-- 사운드 오버라이드 -->
     <soundAngry>Pawn_Bear_Angry</soundAngry>
-    <soundMeleeHitPawn>Pawn_Melee_Bear_MeleeHit</soundMeleeHitPawn>
-    <soundMeleeHitBuilding>Pawn_Melee_Bear_MeleeHit</soundMeleeHitBuilding>
-    <soundMeleeMiss>Pawn_Melee_Bear_MeleeMiss</soundMeleeMiss>
+    <soundMeleeHitPawn>Pawn_Melee_Punch_HitPawn</soundMeleeHitPawn>
+    <soundMeleeHitBuilding>Pawn_Melee_Punch_HitBuilding</soundMeleeHitBuilding>
+    <soundMeleeMiss>Pawn_Melee_Punch_Miss</soundMeleeMiss>
     <!-- 이펙트 -->
     <transformEnterEffecter>Vaporize_Heatwave</transformEnterEffecter>
     <transformExitEffecter>ImpactSmallDustCloud</transformExitEffecter>
