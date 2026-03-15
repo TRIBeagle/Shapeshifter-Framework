@@ -48,6 +48,18 @@ namespace ShapeshifterFramework.Utilities
             return pawn != null && _active.ContainsKey(pawn);
         }
 
+        /// <summary>활성 변신 폰이 하나라도 있는지 O(1) 확인.</summary>
+        internal static bool HasAny()
+        {
+            return _active.Count > 0;
+        }
+
+        /// <summary>활성 엔트리 순회용. DynamicDrawManager 보조 드로우 등에서 사용.</summary>
+        internal static Dictionary<Pawn, CompShapeshifter>.Enumerator ActiveEntries()
+        {
+            return _active.GetEnumerator();
+        }
+
         /// <summary>게임 리셋/맵 전환 시 전체 초기화.</summary>
         internal static void Clear()
         {

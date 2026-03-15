@@ -998,13 +998,29 @@ namespace ShapeshifterFramework.Comps
 
         #region 생명주기 오버라이드
 
-        /// <summary>맵 스폰(상단 복귀, 포드 하차, 동면관 해제 등) 시 변신 중이면 레지스트리 재등록.</summary>
+        /// <summary>맵 스폰(상단 복귀, 포드 하차, 동면관 해제 등) 시 변신 중이면 레지스트리 재등록 + 그래픽 복원.</summary>
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
             var pawn = parent as Pawn;
-            if (pawn != null && isTransformed && currentForm != null)
-                ShapeshiftRegistry.Register(pawn, this);
+            if (pawn == null || !isTransformed || currentForm == null) return;
+
+            ShapeshiftRegistry.Register(pawn, this);
+
+            // 로드 후 스폰: PostLoadInit 시점에는 Drawer가 없어 그래픽 dirty가 불가능.
+            // 여기서 체형/머리형/컬러를 안전하게 재적용하고 그래픽을 강제 갱신.
+            if (respawningAfterLoad)
+            {
+                var form = currentForm;
+                if (pawn.story != null)
+                {
+                    if (form.bodyType != null) pawn.story.bodyType = form.bodyType;
+                    if (form.headType != null) pawn.story.headType = form.headType;
+                    if (form.hairColor.HasValue) pawn.story.HairColor = form.hairColor.Value;
+                    if (form.skinColor.HasValue) pawn.story.skinColorOverride = form.skinColor.Value;
+                }
+                RefreshPawn(pawn, this, forceReinitPawnVerbs: true, resetShapeshiftVerbs: false, refreshSelection: false);
+            }
         }
 
         /// <summary>폰 완전 파괴 시 레지스트리 방어적 해제. PostDeSpawn은 사용하지 않음 (상단/동면관/포드 진입 시 레지스트리 누락 방지).</summary>
