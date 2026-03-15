@@ -57,9 +57,10 @@ namespace ShapeshifterFramework
     // 착용/장착 금지 정책(기본 Auto = GearHandling에 묶음)
     public enum EquipLockMode { Auto, Locked, Unlocked }
 
-    // verb별 UI 메타
+    // verb별 UI 메타 — verbLabel로 매칭 (미지정 시 인덱스 폴백)
     public class VerbGizmoOption
     {
+        public string verbLabel;      // 매칭할 verb의 label (필수 권장). 미지정 시 리스트 인덱스로 폴백
         public string label;          // verb 명령 라벨(없으면 verbProps.label)
         public string desc;           // verb 명령 설명(없으면 기본)
         public string toggleLabel;    // 토글 버튼 라벨(없으면 label 사용)

@@ -242,14 +242,17 @@ Granted while transformed. Automatically removed on revert.
 | `replaceNativeTools` | bool? | `true` = replace pawn's ThingDef tools (restored on revert). |
 | `damageSourceDef` | ThingDef | Wound label source (e.g., `Warg` → "Warg teeth"). |
 
-**Verb Gizmo Options** (`verbGizmoOptions`, matched by index to `verbs`):
+**Verb Gizmo Options** (`verbGizmoOptions`, matched by `verbLabel` to verb's `label`):
 
 | Field | Description |
 |-------|-------------|
+| `verbLabel` | **Recommended.** Matches the verb's `<label>` field (case-insensitive). Order-independent. Falls back to index matching if omitted. |
 | `label` / `desc` | Verb command label and description. |
 | `toggleLabel` / `toggleDesc` | Auto-attack toggle button text. |
 | `iconPath` | Custom icon path. |
 | `autoAttackDefault` | Auto-attack toggle initial value. `null` = first ranged ON, rest OFF. |
+
+> **Multi-select behavior:** When multiple pawns are selected, verb attack gizmos (`Command_VerbTarget`) merge for pawns with the same form+verb. Auto-attack toggles are hidden during multi-select — configure per-pawn by selecting individually.
 
 **Work Restrictions:**
 

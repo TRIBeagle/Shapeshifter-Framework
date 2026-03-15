@@ -176,6 +176,35 @@ namespace ShapeshifterFramework.Comps
 
         #region Verb 자동공격 토글 유틸/라벨·설명 헬퍼
 
+        /// <summary>verb에 대응하는 VerbGizmoOption 검색. verbLabel 매칭 우선, 미지정 시 인덱스 폴백.</summary>
+        private VerbGizmoOption FindGizmoOption(int index, Verb v)
+        {
+            var opt = currentForm?.verbGizmoOptions;
+            if (opt == null || opt.Count == 0) return null;
+
+            // 1) verbLabel 매칭: verb의 label과 일치하는 옵션 검색
+            string vLabel = v?.verbProps?.label;
+            if (!string.IsNullOrEmpty(vLabel))
+            {
+                for (int i = 0; i < opt.Count; i++)
+                {
+                    var o = opt[i];
+                    if (o != null && string.Equals(o.verbLabel, vLabel, System.StringComparison.OrdinalIgnoreCase))
+                        return o;
+                }
+            }
+
+            // 2) 인덱스 폴백: verbLabel 미지정 옵션 중 인덱스 순서 매칭 (하위호환)
+            if (index >= 0 && index < opt.Count)
+            {
+                var o = opt[index];
+                if (o != null && string.IsNullOrEmpty(o.verbLabel))
+                    return o;
+            }
+
+            return null;
+        }
+
         // 자동공격 토글 키(formDefName#index#verbName)
         string AutoKey(Verb v)
         {
@@ -196,14 +225,10 @@ namespace ShapeshifterFramework.Comps
         }
 
         // 기본 자동공격 상태(없으면 true)
-        bool DefaultAutoOn(int index)
+        bool DefaultAutoOn(int index, Verb v)
         {
-            var opt = currentForm?.verbGizmoOptions;
-            if (opt != null && index >= 0 && index < opt.Count)
-            {
-                var o = opt[index];
-                if (o != null && o.autoAttackDefault.HasValue) return o.autoAttackDefault.Value;
-            }
+            var o = FindGizmoOption(index, v);
+            if (o != null && o.autoAttackDefault.HasValue) return o.autoAttackDefault.Value;
             return true; // 기본 On
         }
 
@@ -213,7 +238,7 @@ namespace ShapeshifterFramework.Comps
             if (v == null) return true;
             bool val;
             if (verbAutoToggle.TryGetValue(AutoKey(v), out val)) return val;
-            return DefaultAutoOn(index);
+            return DefaultAutoOn(index, v);
         }
 
         /// <summary>자동공격 토글 전환 (배타적: ON 시 다른 ranged verb 전부 OFF).</summary>
@@ -256,22 +281,19 @@ namespace ShapeshifterFramework.Comps
             var vt = ShapeshiftVerbTracker;
             if (vt == null) return;
 
-            // verbGizmoOptions에 autoAttackDefault가 명시된 verb가 있으면 그것을 우선
+            // verbGizmoOptions에 autoAttackDefault=true인 verb를 우선 탐색
             int defaultOnIndex = -1;
-            var opt = currentForm?.verbGizmoOptions;
             var verbs = vt.AllVerbs;
 
-            if (opt != null)
+            for (int i = 0; i < verbs.Count; i++)
             {
-                for (int i = 0; i < verbs.Count && i < opt.Count; i++)
+                var v = verbs[i];
+                if (v == null || v.verbProps == null || !v.verbProps.Ranged) continue;
+                var o = FindGizmoOption(i, v);
+                if (o != null && o.autoAttackDefault == true)
                 {
-                    var v = verbs[i];
-                    if (v == null || v.verbProps == null || !v.verbProps.Ranged) continue;
-                    if (opt[i] != null && opt[i].autoAttackDefault == true)
-                    {
-                        defaultOnIndex = i;
-                        break;
-                    }
+                    defaultOnIndex = i;
+                    break;
                 }
             }
 
@@ -297,10 +319,9 @@ namespace ShapeshifterFramework.Comps
         public string GetVerbLabel(int index, Verb v, bool preferToggleLabel)
         {
             var vp = v?.verbProps;
-            var opt = currentForm?.verbGizmoOptions;
-            if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
+            var o = FindGizmoOption(index, v);
+            if (o != null)
             {
-                var o = opt[index];
                 // toggleLabel → label 순 fallback
                 string s = preferToggleLabel ? (o.toggleLabel ?? o.label) : o.label;
                 if (!string.IsNullOrEmpty(s)) return s.Translate().CapitalizeFirst();
@@ -313,10 +334,9 @@ namespace ShapeshifterFramework.Comps
         /// <summary>verb 명령/토글 설명 반환.</summary>
         public string GetVerbDesc(int index, Verb v, bool forToggle)
         {
-            var opt = currentForm?.verbGizmoOptions;
-            if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
+            var o = FindGizmoOption(index, v);
+            if (o != null)
             {
-                var o = opt[index];
                 // toggleDesc → desc 순 fallback
                 string s = forToggle ? (o.toggleDesc ?? o.desc) : o.desc;
                 if (!string.IsNullOrEmpty(s)) return s.Translate();
@@ -327,12 +347,12 @@ namespace ShapeshifterFramework.Comps
         }
 
         /// <summary>verbGizmoOptions의 iconPath에서 아이콘 로드. 없으면 null.</summary>
-        private Texture2D GetVerbIcon(int index)
+        private Texture2D GetVerbIcon(int index, Verb v)
         {
-            var opt = currentForm?.verbGizmoOptions;
-            if (opt != null && index >= 0 && index < opt.Count && opt[index] != null)
+            var o = FindGizmoOption(index, v);
+            if (o != null)
             {
-                string path = opt[index].iconPath;
+                string path = o.iconPath;
                 if (!string.IsNullOrEmpty(path))
                     return ContentFinder<Texture2D>.Get(path, reportFailure: false);
             }
@@ -1743,7 +1763,7 @@ namespace ShapeshifterFramework.Comps
                 {
                     defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: false),
                     defaultDesc = GetVerbDesc(idx, v, forToggle: false),
-                    icon = GetVerbIcon(idx) ?? v.UIIcon,
+                    icon = GetVerbIcon(idx, v) ?? v.UIIcon,
                     verb = v,
                 };
                 if (!projectileOk)
@@ -1764,7 +1784,7 @@ namespace ShapeshifterFramework.Comps
                     {
                         defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: true),
                         defaultDesc = GetVerbDesc(idx, v, forToggle: true),
-                        icon = GetVerbIcon(idx) ?? v.UIIcon,
+                        icon = GetVerbIcon(idx, v) ?? v.UIIcon,
                         isActive = () => IsAutoAttackEnabled(idx, v),
                         toggleAction = () => ToggleAutoAttack(idx, v),
                         groupable = false,
