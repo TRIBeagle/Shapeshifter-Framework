@@ -9,6 +9,7 @@ A RimWorld framework that provides systems for shapeshifting mechanics.
 
 ## Features
 - Core systems for pawn shapeshifting
+- Per-form race filtering (`applicableRaces`)
 - Hooks for other mods to extend transformations
 
 ## Installation
@@ -38,6 +39,7 @@ Not yet available. Will be released via Steam Workshop and GitHub when ready.
 
 ## 주요 기능
 - 폰이 다른 형태로 변신할 수 있도록 하는 핵심 시스템
+- 폼별 종족 필터링 (`applicableRaces`)
 - 다른 모드가 변신 기능을 확장할 수 있는 훅 제공
 
 ## 설치

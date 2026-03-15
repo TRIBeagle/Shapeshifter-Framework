@@ -14,11 +14,11 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 | 컴포넌트 | 역할 |
 |----------|------|
 | **ShapeshiftFormDef** | 비주얼, 장비, 도구/Verb, 사운드, VFX, 지속시간, UI |
-| **mainHediff (HediffDef)** | 스탯 합연산, 곱연산, 능력치(Capacity) 보정 (바닐라 패턴) |
+| **linkedHediff (HediffDef)** | 스탯 합연산, 곱연산, 능력치(Capacity) 보정 (바닐라 패턴) |
 | **CompProperties_AbilityShiftTarget** | 캐스트 조건 (종족, 뮤턴트), 성공 확률 |
 | **어빌리티 획득 소스** | 유전자, 헤디프, 아이템(CompGiveAbility_SSF), 약물, 투사체 |
 
-스탯과 능력치 보정은 FormDef에 정의하지 **않습니다**. `mainHediff`의 HediffDef stages에서 바닐라 HediffDef 패턴으로 정의합니다 (`statOffsets`, `statFactors`, `capMods`).
+스탯과 능력치 보정은 FormDef에 정의하지 **않습니다**. `linkedHediff`의 HediffDef stages에서 바닐라 HediffDef 패턴으로 정의합니다 (`statOffsets`, `statFactors`, `capMods`).
 
 ---
 
@@ -28,9 +28,16 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 * `<description>`: 변신 폼에 대한 설명 및 툴팁입니다.
 
 ## 2. 메인 헤디프 (스탯 & 능력치)
-* `<mainHediff>`: (필수) 변신 상태를 나타내는 `HediffDef`입니다. 이 헤디프가 제거되면 자동으로 변신이 해제됩니다.
+* `<linkedHediff>`: (필수) 변신 상태를 나타내는 `HediffDef`입니다. 이 헤디프가 제거되면 자동으로 변신이 해제됩니다.
+* `<applicableRaces>`: (선택) 이 폼을 사용할 수 있는 종족(`ThingDef`) 목록입니다. 생략하거나 빈 목록이면 모든 종족 허용(기본 동작).
 
-**스탯과 능력치 보정은 mainHediff의 HediffDef에서 정의합니다. FormDef가 아닙니다.** 바닐라 HediffDef 패턴을 사용합니다:
+```xml
+<applicableRaces>
+  <li>Human</li>
+</applicableRaces>
+```
+
+**스탯과 능력치 보정은 linkedHediff의 HediffDef에서 정의합니다. FormDef가 아닙니다.** 바닐라 HediffDef 패턴을 사용합니다:
 
 ```xml
 <HediffDef>
@@ -318,7 +325,7 @@ FormDef 자체에는 캐스트 조건이나 트리거 로직이 **없습니다**
     <defName>SSF_WolfForm</defName>
     <label>늑대 폼</label>
     <description>강력한 늑대 변신. 무기를 떨어뜨리고 빠르게 달린다.</description>
-    <mainHediff>SSF_WolfFormHediff</mainHediff>
+    <linkedHediff>SSF_WolfFormHediff</linkedHediff>
 
     <bodyDrawScale>1.5</bodyDrawScale>
     <portraitDrawScale>0.8</portraitDrawScale>

@@ -69,4 +69,6 @@
 
   <SSF_GizmoDisabled_AlreadyTransformed>Already transformed into {0}. Cannot shift to another form.</SSF_GizmoDisabled_AlreadyTransformed>
 
+  <SSF_GizmoDisabled_RaceNotAllowed>This form is not available for {0}.</SSF_GizmoDisabled_RaceNotAllowed>
+
 </LanguageData>

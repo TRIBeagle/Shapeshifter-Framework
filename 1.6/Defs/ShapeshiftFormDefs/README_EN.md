@@ -5,7 +5,7 @@
 ## Key Architecture
 
 - **ShapeshiftFormDef** → Visuals, equipment, tools, sounds, VFX, duration
-- **mainHediff (HediffDef)** → Stats (`statOffsets`, `statFactors`, `capMods`) — vanilla pattern
+- **linkedHediff (HediffDef)** → Stats (`statOffsets`, `statFactors`, `capMods`) — vanilla pattern
 - **CompProperties_AbilityShiftTarget** → Cast conditions (races, mutants), success chance
 - **Ability sources** → Genes, hediffs, items, drugs, scrolls, projectiles
 
@@ -13,7 +13,7 @@
 
 | Category | Key Fields |
 |----------|------------|
-| Basic | `defName`, `label`, `description`, `mainHediff` |
+| Basic | `defName`, `label`, `description`, `linkedHediff`, `applicableRaces` |
 | Scale | `bodyDrawScale`, `headDrawScale`, `portraitDrawScale`, `bodyOffset`, `headOffset` |
 | Parts | `body`, `head`, `hair`, `beard`, `tattooBody`, `tattooHead` (each with `mode`, `replacementTexPath`, `color`, `shaderTypeDefName`, `male`/`female`, etc.) |
 | Render Hide/Show | `renderHide*`/`renderShow*` for Apparel (Layers/DefNames), Weapons (Tags/DefNames), Genes (ExclusionTags/DefNames), Hediffs (DefNames) |
@@ -55,7 +55,7 @@
 <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
   <defName>MyForm</defName>
   <label>My Form</label>
-  <mainHediff>MyFormHediff</mainHediff>
+  <linkedHediff>MyFormHediff</linkedHediff>
   <body><mode>Replace</mode><replacementTexPath>MyMod/Textures/MyForm</replacementTexPath></body>
   <durationTicks>30000</durationTicks>
 </ShapeshifterFramework.ShapeshiftFormDef>

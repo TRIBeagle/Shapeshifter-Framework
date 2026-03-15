@@ -2,7 +2,7 @@
 
 ## 아키텍처 참고
 
-> **중요**: 스탯/능력치 보정은 `ShapeshiftFormDef`가 아닌 `mainHediff`의 HediffDef stages에서 바닐라 패턴으로 정의됩니다.
+> **중요**: 스탯/능력치 보정은 `ShapeshiftFormDef`가 아닌 `linkedHediff`의 HediffDef stages에서 바닐라 패턴으로 정의됩니다.
 > 캐스트 조건(종족/뮤턴트)은 `CompProperties_AbilityShiftTarget`에서 처리합니다.
 > `allowedFromForms`는 `CompProperties_AbilityShiftTarget`에 `List<string>` (defName)으로 존재합니다 — 변신 중 시전 허용 폼 목록.
 > `requiredItems`, `requiredHediffs`, `requirementsMode` 등은 FormDef에 존재하지 않습니다.
@@ -14,7 +14,7 @@
 
 | # | 폼 | 트리거 | 주요 테스트 항목 |
 |---|-----|--------|-----------------|
-| 1 | SSFTest_BearForm | 약물(BearElixir), 아이템(ShiftScroll) | body Replace+수영텍스처, 색상, mainHediff(statOffsets/Factors/capMods), addHediffs(AddedPart+일반), addAbilities, tools+replaceNativeTools, 혈흔/살점/fleshType, Fleck FX+Sound, duration, canRevertVoluntarily, apparelOnTransform=Drop, weaponsOnTransform=Drop |
+| 1 | SSFTest_BearForm | 약물(BearElixir), 아이템(ShiftScroll) | body Replace+수영텍스처, 색상, linkedHediff(statOffsets/Factors/capMods), addHediffs(AddedPart+일반), addAbilities, tools+replaceNativeTools, 혈흔/살점/fleshType, Fleck FX+Sound, duration, canRevertVoluntarily, apparelOnTransform=Drop, weaponsOnTransform=Drop |
 | 2 | SSFTest_BearWarriorForm | 어빌리티(BuffAlly, 대상지정) | Armored 베이스, 전용 어빌리티(Custom), soundAngry/melee 오버라이드, Effecter FX, gear Keep |
 | 3 | SSFTest_SheepForm | 어빌리티(DebuffEnemy, 적대), AoE투사체(MassPolymorph) | body Replace+성별 텍스처, canRevertVoluntarily=false, disabledWorkTags, 축소 스케일, hostile 어빌리티, successChance |
 | 4 | SSFTest_DarkKnightForm | 어빌리티(DarkKnight, 자기변신) | spawnApparel/Weapon+stuff, conflictingGearHandling, equipLock(Locked/Locked), Inventory 처리 |
@@ -65,11 +65,11 @@
 - [ ] **B19** hairColor 오버라이드: BeastkinForm 머리카락 색상 (0.85, 0.85, 0.95)
 - [ ] **B20** skinColor 오버라이드: PhantomForm 피부색 (0.7, 0.8, 1.0)
 
-### C. 스탯 & 능력치 (mainHediff 기반)
+### C. 스탯 & 능력치 (linkedHediff 기반)
 - [ ] **C1** statOffsets: 이동속도 변화 확인 (정보창에서 수치)
 - [ ] **C2** statFactors: 근접명중률/회피율 배수 확인
 - [ ] **C3** capMods: 조작/대화/이동/시력 능력치 보정 (BearForm — Manipulation setMax=0.2)
-- [ ] **C4** mainHediff: 정보창 건강 탭에 폼별 Hediff_ShapeshiftForm 표시
+- [ ] **C4** linkedHediff: 정보창 건강 탭에 폼별 Hediff_ShapeshiftForm 표시
 
 ### D. Hediff & Ability 부여
 - [ ] **D1** addHediffs 일반: FibrousMechanites 부여 확인 (BearForm)
@@ -158,8 +158,8 @@
 ### O. 디버그 액션 & 내부 로깅
 - [ ] **O1** SSF: Dump Form Info — 폼 정보 덤프 확인
 - [ ] **O2** SSF: Play Sound — 사운드 재생 확인
-- [ ] **O3** SSF: Inspect Active Form — 스탯/캐퍼 요약이 mainHediff.stages[0] 기반으로 정확히 표시
-- [ ] **O4** SSF: Dump Pawn State — Stat Offsets/Factors/Capacity Mods 섹션 mainHediff 기반 출력
+- [ ] **O3** SSF: Inspect Active Form — 스탯/캐퍼 요약이 linkedHediff.stages[0] 기반으로 정확히 표시
+- [ ] **O4** SSF: Dump Pawn State — Stat Offsets/Factors/Capacity Mods 섹션 linkedHediff 기반 출력
 - [ ] **O5** AddedPart/Hediff 적용 실패 시 `[SSF]` 경고 로그 출력 (빈 catch 제거됨)
 - [ ] **O6** HAR BodyAddon alignWithHead 타입 판정 — `bool` 직접 비교 우선, fallback 시 경고 로그
 - [ ] **O7** CompGiveAbility_SSF PostDeSpawn — 1.6 시그니처(Map, DestroyMode) 정상 호출
@@ -239,7 +239,7 @@ allowedRaces=Human (AbilityDef comp) + headType + 의류잠금/무기자유
 사망/캐러밴/인공장기/결손/중복시도
 
 ### 16단계: 디버그 액션 & 로깅 검증 → O1-8
-Dump Form Info/Pawn State → 스탯 mainHediff 기반 표시, 실패 로그 출력, HAR 호환, 메모리 안정성
+Dump Form Info/Pawn State → 스탯 linkedHediff 기반 표시, 실패 로그 출력, HAR 호환, 메모리 안정성
 
 ### 17단계: ShapeshiftRegistry 성능 최적화 검증 → P1-13
 변신/해제 → 레지스트리 Register/Unregister 동작, 세이브/로드 재등록(PostLoadInit),

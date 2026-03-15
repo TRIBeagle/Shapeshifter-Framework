@@ -79,6 +79,11 @@ namespace ShapeshifterFramework.Comps
             var pawn = target.Pawn;
             if (pawn == null || pawn.Dead) return false;
 
+            // 대상 종족이 폼의 applicableRaces에 없으면 차단
+            var formDef = ResolvedFormDef;
+            if (formDef != null && !ShapeshiftEligibility.IsRaceAllowed(pawn, formDef))
+                return false;
+
             // 이미 같은 폼으로 변신 중이면 차단
             var comp = pawn.TryGetComp<CompShapeshifter>();
             if (comp != null && comp.isTransformed && comp.currentForm != null
@@ -104,6 +109,14 @@ namespace ShapeshifterFramework.Comps
         {
             var caster = parent?.pawn;
             if (caster == null) { reason = null; return false; }
+
+            // 캐스터 종족이 폼의 applicableRaces에 없으면 비활성
+            var selfForm = ResolvedFormDef;
+            if (selfForm != null && !ShapeshiftEligibility.IsRaceAllowed(caster, selfForm))
+            {
+                reason = "SSF_GizmoDisabled_RaceNotAllowed".Translate(caster.def.label);
+                return true;
+            }
 
             var comp = caster.TryGetComp<CompShapeshifter>();
             if (comp == null || !comp.isTransformed || comp.currentForm == null)

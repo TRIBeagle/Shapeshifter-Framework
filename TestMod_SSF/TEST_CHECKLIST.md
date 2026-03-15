@@ -370,8 +370,8 @@
 
 ## 12. 디버그 액션 & 내부 로깅 검증
 
-- [ ] #191 `[MANUAL]` `SSF: Inspect Active Form` → 스탯/캐퍼 요약이 mainHediff 기준으로 정상 표시
-- [ ] #192 `[MANUAL]` `SSF: Dump Pawn State to Log` → Stat Offsets/Factors/Capacity Mods 섹션에 mainHediff.stages[0] 데이터 출력
+- [ ] #191 `[MANUAL]` `SSF: Inspect Active Form` → 스탯/캐퍼 요약이 linkedHediff 기준으로 정상 표시
+- [ ] #192 `[MANUAL]` `SSF: Dump Pawn State to Log` → Stat Offsets/Factors/Capacity Mods 섹션에 linkedHediff.stages[0] 데이터 출력
 - [ ] #193 `[MANUAL]` AddedPart(ForceAdd) 적용 실패 시 `[SSF] RestorePart failed` 경고 로그 출력 (의도적 실패 유도)
 - [ ] #194 `[MANUAL]` Hediff severity 설정 실패 시 `[SSF] Set severity failed` 경고 로그 출력
 - [ ] #195 `[MANUAL]` RemoveHediff 실패 시 `[SSF] RemoveHediff failed` 경고 로그 출력

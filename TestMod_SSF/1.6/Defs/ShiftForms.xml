@@ -7,12 +7,12 @@
 
   <!-- 1) 베어 폼 (동물형) — 약물/아이템 전용, 어빌리티 바에 표시 안 함
        ★ 체형 교체 텍스처, hediff, 이펙트 통합 테스트
-       ★ 스탯/능력치 → mainHediff(SSFTest_BearFormHediff)의 stages에서 정의 -->
+       ★ 스탯/능력치 → linkedHediff(SSFTest_BearFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSFTest_BearForm</defName>
     <label>bear form</label>
     <description>테스트용 곰 변신. 동물형 완전 변신. 곰 텍스처로 체형 교체, 캐릭터 능력 보정, hediff 부여 테스트.</description>
-    <mainHediff>SSFTest_BearFormHediff</mainHediff>
+    <linkedHediff>SSFTest_BearFormHediff</linkedHediff>
     <!-- 체형 교체 텍스처 -->
     <body>
       <mode>Replace</mode>
@@ -72,12 +72,12 @@
 
   <!-- 2) 곰 전사 폼 (아머드형) — 버프 어빌리티용 동료 강화
        ★ 사운드 오버라이드 통합 테스트
-       ★ 스탯 → mainHediff(SSFTest_BearWarriorFormHediff)의 stages에서 정의 -->
+       ★ 스탯 → linkedHediff(SSFTest_BearWarriorFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
     <defName>SSFTest_BearWarriorForm</defName>
     <label>bear warrior form</label>
     <description>테스트용 곰 전사 변신. 장비 유지하면서 스탯 강화. 곰 사운드 오버라이드.</description>
-    <mainHediff>SSFTest_BearWarriorFormHediff</mainHediff>
+    <linkedHediff>SSFTest_BearWarriorFormHediff</linkedHediff>
     <bodyDrawScale>1.3</bodyDrawScale>
     <durationTicks>15000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
@@ -94,12 +94,12 @@
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- 3) 양 폼 (동물형) — 디버프/범위형용. 해제 불가
-       ★ 스탯 → mainHediff(SSFTest_SheepFormHediff)의 stages에서 정의 -->
+       ★ 스탯 → linkedHediff(SSFTest_SheepFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSFTest_SheepForm</defName>
     <label>sheep form</label>
     <description>테스트용 양 변신. 전투력 상실, 자발적 해제 불가.</description>
-    <mainHediff>SSFTest_SheepFormHediff</mainHediff>
+    <linkedHediff>SSFTest_SheepFormHediff</linkedHediff>
     <!-- 양 텍스처로 체형 교체 -->
     <body>
       <mode>Replace</mode>
@@ -121,12 +121,12 @@
        ====================================================== -->
 
   <!-- 4) 암흑 기사 폼 (장비 소환형) — 전용 갑옷+무기 소환, 해제 시 자동 파괴
-       ★ 스탯 → mainHediff(SSFTest_DarkKnightFormHediff)의 stages에서 정의 -->
+       ★ 스탯 → linkedHediff(SSFTest_DarkKnightFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
     <defName>SSFTest_DarkKnightForm</defName>
     <label>dark knight form</label>
     <description>암흑 기사로 변신. 전용 갑옷과 무기가 소환되며, 기존 장비는 인벤토리로 이동. 해제 시 소환 장비는 소멸.</description>
-    <mainHediff>SSFTest_DarkKnightFormHediff</mainHediff>
+    <linkedHediff>SSFTest_DarkKnightFormHediff</linkedHediff>
     <bodyDrawScale>1.2</bodyDrawScale>
     <durationTicks>18000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
@@ -154,12 +154,12 @@
   <!-- 5a) 수인 폼 (휴머노이드형) — 1단계: 인간→수인
        ★ 귀/꼬리 renderNodeProperties, 보이스, verb, verbGizmoOptions 통합 테스트
        ★ addAbilities에 FullBeast 어빌리티 추가 (2단 변신용)
-       ★ 스탯 → mainHediff(SSFTest_BeastkinFormHediff)의 stages에서 정의 -->
+       ★ 스탯 → linkedHediff(SSFTest_BeastkinFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
     <defName>SSFTest_BeastkinForm</defName>
     <label>beastkin form</label>
     <description>수인 형태. 귀/꼬리 그래픽 추가, 다양한 원거리 verb 통합 테스트. 수인 상태에서 2단 변신(완전 야수) 가능.</description>
-    <mainHediff>SSFTest_BeastkinFormHediff</mainHediff>
+    <linkedHediff>SSFTest_BeastkinFormHediff</linkedHediff>
     <bodyDrawScale>1.20</bodyDrawScale>
     <headDrawScale>1.05</headDrawScale>
     <headOffset>(0.0, 0.03)</headOffset>
@@ -397,12 +397,12 @@
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- 5b) 야수 폼 (동물형) — 2단계: 수인→야수 (수인의 addAbilities로 부여)
-       ★ 스탯 → mainHediff(SSFTest_FullBeastFormHediff)의 stages에서 정의 -->
+       ★ 스탯 → linkedHediff(SSFTest_FullBeastFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSFTest_FullBeastForm</defName>
     <label>full beast form</label>
     <description>완전한 야수 형태. 수인 상태에서만 변신 가능 (수인 폼의 addAbilities로 어빌리티 부여).</description>
-    <mainHediff>SSFTest_FullBeastFormHediff</mainHediff>
+    <linkedHediff>SSFTest_FullBeastFormHediff</linkedHediff>
     <bodyDrawScale>1.0</bodyDrawScale>
     <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
@@ -431,12 +431,12 @@
 
   <!-- 6) 수호자 폼 — sustainHediffs로 유지 조건
        ★ portraitDrawScale, bodyOffset, shadowVolume/Offset 통합 테스트
-       ★ 스탯 → mainHediff(SSFTest_GuardianFormHediff)의 stages에서 정의 -->
+       ★ 스탯 → linkedHediff(SSFTest_GuardianFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
     <defName>SSFTest_GuardianForm</defName>
     <label>guardian form</label>
     <description>수호자 형태. 마력의 돌 소지 또는 수호자의 각인 보유 시 변신 유지. 큰 그림자와 포트레잇 확대 테스트.</description>
-    <mainHediff>SSFTest_GuardianFormHediff</mainHediff>
+    <linkedHediff>SSFTest_GuardianFormHediff</linkedHediff>
     <bodyDrawScale>1.4</bodyDrawScale>
     <portraitDrawScale>1.3</portraitDrawScale>
     <bodyOffset>(0, -0.1)</bodyOffset>
@@ -459,12 +459,12 @@
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- 7) 유령 폼 (비주얼 오버라이드) — head Replace, 셰이더, bodyType, WorkTypeDef 차단
-       ★ 스탯 → mainHediff(SSFTest_PhantomFormHediff)의 stages에서 정의 -->
+       ★ 스탯 → linkedHediff(SSFTest_PhantomFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
     <defName>SSFTest_PhantomForm</defName>
     <label>phantom form</label>
     <description>유령 형태. 반투명한 머리, 마른 체형. 소방 작업 불가. FX 지연 테스트.</description>
-    <mainHediff>SSFTest_PhantomFormHediff</mainHediff>
+    <linkedHediff>SSFTest_PhantomFormHediff</linkedHediff>
     <head>
       <mode>Replace</mode>
       <replacementTexPath>Things/Pawn/Humanlike/Heads/Male/Male_AverageNormal</replacementTexPath>
@@ -495,12 +495,12 @@
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- 8) 종족 제한 폼 — 종족 제한은 AbilityDef comp에서 처리
-       ★ 스탯 → mainHediff(SSFTest_RaceLockedFormHediff)의 stages에서 정의 -->
+       ★ 스탯 → linkedHediff(SSFTest_RaceLockedFormHediff)의 stages에서 정의 -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
     <defName>SSFTest_RaceLockedForm</defName>
     <label>race locked form</label>
     <description>인간 전용 강화 폼. 의류 교체 잠금, 무기만 자유 교체 가능. 머리타입 고정.</description>
-    <mainHediff>SSFTest_RaceLockedFormHediff</mainHediff>
+    <linkedHediff>SSFTest_RaceLockedFormHediff</linkedHediff>
     <bodyDrawScale>1.15</bodyDrawScale>
     <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>

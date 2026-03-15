@@ -339,7 +339,7 @@ namespace ShapeshifterFramework.Comps
 
         #region Ticking/Inspect
 
-        /// <summary>매 틱: 타이머/사망/mainHediff 모니터링/sustain 검사/VerbTracker 처리.</summary>
+        /// <summary>매 틱: 타이머/사망/linkedHediff 모니터링/sustain 검사/VerbTracker 처리.</summary>
         public override void CompTick()
         {
             base.CompTick();
@@ -398,9 +398,9 @@ namespace ShapeshifterFramework.Comps
 
             if (isTransformed && currentForm != null)
             {
-                // mainHediff 외부 삭제 시 변신 해제
-                if (currentForm.mainHediff != null
-                    && pawn.health?.hediffSet?.GetFirstHediffOfDef(currentForm.mainHediff) == null)
+                // linkedHediff 외부 삭제 시 변신 해제
+                if (currentForm.linkedHediff != null
+                    && pawn.health?.hediffSet?.GetFirstHediffOfDef(currentForm.linkedHediff) == null)
                 {
                     RemoveForm();
                     return;
@@ -685,15 +685,15 @@ namespace ShapeshifterFramework.Comps
             currentForm = form;
 
             // 메인 헤디프 부여 (변신 상태 마커 + 스탯/능력치)
-            if (form.mainHediff != null && pawn.health != null)
+            if (form.linkedHediff != null && pawn.health != null)
             {
-                if (pawn.health.hediffSet.GetFirstHediffOfDef(form.mainHediff) == null)
+                if (pawn.health.hediffSet.GetFirstHediffOfDef(form.linkedHediff) == null)
                 {
-                    Hediff mainH = pawn.health.AddHediff(form.mainHediff);
+                    Hediff mainH = pawn.health.AddHediff(form.linkedHediff);
                     if (mainH != null)
                     {
                         tempAddedHediffs.Add(mainH);
-                        tempAddedHediffsDefCache.Add(form.mainHediff);
+                        tempAddedHediffsDefCache.Add(form.linkedHediff);
                     }
                 }
             }
@@ -1097,8 +1097,8 @@ namespace ShapeshifterFramework.Comps
 
             using (new ShapeshiftEquipLockScope(this))
             {
-                // 1. 전용 의류 소환
-                if (form.spawnApparelOnTransform != null && form.spawnApparelOnTransform.Count > 0)
+                // 1. 전용 의류 소환 (pawn.apparel null이면 건너뜀 — 동물/메카노이드 방어)
+                if (pawn.apparel != null && form.spawnApparelOnTransform != null && form.spawnApparelOnTransform.Count > 0)
                 {
                     for (int i = 0; i < form.spawnApparelOnTransform.Count; i++)
                     {
@@ -1160,8 +1160,8 @@ namespace ShapeshifterFramework.Comps
                     }
                 }
 
-                // 2. 전용 무기 소환
-                if (form.spawnWeaponOnTransform != null && form.spawnWeaponOnTransform.Count > 0)
+                // 2. 전용 무기 소환 (pawn.equipment null이면 건너뜀 — 동물/메카노이드 방어)
+                if (pawn.equipment != null && form.spawnWeaponOnTransform != null && form.spawnWeaponOnTransform.Count > 0)
                 {
                     // 기존 무기 처리
                     if (pawn.equipment != null && pawn.equipment.Primary != null)

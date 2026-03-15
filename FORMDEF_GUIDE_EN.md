@@ -14,11 +14,11 @@ The Shapeshifter Framework separates concerns across multiple components:
 | Component | Responsibility |
 |-----------|---------------|
 | **ShapeshiftFormDef** | Visuals, equipment, tools/verbs, sounds, VFX, duration, UI |
-| **mainHediff (HediffDef)** | Stat offsets, stat factors, capacity modifiers (vanilla pattern) |
+| **linkedHediff (HediffDef)** | Stat offsets, stat factors, capacity modifiers (vanilla pattern) |
 | **CompProperties_AbilityShiftTarget** | Cast conditions (races, mutants), success chance |
 | **Ability acquisition sources** | Genes, hediffs, items (CompGiveAbility_SSF), drugs, projectiles |
 
-Stats and capacities are **not** defined on the FormDef. They are defined on the `mainHediff`'s HediffDef stages, using the vanilla HediffDef pattern (`statOffsets`, `statFactors`, `capMods`).
+Stats and capacities are **not** defined on the FormDef. They are defined on the `linkedHediff`'s HediffDef stages, using the vanilla HediffDef pattern (`statOffsets`, `statFactors`, `capMods`).
 
 ---
 
@@ -28,9 +28,16 @@ Stats and capacities are **not** defined on the FormDef. They are defined on the
 * `<description>`: Tooltip and description text.
 
 ## 2. Main Hediff (Stats & Capacities)
-* `<mainHediff>`: (Required) The `HediffDef` that marks the transformation state. Removing this hediff automatically ends the transformation.
+* `<linkedHediff>`: (Required) The `HediffDef` that marks the transformation state. Removing this hediff automatically ends the transformation.
+* `<applicableRaces>`: (Optional) List of `ThingDef` race defs that can use this form. If omitted or empty, any race is allowed (default behavior).
 
-**Stats and capacities are defined in the mainHediff's HediffDef, not in the FormDef.** Use the standard vanilla HediffDef pattern:
+```xml
+<applicableRaces>
+  <li>Human</li>
+</applicableRaces>
+```
+
+**Stats and capacities are defined in the linkedHediff's HediffDef, not in the FormDef.** Use the standard vanilla HediffDef pattern:
 
 ```xml
 <HediffDef>
@@ -318,7 +325,7 @@ The framework provides three abstract base forms in `SSF_BaseForms.xml`:
     <defName>SSF_WolfForm</defName>
     <label>Wolf Form</label>
     <description>A powerful wolf form. Drops weapons and runs fast.</description>
-    <mainHediff>SSF_WolfFormHediff</mainHediff>
+    <linkedHediff>SSF_WolfFormHediff</linkedHediff>
 
     <bodyDrawScale>1.5</bodyDrawScale>
     <portraitDrawScale>0.8</portraitDrawScale>

@@ -224,13 +224,13 @@ namespace ShapeshifterFramework.Debugs
                 string fn = form.defName; // 체크리스트 매핑용 폼 이름
 
                 // 1. 스탯 hediff 존재
-                if (form.mainHediff != null)
+                if (form.linkedHediff != null)
                 {
                     checks++;
                     string cl = CL(fn, "statHediff");
-                    if (pawn.health?.hediffSet?.GetFirstHediffOfDef(form.mainHediff) != null)
-                    { passed++; sb.AppendLine($"  ✓ Main hediff OK: {form.mainHediff.defName}{cl}"); }
-                    else sb.AppendLine($"  ✗ Main hediff missing: {form.mainHediff.defName}{cl}");
+                    if (pawn.health?.hediffSet?.GetFirstHediffOfDef(form.linkedHediff) != null)
+                    { passed++; sb.AppendLine($"  ✓ Main hediff OK: {form.linkedHediff.defName}{cl}"); }
+                    else sb.AppendLine($"  ✗ Main hediff missing: {form.linkedHediff.defName}{cl}");
                 }
 
                 // 2. 체형 변경
@@ -586,13 +586,13 @@ namespace ShapeshifterFramework.Debugs
                 }
 
                 // 스탯 hediff 제거
-                if (form.mainHediff != null)
+                if (form.linkedHediff != null)
                 {
                     rc++;
                     string cl = CL(fn, "R.statHediff");
-                    if (pawn.health?.hediffSet?.GetFirstHediffOfDef(form.mainHediff) == null)
+                    if (pawn.health?.hediffSet?.GetFirstHediffOfDef(form.linkedHediff) == null)
                     { rp++; sb.AppendLine($"  ✓ [Revert] Main hediff removed{cl}"); }
-                    else sb.AppendLine($"  ✗ [Revert] Main hediff not removed: {form.mainHediff.defName}{cl}");
+                    else sb.AppendLine($"  ✗ [Revert] Main hediff not removed: {form.linkedHediff.defName}{cl}");
                 }
 
                 // 추가 hediff 제거 (addedPart 제외)
@@ -887,14 +887,14 @@ namespace ShapeshifterFramework.Debugs
             return $"Verbs/Tools: verbs={v}({rv}), tools={t}({rt})";
         }
 
-        /// <summary>스탯/캐퍼 요약 (mainHediff의 첫 번째 stage에서 참조).</summary>
+        /// <summary>스탯/캐퍼 요약 (linkedHediff의 첫 번째 stage에서 참조).</summary>
         private static string SummarizeStatsCaps(ShapeshiftFormDef f)
         {
-            var stage = f.mainHediff?.stages != null && f.mainHediff.stages.Count > 0 ? f.mainHediff.stages[0] : null;
+            var stage = f.linkedHediff?.stages != null && f.linkedHediff.stages.Count > 0 ? f.linkedHediff.stages[0] : null;
             int so = stage?.statOffsets != null ? stage.statOffsets.Count : 0;
             int sf = stage?.statFactors != null ? stage.statFactors.Count : 0;
             int cm = stage?.capMods != null ? stage.capMods.Count : 0;
-            string src = f.mainHediff?.defName ?? "none";
+            string src = f.linkedHediff?.defName ?? "none";
             return $"Stats ({src}): offsets={so}, factors={sf}, caps={cm}";
         }
 
@@ -1083,9 +1083,9 @@ namespace ShapeshifterFramework.Debugs
             DumpTools(sb, f.tools);
             sb.AppendLine();
 
-            // 스탯/캐퍼 (mainHediff의 첫 번째 stage에서 참조)
-            var stage = f.mainHediff?.stages != null && f.mainHediff.stages.Count > 0 ? f.mainHediff.stages[0] : null;
-            sb.AppendLine($"== Stats/Caps (source: {f.mainHediff?.defName ?? "null"}) ==");
+            // 스탯/캐퍼 (linkedHediff의 첫 번째 stage에서 참조)
+            var stage = f.linkedHediff?.stages != null && f.linkedHediff.stages.Count > 0 ? f.linkedHediff.stages[0] : null;
+            sb.AppendLine($"== Stats/Caps (source: {f.linkedHediff?.defName ?? "null"}) ==");
             sb.AppendLine("  ── Stat Offsets ──");
             DumpStatMods(sb, stage?.statOffsets);
             sb.AppendLine("  ── Stat Factors ──");

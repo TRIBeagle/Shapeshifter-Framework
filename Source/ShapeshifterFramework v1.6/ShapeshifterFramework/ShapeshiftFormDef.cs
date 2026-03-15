@@ -1,6 +1,6 @@
 // ShapeshifterFramework | Root | ShapeshiftFormDef.cs
 // 목적 : 변신 폼(Form)의 비주얼·장비·도구·사운드·VFX 등 정적 데이터를 정의하는 최상위 XML 데이터 구조체(Schema).
-// 용도 : 스탯/능력치 보정은 mainHediff의 HediffDef stages에서 바닐라 패턴으로 정의.
+// 용도 : 스탯/능력치 보정은 linkedHediff의 HediffDef stages에서 바닐라 패턴으로 정의.
 //        어빌리티 부여는 유전자/헤디프/아이템(CompGiveAbility_SSF) 등 소스가 담당.
 //        캐스트 조건(종족/뮤턴트/제노타입)은 AbilityDef의 CompAbilityEffect_ShiftTarget에서 검사.
 // 주의 : 이 클래스의 데이터는 XML 로드 시 확정되며, 런타임 게임 플레이 도중 수정(오염)되지 않도록 철저히 읽기 전용(Read-only) 데이터로 취급해야 함.
@@ -87,12 +87,15 @@ namespace ShapeshifterFramework
         public AddedPartPolicy addedPartPolicy = AddedPartPolicy.ForceAdd;
     }
 
-    /// <summary>변신 폼 Def. 비주얼/장비/도구/사운드/VFX 및 변신 상태(mainHediff) 정의.</summary>
+    /// <summary>변신 폼 Def. 비주얼/장비/도구/사운드/VFX 및 변신 상태(linkedHediff) 정의.</summary>
     public class ShapeshiftFormDef : Def
     {
         // ── 메인 헤디프: 변신 상태를 나타냄. 제거 시 자동 해제.
         // 스탯/능력치 보정은 이 HediffDef의 stages에서 바닐라 패턴으로 정의.
-        public HediffDef mainHediff;
+        public HediffDef linkedHediff;
+
+        /// <summary>이 폼을 사용할 수 있는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음(기존 동작 유지).</summary>
+        public List<ThingDef> applicableRaces;
 
         // 스케일/오프셋(렌더 보정용)
         public float? bodyDrawScale;   // 몸 전체 스케일 배수 (예: 5.0이면 5배) 비우면 1

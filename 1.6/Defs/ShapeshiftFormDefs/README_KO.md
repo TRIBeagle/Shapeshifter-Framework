@@ -5,7 +5,7 @@
 ## 핵심 아키텍처
 
 - **ShapeshiftFormDef** → 비주얼, 장비, 도구, 사운드, VFX, 지속시간
-- **mainHediff (HediffDef)** → 스탯 (`statOffsets`, `statFactors`, `capMods`) — 바닐라 패턴
+- **linkedHediff (HediffDef)** → 스탯 (`statOffsets`, `statFactors`, `capMods`) — 바닐라 패턴
 - **CompProperties_AbilityShiftTarget** → 캐스트 조건 (종족, 뮤턴트), 성공 확률
 - **어빌리티 소스** → 유전자, 헤디프, 아이템, 약물, 스크롤, 투사체
 
@@ -13,7 +13,7 @@
 
 | 카테고리 | 주요 필드 |
 |----------|----------|
-| 기본 | `defName`, `label`, `description`, `mainHediff` |
+| 기본 | `defName`, `label`, `description`, `linkedHediff`, `applicableRaces` |
 | 스케일 | `bodyDrawScale`, `headDrawScale`, `portraitDrawScale`, `bodyOffset`, `headOffset` |
 | 부위 외형 | `body`, `head`, `hair`, `beard`, `tattooBody`, `tattooHead` (각각 `mode`, `replacementTexPath`, `color`, `shaderTypeDefName`, `male`/`female` 등) |
 | 렌더 숨김/표시 | `renderHide*`/`renderShow*` — 의류(Layers/DefNames), 무기(Tags/DefNames), 유전자(ExclusionTags/DefNames), 헤디프(DefNames) |
@@ -55,7 +55,7 @@
 <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
   <defName>MyForm</defName>
   <label>나의 폼</label>
-  <mainHediff>MyFormHediff</mainHediff>
+  <linkedHediff>MyFormHediff</linkedHediff>
   <body><mode>Replace</mode><replacementTexPath>MyMod/Textures/MyForm</replacementTexPath></body>
   <durationTicks>30000</durationTicks>
 </ShapeshifterFramework.ShapeshiftFormDef>
