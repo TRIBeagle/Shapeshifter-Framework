@@ -179,21 +179,13 @@ namespace ShapeshifterFramework.Comps
             var hediffs = pawn?.health?.hediffSet?.hediffs;
             if (hediffs == null) return !Active(allow); // allow 있으면 실패
 
-            // Pawn의 뮤턴트 수집 (재사용 리스트)
+            // Pawn의 뮤턴트 수집 (역인덱스 O(1) 조회)
             _tmpPawnMutants.Clear();
-            var allMutants = DefDatabase<MutantDef>.AllDefsListForReading;
             for (int i = 0; i < hediffs.Count; i++)
             {
                 var h = hediffs[i];
-                if (h?.def == null) continue;
-                for (int j = 0; j < allMutants.Count; j++)
-                {
-                    if (allMutants[j]?.hediff == h.def)
-                    {
-                        _tmpPawnMutants.Add(allMutants[j]);
-                        break;
-                    }
-                }
+                if (h?.def != null && ShapeshiftRuntimeCaches.TryGetMutantDef(h.def, out var mutant))
+                    _tmpPawnMutants.Add(mutant);
             }
 
             // allow 체크: pawnMutants ∩ allow ≠ ∅

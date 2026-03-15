@@ -49,19 +49,11 @@ namespace ShapeshifterFramework.Utilities
                 return !hasAllow; // allow 목록이 있는데 hediff 없으면 불통과
 
             _tmpMutants.Clear();
-            var allMutants = DefDatabase<MutantDef>.AllDefsListForReading;
             for (int i = 0; i < hediffs.Count; i++)
             {
                 var hDef = hediffs[i]?.def;
-                if (hDef == null) continue;
-                for (int j = 0; j < allMutants.Count; j++)
-                {
-                    if (allMutants[j]?.hediff == hDef)
-                    {
-                        _tmpMutants.Add(allMutants[j]);
-                        break;
-                    }
-                }
+                if (hDef != null && ShapeshiftRuntimeCaches.TryGetMutantDef(hDef, out var mutant))
+                    _tmpMutants.Add(mutant);
             }
 
             // allow: 폰 뮤턴트 중 하나라도 allow 목록에 있어야 통과
