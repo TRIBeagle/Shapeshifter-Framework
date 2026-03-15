@@ -97,6 +97,14 @@ namespace ShapeshifterFramework
         /// <summary>이 폼을 적용받을 수 있는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
         public List<ThingDef> formAllowedRaces;
 
+        /// <summary>이 폼을 적용받을 수 있는 뮤턴트(MutantDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        [MayRequire("Ludeon.RimWorld.Anomaly")]
+        public List<MutantDef> formAllowedMutants;
+
+        /// <summary>이 폼을 적용받을 수 없는 뮤턴트(MutantDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        [MayRequire("Ludeon.RimWorld.Anomaly")]
+        public List<MutantDef> formDisallowedMutants;
+
         // 스케일/오프셋(렌더 보정용)
         public float? bodyDrawScale;   // 몸 전체 스케일 배수 (예: 5.0이면 5배) 비우면 1
         public float? headDrawScale;   // 헤드 추가 배수 (바디 스케일에 곱해짐) 비우면 1

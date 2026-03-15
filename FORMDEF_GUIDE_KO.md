@@ -37,6 +37,11 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 </formAllowedRaces>
 ```
 
+* `<formAllowedMutants>`: (선택, `MayRequire: Ludeon.RimWorld.Anomaly`) 이 폼을 적용받을 수 있는 뮤턴트(`MutantDef`) 목록. 생략하거나 빈 목록이면 뮤턴트 제한 없음.
+* `<formDisallowedMutants>`: (선택, `MayRequire: Ludeon.RimWorld.Anomaly`) 이 폼을 적용받을 수 **없는** 뮤턴트(`MutantDef`) 목록.
+
+> **참고**: 이 필드들은 **대상자**(폼을 받는 쪽) 필터입니다. `CompProperties_AbilityShiftTarget.allowedMutants`/`disallowedMutants`는 **시전자**(캐스트하는 쪽) 필터입니다. FormDef 수준 필터는 **모든** 변신 경로(어빌리티/약물/스크롤/투사체)에서 작동합니다.
+
 **스탯과 능력치 보정은 linkedHediff의 HediffDef에서 정의합니다. FormDef가 아닙니다.** 바닐라 HediffDef 패턴을 사용합니다:
 
 ```xml

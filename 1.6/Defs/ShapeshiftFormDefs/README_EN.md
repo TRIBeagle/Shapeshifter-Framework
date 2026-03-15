@@ -13,7 +13,7 @@
 
 | Category | Key Fields |
 |----------|------------|
-| Basic | `defName`, `label`, `description`, `linkedHediff`, `formAllowedRaces` |
+| Basic | `defName`, `label`, `description`, `linkedHediff`, `formAllowedRaces`, `formAllowedMutants`, `formDisallowedMutants` |
 | Scale | `bodyDrawScale`, `headDrawScale`, `portraitDrawScale`, `bodyOffset`, `headOffset` |
 | Parts | `body`, `head`, `hair`, `beard`, `tattooBody`, `tattooHead` (each with `mode`, `replacementTexPath`, `color`, `shaderTypeDefName`, `male`/`female`, etc.) |
 | Render Hide/Show | `renderHide*`/`renderShow*` for Apparel (Layers/DefNames), Weapons (Tags/DefNames), Genes (ExclusionTags/DefNames), Hediffs (DefNames) |

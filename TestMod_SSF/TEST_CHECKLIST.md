@@ -204,6 +204,12 @@ BeastkinForm 적용
 ### Auto-Verify (6항목)
 > raceFilter(Human 통과, 비인간 차단), headType(Male_AverageNormal), equipLockApparel(Locked), equipLockWeapon(Unlocked), statHediff(이동+0.5, 근접회피+10, 피해배율x0.75), timer(12000틱)
 
+### formAllowedMutants / formDisallowedMutants (Anomaly)
+- [ ] `[M]` formAllowedMutants 지정 폼 → 해당 뮤턴트만 변신 가능, 비뮤턴트/다른 뮤턴트 차단
+- [ ] `[M]` formDisallowedMutants 지정 폼 → 해당 뮤턴트 차단, 나머지 통과
+- [ ] `[M]` 비-어빌리티 경로(약물/스크롤/투사체)에서도 뮤턴트 필터 작동
+- [ ] `[M]` Anomaly DLC 미설치 시 에러 없음 (MayRequire)
+
 ---
 
 ## 9. AoE 투사체 (MassPolymorph)

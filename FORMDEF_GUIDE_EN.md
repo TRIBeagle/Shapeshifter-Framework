@@ -37,6 +37,11 @@ Stats and capacities are **not** defined on the FormDef. They are defined on the
 </formAllowedRaces>
 ```
 
+* `<formAllowedMutants>`: (Optional, `MayRequire: Ludeon.RimWorld.Anomaly`) List of `MutantDef` that can receive this form. If omitted or empty, no mutant restriction.
+* `<formDisallowedMutants>`: (Optional, `MayRequire: Ludeon.RimWorld.Anomaly`) List of `MutantDef` that **cannot** receive this form.
+
+> **Note**: These filter the **target** (who receives the form). `CompProperties_AbilityShiftTarget.allowedMutants`/`disallowedMutants` filter the **caster** (who can cast the ability). FormDef-level filters apply to **all** trigger paths (abilities, drugs, scrolls, projectiles).
+
 **Stats and capacities are defined in the linkedHediff's HediffDef, not in the FormDef.** Use the standard vanilla HediffDef pattern:
 
 ```xml
