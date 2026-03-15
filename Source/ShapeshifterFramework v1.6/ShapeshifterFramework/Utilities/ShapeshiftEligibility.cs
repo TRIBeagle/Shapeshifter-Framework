@@ -9,12 +9,12 @@ namespace ShapeshifterFramework.Utilities
 {
     internal static class ShapeshiftEligibility
     {
-        /// <summary>폼의 applicableRaces에 대상 종족이 포함되는지 판정. null/빈 목록이면 제한 없음.</summary>
+        /// <summary>폼의 formAllowedRaces에 대상 종족이 포함되는지 판정. null/빈 목록이면 제한 없음.</summary>
         public static bool IsRaceAllowed(Pawn pawn, ShapeshiftFormDef form)
         {
             if (pawn == null || form == null) return false;
-            if (form.applicableRaces == null || form.applicableRaces.Count == 0) return true;
-            return form.applicableRaces.Contains(pawn.def);
+            if (form.formAllowedRaces == null || form.formAllowedRaces.Count == 0) return true;
+            return form.formAllowedRaces.Contains(pawn.def);
         }
 
         /// <summary>기본 변신 가능 여부 판정. 종족 필터, 같은 폼 재변신 방지, 사망 체크.</summary>

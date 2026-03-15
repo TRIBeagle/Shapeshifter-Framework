@@ -29,12 +29,12 @@ Shapeshifter Framework는 역할별로 컴포넌트를 분리합니다:
 
 ## 2. 메인 헤디프 (스탯 & 능력치)
 * `<linkedHediff>`: (필수) 변신 상태를 나타내는 `HediffDef`입니다. 이 헤디프가 제거되면 자동으로 변신이 해제됩니다.
-* `<applicableRaces>`: (선택) 이 폼을 사용할 수 있는 종족(`ThingDef`) 목록입니다. 생략하거나 빈 목록이면 모든 종족 허용(기본 동작).
+* `<formAllowedRaces>`: (선택) 이 폼을 적용받을 수 있는 종족(`ThingDef`) 목록. 생략하거나 빈 목록이면 모든 종족 허용(기본 동작). 참고: 이 필드는 **대상자**(폼을 받는 쪽) 필터이며, `CompProperties_AbilityShiftTarget.allowedRaces`는 **시전자**(캐스트하는 쪽) 필터입니다.
 
 ```xml
-<applicableRaces>
+<formAllowedRaces>
   <li>Human</li>
-</applicableRaces>
+</formAllowedRaces>
 ```
 
 **스탯과 능력치 보정은 linkedHediff의 HediffDef에서 정의합니다. FormDef가 아닙니다.** 바닐라 HediffDef 패턴을 사용합니다:

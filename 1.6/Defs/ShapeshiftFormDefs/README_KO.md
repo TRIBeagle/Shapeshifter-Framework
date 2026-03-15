@@ -13,7 +13,7 @@
 
 | 카테고리 | 주요 필드 |
 |----------|----------|
-| 기본 | `defName`, `label`, `description`, `linkedHediff`, `applicableRaces` |
+| 기본 | `defName`, `label`, `description`, `linkedHediff`, `formAllowedRaces` |
 | 스케일 | `bodyDrawScale`, `headDrawScale`, `portraitDrawScale`, `bodyOffset`, `headOffset` |
 | 부위 외형 | `body`, `head`, `hair`, `beard`, `tattooBody`, `tattooHead` (각각 `mode`, `replacementTexPath`, `color`, `shaderTypeDefName`, `male`/`female` 등) |
 | 렌더 숨김/표시 | `renderHide*`/`renderShow*` — 의류(Layers/DefNames), 무기(Tags/DefNames), 유전자(ExclusionTags/DefNames), 헤디프(DefNames) |

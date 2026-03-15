@@ -94,8 +94,8 @@ namespace ShapeshifterFramework
         // 스탯/능력치 보정은 이 HediffDef의 stages에서 바닐라 패턴으로 정의.
         public HediffDef linkedHediff;
 
-        /// <summary>이 폼을 사용할 수 있는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음(기존 동작 유지).</summary>
-        public List<ThingDef> applicableRaces;
+        /// <summary>이 폼을 적용받을 수 있는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        public List<ThingDef> formAllowedRaces;
 
         // 스케일/오프셋(렌더 보정용)
         public float? bodyDrawScale;   // 몸 전체 스케일 배수 (예: 5.0이면 5배) 비우면 1

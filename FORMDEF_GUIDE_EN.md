@@ -29,12 +29,12 @@ Stats and capacities are **not** defined on the FormDef. They are defined on the
 
 ## 2. Main Hediff (Stats & Capacities)
 * `<linkedHediff>`: (Required) The `HediffDef` that marks the transformation state. Removing this hediff automatically ends the transformation.
-* `<applicableRaces>`: (Optional) List of `ThingDef` race defs that can use this form. If omitted or empty, any race is allowed (default behavior).
+* `<formAllowedRaces>`: (Optional) List of `ThingDef` race defs that can receive this form. If omitted or empty, any race is allowed (default behavior). Note: this filters the **target** (who receives the form), while `CompProperties_AbilityShiftTarget.allowedRaces` filters the **caster** (who can cast the ability).
 
 ```xml
-<applicableRaces>
+<formAllowedRaces>
   <li>Human</li>
-</applicableRaces>
+</formAllowedRaces>
 ```
 
 **Stats and capacities are defined in the linkedHediff's HediffDef, not in the FormDef.** Use the standard vanilla HediffDef pattern:

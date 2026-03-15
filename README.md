@@ -41,7 +41,7 @@ A RimWorld 1.6 mod framework for shapeshifting mechanics. Define custom transfor
 **Ability Acquisition**
 - 6 trigger sources: Gene, Hediff, Item (equipped/inventory), Drug, Scroll/UseItem, AoE Projectile
 - Race/mutant cast restrictions via `CompProperties_AbilityShiftTarget`
-- Per-form race filtering (`applicableRaces`)
+- Per-form race filtering (`formAllowedRaces`)
 
 ## Documentation
 - [FormDef Guide (English)](FORMDEF_GUIDE_EN.md)
@@ -106,7 +106,7 @@ Not yet available. Will be released via Steam Workshop and GitHub when ready.
 **어빌리티 획득**
 - 6가지 트리거 소스: 유전자, 헤디프, 아이템(장비/소지), 약물, 스크롤/사용아이템, AoE 투사체
 - 종족/뮤턴트 캐스트 제한 (`CompProperties_AbilityShiftTarget`)
-- 폼별 종족 필터링 (`applicableRaces`)
+- 폼별 종족 필터링 (`formAllowedRaces`)
 
 ## 문서
 - [FormDef Guide (English)](FORMDEF_GUIDE_EN.md)
