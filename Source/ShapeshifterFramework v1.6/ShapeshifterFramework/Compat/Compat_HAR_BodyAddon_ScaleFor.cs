@@ -2,11 +2,13 @@
 // 목적 : 변신 시 숨기지 않고 렌더링되는 HAR 신체 부착물 중, '머리(Head)'에 부착된 애드온에 한정하여 변신 폼의 머리 스케일을 동기화함.
 // 용도 : HAR BodyAddon의 ScaleFor 메서드 결과값(Postfix)에 개입. 대상 부착물이 헤드 계열인지(alignWithHead, parentTagDef, BodyPart 구조 등)를 리플렉션으로 정밀 판정하여 배율을 적용.
 // 주의 : 머리가 아닌 바디 애드온(꼬리 등)에는 추가 배율을 곱하지 않음으로써, 본체 스케일과 중복 누적되어 크기가 기형적으로 변하는 부작용을 원천 방지함.
+//        IsHeadAddon 판정 결과는 노드별로 고정이므로 Dictionary 캐시로 리플렉션 반복 호출을 방지함.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using Verse;
@@ -89,8 +91,8 @@ namespace ShapeshifterFramework.Compat
 
                 float factor = 1f;
 
-                // 헤드 계열이면 body*head
-                if (IsHeadAddon(node, pawn))
+                // 헤드 계열이면 body*head (캐시로 리플렉션 반복 방지)
+                if (IsHeadAddonCached(node, pawn))
                 {
                     float bodyS = form.bodyDrawScale ?? 1f;
                     float headS = form.headDrawScale ?? 1f;
@@ -108,15 +110,38 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        #region Head-addon 판정
+        #region Head-addon 판정 (캐시)
+
+        // 헤드 애드온 판정 캐시 — 노드 해시코드 기반. 게임 중 노드의 헤드 소속 여부는 변하지 않음.
+        private static readonly Dictionary<int, bool> _headAddonCache = new Dictionary<int, bool>(128);
+
+        /// <summary>게임 로드/전환 시 헤드 애드온 캐시 정리.</summary>
+        internal static void ClearHeadAddonCache() { _headAddonCache.Clear(); }
 
         /// <summary>
-        /// 헤드 계열 판정:
+        /// 헤드 계열 판정(캐시 우선). 최초 1회만 리플렉션 판정 후 결과를 캐싱.
+        /// </summary>
+        private static bool IsHeadAddonCached(PawnRenderNode node, Pawn pawn)
+        {
+            if (node == null) return false;
+
+            // RuntimeHelpers.GetHashCode: 객체 ID 기반 (노드 인스턴스 단위 캐싱)
+            int key = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(node);
+            if (_headAddonCache.TryGetValue(key, out bool cached))
+                return cached;
+
+            bool result = IsHeadAddonScan(node, pawn);
+            _headAddonCache[key] = result;
+            return result;
+        }
+
+        /// <summary>
+        /// 헤드 계열 실제 판정(리플렉션):
         /// 1) props.addon.alignWithHead == true
         /// 2) props.parentTagDef.defName == "Head"
         /// 3) props.addon.conditions 안의 BodyPart/label이 Head 하위 트리에 속함
         /// </summary>
-        private static bool IsHeadAddon(PawnRenderNode node, Pawn pawn)
+        private static bool IsHeadAddonScan(PawnRenderNode node, Pawn pawn)
         {
             if (node == null) return false;
 

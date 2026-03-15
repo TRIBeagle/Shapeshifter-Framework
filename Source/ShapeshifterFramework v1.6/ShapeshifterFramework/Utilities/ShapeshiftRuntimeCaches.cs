@@ -64,6 +64,9 @@ namespace ShapeshifterFramework.Utilities
 
             // FA 컨트롤러 보유 캐시 정리
             try { ShapeshifterFramework.Compat.Compat_FacialAnimation_HeadWorker_ScaleFor.ClearFACompCache(); } catch { }
+
+            // HAR 헤드 애드온 판정 캐시 정리
+            try { ShapeshifterFramework.Compat.Compat_HAR_BodyAddon_ScaleFor.ClearHeadAddonCache(); } catch { }
         }
     }
 }
