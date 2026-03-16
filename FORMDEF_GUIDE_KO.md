@@ -244,12 +244,14 @@
 
 **Verb 기즈모 옵션** (`verbGizmoOptions`, `verbLabel`로 verb의 `label`과 매칭):
 
-| 필드 | 설명 |
-|------|------|
-| `verbLabel` | **권장.** verb의 `<label>`과 매칭 (대소문자 무시). 순서 무관. 미지정 시 인덱스 폴백. |
-| `label` / `desc` | Verb 명령 라벨/설명. |
-| `toggleLabel` / `toggleDesc` | 자동공격 토글 라벨/설명. |
-| `iconPath` | 커스텀 아이콘 경로. |
+| 필드 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `verbLabel` | string | null | **권장.** verb의 `<label>`과 매칭 (대소문자 무시). 순서 무관. 미지정 시 인덱스 폴백. |
+| `label` | string | null | Verb 명령 기즈모 라벨. 미지정 시 `verbProps.label` 사용. |
+| `desc` | string | null | Verb 명령 기즈모 설명. 미지정 시 기본값 사용. |
+| `toggleLabel` | string | null | 자동공격 토글 버튼 라벨. 미지정 시 `label` 사용. |
+| `toggleDesc` | string | null | 자동공격 토글 버튼 설명. 미지정 시 기본값 사용. |
+| `iconPath` | string | null | 커스텀 아이콘 텍스처 경로. 지정 시 verb의 `UIIcon` 대신 사용. |
 자동공격 기본값: 첫 번째 원거리 verb만 ON, 나머지 OFF. 하나를 ON하면 나머지는 자동 OFF (배타적).
 
 > **다중 선택 동작:** 여러 폰 선택 시 같은 폼+verb의 사격 기즈모(`Command_VerbTarget`)는 병합됩니다. 자동사격 토글은 다중 선택 시 숨김 — 개별 폰 선택에서 설정하세요.

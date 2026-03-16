@@ -244,12 +244,14 @@ Granted while transformed. Automatically removed on revert.
 
 **Verb Gizmo Options** (`verbGizmoOptions`, matched by `verbLabel` to verb's `label`):
 
-| Field | Description |
-|-------|-------------|
-| `verbLabel` | **Recommended.** Matches the verb's `<label>` field (case-insensitive). Order-independent. Falls back to index matching if omitted. |
-| `label` / `desc` | Verb command label and description. |
-| `toggleLabel` / `toggleDesc` | Auto-attack toggle button text. |
-| `iconPath` | Custom icon path. |
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `verbLabel` | string | null | **Recommended.** Matches the verb's `<label>` field (case-insensitive). Order-independent. Falls back to index matching if omitted. |
+| `label` | string | null | Verb command gizmo label. Falls back to `verbProps.label` if omitted. |
+| `desc` | string | null | Verb command gizmo description. Falls back to default if omitted. |
+| `toggleLabel` | string | null | Auto-attack toggle button label. Falls back to `label` if omitted. |
+| `toggleDesc` | string | null | Auto-attack toggle button description. Falls back to default if omitted. |
+| `iconPath` | string | null | Custom icon texture path. Overrides the verb's `UIIcon` if specified. |
 Auto-attack default: first ranged verb is ON, rest OFF. Toggling one verb ON turns all others OFF (exclusive).
 
 > **Multi-select behavior:** When multiple pawns are selected, verb attack gizmos (`Command_VerbTarget`) merge for pawns with the same form+verb. Auto-attack toggles are hidden during multi-select — configure per-pawn by selecting individually.

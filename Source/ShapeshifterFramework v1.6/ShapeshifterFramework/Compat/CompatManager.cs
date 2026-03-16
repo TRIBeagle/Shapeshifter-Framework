@@ -1,7 +1,7 @@
 // ShapeshifterFramework | Compat | CompatManager.cs
-// 호환 패치 초기화·에러 집계·1회 보고 매니저.
-// ModLister로 모드 활성 판별, 패치 성공/실패·메트릭을 캐싱 후 ReportAllOnce로 요약.
-// Report 이후 런타임 에러는 동일 id당 1회만 경고.
+// 목적 : 호환 패치 초기화·에러 집계·1회 보고 매니저
+// 용도 : ModLister로 모드 활성 판별, 패치 성공/실패·메트릭을 캐싱 후 ReportAllOnce로 요약
+// 주의 : Report 이후 런타임 에러는 동일 id당 1회만 경고
 
 using System.Collections.Generic;
 using Verse;

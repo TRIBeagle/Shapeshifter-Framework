@@ -1,6 +1,6 @@
 // ShapeshifterFramework | Compat | Compat_HAR_AddComp.cs
-// HAR ThingDef_AlienRace에 CompProperties_Shapeshifter 자동 주입.
-// Human 제외, 중복 제거 포함. 결과는 CompatManager 메트릭으로 보고.
+// 목적 : HAR ThingDef_AlienRace에 CompProperties_Shapeshifter 자동 주입
+// 용도 : Human 제외, 중복 제거 포함. 결과는 CompatManager 메트릭으로 보고
 
 using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
