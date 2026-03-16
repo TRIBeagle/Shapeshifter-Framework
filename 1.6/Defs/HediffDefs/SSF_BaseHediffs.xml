@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!--
+    ═══════════════════════════════════════════════════════════════
+    SSF 추상 부모 HediffDef — 변신 폼 Hediff 공통 설정.
+    모든 변신 HediffDef는 이 추상 Def를 ParentName으로 상속.
+    ═══════════════════════════════════════════════════════════════
+  -->
+  <HediffDef Name="SSF_ShapeshiftFormBase" Abstract="True">
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <defaultLabelColor>(0.8, 0.7, 1.0)</defaultLabelColor>
+    <isBad>false</isBad>
+    <makesAlert>false</makesAlert>
+    <tendable>false</tendable>
+    <makesSickThought>false</makesSickThought>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <!-- formDef: 상속받는 HediffDef에서 지정. 여기서는 비워둠. -->
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!--
+    ═══════════════════════════════════════════════════════════════
+    SSF_GenericShapeshiftForm — 범용 / 디버그용 HediffDef.
+    formDef 미지정. 런타임에 comp.SetFormDef()로 폼 지정.
+    디버그 액션, 자동 검증(Auto-Verify) 등에서 사용.
+    ═══════════════════════════════════════════════════════════════
+  -->
+  <HediffDef ParentName="SSF_ShapeshiftFormBase">
+    <defName>SSF_GenericShapeshiftForm</defName>
+    <label>shapeshift</label>
+    <description>A generic shapeshift form. The specific form is determined at runtime.</description>
+  </HediffDef>
+
+</Defs>
