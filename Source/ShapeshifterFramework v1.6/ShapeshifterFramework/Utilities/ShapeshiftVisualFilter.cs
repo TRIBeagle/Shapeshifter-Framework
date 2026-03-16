@@ -249,9 +249,15 @@ namespace ShapeshifterFramework.Utilities
             return false;
         }
 
+        /// <summary>UI 탭에서 디밍 대상인지 판별. 렌더 노드가 없는 비외형 유전자는 항상 false.</summary>
         internal static bool ShouldHideGeneForUI(Pawn pawn, Gene gene)
         {
-            var tags = (gene?.def != null) ? (IList<string>)gene.def.exclusionTags : null;
+            if (gene?.def == null) return false;
+
+            // 렌더 노드가 없는 유전자(면역력, 대사 등)는 외형과 무관하므로 디밍하지 않음
+            if (gene.def.renderNodeProperties.NullOrEmpty()) return false;
+
+            var tags = (IList<string>)gene.def.exclusionTags;
             return ShouldHideGeneByDefOrTags(pawn, gene, tags);
         }
     }
