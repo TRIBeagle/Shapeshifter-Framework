@@ -249,13 +249,27 @@ namespace ShapeshifterFramework.Utilities
             return false;
         }
 
-        /// <summary>UI 탭에서 디밍 대상인지 판별. 렌더 노드가 없는 비외형 유전자는 항상 false.</summary>
+        /// <summary>GeneDef가 외형에 영향을 주는지 판별 (렌더 노드, 피부색, 머리색, 체형 등).</summary>
+        private static bool HasAnyVisualEffect(GeneDef def)
+        {
+            if (!def.renderNodeProperties.NullOrEmpty()) return true;
+            if (def.skinColorBase != null) return true;
+            if (def.skinColorOverride.HasValue) return true;
+            if (def.hairColorOverride.HasValue) return true;
+            if (def.hairTagFilter != null) return true;
+            if (def.beardTagFilter != null) return true;
+            if (!def.forcedHeadTypes.NullOrEmpty()) return true;
+            if (def.bodyType != null) return true;
+            return false;
+        }
+
+        /// <summary>UI 탭에서 디밍 대상인지 판별. 외형에 영향이 없는 유전자(면역력, 대사 등)는 항상 false.</summary>
         internal static bool ShouldHideGeneForUI(Pawn pawn, Gene gene)
         {
             if (gene?.def == null) return false;
 
-            // 렌더 노드가 없는 유전자(면역력, 대사 등)는 외형과 무관하므로 디밍하지 않음
-            if (gene.def.renderNodeProperties.NullOrEmpty()) return false;
+            // 외형에 영향이 없는 유전자는 디밍하지 않음
+            if (!HasAnyVisualEffect(gene.def)) return false;
 
             var tags = (IList<string>)gene.def.exclusionTags;
             return ShouldHideGeneByDefOrTags(pawn, gene, tags);
