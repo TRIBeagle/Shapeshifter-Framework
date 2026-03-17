@@ -133,6 +133,7 @@ The **HediffDef** is the entry point for all transformations. The FormDef is a p
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `formDef` | ShapeshiftFormDef | null | **Core.** The FormDef this hediff applies. null = set at runtime via `SetFormDef()`. |
+| `defaultSuccessChance` | float | 1 | Success chance (0–1) for the vanilla GiveHediff pathway. When `ApplyShift()` is called with an explicit `successChance`, that value takes precedence. |
 | `durationTicks` | int? | null | Override form duration. null = use FormDef value. |
 | `canRevertVoluntarily` | bool? | null | Override voluntary revert. null = use FormDef value. |
 | `revertOnDowned` | bool? | null | Override revert-on-downed. null = use FormDef value. |

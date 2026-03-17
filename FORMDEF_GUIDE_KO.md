@@ -272,6 +272,7 @@ HediffDef의 `<comps>`에 `HediffCompProperties_ShapeshiftCore`를 부착합니�
 | 필드 | 타입 | 기본값 | 설명 |
 |------|------|--------|------|
 | `formDef` | ShapeshiftFormDef | null | **핵심.** 이 HediffDef가 적용할 변신 폼. null이면 런타임에 SetFormDef()로 지정. |
+| `defaultSuccessChance` | float | 1 | 변신 성공 확률 (0~1). 바닐라 GiveHediff 경로에서도 적용. `ApplyShift()` 호출 시 명시적 successChance가 우선. |
 | `durationTicks` | int? | null | 변신 지속 틱. null이면 FormDef.durationTicks 사용. |
 | `canRevertVoluntarily` | bool? | null | 기즈모로 해제 가능 여부. null이면 FormDef.canRevertVoluntarily 사용. |
 | `revertOnDowned` | bool? | null | Downed 시 자동 해제. null이면 FormDef.revertOnDowned 사용. |

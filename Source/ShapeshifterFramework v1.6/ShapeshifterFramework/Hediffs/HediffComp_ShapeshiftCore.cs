@@ -40,6 +40,9 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>지연 초기화 플래그. CompPostPostAdd에서 true, 첫 CompPostTick에서 ApplyForm 실행.</summary>
         public bool needsInit = false;
 
+        /// <summary>ApplyShift 경로에서 이미 확률 판정을 통과한 경우 true. needsInit에서 중복 판정 방지.</summary>
+        public bool successChanceAlreadyPassed = false;
+
         /// <summary>폼 소환 전용 무기 여부 확인.</summary>
         public bool IsGeneratedWeapon(ThingWithComps eq)
         {
@@ -468,6 +471,22 @@ namespace ShapeshifterFramework.Hediffs
             if (needsInit)
             {
                 needsInit = false;
+
+                // 확률 판정 — ApplyShift 경로에서 이미 통과한 경우 스킵
+                if (!successChanceAlreadyPassed)
+                {
+                    float p = UnityEngine.Mathf.Clamp01(Props.defaultSuccessChance);
+                    if (p < 1f && Rand.Value > p)
+                    {
+                        Messages.Message("SSF_ShiftTarget_Resisted".Translate(pawn.LabelShortCap),
+                            MessageTypeDefOf.RejectInput, false);
+                        // 확률 실패 → hediff 자체 제거
+                        parent.Severity = 0f;
+                        return;
+                    }
+                }
+                successChanceAlreadyPassed = false;
+
                 var formDef = currentForm ?? Props.formDef;
                 if (formDef != null)
                 {

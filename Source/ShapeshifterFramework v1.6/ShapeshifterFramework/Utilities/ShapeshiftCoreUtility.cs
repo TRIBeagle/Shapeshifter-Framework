@@ -103,12 +103,13 @@ namespace ShapeshifterFramework.Utilities
             // comp에 sources 사전 설정 (CompPostPostAdd 전에 설정 불가하므로, 부여 후 설정)
             pawn.health.AddHediff(newHediff);
 
-            // 부여 후 comp 접근하여 sources 설정
+            // 부여 후 comp 접근하여 sources 설정 + 확률 판정 중복 방지
             var core = (newHediff as HediffWithComps)?.TryGetComp<HediffComp_ShapeshiftCore>();
             if (core != null)
             {
                 core.sourceItems = sources ?? new List<Thing>();
                 core.sourceItemRequireEquipped = sourceItemRequireEquipped;
+                core.successChanceAlreadyPassed = true; // needsInit에서 중복 확률 판정 방지
             }
 
             return true;

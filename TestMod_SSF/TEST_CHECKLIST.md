@@ -374,6 +374,8 @@
 - [ ] `[M]` 15-3. 변신 A 중 같은 hediff A 재부여 → severity 갱신만 (중복 hediff 생성 안 됨)
 - [ ] `[M]` 15-4. IngestionOutcomeDoer_Shapeshift 약물 → successChance 저항 판정 확인
 - [ ] `[M]` 15-5. Projectile_Polymorph AoE → 적대 폰만 변신, 아군 스킵 확인
+- [ ] `[M]` 15-6. defaultSuccessChance<1 설정된 HediffDef를 바닐라 GiveHediff로 부여 → 확률 판정 작동 확인
+- [ ] `[M]` 15-7. ApplyShift 경로로 같은 HediffDef 부여 → 확률 중복 판정 없음 확인
 
 ---
 

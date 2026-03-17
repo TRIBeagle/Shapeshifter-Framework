@@ -17,6 +17,12 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>이 HediffDef가 적용할 변신 폼. null이면 런타임에 SetFormDef()로 지정 (디버그/범용).</summary>
         public ShapeshiftFormDef formDef;
 
+        // ── 기본 성공 확률 ──
+
+        /// <summary>변신 성공 확률 0~1. 바닐라 GiveHediff 경로에서도 확률 판정 적용.
+        /// ApplyShift 호출 시 명시적 successChance가 전달되면 이 값 대신 사용됨.</summary>
+        public float defaultSuccessChance = 1f;
+
         // ── 행동 오버라이드 (null = FormDef 기본값 사용) ──
 
         /// <summary>변신 지속 틱. null이면 FormDef.durationTicks 사용.</summary>
