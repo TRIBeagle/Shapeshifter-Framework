@@ -294,6 +294,12 @@
 - [ ] `[M]` 12-6a. 줌아웃 시 대형 폼(bodyDrawScale≥2) 화면 가장자리 잘림 없음
 - [ ] `[M]` 12-7. 인공팔/결손팔에 BeastArm ForceAdd 정상
 
+### 재진입 / 예외 복구
+- [ ] `[M]` 12-R1. ApplyForm 재진입 방지: 이벤트 핸들러(OnFormApplied)에서 재호출 시 무한재귀 없음
+- [ ] `[M]` 12-R2. RemoveForm 도중 hediff 제거 실패(예외) → 좀비 변신 상태 없음 (currentForm=null 강제 정리)
+- [ ] `[M]` 12-R3. RemoveForm 2차 hediff 정리 시 null hediff 항목 → NRE 없이 건너뜀
+- [ ] `[M]` 12-R4. RemoveForm 예외 후 즉시 새 폼 ApplyForm → 정상 적용 (리스트 Clear 후 재구축)
+
 ### 해제 부산물
 - [ ] `[M]` 12-8. revertDrops: despawned 폰 → 드랍 건너뜀 + 에러 없음
 - [ ] `[M]` 12-9. revertAddHediffs: 사망 폰 → 부여 건너뜀 + 에러 없음
@@ -354,6 +360,7 @@
 - [ ] `[M]` 14-2. Dump Pawn State: Stat Offsets/Factors/Capacity Mods 출력
 - [ ] `[M]` 14-3. AddedPart/Hediff 실패 시 `[SSF]` 경고 로그
 - [ ] `[M]` 14-4. 장시간 플레이 후 메모리 누적 없음
+- [ ] `[M]` 14-5. FailedVerbClasses 캐시: 맵 전환/게임 로드 시 ClearAll에서 정리 확인 (무한 성장 방지)
 
 ---
 
@@ -362,6 +369,6 @@
 | 구분 | 항목 수 | 넘버링 |
 |------|---------|--------|
 | **[A] Auto-Verify** | ~55개 (1-AV1 ~ 13-18) | `섹션-AV번호` / `섹션-번호` |
-| **[M] 수동 확인** | ~90개 (1-1 ~ 14-4) | `섹션-번호` |
+| **[M] 수동 확인** | ~95개 (1-1 ~ 14-5) | `섹션-번호` |
 
 > Auto-Verify 로그에 체크리스트 번호가 `[X-AVn]` 형식으로 표시됩니다. 에러 발생 시 해당 번호로 체크리스트를 바로 참조하세요.
