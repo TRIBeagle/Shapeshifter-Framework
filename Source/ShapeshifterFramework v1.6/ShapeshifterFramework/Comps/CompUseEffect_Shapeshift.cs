@@ -4,6 +4,7 @@
 //        플레이어가 클릭으로 선택한 대상 Pawn을 변신시키고, CompTargetable이 없으면 사용자 자신을 변신시킴.
 
 using RimWorld;
+using ShapeshifterFramework.Hediffs;
 using ShapeshifterFramework.Utilities;
 using Verse;
 
@@ -53,7 +54,16 @@ namespace ShapeshifterFramework.Comps
                 target = user;
             }
 
-            ShapeshiftTargetUtility.TryShiftPawn(target, Props.formDefName, Props.successChance);
+            // hediffDef가 지정되면 HediffDef 경로 우선 사용
+            if (Props.hediffDef != null)
+            {
+                ShapeshiftCoreUtility.ApplyShift(target, Props.hediffDef, Props.successChance);
+            }
+            else
+            {
+                // formDefName 폴백
+                ShapeshiftTargetUtility.TryShiftPawn(target, Props.formDefName, Props.successChance);
+            }
         }
     }
 }

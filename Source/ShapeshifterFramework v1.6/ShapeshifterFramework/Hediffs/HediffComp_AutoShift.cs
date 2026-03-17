@@ -45,8 +45,16 @@ namespace ShapeshifterFramework.Hediffs
             // 조건 판정 (OR: 하나라도 충족 시 트리거)
             if (!AnyConditionMet(pawn)) return;
 
-            // 변신 시도
-            bool shifted = ShapeshiftTargetUtility.TryShiftPawn(pawn, Props.formDefName, Props.successChance);
+            // 변신 시도 — hediffDef 우선, formDefName 폴백
+            bool shifted;
+            if (Props.hediffDef != null)
+            {
+                shifted = ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance);
+            }
+            else
+            {
+                shifted = ShapeshiftTargetUtility.TryShiftPawn(pawn, Props.formDefName, Props.successChance);
+            }
 
             // triggerOnce: 성공 시 hediff 제거
             if (shifted && Props.triggerOnce)

@@ -2,9 +2,10 @@
 // 목적 : Ability를 사용하여 대상(Pawn)을 변신시키는 효과(Effect) 컴포넌트.
 // 용도 : - ShouldHideGizmo: 캐스터의 종족/뮤턴트 조건 + 같은 폼 재시전 차단
 //        - CanApplyOn: 대상 유효성 판별
-//        - Apply: ShapeshiftTargetUtility.TryShiftPawn을 호출하여 변신 시도
+//        - Apply: hediffDef가 있으면 ShapeshiftCoreUtility.ApplyShift, 없으면 ShapeshiftTargetUtility.TryShiftPawn(formDefName) 폴백
 
 using RimWorld;
+using ShapeshifterFramework.Hediffs;
 using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using Verse;
@@ -59,12 +60,14 @@ namespace ShapeshifterFramework.Comps
                     }
                 }
 
-                // 같은 폼 재시전 숨김
-                var comp = caster.TryGetComp<CompShapeshifter>();
-                if (comp != null && comp.isTransformed && comp.currentForm != null)
+                // 같은 폼 재시전 숨김 — HediffComp_ShapeshiftCore 기반 조회
+                if (ShapeshiftCoreUtility.TryGetCore(caster, out var core))
                 {
-                    if (string.Equals(comp.currentForm.defName, Props.formDefName, System.StringComparison.Ordinal))
-                        return true;
+                    if (core.isTransformed && core.currentForm != null)
+                    {
+                        if (string.Equals(core.currentForm.defName, Props.formDefName, System.StringComparison.Ordinal))
+                            return true;
+                    }
                 }
 
                 return false;
@@ -89,12 +92,14 @@ namespace ShapeshifterFramework.Comps
             if (formDef != null && !ShapeshiftEligibility.IsRaceAllowed(pawn, formDef))
                 return false;
 
-            // 이미 같은 폼으로 변신 중이면 차단
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            if (comp != null && comp.isTransformed && comp.currentForm != null
-                && string.Equals(comp.currentForm.defName, Props.formDefName, System.StringComparison.Ordinal))
+            // 이미 같은 폼으로 변신 중이면 차단 — HediffComp_ShapeshiftCore 기반 조회
+            if (ShapeshiftCoreUtility.TryGetCore(pawn, out var core))
             {
-                return false;
+                if (core.isTransformed && core.currentForm != null
+                    && string.Equals(core.currentForm.defName, Props.formDefName, System.StringComparison.Ordinal))
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -110,7 +115,16 @@ namespace ShapeshifterFramework.Comps
             if (Props.affectHostileOnly && parent?.pawn != null && !pawn.HostileTo(parent.pawn))
                 return;
 
-            ShapeshiftTargetUtility.TryShiftPawn(pawn, Props.formDefName, Props.successChance);
+            // hediffDef가 지정되면 HediffDef 경로 우선 사용
+            if (Props.hediffDef != null)
+            {
+                ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance);
+            }
+            else
+            {
+                // formDefName 폴백
+                ShapeshiftTargetUtility.TryShiftPawn(pawn, Props.formDefName, Props.successChance);
+            }
         }
 
         /// <summary>변신 중 다른 폼 어빌리티 비활성화 (allowedFromForms 허용 시 제외).</summary>
@@ -127,8 +141,8 @@ namespace ShapeshifterFramework.Comps
                 return true;
             }
 
-            var comp = caster.TryGetComp<CompShapeshifter>();
-            if (comp == null || !comp.isTransformed || comp.currentForm == null)
+            // HediffComp_ShapeshiftCore 기반 조회
+            if (!ShapeshiftCoreUtility.TryGetCore(caster, out var core) || !core.isTransformed || core.currentForm == null)
             {
                 reason = null;
                 return false;
@@ -142,7 +156,7 @@ namespace ShapeshifterFramework.Comps
             {
                 for (int i = 0; i < Props.allowedFromForms.Count; i++)
                 {
-                    if (string.Equals(Props.allowedFromForms[i], comp.currentForm.defName, System.StringComparison.Ordinal))
+                    if (string.Equals(Props.allowedFromForms[i], core.currentForm.defName, System.StringComparison.Ordinal))
                     {
                         reason = null;
                         return false;
@@ -151,7 +165,7 @@ namespace ShapeshifterFramework.Comps
             }
 
             // 변신 중이고 허용되지 않은 폼 → 비활성
-            reason = "SSF_GizmoDisabled_AlreadyTransformed".Translate(comp.currentForm.label ?? comp.currentForm.defName);
+            reason = "SSF_GizmoDisabled_AlreadyTransformed".Translate(core.currentForm.label ?? core.currentForm.defName);
             return true;
         }
 

@@ -5,7 +5,7 @@
 // 주의 : 변신 중인 폰이 없으면 즉시 반환. 이미 뷰렉트 안에서 그려진 폰은 건너뜀(중복 방지).
 
 using HarmonyLib;
-using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Hediffs;
 using ShapeshifterFramework.Utilities;
 using UnityEngine;
 using Verse;
@@ -34,8 +34,8 @@ namespace ShapeshifterFramework.Patches
                 Pawn pawn = entry.Key;
                 if (pawn == null || !pawn.Spawned || pawn.Map != ___map) continue;
 
-                CompShapeshifter comp = entry.Value;
-                ShapeshiftFormDef form = comp.currentForm;
+                HediffComp_ShapeshiftCore core = entry.Value;
+                ShapeshiftFormDef form = core.currentForm;
                 if (form == null) continue;
 
                 float sBody = form.bodyDrawScale.HasValue ? Mathf.Max(0.01f, form.bodyDrawScale.Value) : 1f;

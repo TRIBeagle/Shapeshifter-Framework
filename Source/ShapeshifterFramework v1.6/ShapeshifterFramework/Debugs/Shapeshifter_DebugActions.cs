@@ -7,7 +7,7 @@
 
 using LudeonTK;
 using RimWorld;
-using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Hediffs;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,8 @@ namespace ShapeshifterFramework.Debugs
             // Dev 모드/유효 Pawn만 허용
             if (!Prefs.DevMode || pawn == null || pawn.DestroyedOrNull()) return;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
+            // HediffComp_ShapeshiftCore 기반 조회
+            ShapeshiftCoreUtility.TryGetCore(pawn, out var comp);
             var form = comp != null ? comp.currentForm : null;
             var opts = new List<FloatMenuOption>();
 
@@ -92,7 +93,8 @@ namespace ShapeshifterFramework.Debugs
             // Dev 모드/유효 Pawn만 허용
             if (!Prefs.DevMode || pawn == null || pawn.DestroyedOrNull()) return;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
+            // HediffComp_ShapeshiftCore 기반 조회
+            ShapeshiftCoreUtility.TryGetCore(pawn, out var comp);
             var form = comp != null ? comp.currentForm : null;
             var opts = new List<FloatMenuOption>();
 
@@ -131,7 +133,8 @@ namespace ShapeshifterFramework.Debugs
             // Dev 모드/유효 Pawn만 허용
             if (!Prefs.DevMode || pawn == null || pawn.DestroyedOrNull()) return;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
+            // HediffComp_ShapeshiftCore 기반 조회
+            ShapeshiftCoreUtility.TryGetCore(pawn, out var comp);
             var form = comp != null ? comp.currentForm : null;
 
             var sb = new StringBuilder(2048);
@@ -154,10 +157,10 @@ namespace ShapeshifterFramework.Debugs
         {
             if (!Prefs.DevMode || pawn == null || pawn.DestroyedOrNull()) return;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            if (comp == null)
+            // HediffComp_ShapeshiftCore 기반 조회
+            if (!ShapeshiftCoreUtility.TryGetCore(pawn, out var comp))
             {
-                Log.Warning("[SSF-Test] Pawn has no CompShapeshifter.");
+                Log.Warning("[SSF-Test] Pawn has no HediffComp_ShapeshiftCore.");
                 return;
             }
 
@@ -971,7 +974,8 @@ namespace ShapeshifterFramework.Debugs
                 }
 
                 // 2) Shapeshift verbTracker
-                var ssfComp = pawn.TryGetComp<CompShapeshifter>();
+                // HediffComp_ShapeshiftCore 기반 조회
+                ShapeshiftCoreUtility.TryGetCore(pawn, out var ssfComp);
                 var ssfVt = ssfComp?.ShapeshiftVerbTracker;
                 var ssfVerbs = ssfVt?.AllVerbs;
                 sb.AppendLine($"  shapeshiftVerbTracker.AllVerbs: {(ssfVerbs != null ? ssfVerbs.Count.ToString() : "null")}");

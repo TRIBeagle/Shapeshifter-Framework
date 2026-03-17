@@ -4,7 +4,7 @@
 // 주의 : CompiledFilterSet은 ShapeshiftFormDef.ResolveReferences()에서 한 번만 빌드되며, 렌더 루프에서는 컴파일된 필터만 사용.
 
 using RimWorld;
-using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Hediffs;
 using System;
 using System.Collections.Generic;
 using Verse;
@@ -131,10 +131,10 @@ namespace ShapeshifterFramework.Utilities
 
     internal static class ShapeshiftVisualFilter
     {
-        // comp와 form을 한 번에 가져오는 내부 헬퍼 — 렌더 경로에서 TryGetComp 중복 호출 방지
-        private static bool TryGetFormAndComp(Pawn pawn, out CompShapeshifter comp, out ShapeshiftFormDef form)
+        // core와 form을 한 번에 가져오는 내부 헬퍼 — 렌더 경로에서 hediff 탐색 중복 호출 방지
+        private static bool TryGetFormAndComp(Pawn pawn, out HediffComp_ShapeshiftCore core, out ShapeshiftFormDef form)
         {
-            if (ShapeshiftRegistry.TryGet(pawn, out comp, out form))
+            if (ShapeshiftRegistry.TryGet(pawn, out core, out form))
                 return true;
             form = null;
             return false;

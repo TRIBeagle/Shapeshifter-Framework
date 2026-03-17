@@ -3,7 +3,7 @@
 // 용도 : 이펙트 다중 호출로 인한 소음 스팸과 과부하를 막기 위해 큐(Queue)와 쿨다운을 적용하며, 매 프레임 발생하는 가비지(GC) 할당을 막기 위해 List 기반의 재사용 버퍼(_removeBuffer)를 활용함.
 
 using RimWorld;
-using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Hediffs;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -65,11 +65,14 @@ namespace ShapeshifterFramework.Utilities
                     if (pawns == null) continue;
                     for (int i = 0; i < pawns.Count; i++)
                     {
-                        var comp = pawns[i].TryGetComp<CompShapeshifter>();
-                        if (comp != null && comp.isTransformed && comp.currentForm != null)
+                        // HediffComp_ShapeshiftCore 기반 조회
+                        if (ShapeshiftCoreUtility.TryGetCore(pawns[i], out var core))
                         {
-                            ShapeshiftRegistry.Register(pawns[i], comp);
-                            CompShapeshifter.ReapplyRuntimeCaches(pawns[i], comp.currentForm);
+                            if (core.isTransformed && core.currentForm != null)
+                            {
+                                ShapeshiftRegistry.Register(pawns[i], core);
+                                HediffComp_ShapeshiftCore.ReapplyRuntimeCaches(pawns[i], core.currentForm);
+                            }
                         }
                     }
                 }
