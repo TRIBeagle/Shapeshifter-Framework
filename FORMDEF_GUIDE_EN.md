@@ -473,8 +473,7 @@ Attach to an `AbilityDef`'s `<comps>`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `hediffDef` | HediffDef | **Preferred.** The HediffDef to apply (must contain `HediffCompProperties_ShapeshiftCore`). |
-| `formDefName` | string | Legacy fallback. FormDef defName to apply (uses generic hediff). Ignored if `hediffDef` is set. |
+| `hediffDef` | HediffDef | The HediffDef to apply (must contain `HediffCompProperties_ShapeshiftCore`). |
 | `successChance` | float | Success probability (default 1.0). |
 | `allowedRaces` / `disallowedRaces` | List\<ThingDef\> | Caster race filter. |
 | `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | Caster mutant filter (Anomaly). |
@@ -488,9 +487,9 @@ Attach to an `AbilityDef`'s `<comps>`:
 | Gene | `GeneDef.abilities` | Gene grants ability (Biotech). |
 | Hediff | `HediffCompProperties_GiveAbility` | Hediff grants ability while present. |
 | Item (equipped) | `CompProperties_GiveAbility_Shapeshift` | Equipped item grants ability. When the ability triggers a shift, the item is tracked as a `sourceItem` — unequipping reverts the form. |
-| Drug | `IngestionOutcomeDoer_Shapeshift` | Drug triggers shift directly. Fields: `hediffDef` (preferred), `formDefName` (fallback). |
-| Scroll/UseItem | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Fields: `hediffDef` (preferred), `formDefName` (fallback). |
-| Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `hediffDef` (preferred), `formDefName` (fallback), `aoeRadius`, `affectAllies`. |
+| Drug | `IngestionOutcomeDoer_Shapeshift` | Drug triggers shift directly. Field: `hediffDef`. |
+| Scroll/UseItem | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Field: `hediffDef`. |
+| Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `hediffDef`, `aoeRadius`, `affectAllies`. |
 
 > **Vanilla GiveHediff compatibility:** Because the entry point is a standard HediffDef, vanilla `GiveHediff` operations (e.g., from other mods, dev tools, or vanilla hediff givers) will work. When the hediff is added, `HediffComp_ShapeshiftCore.CompPostPostAdd` automatically removes any existing shapeshift hediff (preventing stacking) and calls `ApplyForm()`.
 >
@@ -502,8 +501,7 @@ Attach `HediffCompProperties_AutoShift` to any HediffDef. Triggers transformatio
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `hediffDef` | HediffDef | — | **Preferred.** HediffDef to apply for the shift. |
-| `formDefName` | string | — | Legacy fallback. FormDef defName. Ignored if `hediffDef` is set. |
+| `hediffDef` | HediffDef | — | HediffDef to apply for the shift. |
 | `healthThreshold` | float | 0 (disabled) | Trigger below this health %. E.g., `0.3` = 30%. |
 | `triggerMentalStates` | List\<MentalStateDef\> | — | Trigger on these mental states. |
 | `triggerSunGlowBelow` | float | 0 (disabled) | Trigger when sun glow is below this value. `0.5` = night. |
@@ -580,7 +578,7 @@ private static void MyOnFormRemoved(Pawn pawn, ShapeshiftFormDef form)
 
 ```xml
 <Defs>
-  <!-- 1. FormDef — visuals, gear, tools (no stats, no linkedHediff) -->
+  <!-- 1. FormDef — visuals, gear, tools -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSF_WolfForm</defName>
     <label>Wolf Form</label>

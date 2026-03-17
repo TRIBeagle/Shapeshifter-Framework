@@ -4,8 +4,9 @@
 
 ## Key Architecture
 
-- **ShapeshiftFormDef** → Visuals, equipment, tools, sounds, VFX, duration
-- **linkedHediff (HediffDef)** → Stats (`statOffsets`, `statFactors`, `capMods`) — vanilla pattern
+- **HediffDef** → Entry point for transformation. Defines stat offsets (`statOffsets`, `statFactors`, `capMods`) in `stages`
+- **HediffComp_ShapeshiftCore** → Included in HediffDef `comps`. References a FormDef via `formDef` to execute shift logic
+- **ShapeshiftFormDef** → Pure data sheet. Visuals, equipment, tools, sounds, VFX
 - **CompProperties_AbilityShapeshift** → Cast conditions (races, mutants), success chance
 - **Ability sources** → Genes, hediffs, items, drugs, scrolls, projectiles
 
@@ -13,7 +14,7 @@
 
 | Category | Key Fields |
 |----------|------------|
-| Basic | `defName`, `label`, `description`, `linkedHediff`, `formAllowedRaces`, `formDisallowedRaces`, `formAllowedMutants`, `formDisallowedMutants` |
+| Basic | `defName`, `label`, `description`, `formAllowedRaces`, `formDisallowedRaces`, `formAllowedMutants`, `formDisallowedMutants` |
 | Scale | `bodyDrawScale`, `headDrawScale`, `portraitDrawScale`, `bodyOffset`, `headOffset` |
 | Parts | `body`, `head`, `hair`, `beard`, `tattooBody`, `tattooHead` (each with `mode`, `replacementTexPath`, `color`, `shaderTypeDefName`, `male`/`female`, etc.) |
 | Render Hide/Show | `renderHide*`/`renderShow*` for Apparel (Layers/DefNames), Weapons (Tags/DefNames), Genes (ExclusionTags/DefNames), Hediffs (DefNames) |
@@ -46,28 +47,33 @@
 ## Minimal Example
 
 ```xml
-<HediffDef>
-  <defName>MyFormHediff</defName>
-  <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
-  <label>my form</label>
-  <isBad>false</isBad>
-  <stages><li><statOffsets><MoveSpeed>1.0</MoveSpeed></statOffsets></li></stages>
-</HediffDef>
-
+<!-- 1. FormDef — visuals, gear, tools -->
 <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
   <defName>MyForm</defName>
   <label>My Form</label>
-  <linkedHediff>MyFormHediff</linkedHediff>
   <body><mode>Replace</mode><replacementTexPath>MyMod/Textures/MyForm</replacementTexPath></body>
   <durationTicks>30000</durationTicks>
 </ShapeshifterFramework.ShapeshiftFormDef>
 
+<!-- 2. HediffDef — entry point + stat offsets -->
+<HediffDef ParentName="SSF_ShapeshiftFormBase">
+  <defName>MyFormHediff</defName>
+  <label>my form</label>
+  <stages><li><statOffsets><MoveSpeed>1.0</MoveSpeed></statOffsets></li></stages>
+  <comps>
+    <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+      <formDef>MyForm</formDef>
+    </li>
+  </comps>
+</HediffDef>
+
+<!-- 3. AbilityDef — trigger -->
 <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
   <defName>MyAbility</defName>
   <label>my shift</label>
   <comps>
     <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
-      <formDefName>MyForm</formDefName>
+      <hediffDef>MyFormHediff</hediffDef>
     </li>
   </comps>
 </AbilityDef>

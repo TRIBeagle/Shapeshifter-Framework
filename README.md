@@ -14,7 +14,7 @@ A RimWorld 1.6 mod framework for shapeshifting mechanics. Define custom transfor
 - **HediffDef** = entry point. Apply it to a pawn to trigger transformation. Contains behavioral overrides (duration, revert rules, sustain conditions) that can differ per HediffDef.
 - **FormDef** = data sheet / template. Defines the visual appearance, verbs, equipment rules, VFX, and other shared properties of a form. Multiple HediffDefs can reference the same FormDef.
 - **N:1 mapping**: The same FormDef can be used by different HediffDefs, each with different stat offsets, durations, or conditions — enabling variant forms from a single template.
-- **No ThingDef patching required**: Unlike the previous CompShapeshifter (ThingComp) architecture, there is no need to patch pawn ThingDefs. Simply apply the HediffDef to any pawn to transform them.
+- **No ThingDef patching required**: No need to patch pawn ThingDefs. Simply apply the HediffDef to any pawn to transform them.
 - **Vanilla GiveHediff compatibility**: Transformation works with standard RimWorld hediff application (e.g., `GiveHediff` in AbilityDefs, scripted hediff application, etc.).
 
 ## Features
@@ -97,7 +97,7 @@ Not yet available. Will be released via Steam Workshop and GitHub when ready.
 - **HediffDef** = 진입점. Pawn에 적용하면 변신이 시작됩니다. 지속시간, 해제 규칙, 유지 조건 등 행동 오버라이드를 HediffDef별로 다르게 설정할 수 있습니다.
 - **FormDef** = 데이터 시트 / 템플릿. 폼의 비주얼, Verb, 장비 규칙, VFX 등 공유 속성을 정의합니다. 여러 HediffDef가 같은 FormDef를 참조할 수 있습니다.
 - **N:1 매핑**: 같은 FormDef를 서로 다른 HediffDef에서 사용하면서, 각각 다른 스탯 보정·지속시간·조건을 부여할 수 있습니다.
-- **ThingDef 패치 불필요**: 이전 CompShapeshifter(ThingComp) 아키텍처와 달리, Pawn ThingDef 패치 없이 HediffDef만 적용하면 변신됩니다.
+- **ThingDef 패치 불필요**: Pawn ThingDef 패치 없이 HediffDef만 적용하면 변신됩니다.
 - **바닐라 GiveHediff 호환**: AbilityDef의 GiveHediff 등 표준 림월드 hediff 적용 방식으로 변신이 작동합니다.
 
 ## 주요 기능

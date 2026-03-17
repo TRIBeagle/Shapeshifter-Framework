@@ -163,8 +163,6 @@ ShapeshiftCoreUtility.OnFormRemoved += (pawn, formDef) => {
 </Defs>
 ```
 
-> **중요:** `linkedHediff` 필드는 삭제되었습니다. 매핑은 항상 HediffDef → FormDef 단방향입니다.
-
 ---
 
 ## 추상 부모 HediffDef
@@ -528,15 +526,8 @@ FormDef는 변신의 **비주얼, 장비, 도구, 사운드, VFX** 데이터를 
 | `revertDrops` | List\<ThingDefCountClass\> | — | 해제 시 드랍 아이템 (허물, 결정 등). |
 | `revertAddHediffs` | List\<HediffAddEntry\> | — | 해제 시 부여 hediff. **비추적** — 바닐라 수명. HediffAddEntry 형식 (severity/부위 지정 가능). |
 
-> **revertAddHediffs 변경사항:** 이전에는 `List<HediffDef>`였으나, 현재는 `List<HediffAddEntry>`로 변경되어 severity와 대상 부위를 지정할 수 있습니다.
-
 ```xml
-<!-- 이전 방식 (더 이상 사용 불가) -->
-<revertAddHediffs>
-  <li>FibrousMechanites</li>
-</revertAddHediffs>
-
-<!-- 현재 방식 (HediffAddEntry 형식) -->
+<!-- HediffAddEntry 형식 -->
 <revertAddHediffs>
   <li>
     <hediff>FibrousMechanites</hediff>
@@ -637,27 +628,13 @@ FA 및 HAR 관련 필드는 FormDef에서 분리되어 **DefModExtension**으로
 
 FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되는지는 별도 컴포넌트에서 처리합니다.
 
-### 트리거 클래스의 hediffDef / formDefName 우선순위
+### 트리거 클래스의 hediffDef 지정
 
-모든 트리거 클래스(`CompProperties_AbilityShapeshift`, `CompProperties_UseEffect_Shapeshift`, `IngestionOutcomeDoer_Shapeshift`, `PolymorphProjectileExtension`)에서 두 가지 필드를 지원합니다:
-
-| 필드 | 우선순위 | 설명 |
-|------|----------|------|
-| `hediffDef` | **우선** | HediffDef를 직접 지정. `ShapeshiftCoreUtility.ApplyShift(pawn, hediffDef)`로 변신. |
-| `formDefName` | 폴백 | FormDef defName을 문자열로 지정. `hediffDef`가 null일 때만 사용. 레거시 호환용. |
-
-> **권장:** 새 콘텐츠는 `hediffDef` 경로를 사용하세요. `formDefName`은 하위 호환을 위해 유지됩니다.
+모든 트리거 클래스(`CompProperties_AbilityShapeshift`, `CompProperties_UseEffect_Shapeshift`, `IngestionOutcomeDoer_Shapeshift`, `PolymorphProjectileExtension`)에서 `hediffDef` 필드로 변신할 HediffDef를 지정합니다.
 
 ```xml
-<!-- 권장: hediffDef 경로 -->
 <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
   <hediffDef>MyForm_Hediff</hediffDef>
-  <successChance>1.0</successChance>
-</li>
-
-<!-- 레거시: formDefName 폴백 -->
-<li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
-  <formDefName>MyForm</formDefName>
   <successChance>1.0</successChance>
 </li>
 ```
@@ -680,8 +657,7 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
-| `hediffDef` | HediffDef | **권장.** 적용할 HediffDef. 지정 시 formDefName보다 우선. |
-| `formDefName` | string | 적용할 FormDef defName. hediffDef 미지정 시 폴백. |
+| `hediffDef` | HediffDef | 적용할 HediffDef. |
 | `successChance` | float | 성공 확률 (기본 1.0). |
 | `allowedRaces` / `disallowedRaces` | List\<ThingDef\> | 시전자 종족 필터. |
 | `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | 시전자 뮤턴트 필터 (Anomaly). |
@@ -695,9 +671,9 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 | 유전자 | `GeneDef.abilities` | 유전자가 어빌리티 자동 부여 (Biotech). |
 | 헤디프 | `HediffCompProperties_GiveAbility` | hediff 보유 시 어빌리티 부여. |
 | 아이템 (장비) | `CompProperties_GiveAbility_Shapeshift` | 장비 시 어빌리티 부여. 어빌리티로 변신 시 해당 아이템이 `sourceItem`으로 등록 — 장비 해제 시 변신 해제. |
-| 약물 | `IngestionOutcomeDoer_Shapeshift` | 복용 시 직접 변신. `hediffDef` / `formDefName` 지원. |
-| 스크롤/사용 | `CompProperties_UseEffect_Shapeshift` | 사용 시 직접 변신. `hediffDef` / `formDefName` 지원. |
-| 투사체 | `PolymorphProjectileExtension` | 명중 시 변신. `hediffDef` / `formDefName`, `aoeRadius`, `affectAllies` 지원. |
+| 약물 | `IngestionOutcomeDoer_Shapeshift` | 복용 시 직접 변신. `hediffDef` 지정. |
+| 스크롤/사용 | `CompProperties_UseEffect_Shapeshift` | 사용 시 직접 변신. `hediffDef` 지정. |
+| 투사체 | `PolymorphProjectileExtension` | 명중 시 변신. `hediffDef`, `aoeRadius`, `affectAllies` 지원. |
 
 ### HediffComp_AutoShift (조건부 자동 변신)
 
@@ -705,8 +681,7 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 
 | 필드 | 타입 | 기본값 | 설명 |
 |------|------|--------|------|
-| `formDefName` | string | — | 변신할 FormDef. hediffDef 미지정 시 사용. |
-| `hediffDef` | HediffDef | — | **권장.** 변신할 HediffDef. 지정 시 formDefName보다 우선. |
+| `hediffDef` | HediffDef | — | 변신할 HediffDef. |
 | `healthThreshold` | float | 0 (미사용) | 이 체력 % 미만 시 트리거. 예: `0.3` = 30%. |
 | `triggerMentalStates` | List\<MentalStateDef\> | — | 이 정신상태 진입 시 트리거. |
 | `triggerSunGlowBelow` | float | 0 (미사용) | 밝기가 이 값 미만이면 트리거. `0.5` = 밤. |
@@ -718,23 +693,6 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 **로직:** 조건은 OR — 하나라도 충족하면 트리거. 이미 변신 중이면 건너뜀.
 
 ```xml
-<!-- formDefName 경로 (레거시) -->
-<HediffDef>
-  <defName>Curse_Werewolf</defName>
-  <hediffClass>HediffWithComps</hediffClass>
-  <label>werewolf curse</label>
-  <isBad>false</isBad>
-  <comps>
-    <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
-      <formDefName>WerewolfForm</formDefName>
-      <healthThreshold>0.3</healthThreshold>
-      <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
-      <successChance>0.8</successChance>
-    </li>
-  </comps>
-</HediffDef>
-
-<!-- hediffDef 경로 (권장) -->
 <HediffDef>
   <defName>CombatInstinct</defName>
   <hediffClass>HediffWithComps</hediffClass>

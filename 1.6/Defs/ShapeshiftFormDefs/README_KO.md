@@ -4,8 +4,9 @@
 
 ## 핵심 아키텍처
 
-- **ShapeshiftFormDef** → 비주얼, 장비, 도구, 사운드, VFX, 지속시간
-- **linkedHediff (HediffDef)** → 스탯 (`statOffsets`, `statFactors`, `capMods`) — 바닐라 패턴
+- **HediffDef** → 변신 진입점. `stages`에서 스탯 보정 (`statOffsets`, `statFactors`, `capMods`) 정의
+- **HediffComp_ShapeshiftCore** → HediffDef의 `comps`에 포함. `formDef`로 FormDef를 참조하여 변신 로직 실행
+- **ShapeshiftFormDef** → 순수 데이터 시트. 비주얼, 장비, 도구, 사운드, VFX 등 외형/연출 정보
 - **CompProperties_AbilityShapeshift** → 캐스트 조건 (종족, 뮤턴트), 성공 확률
 - **어빌리티 소스** → 유전자, 헤디프, 아이템, 약물, 스크롤, 투사체
 
@@ -13,7 +14,7 @@
 
 | 카테고리 | 주요 필드 |
 |----------|----------|
-| 기본 | `defName`, `label`, `description`, `linkedHediff`, `formAllowedRaces`, `formDisallowedRaces`, `formAllowedMutants`, `formDisallowedMutants` |
+| 기본 | `defName`, `label`, `description`, `formAllowedRaces`, `formDisallowedRaces`, `formAllowedMutants`, `formDisallowedMutants` |
 | 스케일 | `bodyDrawScale`, `headDrawScale`, `portraitDrawScale`, `bodyOffset`, `headOffset` |
 | 부위 외형 | `body`, `head`, `hair`, `beard`, `tattooBody`, `tattooHead` (각각 `mode`, `replacementTexPath`, `color`, `shaderTypeDefName`, `male`/`female` 등) |
 | 렌더 숨김/표시 | `renderHide*`/`renderShow*` — 의류(Layers/DefNames), 무기(Tags/DefNames), 유전자(ExclusionTags/DefNames), 헤디프(DefNames) |
@@ -46,28 +47,33 @@
 ## 최소 예시
 
 ```xml
-<HediffDef>
-  <defName>MyFormHediff</defName>
-  <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
-  <label>나의 폼</label>
-  <isBad>false</isBad>
-  <stages><li><statOffsets><MoveSpeed>1.0</MoveSpeed></statOffsets></li></stages>
-</HediffDef>
-
+<!-- 1. FormDef — 비주얼/장비/도구 -->
 <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
   <defName>MyForm</defName>
   <label>나의 폼</label>
-  <linkedHediff>MyFormHediff</linkedHediff>
   <body><mode>Replace</mode><replacementTexPath>MyMod/Textures/MyForm</replacementTexPath></body>
   <durationTicks>30000</durationTicks>
 </ShapeshifterFramework.ShapeshiftFormDef>
 
+<!-- 2. HediffDef — 진입점 + 스탯 보정 -->
+<HediffDef ParentName="SSF_ShapeshiftFormBase">
+  <defName>MyFormHediff</defName>
+  <label>나의 폼</label>
+  <stages><li><statOffsets><MoveSpeed>1.0</MoveSpeed></statOffsets></li></stages>
+  <comps>
+    <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+      <formDef>MyForm</formDef>
+    </li>
+  </comps>
+</HediffDef>
+
+<!-- 3. AbilityDef — 트리거 -->
 <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
   <defName>MyAbility</defName>
   <label>나의 변신</label>
   <comps>
     <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
-      <formDefName>MyForm</formDefName>
+      <hediffDef>MyFormHediff</hediffDef>
     </li>
   </comps>
 </AbilityDef>
