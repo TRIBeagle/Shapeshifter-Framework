@@ -25,6 +25,9 @@ namespace ShapeshifterFramework.Patches
         private static readonly Dictionary<WorkTags, List<WorkTypeDef>> _workTypesByTagsCache
             = new Dictionary<WorkTags, List<WorkTypeDef>>(16);
 
+        // 중복 방지용 재활용 HashSet (GC 절감, List.Contains O(n) → HashSet O(1))
+        private static readonly HashSet<WorkTypeDef> _tmpExisting = new HashSet<WorkTypeDef>();
+
         public static void ClearCache()
         {
             _workTypesByTagsCache.Clear();
@@ -36,19 +39,28 @@ namespace ShapeshifterFramework.Patches
 
             if (!ShapeshiftRegistry.TryGet(__instance, out var comp, out var form)) return;
 
-            var extra = form.disabledWorkTypesOnTransform;
-            if (extra != null)
+            bool hasExtra = form.disabledWorkTypesOnTransform != null && form.disabledWorkTypesOnTransform.Count > 0;
+            bool hasTags = form.disabledWorkTagsOnTransform != WorkTags.None;
+            if (!hasExtra && !hasTags) return;
+
+            // 기존 결과를 HashSet으로 변환 — 이후 O(1) 중복 체크
+            _tmpExisting.Clear();
+            for (int i = 0; i < __result.Count; i++)
+                _tmpExisting.Add(__result[i]);
+
+            if (hasExtra)
             {
+                var extra = form.disabledWorkTypesOnTransform;
                 for (int i = 0; i < extra.Count; i++)
                 {
                     var w = extra[i];
-                    if (w != null && !__result.Contains(w)) __result.Add(w);
+                    if (w != null && _tmpExisting.Add(w)) __result.Add(w);
                 }
             }
 
-            var tags = form.disabledWorkTagsOnTransform;
-            if (tags != WorkTags.None)
+            if (hasTags)
             {
+                var tags = form.disabledWorkTagsOnTransform;
                 if (!_workTypesByTagsCache.TryGetValue(tags, out var matched))
                 {
                     matched = new List<WorkTypeDef>(16);
@@ -66,7 +78,7 @@ namespace ShapeshifterFramework.Patches
                 for (int i = 0; i < matched.Count; i++)
                 {
                     var wt = matched[i];
-                    if (wt != null && !__result.Contains(wt))
+                    if (wt != null && _tmpExisting.Add(wt))
                         __result.Add(wt);
                 }
             }

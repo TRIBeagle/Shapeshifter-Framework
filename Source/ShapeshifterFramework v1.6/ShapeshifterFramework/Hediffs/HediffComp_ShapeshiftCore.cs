@@ -611,18 +611,19 @@ namespace ShapeshifterFramework.Hediffs
                 return apparelMet || weaponMet || hediffMet || geneMet;
         }
 
+        // sustain 체크용 재활용 HashSet (GC 절감)
+        private static readonly HashSet<ThingDef> _tmpSustainDefs = new HashSet<ThingDef>();
+
         private static bool CheckSustainApparels(Pawn pawn, List<ThingDef> required)
         {
             if (pawn.apparel == null) return false;
             var worn = pawn.apparel.WornApparel;
+            _tmpSustainDefs.Clear();
+            for (int j = 0; j < worn.Count; j++)
+                _tmpSustainDefs.Add(worn[j].def);
             for (int i = 0; i < required.Count; i++)
             {
-                bool found = false;
-                for (int j = 0; j < worn.Count; j++)
-                {
-                    if (worn[j].def == required[i]) { found = true; break; }
-                }
-                if (!found) return false;
+                if (!_tmpSustainDefs.Contains(required[i])) return false;
             }
             return true;
         }
@@ -631,14 +632,12 @@ namespace ShapeshifterFramework.Hediffs
         {
             if (pawn.equipment == null) return false;
             var eqs = pawn.equipment.AllEquipmentListForReading;
+            _tmpSustainDefs.Clear();
+            for (int j = 0; j < eqs.Count; j++)
+                _tmpSustainDefs.Add(eqs[j].def);
             for (int i = 0; i < required.Count; i++)
             {
-                bool found = false;
-                for (int j = 0; j < eqs.Count; j++)
-                {
-                    if (eqs[j].def == required[i]) { found = true; break; }
-                }
-                if (!found) return false;
+                if (!_tmpSustainDefs.Contains(required[i])) return false;
             }
             return true;
         }
@@ -898,22 +897,16 @@ namespace ShapeshifterFramework.Hediffs
                     }
                 }
 
+                // 2차: 참조 실패분 → def 기준 단일 패스 제거 O(n+m)
                 if (tempAddedHediffsDefCache != null && tempAddedHediffsDefCache.Count > 0)
                 {
+                    var remaining = new HashSet<HediffDef>(tempAddedHediffsDefCache);
                     List<Hediff> list = pawn.health.hediffSet.hediffs;
-                    for (int i = 0; i < tempAddedHediffsDefCache.Count; i++)
+                    for (int j = list.Count - 1; j >= 0; j--)
                     {
-                        HediffDef def = tempAddedHediffsDefCache[i];
-                        if (def == null) continue;
-
-                        for (int j = list.Count - 1; j >= 0; j--)
-                        {
-                            if (list[j].def == def)
-                            {
-                                pawn.health.RemoveHediff(list[j]);
-                                break;
-                            }
-                        }
+                        if (remaining.Count == 0) break;
+                        if (remaining.Remove(list[j].def))
+                            pawn.health.RemoveHediff(list[j]);
                     }
                 }
 
