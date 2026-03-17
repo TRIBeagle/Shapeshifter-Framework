@@ -233,42 +233,23 @@ namespace ShapeshifterFramework.Comps
             return true;
         }
 
-        // 뮤턴트 수집용 재사용 리스트 — UI 렌더 경로(ShouldHideGizmo)에서 재진입 안전을 위해 ThreadStatic
-        [ThreadStatic] private static List<MutantDef> _tmpPawnMutants;
-
+        /// <summary>Pawn의 뮤턴트(바닐라 1개)가 allow/disallow 조건에 부합하는지 판정.</summary>
         private static bool PassMutantFilter(Pawn pawn, List<MutantDef> allow, List<MutantDef> disallow)
         {
-            var hediffs = pawn?.health?.hediffSet?.hediffs;
-            if (hediffs == null) return !Active(allow); // allow 있으면 실패
+            var mutantDef = pawn?.mutant?.Def;
 
-            // ThreadStatic은 initializer가 동작하지 않으므로 null 체크
-            if (_tmpPawnMutants == null) _tmpPawnMutants = new List<MutantDef>(4);
-
-            // Pawn의 뮤턴트 수집 (역인덱스 O(1) 조회)
-            _tmpPawnMutants.Clear();
-            for (int i = 0; i < hediffs.Count; i++)
-            {
-                var h = hediffs[i];
-                if (h?.def != null && ShapeshiftRuntimeCaches.TryGetMutantDef(h.def, out var mutant))
-                    _tmpPawnMutants.Add(mutant);
-            }
-
-            // allow 체크: pawnMutants ∩ allow ≠ ∅
+            // allow 체크: 뮤턴트가 allow 목록에 있어야 통과
             if (Active(allow))
             {
-                bool found = false;
-                for (int i = 0; i < _tmpPawnMutants.Count && !found; i++)
-                    for (int j = 0; j < allow.Count && !found; j++)
-                        if (_tmpPawnMutants[i] == allow[j]) found = true;
-                if (!found) return false;
+                if (mutantDef == null || !allow.Contains(mutantDef))
+                    return false;
             }
 
-            // disallow 체크: pawnMutants ∩ disallow = ∅
+            // disallow 체크: 뮤턴트가 disallow 목록에 있으면 차단
             if (Active(disallow))
             {
-                for (int i = 0; i < _tmpPawnMutants.Count; i++)
-                    for (int j = 0; j < disallow.Count; j++)
-                        if (_tmpPawnMutants[i] == disallow[j]) return false;
+                if (mutantDef != null && disallow.Contains(mutantDef))
+                    return false;
             }
 
             return true;

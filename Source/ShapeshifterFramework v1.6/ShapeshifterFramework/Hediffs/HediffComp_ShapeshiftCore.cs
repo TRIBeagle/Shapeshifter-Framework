@@ -80,7 +80,10 @@ namespace ShapeshifterFramework.Hediffs
         private readonly HashSet<Verb> _tmpSeenVerbs = new HashSet<Verb>();
 
         // verb 자동공격 토글 상태 (키: formDefName#index#verbName)
-        private readonly Dictionary<string, bool> verbAutoToggle = new Dictionary<string, bool>();
+        private Dictionary<string, bool> verbAutoToggle = new Dictionary<string, bool>();
+        // Scribe Dict 직렬화용 tmp
+        private List<string> tmpVerbToggleKeys;
+        private List<bool> tmpVerbToggleVals;
 
         public bool suppressEquipLock = false;
 
@@ -1767,26 +1770,10 @@ namespace ShapeshifterFramework.Hediffs
             }
 
             // verbAutoToggle 딕셔너리
-
-            if (Scribe.mode == LoadSaveMode.Saving)
-            {
-                List<string> __keys = new List<string>(verbAutoToggle.Count);
-                List<bool> __vals = new List<bool>(verbAutoToggle.Count);
-                foreach (var kv in verbAutoToggle) { __keys.Add(kv.Key); __vals.Add(kv.Value); }
-                Scribe_Collections.Look(ref __keys, "ssfVerbToggleKeys", LookMode.Value);
-                Scribe_Collections.Look(ref __vals, "ssfVerbToggleVals", LookMode.Value);
-            }
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
-            {
-                List<string> __keys = null; List<bool> __vals = null;
-                Scribe_Collections.Look(ref __keys, "ssfVerbToggleKeys", LookMode.Value);
-                Scribe_Collections.Look(ref __vals, "ssfVerbToggleVals", LookMode.Value);
-                verbAutoToggle.Clear();
-                if (__keys != null && __vals != null && __keys.Count == __vals.Count)
-                {
-                    for (int i = 0; i < __keys.Count; i++) verbAutoToggle[__keys[i]] = __vals[i];
-                }
-            }
+            Scribe_Collections.Look(ref verbAutoToggle, "ssfVerbToggle",
+                LookMode.Value, LookMode.Value, ref tmpVerbToggleKeys, ref tmpVerbToggleVals);
+            if (verbAutoToggle == null)
+                verbAutoToggle = new Dictionary<string, bool>();
             Scribe_Collections.Look(ref sourceItems, "sourceItems", LookMode.Reference);
             Scribe_Collections.Look(ref generatedApparel, "generatedApparel", LookMode.Reference);
             Scribe_Collections.Look(ref generatedWeapons, "generatedWeapons", LookMode.Reference);

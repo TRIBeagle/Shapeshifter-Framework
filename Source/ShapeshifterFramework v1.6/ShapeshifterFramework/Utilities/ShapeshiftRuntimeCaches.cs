@@ -3,7 +3,6 @@
 // 용도 : 일반 Dictionary 대신 ConditionalWeakTable을 사용하여, 폰이 파괴되고 가비지 컬렉터(GC)에 의해 수거될 때 캐시 데이터도 자동으로 함께 소멸하게 만들어 메모리 누수(Memory Leak)를 원천 차단함.
 
 using RimWorld;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Verse;
 
@@ -23,31 +22,6 @@ namespace ShapeshifterFramework.Utilities
 
         // FleshType 캐시 (폼 전용)
         public static ConditionalWeakTable<Pawn, FleshTypeDef> FleshTypeByPawn = new ConditionalWeakTable<Pawn, FleshTypeDef>();
-
-        // ── HediffDef → MutantDef 역인덱스 (Anomaly DLC) ──
-        // 뮤턴트 필터에서 Pawn의 hediff로부터 MutantDef를 찾을 때 O(1) 조회 제공.
-        // 최초 조회 시 1회 빌드, ClearAll()에서 null로 리셋하여 다음 조회 시 재빌드.
-        private static Dictionary<HediffDef, MutantDef> _hediffToMutant;
-
-        /// <summary>HediffDef에 대응하는 MutantDef를 O(1)로 조회. 최초 호출 시 역인덱스 자동 빌드.</summary>
-        internal static bool TryGetMutantDef(HediffDef hediffDef, out MutantDef mutant)
-        {
-            if (_hediffToMutant == null)
-                BuildMutantIndex();
-            return _hediffToMutant.TryGetValue(hediffDef, out mutant);
-        }
-
-        private static void BuildMutantIndex()
-        {
-            var all = DefDatabase<MutantDef>.AllDefsListForReading;
-            _hediffToMutant = new Dictionary<HediffDef, MutantDef>(all.Count);
-            for (int i = 0; i < all.Count; i++)
-            {
-                var m = all[i];
-                if (m?.hediff != null)
-                    _hediffToMutant[m.hediff] = m;
-            }
-        }
 
         // 외부에서 안전하게 덮어쓰기 위한 헬퍼 (기존 Dictionary의 인덱서[pawn] = val 대체용)
         public static void SetCache<T>(ConditionalWeakTable<Pawn, T> table, Pawn pawn, T value) where T : class
@@ -84,9 +58,6 @@ namespace ShapeshifterFramework.Utilities
             BloodByPawn = new ConditionalWeakTable<Pawn, ThingDef>();
             SmearByPawn = new ConditionalWeakTable<Pawn, ThingDef>();
             FleshTypeByPawn = new ConditionalWeakTable<Pawn, FleshTypeDef>();
-
-            // MutantDef 역인덱스 리셋 (다음 조회 시 재빌드)
-            _hediffToMutant = null;
 
             // 그림자 그래픽 캐시 정리
             try { ShapeshifterFramework.Patches.Patch_PawnRenderer_DrawShadowInternal.ClearCache(); }
