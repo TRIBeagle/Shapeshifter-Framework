@@ -1,6 +1,6 @@
 // ShapeshifterFramework | Comps | CompProperties_AbilityShapeshift.cs
 // 목적 : XML에서 Ability(초능력/마법)의 변신 효과를 정의하기 위한 속성(Properties) 클래스.
-// 용도 : 대상에게 적용할 폼의 defName(formDefName)과 변신 성공 확률(successChance)을 보관.
+// 용도 : 대상에게 적용할 hediffDef와 변신 성공 확률(successChance)을 보관.
 //        캐스트 조건(종족/뮤턴트)도 여기서 정의하여 ShouldHideGizmo/CanApplyOn에서 검사.
 
 using RimWorld;

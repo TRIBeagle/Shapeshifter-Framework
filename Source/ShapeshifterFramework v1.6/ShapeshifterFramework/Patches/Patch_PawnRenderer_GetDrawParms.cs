@@ -28,13 +28,9 @@ namespace ShapeshifterFramework.Patches
             // A) 수영 중 NoBody 해제 (헤드 숨김 폼 투명화 방지)
             if (pawn.Swimming && (flags & PawnRenderFlags.NoBody) != 0)
             {
-                ShapeshiftFormDef runForm;
-                if (ShapeshiftPartControlUtility.ShouldRun(pawn, out runForm) && runForm != null)
+                if (ShapeshiftPartControlUtility.IsHeadHiddenForGender(pawn, form))
                 {
-                    if (ShapeshiftPartControlUtility.IsHeadHiddenForGender(pawn, runForm))
-                    {
-                        __result.flags &= ~PawnRenderFlags.NoBody;
-                    }
+                    __result.flags &= ~PawnRenderFlags.NoBody;
                 }
             }
 

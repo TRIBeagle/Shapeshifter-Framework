@@ -3,7 +3,7 @@
 // 용도 : HediffDef 부여 → CompPostPostAdd → 지연 초기화(needsInit) → 첫 Tick에서 ApplyForm 실행.
 //        모든 상태 필드(장비 스냅샷, VerbTracker, 타이머 등)를 Hediff 수명과 동기화.
 // 주의 : CompPostPostAdd에서 ApplyForm을 직접 호출하지 않음 (RefreshPawn 재진입 방지).
-//        needsInit == true 구간에서 ShouldRemove는 false를 반환하여 자동 소멸 방지.
+//        needsInit == true 구간에서 CompShouldRemove가 false를 반환하여 자동 소멸 방지.
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;
@@ -28,6 +28,9 @@ namespace ShapeshifterFramework.Hediffs
         public Pawn Pawn => parent?.pawn;
 
         #endregion
+
+        /// <summary>초기화 진행 중에는 바닐라 severity 기반 자동 소멸을 차단.</summary>
+        public override bool CompShouldRemove => needsInit ? false : base.CompShouldRemove;
 
         #region 상태 필드/캐시
 
@@ -379,20 +382,22 @@ namespace ShapeshifterFramework.Hediffs
             needsInit = true;
         }
 
-        /// <summary>Hediff 제거 시 정리. RemoveForm → Registry 해제.</summary>
+        /// <summary>Hediff 제거 시 정리. RemoveForm이 미호출된 경우 대비.</summary>
         public override void CompPostPostRemoved()
         {
             base.CompPostPostRemoved();
-            var pawn = Pawn;
 
             if (isTransformed)
             {
                 RemoveForm();
             }
-
-            // 방어적 레지스트리 해제
-            if (pawn != null)
-                ShapeshiftRegistry.Unregister(pawn);
+            else
+            {
+                // 미등록 상태의 방어적 레지스트리 해제 (needsInit 중 제거 등)
+                var pawn = Pawn;
+                if (pawn != null)
+                    ShapeshiftRegistry.Unregister(pawn);
+            }
         }
 
         /// <summary>Pawn 스폰 시 레지스트리 재등록 + 그래픽 복원. Patch_Pawn_SpawnSetup에서 호출.</summary>
@@ -515,8 +520,8 @@ namespace ShapeshifterFramework.Hediffs
                 var resolvedDuration = ResolvedDurationTicks;
                 if (resolvedDuration.HasValue && resolvedDuration.Value > 0)
                 {
-                    if (transformTimer <= 0) { RemoveForm(); return; }
                     transformTimer--;
+                    if (transformTimer <= 0) { RemoveForm(); return; }
                 }
 
                 // 60틱마다 유지 요건(sustain) 검사
@@ -767,7 +772,11 @@ namespace ShapeshifterFramework.Hediffs
                 _isApplyingOrRemoving = true;
             }
 
-            this.sourceItems = sources ?? new List<Thing>();
+            // sources가 명시적으로 전달되면 교체, 아니면 기존 sourceItems 보존 (ApplyShift에서 사전 설정 가능)
+            if (sources != null)
+                this.sourceItems = sources;
+            else if (this.sourceItems == null)
+                this.sourceItems = new List<Thing>();
 
             // 장비 스냅샷 캡처
             prevApparels.Clear();
@@ -955,7 +964,8 @@ namespace ShapeshifterFramework.Hediffs
                     }
                 }
 
-                // 파츠 원상 복원
+                // 파츠 원상 복원 (죽은 폰은 건너뜀)
+                if (!pawn.Dead)
                 for (int i = 0; i < tempPartRestoreRecords.Count; i++)
                 {
                     var rec = tempPartRestoreRecords[i];
@@ -1117,6 +1127,10 @@ namespace ShapeshifterFramework.Hediffs
             finally
             {
                 _isApplyingOrRemoving = false;
+
+                // severity를 0으로 설정 → 바닐라가 다음 틱에 hediff 자동 제거
+                if (parent != null)
+                    parent.Severity = 0f;
             }
         }
 

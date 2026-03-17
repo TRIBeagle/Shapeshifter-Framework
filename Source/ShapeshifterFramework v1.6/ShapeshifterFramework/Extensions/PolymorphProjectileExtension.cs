@@ -1,6 +1,6 @@
 ﻿// ShapeshifterFramework | Extensions | PolymorphProjectileExtension.cs
 // 목적 : 총알이나 마법 등 투사체(Projectile) 명중 시 대상을 변신시키기 위한 속성(Data Container) 확장 클래스.
-// 용도 : ThingDef의 <modExtensions>에 부착되어, 타겟에게 적용할 폼(formDefName), 변신 성공 확률(successChance), 그리고 광역 적용을 위한 반경(aoeRadius) 설정값을 제공함.
+// 용도 : ThingDef의 <modExtensions>에 부착되어, 타겟에게 적용할 hediffDef, 변신 성공 확률(successChance), 그리고 광역 적용을 위한 반경(aoeRadius) 설정값을 제공함.
 
 using Verse;
 

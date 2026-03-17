@@ -23,7 +23,7 @@ namespace ShapeshifterFramework.Projectiles
                 return;
             }
 
-            // 1) XML 확장 읽기 (hediffDef 또는 formDefName 필수)
+            // 1) XML 확장 읽기 (hediffDef 필수)
             var ext = def?.GetModExtension<PolymorphProjectileExtension>();
             if (ext == null || ext.hediffDef == null)
             {

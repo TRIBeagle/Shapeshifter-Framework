@@ -32,12 +32,12 @@ namespace ShapeshifterFramework.Hediffs
             // 이미 발동한 1회성이면 건너뜀
             if (hasTriggered) return;
 
-            // 주기 체크
-            int interval = Props.checkIntervalTicks > 0 ? Props.checkIntervalTicks : 120;
-            if (!parent.pawn.IsHashIntervalTick(interval)) return;
-
             var pawn = parent.pawn;
             if (pawn == null || pawn.Dead) return;
+
+            // 주기 체크
+            int interval = Props.checkIntervalTicks > 0 ? Props.checkIntervalTicks : 120;
+            if (!pawn.IsHashIntervalTick(interval)) return;
 
             // 이미 변신 중이면 건너뜀
             if (ShapeshiftRegistry.IsActive(pawn)) return;

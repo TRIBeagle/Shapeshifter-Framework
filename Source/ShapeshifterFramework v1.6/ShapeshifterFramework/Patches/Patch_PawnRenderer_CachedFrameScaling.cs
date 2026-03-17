@@ -23,9 +23,15 @@ namespace ShapeshifterFramework.Patches
         private static readonly FieldInfo _resultsField =
             AccessTools.Field(typeof(PawnRenderer), "results");
 
+        // 프레임당 GC 할당 방지용 재사용 배열
+        private static readonly object[] _invokeArgs = new object[4];
+
         [HarmonyPrefix]
         static bool Prefix(PawnRenderer __instance, Vector3 drawLoc, Rot4? rotOverride, bool neverAimWeapon)
         {
+            // Reflection 대상이 없으면 바닐라 실행 (바닐라 버전 불일치 방어)
+            if (_getPreRenderResults == null || _resultsField == null) return true;
+
             // 줌아웃 상태가 아니면 캐시가 사용되지 않으므로 개입 불필요
             if (Find.CameraDriver.ZoomRootSize <= 18f) return true;
 
@@ -37,8 +43,11 @@ namespace ShapeshifterFramework.Patches
             if (scale <= 1f) return true;
 
             // disableCache = true로 호출 → useCached = false + renderTree.ParallelPreDraw 실행
-            object result = _getPreRenderResults.Invoke(__instance,
-                new object[] { drawLoc, rotOverride, neverAimWeapon, true });
+            _invokeArgs[0] = drawLoc;
+            _invokeArgs[1] = rotOverride;
+            _invokeArgs[2] = neverAimWeapon;
+            _invokeArgs[3] = true;
+            object result = _getPreRenderResults.Invoke(__instance, _invokeArgs);
             _resultsField.SetValue(__instance, result);
             return false;
         }
