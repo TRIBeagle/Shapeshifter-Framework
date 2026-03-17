@@ -99,6 +99,10 @@ namespace ShapeshifterFramework.Utilities
             // HAR 헤드 애드온 판정 캐시 정리
             try { ShapeshifterFramework.Compat.Compat_HAR_BodyAddon_ScaleFor.ClearHeadAddonCache(); }
             catch (System.Exception ex) { Log.Warning($"[SSF] ClearAll: HAR addon cache clear failed: {ex.Message}"); }
+
+            // VerbTracker 실패 캐시 정리
+            try { ShapeshifterFramework.Patches.Patch_VerbTracker_InitVerbsFromZero.ClearCache(); }
+            catch (System.Exception ex) { Log.Warning($"[SSF] ClearAll: VerbTracker cache clear failed: {ex.Message}"); }
         }
     }
 }

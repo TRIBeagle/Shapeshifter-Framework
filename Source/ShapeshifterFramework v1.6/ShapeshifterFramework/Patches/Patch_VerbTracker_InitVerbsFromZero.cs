@@ -168,6 +168,9 @@ namespace ShapeshifterFramework.Patches
         // 생성 실패한 verbClass 캐시 — 같은 타입을 매번 재시도하지 않도록
         private static readonly HashSet<Type> FailedVerbClasses = new HashSet<Type>();
 
+        /// <summary>게임 로드/맵 전환 시 실패 캐시 정리. 다음 세션에서 재시도 가능.</summary>
+        internal static void ClearCache() { FailedVerbClasses.Clear(); }
+
         private static Verb CreateVerb(VerbTracker tracker, IVerbOwner owner, VerbProperties vp, Pawn ownerPawn)
         {
             try

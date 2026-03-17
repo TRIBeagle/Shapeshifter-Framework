@@ -1109,6 +1109,10 @@ namespace ShapeshifterFramework.Hediffs
             catch (Exception ex)
             {
                 Log.Error($"[SSF] RemoveForm failed for {pawn?.Name}: {ex}");
+                // 부분 복원 상태 방지 — 핵심 상태를 강제 정리하여 좀비 변신 상태를 차단
+                currentForm = null;
+                if (pawn != null) ShapeshiftRegistry.Unregister(pawn);
+                if (pawn != null) ShapeshiftRuntimeCaches.ClearFor(pawn);
             }
             finally
             {
