@@ -133,7 +133,6 @@ The **HediffDef** is the entry point for all transformations. The FormDef is a p
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `formDef` | ShapeshiftFormDef | null | **Core.** The FormDef this hediff applies. null = set at runtime via `SetFormDef()`. |
-| `defaultSuccessChance` | float | 1 | Success chance (0–1) for the vanilla GiveHediff pathway. When `ApplyShift()` is called with an explicit `successChance`, that value takes precedence. |
 | `durationTicks` | int? | null | Override form duration. null = use FormDef value. |
 | `canRevertVoluntarily` | bool? | null | Override voluntary revert. null = use FormDef value. |
 | `revertOnDowned` | bool? | null | Override revert-on-downed. null = use FormDef value. |
@@ -474,7 +473,6 @@ Attach to an `AbilityDef`'s `<comps>`:
 | Field | Type | Description |
 |-------|------|-------------|
 | `hediffDef` | HediffDef | The HediffDef to apply (must contain `HediffCompProperties_ShapeshiftCore`). |
-| `successChance` | float | Success probability (default 1.0). |
 | `allowedRaces` / `disallowedRaces` | List\<ThingDef\> | Caster race filter. |
 | `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | Caster mutant filter (Anomaly). |
 | `allowedFromForms` | List\<string\> | Forms from which this ability can be cast while transformed. Empty = disabled while transformed. |
@@ -491,9 +489,9 @@ Attach to an `AbilityDef`'s `<comps>`:
 | Scroll/UseItem | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Field: `hediffDef`. |
 | Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `hediffDef`, `aoeRadius`, `affectAllies`. |
 
-> **Vanilla GiveHediff compatibility:** Because the entry point is a standard HediffDef, vanilla `GiveHediff` operations (e.g., from other mods, dev tools, or vanilla hediff givers) will work. When the hediff is added, `HediffComp_ShapeshiftCore.CompPostPostAdd` automatically removes any existing shapeshift hediff (preventing stacking) and calls `ApplyForm()`.
+> **Vanilla GiveHediff compatibility:** Because the entry point is a standard HediffDef, vanilla `GiveHediff` operations (e.g., from other mods, dev tools, or vanilla hediff givers) will work. When the hediff is added, `HediffComp_ShapeshiftCore.CompPostPostAdd` automatically removes any existing shapeshift hediff (preventing stacking) and triggers `ApplyForm()` on the next tick.
 >
-> **Recommended:** For drug/projectile triggers, prefer `IngestionOutcomeDoer_Shapeshift` and `Projectile_Polymorph` over vanilla `IngestionOutcomeDoer_GiveHediff`. The SSF variants provide `successChance` (resistance roll) and proper `ApplyShift()` flow. While vanilla GiveHediff works (CompPostPostAdd handles stacking), the SSF variants offer a richer feature set.
+> **Note:** SSF trigger classes (`IngestionOutcomeDoer_Shapeshift`, `Projectile_Polymorph`) internally call `GiveShiftHediff()` which provides convenience features like sourceItem tracking. For basic transformation, vanilla `AddHediff`/`GiveHediff` works just as well.
 
 ### HediffComp_AutoShift (Conditional Auto-Shift)
 
@@ -507,7 +505,6 @@ Attach `HediffCompProperties_AutoShift` to any HediffDef. Triggers transformatio
 | `triggerSunGlowBelow` | float | 0 (disabled) | Trigger when sun glow is below this value. `0.5` = night. |
 | `triggerInCombat` | bool | false | Trigger when drafted/attacked and enemies nearby. |
 | `checkIntervalTicks` | int | 120 | Check interval (120 = 2 seconds). |
-| `successChance` | float | 1.0 | Shift probability per check. |
 | `triggerOnce` | bool | false | Remove hediff after first trigger. |
 
 **Logic:** Conditions are OR — any single match triggers the shift. Already-transformed pawns are skipped.
@@ -523,7 +520,6 @@ Attach `HediffCompProperties_AutoShift` to any HediffDef. Triggers transformatio
       <hediffDef>WerewolfForm_Hediff</hediffDef>
       <healthThreshold>0.3</healthThreshold>
       <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
-      <successChance>0.8</successChance>
     </li>
   </comps>
 </HediffDef>

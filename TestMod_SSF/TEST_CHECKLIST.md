@@ -31,7 +31,7 @@
 ## 1. BearForm — 동물형 기본
 
 ### 트리거
-- [ ] `[M]` 1-1. ShiftScroll_Self / ShiftScroll_Target / BearElixir(85%) 각각 변신 성공
+- [ ] `[M]` 1-1. ShiftScroll_Self / ShiftScroll_Target / BearElixir 각각 변신 성공
 
 ### 비주얼
 - [ ] `[M]` 1-2. 곰 텍스처 + bodyDrawScale 2.5 + 기본색 (112,82,65)
@@ -81,7 +81,7 @@
 ## 3. SheepForm — 적대 디버프, 강제 변신
 
 ### 트리거
-- [ ] `[M]` 3-1. Ability_DebuffEnemy 적 타겟 75% + Ability_MassPolymorph AoE 60%
+- [ ] `[M]` 3-1. Ability_DebuffEnemy 적 타겟 변신 + Ability_MassPolymorph AoE 변신
 - [ ] `[M]` 3-2. 비폭력 폰 캐스트 불가
 - [ ] `[M]` 3-5. MassPolymorph 바닥 클릭(location 타겟) 시 캐스팅 정상 작동
 - [ ] `[M]` 3-6. MassPolymorph AoE 반경 내 아군 미적용 (affectHostileOnly=true)
@@ -267,8 +267,7 @@
 - [ ] `[M]` 11-3. triggerSunGlowBelow: 밝기 0.5 미만(밤) → 트리거
 - [ ] `[M]` 11-4. triggerInCombat: 징집/피격 + 적 근처 → 트리거 (NPC 포함)
 - [ ] `[M]` 11-5. 이미 변신 중 → 재트리거 건너뜀
-- [ ] `[M]` 11-6. successChance < 1.0 → 확률적 발동
-- [ ] `[M]` 11-7. triggerOnce=true → 발동 후 hediff 제거
+- [ ] `[M]` 11-6. triggerOnce=true → 발동 후 hediff 제거
 - [ ] `[M]` 11-8. triggerOnce=false → 해제 후 재트리거 가능
 - [ ] `[M]` 11-9. checkIntervalTicks 간격 정상 (60 vs 120 vs 240)
 - [ ] `[M]` 11-10. 세이브/로드 후 hasTriggered 플래그 유지
@@ -365,10 +364,7 @@
 - [ ] `[M]` 15-1. 데브 도구로 변신 hediff A 부여 → 정상 변신
 - [ ] `[M]` 15-2. 변신 A 중 데브 도구로 다른 변신 hediff B 부여 → A 자동 해제 후 B 적용 (중첩 없음)
 - [ ] `[M]` 15-3. 변신 A 중 같은 hediff A 재부여 → severity 갱신만 (중복 hediff 생성 안 됨)
-- [ ] `[M]` 15-4. IngestionOutcomeDoer_Shapeshift 약물 → successChance 저항 판정 확인
-- [ ] `[M]` 15-5. Projectile_Polymorph AoE → 적대 폰만 변신, 아군 스킵 확인
-- [ ] `[M]` 15-6. defaultSuccessChance<1 설정된 HediffDef를 바닐라 GiveHediff로 부여 → 확률 판정 작동 확인
-- [ ] `[M]` 15-7. ApplyShift 경로로 같은 HediffDef 부여 → 확률 중복 판정 없음 확인
+- [ ] `[M]` 15-4. Projectile_Polymorph AoE → 적대 폰만 변신, 아군 스킵 확인
 
 ---
 

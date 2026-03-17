@@ -15,7 +15,6 @@
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <!-- hediffDef 경로 테스트: formDefName 대신 hediffDef 직접 지정 -->
         <hediffDef>SSFTest_BearWarriorFormHediff</hediffDef>
-        <successChance>1.0</successChance>
       </li>
     </comps>
   </AbilityDef>
@@ -46,7 +45,6 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <hediffDef>SSFTest_SheepFormHediff</hediffDef>
-        <successChance>0.75</successChance>
       </li>
     </comps>
   </AbilityDef>
@@ -75,7 +73,6 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <hediffDef>SSFTest_DarkKnightFormHediff</hediffDef>
-        <successChance>1.0</successChance>
       </li>
     </comps>
   </AbilityDef>
@@ -104,7 +101,6 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <hediffDef>SSFTest_BeastkinFormHediff</hediffDef>
-        <successChance>1.0</successChance>
       </li>
     </comps>
   </AbilityDef>
@@ -122,7 +118,6 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <hediffDef>SSFTest_FullBeastFormHediff</hediffDef>
-        <successChance>1.0</successChance>
         <!-- 수인 폼에서만 2단 변신 허용 -->
         <allowedFromForms>
           <li>SSFTest_BeastkinForm</li>
@@ -154,7 +149,6 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <hediffDef>SSFTest_GuardianFormHediff</hediffDef>
-        <successChance>1.0</successChance>
       </li>
     </comps>
   </AbilityDef>
@@ -182,7 +176,6 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <hediffDef>SSFTest_PhantomFormHediff</hediffDef>
-        <successChance>1.0</successChance>
       </li>
     </comps>
   </AbilityDef>
@@ -211,7 +204,6 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
         <hediffDef>SSFTest_RaceLockedFormHediff</hediffDef>
-        <successChance>1.0</successChance>
         <!-- 종족 제한: 인간만 -->
         <allowedRaces>
           <li>Human</li>

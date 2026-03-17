@@ -2,7 +2,7 @@
 // 목적 : Ability를 사용하여 대상(Pawn)을 변신시키는 효과(Effect) 컴포넌트.
 // 용도 : - ShouldHideGizmo: 캐스터의 종족/뮤턴트 조건 + 같은 폼 재시전 차단
 //        - CanApplyOn: 대상 유효성 판별
-//        - Apply: hediffDef 기반 ShapeshiftCoreUtility.ApplyShift 호출
+//        - Apply: hediffDef 기반 GiveShiftHediff 호출
 
 using RimWorld;
 using ShapeshifterFramework.Hediffs;
@@ -138,7 +138,7 @@ namespace ShapeshifterFramework.Comps
                     sources = new List<Thing> { grantingItem };
             }
 
-            ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance, sources);
+            ShapeshiftCoreUtility.GiveShiftHediff(pawn, Props.hediffDef, sources);
         }
 
         /// <summary>캐스터의 장착 장비에서 해당 AbilityDef를 부여하는 아이템 탐색.

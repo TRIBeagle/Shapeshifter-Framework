@@ -36,7 +36,7 @@
 바닐라 방식으로 HediffDef를 부여하기만 하면 자동으로 변신이 트리거됩니다.
 `CompPostPostAdd`에서 기존 변신 hediff가 있으면 자동 제거하므로 중첩 걱정은 없습니다:
 
-> **권장:** 약물/프로젝타일 트리거에는 바닐라 `IngestionOutcomeDoer_GiveHediff` 대신 `IngestionOutcomeDoer_Shapeshift`와 `Projectile_Polymorph`를 사용하세요. SSF 전용 클래스는 `successChance`(저항 판정)와 `ApplyShift()` 전체 흐름을 제공합니다.
+> **참고:** SSF 트리거 클래스(`IngestionOutcomeDoer_Shapeshift`, `Projectile_Polymorph`)는 내부적으로 `ShapeshiftCoreUtility.GiveShiftHediff()`를 호출하며, sourceItem 추적 등 편의 기능을 제공합니다. 하지만 기본적인 변신에는 바닐라 `AddHediff`/`GiveHediff`만으로도 충분합니다 (`CompPostPostAdd`가 자동으로 처리).
 
 ```csharp
 // C# 코드에서
@@ -265,7 +265,6 @@ HediffDef의 `<comps>`에 `HediffCompProperties_ShapeshiftCore`를 부착합니�
 | 필드 | 타입 | 기본값 | 설명 |
 |------|------|--------|------|
 | `formDef` | ShapeshiftFormDef | null | **핵심.** 이 HediffDef가 적용할 변신 폼. null이면 런타임에 SetFormDef()로 지정. |
-| `defaultSuccessChance` | float | 1 | 변신 성공 확률 (0~1). 바닐라 GiveHediff 경로에서도 적용. `ApplyShift()` 호출 시 명시적 successChance가 우선. |
 | `durationTicks` | int? | null | 변신 지속 틱. null이면 FormDef.durationTicks 사용. |
 | `canRevertVoluntarily` | bool? | null | 기즈모로 해제 가능 여부. null이면 FormDef.canRevertVoluntarily 사용. |
 | `revertOnDowned` | bool? | null | Downed 시 자동 해제. null이면 FormDef.revertOnDowned 사용. |
@@ -635,7 +634,6 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 ```xml
 <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
   <hediffDef>MyForm_Hediff</hediffDef>
-  <successChance>1.0</successChance>
 </li>
 ```
 
@@ -658,7 +656,6 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | `hediffDef` | HediffDef | 적용할 HediffDef. |
-| `successChance` | float | 성공 확률 (기본 1.0). |
 | `allowedRaces` / `disallowedRaces` | List\<ThingDef\> | 시전자 종족 필터. |
 | `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | 시전자 뮤턴트 필터 (Anomaly). |
 | `allowedFromForms` | List\<string\> | 변신 중 시전 허용 폼 목록. 비우면 변신 중 비활성(회색). |
@@ -687,7 +684,6 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 | `triggerSunGlowBelow` | float | 0 (미사용) | 밝기가 이 값 미만이면 트리거. `0.5` = 밤. |
 | `triggerInCombat` | bool | false | 징집/피격 + 적 근처 시 트리거. |
 | `checkIntervalTicks` | int | 120 | 검사 간격 (120 = 2초). |
-| `successChance` | float | 1.0 | 검사당 성공 확률. |
 | `triggerOnce` | bool | false | 발동 후 hediff 자체 제거. |
 
 **로직:** 조건은 OR — 하나라도 충족하면 트리거. 이미 변신 중이면 건너뜀.

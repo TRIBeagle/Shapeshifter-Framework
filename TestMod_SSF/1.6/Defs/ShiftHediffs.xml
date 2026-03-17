@@ -284,7 +284,6 @@
         <healthThreshold>0.3</healthThreshold>
         <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
         <checkIntervalTicks>120</checkIntervalTicks>
-        <successChance>0.8</successChance>
       </li>
     </comps>
   </HediffDef>

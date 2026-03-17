@@ -1,11 +1,9 @@
 // ShapeshifterFramework | Utilities | ShapeshiftCoreUtility.cs
-// 목적 : HediffDef 기반 변신 진입점(ApplyShift) + 이벤트 콜백 + 조회 헬퍼.
-// 용도 : 모든 변신 트리거는 이 유틸리티의 ApplyShift()를 호출하여 HediffDef를 부여.
-//        바닐라 GiveHediff로도 변신 가능 (CompPostPostAdd → 자동 ApplyForm).
+// 목적 : 변신 이벤트 콜백 + 조회 헬퍼.
+// 용도 : 변신은 바닐라 AddHediff로 진입 → CompPostPostAdd → 첫 Tick ApplyForm.
 //        외부 모드 확장점: OnFormApplied / OnFormRemoved 이벤트.
 // 주의 : ClearEvents()는 GameComponent.FinalizeInit에서 호출 (HarmonyInit은 모드 로드 시 1회만).
 
-using RimWorld;
 using ShapeshifterFramework.Hediffs;
 using System;
 using System.Collections.Generic;
@@ -13,7 +11,7 @@ using Verse;
 
 namespace ShapeshifterFramework.Utilities
 {
-    /// <summary>HediffDef 기반 변신 진입점 + 이벤트 콜백 + 조회 헬퍼.</summary>
+    /// <summary>변신 이벤트 콜백 + 조회 헬퍼.</summary>
     public static class ShapeshiftCoreUtility
     {
         #region 이벤트 콜백
@@ -49,69 +47,35 @@ namespace ShapeshifterFramework.Utilities
 
         #endregion
 
-        #region 핵심 진입점
+        #region 변신 부여/해제
 
         /// <summary>
-        /// HediffDef 기반 변신 진입 메서드.
-        /// 기존 변신 hediff가 있으면 제거 후 새 hediff 부여.
+        /// HediffDef를 부여하여 변신을 시작합니다.
+        /// CompPostPostAdd → 첫 Tick에서 자동으로 ApplyForm이 실행됩니다.
         /// </summary>
         /// <param name="pawn">대상 Pawn.</param>
         /// <param name="hediffDef">부여할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</param>
-        /// <param name="successChance">성공 확률 0~1. 기본 1.</param>
         /// <param name="sources">변신 유발 아이템. null이면 빈 리스트. 장착 해제 시 변신 해제.</param>
-        /// <returns>성공 시 true.</returns>
-        public static bool ApplyShift(Verse.Pawn pawn, HediffDef hediffDef, float successChance = 1f, List<Thing> sources = null)
+        public static void GiveShiftHediff(Verse.Pawn pawn, HediffDef hediffDef, List<Thing> sources = null)
         {
-            if (pawn == null || pawn.Dead || hediffDef == null) return false;
+            if (pawn == null || pawn.Dead || hediffDef == null) return;
 
-            // 확률
-            float p = UnityEngine.Mathf.Clamp01(successChance);
-            if (p < 1f && Rand.Value > p)
-            {
-                Messages.Message("SSF_ShiftTarget_Resisted".Translate(pawn.LabelShortCap), MessageTypeDefOf.RejectInput, false);
-                return false;
-            }
-
-            // 기존 변신 hediff 제거 (동시 적용 방지)
-            if (pawn.health?.hediffSet != null)
-            {
-                var hediffs = pawn.health.hediffSet.hediffs;
-                for (int i = hediffs.Count - 1; i >= 0; i--)
-                {
-                    var existingCore = (hediffs[i] as HediffWithComps)?.TryGetComp<HediffComp_ShapeshiftCore>();
-                    if (existingCore != null)
-                    {
-                        if (existingCore.isTransformed)
-                        {
-                            try { existingCore.RemoveForm(); }
-                            catch (Exception ex) { Log.Error($"[SSF] RemoveForm failed during re-transform for {pawn.Name}: {ex}"); }
-                        }
-                        pawn.health.RemoveHediff(hediffs[i]);
-                        break; // 동시에 1개만
-                    }
-                }
-            }
-
-            // 새 hediff 생성 및 부여
             Hediff newHediff = HediffMaker.MakeHediff(hediffDef, pawn);
             if (newHediff == null)
             {
                 Log.Error($"[SSF] HediffMaker.MakeHediff returned null for {hediffDef.defName}");
-                return false;
+                return;
             }
 
-            // comp에 sources 사전 설정 (CompPostPostAdd 전에 설정 불가하므로, 부여 후 설정)
             pawn.health.AddHediff(newHediff);
 
-            // 부여 후 comp 접근하여 sources 설정 + 확률 판정 중복 방지
-            var core = (newHediff as HediffWithComps)?.TryGetComp<HediffComp_ShapeshiftCore>();
-            if (core != null)
+            // 부여 후 comp에 sourceItems 설정
+            if (sources != null && sources.Count > 0)
             {
-                core.sourceItems = sources ?? new List<Thing>();
-                core.successChanceAlreadyPassed = true; // needsInit에서 중복 확률 판정 방지
+                var core = (newHediff as HediffWithComps)?.TryGetComp<HediffComp_ShapeshiftCore>();
+                if (core != null)
+                    core.sourceItems = sources;
             }
-
-            return true;
         }
 
         /// <summary>대상 Pawn의 변신 해제.</summary>

@@ -60,7 +60,7 @@ namespace ShapeshifterFramework.Comps
                 Log.Error("[SSF] CompUseEffect_Shapeshift: hediffDef가 지정되지 않았습니다.");
                 return;
             }
-            ShapeshiftCoreUtility.ApplyShift(target, Props.hediffDef, Props.successChance);
+            ShapeshiftCoreUtility.GiveShiftHediff(target, Props.hediffDef);
         }
     }
 }

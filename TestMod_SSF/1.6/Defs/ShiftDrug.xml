@@ -30,7 +30,6 @@
       <outcomeDoers>
         <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_Shapeshift">
           <hediffDef>SSFTest_BearFormHediff</hediffDef>
-          <successChance>0.85</successChance>
         </li>
       </outcomeDoers>
     </ingestible>

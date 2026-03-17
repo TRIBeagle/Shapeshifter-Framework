@@ -1,7 +1,7 @@
 // ShapeshifterFramework | Projectiles | Projectile_Polymorph.cs
 // 목적 : PolymorphProjectileExtension의 설정을 읽어, 피격 대상을 실제로 변신시키는 커스텀 투사체 로직.
 // 용도 : 투사체 명중(Impact) 시 방패(Shield)에 막혔는지 1차 검증 후, 직격 대상 및 aoeRadius 반경 내의 모든 살아있는 폰(Pawn)을 탐색(GenRadial)하여 변신을 적용함.
-//        hediffDef 기반 ShapeshiftCoreUtility.ApplyShift 호출.
+//        hediffDef 기반 GiveShiftHediff 호출.
 // 주의 : 투사체의 기본 이펙트나 파괴 로직을 정상 수행하기 위해, 변신 처리가 끝난 후 마지막에 반드시 base.Impact()를 호출하도록 설계됨.
 // AoE 팩션 필터: affectAllies=false(기본값)이면 시전자에게 적대적인 폰만 변신. true이면 모든 폰.
 
@@ -65,7 +65,7 @@ namespace ShapeshifterFramework.Projectiles
         /// <summary>확장 설정에 따라 대상에게 변신 적용.</summary>
         private static void ApplyShiftToTarget(Pawn target, PolymorphProjectileExtension ext)
         {
-            ShapeshiftCoreUtility.ApplyShift(target, ext.hediffDef, ext.successChance);
+            ShapeshiftCoreUtility.GiveShiftHediff(target, ext.hediffDef);
         }
     }
 }

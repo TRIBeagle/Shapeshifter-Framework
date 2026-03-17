@@ -2,7 +2,7 @@
 // 목적 : 변신(Shapeshift) 라이프사이클 전체를 관장하는 핵심 HediffComp.
 // 용도 : HediffDef 부여 → CompPostPostAdd → 지연 초기화(needsInit) → 첫 Tick에서 ApplyForm 실행.
 //        모든 상태 필드(장비 스냅샷, VerbTracker, 타이머 등)를 Hediff 수명과 동기화.
-// 주의 : CompPostPostAdd에서 ApplyForm을 직접 호출하지 않음 (RefreshPawn 재진입 방지).
+// 주의 : CompPostPostAdd에서 ApplyForm을 직접 호출하지 않음 (바닐라 AddHediff 스택 내 재진입 방지).
 //        needsInit == true 구간에서 CompShouldRemove가 false를 반환하여 자동 소멸 방지.
 
 using RimWorld;
@@ -36,8 +36,6 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>지연 초기화 플래그. CompPostPostAdd에서 true, 첫 CompPostTick에서 ApplyForm 실행.</summary>
         public bool needsInit = false;
 
-        /// <summary>ApplyShift 경로에서 이미 확률 판정을 통과한 경우 true. needsInit에서 중복 판정 방지.</summary>
-        public bool successChanceAlreadyPassed = false;
 
         /// <summary>폼 소환 전용 무기 여부 확인.</summary>
         public bool IsGeneratedWeapon(ThingWithComps eq)
@@ -465,21 +463,6 @@ namespace ShapeshifterFramework.Hediffs
             {
                 needsInit = false;
 
-                // 확률 판정 — ApplyShift 경로에서 이미 통과한 경우 스킵
-                if (!successChanceAlreadyPassed)
-                {
-                    float p = UnityEngine.Mathf.Clamp01(Props.defaultSuccessChance);
-                    if (p < 1f && Rand.Value > p)
-                    {
-                        Messages.Message("SSF_ShiftTarget_Resisted".Translate(pawn.LabelShortCap),
-                            MessageTypeDefOf.RejectInput, false);
-                        // 확률 실패 → hediff 자체 제거
-                        parent.Severity = 0f;
-                        return;
-                    }
-                }
-                successChanceAlreadyPassed = false;
-
                 var formDef = currentForm ?? Props.formDef;
                 if (formDef != null)
                 {
@@ -814,7 +797,7 @@ namespace ShapeshifterFramework.Hediffs
                 _isApplyingOrRemoving = true;
             }
 
-            // sources가 명시적으로 전달되면 교체, 아니면 기존 sourceItems 보존 (ApplyShift에서 사전 설정 가능)
+            // sources가 명시적으로 전달되면 교체, 아니면 기존 sourceItems 보존 (GiveShiftHediff에서 사전 설정 가능)
             if (sources != null)
                 this.sourceItems = sources;
             else if (this.sourceItems == null)

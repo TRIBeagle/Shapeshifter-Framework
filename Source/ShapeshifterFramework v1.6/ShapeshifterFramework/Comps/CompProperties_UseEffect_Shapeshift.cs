@@ -1,6 +1,6 @@
 // ShapeshifterFramework | Comps | CompProperties_UseEffect_Shapeshift.cs
 // 목적 : 소비형 아이템(Use/Ingest)을 사용했을 때 발생하는 변신 효과를 XML에 정의하기 위한 속성 클래스.
-// 용도 : 적용할 hediffDef와 성공 확률(successChance)을 보관하며, CompUseEffect_Shapeshift과 연결됨.
+// 용도 : 적용할 hediffDef를 보관하며, CompUseEffect_Shapeshift과 연결됨.
 
 using RimWorld;
 
@@ -11,7 +11,6 @@ namespace ShapeshifterFramework.Comps
     {
         /// <summary>변신 적용에 사용할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</summary>
         public Verse.HediffDef hediffDef;
-        public float successChance = 1.0f;
 
         public CompProperties_UseEffect_Shapeshift()
         {

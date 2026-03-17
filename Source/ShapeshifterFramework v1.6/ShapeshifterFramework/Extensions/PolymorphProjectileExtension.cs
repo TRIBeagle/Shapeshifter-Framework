@@ -1,6 +1,6 @@
 ﻿// ShapeshifterFramework | Extensions | PolymorphProjectileExtension.cs
 // 목적 : 총알이나 마법 등 투사체(Projectile) 명중 시 대상을 변신시키기 위한 속성(Data Container) 확장 클래스.
-// 용도 : ThingDef의 <modExtensions>에 부착되어, 타겟에게 적용할 hediffDef, 변신 성공 확률(successChance), 그리고 광역 적용을 위한 반경(aoeRadius) 설정값을 제공함.
+// 용도 : ThingDef의 <modExtensions>에 부착되어, 타겟에게 적용할 hediffDef와 광역 적용을 위한 반경(aoeRadius) 설정값을 제공함.
 
 using Verse;
 
@@ -13,9 +13,6 @@ namespace ShapeshifterFramework.Extensions
 
         /// <summary>변신 적용에 사용할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</summary>
         public Verse.HediffDef hediffDef;
-
-        // 성공 확률(0~1), 기본 1.0
-        public float successChance = 1f;
 
         // AoE 반경. 0 이하면 단일 타겟만 적용
         public float aoeRadius = 0f;

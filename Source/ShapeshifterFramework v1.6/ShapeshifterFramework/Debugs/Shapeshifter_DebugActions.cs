@@ -179,7 +179,7 @@ namespace ShapeshifterFramework.Debugs
                     Log.Warning("[SSF-Test] No HediffDef with HediffCompProperties_ShapeshiftCore found.");
                     return;
                 }
-                ShapeshiftCoreUtility.ApplyShift(pawn, bootstrapDef);
+                ShapeshiftCoreUtility.GiveShiftHediff(pawn, bootstrapDef);
                 if (!ShapeshiftCoreUtility.TryGetCore(pawn, out comp))
                 {
                     Log.Warning("[SSF-Test] Failed to bootstrap HediffComp_ShapeshiftCore.");

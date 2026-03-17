@@ -30,9 +30,6 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>조건 검사 간격 (틱). 기본 120 = 2초.</summary>
         public int checkIntervalTicks = 120;
 
-        /// <summary>조건 충족 시 변신 성공 확률. 기본 1.0 = 100%.</summary>
-        public float successChance = 1f;
-
         /// <summary>true면 발동 후 이 hediff 자체를 제거 (1회성).</summary>
         public bool triggerOnce = false;
 
