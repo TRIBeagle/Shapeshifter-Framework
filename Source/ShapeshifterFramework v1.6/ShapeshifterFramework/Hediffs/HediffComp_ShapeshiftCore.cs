@@ -9,7 +9,6 @@ using RimWorld;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -49,7 +48,7 @@ namespace ShapeshifterFramework.Hediffs
             return generatedWeapons != null && generatedWeapons.Contains(eq);
         }
 
-        private int transformTimer = 0;
+        private int transformTimer;
 
         // 체형/머리형 백업
         private BodyTypeDef originalBodyType;
@@ -80,7 +79,7 @@ namespace ShapeshifterFramework.Hediffs
         private VerbTracker shapeshiftVerbTracker;
 
         // 틱(Tick) 에러 스팸 방지용 플래그
-        private bool verbTickErrorLogged = false;
+        private bool verbTickErrorLogged;
 
         // 기즈모 verb 중복 방지용 재사용 HashSet (GC 할당 방지)
         private readonly HashSet<Verb> _tmpSeenVerbs = new HashSet<Verb>();
@@ -91,13 +90,13 @@ namespace ShapeshifterFramework.Hediffs
         public bool suppressEquipLock = false;
 
         // ApplyForm/RemoveForm 재진입 방지 플래그 (이벤트 콜백으로 인한 중첩 호출 차단)
-        private bool _isApplyingOrRemoving = false;
+        private bool _isApplyingOrRemoving;
 
         // PostLoadInit에서 Reference 연결 완료 후 AddRange하기 위한 임시 보관 필드
         private List<Hediff> __tmpHediffsLoad = null;
         private HashSet<string> __tmpPrevApIds = null;
         private HashSet<string> __tmpPrevWpIds = null;
-        private bool needsGearResolve = false;
+        private bool needsGearResolve;
 
         // 파츠 복원 추적
         private readonly List<ShapeshiftPartRestoreRecord> tempPartRestoreRecords
@@ -447,9 +446,9 @@ namespace ShapeshifterFramework.Hediffs
                     if (form.skinColor.HasValue) pawn.story.skinColorOverride = form.skinColor.Value;
                 }
 
-                try { pawn.Drawer?.renderer?.SetAllGraphicsDirty(); } catch (Exception) { }
-                try { PortraitsCache.SetDirty(pawn); } catch (Exception) { }
-                try { GlobalTextureAtlasManager.TryMarkPawnFrameSetDirty(pawn); } catch (Exception) { }
+                try { pawn.Drawer?.renderer?.SetAllGraphicsDirty(); } catch (Exception) { /* 호환성 방어 — 타 모드 충돌 시 무시 */ }
+                try { PortraitsCache.SetDirty(pawn); } catch (Exception) { /* 호환성 방어 — 타 모드 충돌 시 무시 */ }
+                try { GlobalTextureAtlasManager.TryMarkPawnFrameSetDirty(pawn); } catch (Exception) { /* 호환성 방어 — 타 모드 충돌 시 무시 */ }
             }
         }
 
@@ -1090,6 +1089,7 @@ namespace ShapeshifterFramework.Hediffs
 
             // VerbTracker 해제
             shapeshiftVerbTracker = null;
+            verbAutoToggle.Clear();
 
             if (__oldForm != null)
                 ShapeshiftTransformFxUtility.PlayExitFx(pawn, __oldForm);

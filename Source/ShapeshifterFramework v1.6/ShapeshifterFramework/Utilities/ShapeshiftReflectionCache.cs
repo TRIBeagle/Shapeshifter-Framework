@@ -26,7 +26,7 @@ namespace ShapeshifterFramework.Utilities
         internal static Pawn GetPawn(PawnRenderer renderer)
         {
             if (renderer == null) return null;
-            try { return RendererPawnRef(renderer); } catch { }
+            try { return RendererPawnRef(renderer); } catch { /* FieldRef 실패 시 FieldInfo 폴백 */ }
             return RendererPawnFI != null ? (Pawn)RendererPawnFI.GetValue(renderer) : null;
         }
 
@@ -43,7 +43,7 @@ namespace ShapeshifterFramework.Utilities
         internal static Pawn GetPawn(Pawn_PathFollower pf)
         {
             if (pf == null) return null;
-            try { return PathFollowerPawnRef(pf); } catch { }
+            try { return PathFollowerPawnRef(pf); } catch { /* FieldRef 실패 시 FieldInfo 폴백 */ }
             return PathFollowerPawnFI != null ? (Pawn)PathFollowerPawnFI.GetValue(pf) : null;
         }
 
@@ -67,7 +67,7 @@ namespace ShapeshifterFramework.Utilities
 
             if (renderer == null || RendererResultsFI == null) return false;
 
-            try { boxedResults = RendererResultsFI.GetValue(renderer); } catch { boxedResults = null; }
+            try { boxedResults = RendererResultsFI.GetValue(renderer); } catch { boxedResults = null; /* 리플렉션 실패 방어 */ }
             if (boxedResults == null) return false;
 
             var t = boxedResults.GetType(); // PawnRenderer+PreRenderResults
@@ -85,10 +85,7 @@ namespace ShapeshifterFramework.Utilities
                 parms = (PawnDrawParms)parmsFi.GetValue(boxedResults);
                 return true;
             }
-            catch
-            {
-                return false;
-            }
+            catch { return false; /* struct 캐스트 실패 방어 */ }
         }
 
         /// <summary>변경된 parms를 renderer.results에 반영.</summary>
@@ -103,10 +100,7 @@ namespace ShapeshifterFramework.Utilities
                 RendererResultsFI.SetValue(renderer, boxedResults);
                 return true;
             }
-            catch
-            {
-                return false;
-            }
+            catch { return false; /* 리플렉션 SetValue 실패 방어 */ }
         }
 
         #endregion
@@ -132,10 +126,10 @@ namespace ShapeshifterFramework.Utilities
                 }
                 if (fi != null && fi.FieldType == typeof(Pawn))
                 {
-                    try { var p = (Pawn)fi.GetValue(h); if (p != null) return p; } catch { }
+                    try { var p = (Pawn)fi.GetValue(h); if (p != null) return p; } catch { /* 리플렉션 폴백 — 타입 불일치 무시 */ }
                 }
                 IThingHolder next = null;
-                try { next = h.ParentHolder; } catch { }
+                try { next = h.ParentHolder; } catch { /* ParentHolder 접근 실패 무시 */ }
                 h = next;
             }
             return null;
@@ -154,7 +148,7 @@ namespace ShapeshifterFramework.Utilities
         internal static Thing GetAttachParent(object attachPointTracker)
         {
             if (attachPointTracker == null || AptParentFI == null) return null;
-            try { return (Thing)AptParentFI.GetValue(attachPointTracker); } catch { return null; }
+            try { return (Thing)AptParentFI.GetValue(attachPointTracker); } catch { return null; /* 리플렉션 실패 방어 */ }
         }
 
         #endregion
@@ -171,9 +165,9 @@ namespace ShapeshifterFramework.Utilities
         {
             if (node == null) return null;
             object v = null;
-            if (PI_Node_Owner != null) { try { v = PI_Node_Owner.GetValue(node, null); } catch { } }
+            if (PI_Node_Owner != null) { try { v = PI_Node_Owner.GetValue(node, null); } catch { /* Property 접근 실패 → Field 폴백 */ } }
             if (v != null) return v;
-            if (FI_Node_owner != null) { try { v = FI_Node_owner.GetValue(node); } catch { } }
+            if (FI_Node_owner != null) { try { v = FI_Node_owner.GetValue(node); } catch { /* Field 폴백도 실패 — 무시 */ } }
             return v;
         }
 
@@ -182,9 +176,9 @@ namespace ShapeshifterFramework.Utilities
         {
             if (node == null) return null;
             object v = null;
-            if (PI_Node_Props != null) { try { v = PI_Node_Props.GetValue(node, null); } catch { } }
+            if (PI_Node_Props != null) { try { v = PI_Node_Props.GetValue(node, null); } catch { /* Property 접근 실패 → Field 폴백 */ } }
             if (v != null) return v;
-            if (FI_Node_props != null) { try { v = FI_Node_props.GetValue(node); } catch { } }
+            if (FI_Node_props != null) { try { v = FI_Node_props.GetValue(node); } catch { /* Field 폴백도 실패 — 무시 */ } }
             return v;
         }
 
@@ -390,7 +384,7 @@ namespace ShapeshifterFramework.Utilities
             var mi = GetMethodCached(obj.GetType(), name, paramTypes, false);
             if (mi == null) return false;
 
-            try { result = mi.Invoke(obj, args); return true; } catch { return false; }
+            try { result = mi.Invoke(obj, args); return true; } catch { return false; /* 메서드 호출 실패 방어 */ }
         }
 
         /// <summary>정적 메서드 호출(옵션 인자/결과 out).</summary>
@@ -418,7 +412,7 @@ namespace ShapeshifterFramework.Utilities
             var mi = GetMethodCached(t, name, paramTypes, true);
             if (mi == null) return false;
 
-            try { result = mi.Invoke(null, args); return true; } catch { return false; }
+            try { result = mi.Invoke(null, args); return true; } catch { return false; /* 정적 메서드 호출 실패 방어 */ }
         }
 
         #endregion
@@ -431,7 +425,7 @@ namespace ShapeshifterFramework.Utilities
             if (obj == null) return default(T);
             var fi = GetFieldCached(obj.GetType(), name);
             if (fi == null) return default(T);
-            try { return (T)fi.GetValue(obj); } catch { return default(T); }
+            try { return (T)fi.GetValue(obj); } catch { return default(T); /* 필드 읽기 실패 방어 */ }
         }
 
         /// <summary>인스턴스 프로퍼티 값을 제네릭으로 읽는다(캐시 사용).</summary>
@@ -440,7 +434,7 @@ namespace ShapeshifterFramework.Utilities
             if (obj == null) return default(T);
             var pi = GetPropCached(obj.GetType(), name);
             if (pi == null || !pi.CanRead) return default(T);
-            try { return (T)pi.GetValue(obj, null); } catch { return default(T); }
+            try { return (T)pi.GetValue(obj, null); } catch { return default(T); /* 프로퍼티 읽기 실패 방어 */ }
         }
 
         /// <summary>인스턴스 필드 값을 설정한다(캐시 사용).</summary>
@@ -449,7 +443,7 @@ namespace ShapeshifterFramework.Utilities
             if (obj == null || string.IsNullOrEmpty(name)) return false;
             var fi = GetFieldCached(obj.GetType(), name);
             if (fi == null) return false;
-            try { fi.SetValue(obj, value); return true; } catch { return false; }
+            try { fi.SetValue(obj, value); return true; } catch { return false; /* 필드 쓰기 실패 방어 */ }
         }
 
         /// <summary>인스턴스 프로퍼티 값을 설정한다(캐시 사용).</summary>
@@ -458,7 +452,7 @@ namespace ShapeshifterFramework.Utilities
             if (obj == null || string.IsNullOrEmpty(name)) return false;
             var pi = GetPropCached(obj.GetType(), name);
             if (pi == null || !pi.CanWrite) return false;
-            try { pi.SetValue(obj, value, null); return true; } catch { return false; }
+            try { pi.SetValue(obj, value, null); return true; } catch { return false; /* 프로퍼티 쓰기 실패 방어 */ }
         }
 
         #endregion
@@ -511,7 +505,7 @@ namespace ShapeshifterFramework.Utilities
                         var v = fs[i].GetValue(obj) as T;
                         if (v != null) return v;
                     }
-                    catch { }
+                    catch { /* 필드 스캔 캐스트 실패 무시 */ }
                 }
             }
             return null;
@@ -529,7 +523,7 @@ namespace ShapeshifterFramework.Utilities
                 if (string.Equals(fs[i].Name, "exclusionTags", StringComparison.OrdinalIgnoreCase)
                     && typeof(List<string>).IsAssignableFrom(fs[i].FieldType))
                 {
-                    try { return (List<string>)fs[i].GetValue(obj); } catch { }
+                    try { return (List<string>)fs[i].GetValue(obj); } catch { /* 필드 읽기 실패 무시 */ }
                 }
             }
 
@@ -541,7 +535,7 @@ namespace ShapeshifterFramework.Utilities
                     && string.Equals(ps[i].Name, "exclusionTags", StringComparison.OrdinalIgnoreCase)
                     && typeof(List<string>).IsAssignableFrom(ps[i].PropertyType))
                 {
-                    try { return (List<string>)ps[i].GetValue(obj, null); } catch { }
+                    try { return (List<string>)ps[i].GetValue(obj, null); } catch { /* 프로퍼티 읽기 실패 무시 */ }
                 }
             }
             return null;

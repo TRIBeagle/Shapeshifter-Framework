@@ -49,7 +49,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 success = tryEquip(pawn, item);
             }
-            catch { success = false; }
+            catch { success = false; /* 장착 시도 실패 — 복구 경로로 진입 */ }
 
             if (!success)
             {
