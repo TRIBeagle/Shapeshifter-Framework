@@ -1136,12 +1136,12 @@ namespace ShapeshifterFramework.Hediffs
             else if (__oldForm != null && __oldForm.revertAddHediffs != null && __oldForm.revertAddHediffs.Count > 0
                 && pawn.health != null && !pawn.Dead)
             {
-                // FormDef 폴백 (Phase 3에서 List<HediffAddEntry>로 통일 예정)
+                // FormDef 폴백 — revertAddHediffs는 List<HediffAddEntry>
                 for (int i = 0; i < __oldForm.revertAddHediffs.Count; i++)
                 {
-                    HediffDef hd = __oldForm.revertAddHediffs[i];
-                    if (hd != null)
-                        pawn.health.AddHediff(hd);
+                    var entry = __oldForm.revertAddHediffs[i];
+                    if (entry?.hediff != null)
+                        pawn.health.AddHediff(entry.hediff);
                 }
             }
 
@@ -1825,7 +1825,7 @@ namespace ShapeshifterFramework.Hediffs
                             lostCount++;
                     }
                     if (lostCount > 0)
-                        Log.Warning($"[SSF] {lostCount} hediff reference(s) lost during load for pawn {pawn?.Name}. Revert may leave orphaned hediffs.");
+                        Log.Warning($"[SSF] {lostCount} hediff reference(s) lost during load for pawn {Pawn?.Name}. Revert may leave orphaned hediffs.");
                     __tmpHediffsLoad = null;
                 }
                 else

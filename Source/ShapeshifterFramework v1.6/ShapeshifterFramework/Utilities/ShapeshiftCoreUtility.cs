@@ -67,7 +67,7 @@ namespace ShapeshifterFramework.Utilities
             float p = UnityEngine.Mathf.Clamp01(successChance);
             if (p < 1f && Rand.Value > p)
             {
-                RimWorld.Messages.Message("SSF_ShiftTarget_Resisted".Translate(pawn.LabelShortCap), RimWorld.MessageTypeDefOf.RejectInput, false);
+                Messages.Message("SSF_ShiftTarget_Resisted".Translate(pawn.LabelShortCap), MessageTypeDefOf.RejectInput, false);
                 return false;
             }
 
