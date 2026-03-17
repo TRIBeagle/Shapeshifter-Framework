@@ -58,8 +58,9 @@ namespace ShapeshifterFramework.Utilities
         /// <param name="hediffDef">부여할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</param>
         /// <param name="successChance">성공 확률 0~1. 기본 1.</param>
         /// <param name="sources">변신 유발 아이템. null이면 빈 리스트.</param>
+        /// <param name="sourceItemRequireEquipped">true면 sourceItems가 장비 슬롯에 있어야 유지, false면 인벤토리 소지만으로 유지.</param>
         /// <returns>성공 시 true.</returns>
-        public static bool ApplyShift(Verse.Pawn pawn, HediffDef hediffDef, float successChance = 1f, List<Thing> sources = null)
+        public static bool ApplyShift(Verse.Pawn pawn, HediffDef hediffDef, float successChance = 1f, List<Thing> sources = null, bool sourceItemRequireEquipped = false)
         {
             if (pawn == null || pawn.Dead || hediffDef == null) return false;
 
@@ -107,6 +108,7 @@ namespace ShapeshifterFramework.Utilities
             if (core != null)
             {
                 core.sourceItems = sources ?? new List<Thing>();
+                core.sourceItemRequireEquipped = sourceItemRequireEquipped;
             }
 
             return true;

@@ -127,7 +127,64 @@ namespace ShapeshifterFramework.Comps
                 Log.Error("[SSF] CompAbilityEffect_Shapeshift: hediffDef가 지정되지 않았습니다.");
                 return;
             }
-            ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance);
+
+            // 캐스터의 장비에서 이 어빌리티를 부여한 CompGiveAbility_Shapeshift 아이템 탐색
+            List<Thing> sources = null;
+            bool srcRequireEquipped = false;
+            var caster = parent?.pawn;
+            if (caster != null)
+            {
+                Thing grantingItem = FindGrantingItem(caster, parent.def);
+                if (grantingItem != null)
+                {
+                    sources = new List<Thing> { grantingItem };
+                    var giveComp = grantingItem.TryGetComp<CompGiveAbility_Shapeshift>();
+                    if (giveComp != null)
+                        srcRequireEquipped = giveComp.Props.requireEquipped;
+                }
+            }
+
+            ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance, sources, srcRequireEquipped);
+        }
+
+        /// <summary>캐스터의 장비/인벤토리에서 해당 AbilityDef를 부여하는 아이템 탐색.</summary>
+        private static Thing FindGrantingItem(Pawn pawn, AbilityDef abilityDef)
+        {
+            if (abilityDef == null) return null;
+
+            // 장비(apparel) 검색
+            if (pawn.apparel != null)
+            {
+                var wornApparel = pawn.apparel.WornApparel;
+                for (int i = 0; i < wornApparel.Count; i++)
+                {
+                    var comp = wornApparel[i].TryGetComp<CompGiveAbility_Shapeshift>();
+                    if (comp != null && comp.Props.ability == abilityDef) return wornApparel[i];
+                }
+            }
+
+            // 장비(equipment) 검색
+            if (pawn.equipment != null)
+            {
+                var allEquip = pawn.equipment.AllEquipmentListForReading;
+                for (int i = 0; i < allEquip.Count; i++)
+                {
+                    var comp = allEquip[i].TryGetComp<CompGiveAbility_Shapeshift>();
+                    if (comp != null && comp.Props.ability == abilityDef) return allEquip[i];
+                }
+            }
+
+            // 인벤토리 검색
+            if (pawn.inventory?.innerContainer != null)
+            {
+                foreach (var item in pawn.inventory.innerContainer)
+                {
+                    var comp = item.TryGetComp<CompGiveAbility_Shapeshift>();
+                    if (comp != null && comp.Props.ability == abilityDef) return item;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>변신 중 다른 폼 어빌리티 비활성화 (allowedFromForms 허용 시 제외).</summary>

@@ -69,6 +69,9 @@ namespace ShapeshifterFramework.Hediffs
         // 변신을 유발한 원본 아이템 (예: 변신 반지) - 드랍 보호용
         public List<Thing> sourceItems = new List<Thing>();
 
+        // true: sourceItems가 장비 슬롯(apparel/equipment)에 있어야 유지. false: 인벤토리 소지만으로도 유지.
+        public bool sourceItemRequireEquipped = false;
+
         // 변신 시 소환된 폼 전용 장비 추적 (해제 시 삭제 및 복사 방지용)
         private List<Apparel> generatedApparel = new List<Apparel>();
         private List<ThingWithComps> generatedWeapons = new List<ThingWithComps>();
@@ -535,10 +538,12 @@ namespace ShapeshifterFramework.Hediffs
                             Thing item = this.sourceItems[i];
                             if (item == null) continue;
 
-                            bool isHeldByPawn =
+                            bool isEquipped =
                                 (pawn.apparel != null && pawn.apparel.Contains(item as Apparel)) ||
-                                (pawn.equipment != null && pawn.equipment.Contains(item as ThingWithComps)) ||
-                                (pawn.inventory != null && pawn.inventory.innerContainer.Contains(item));
+                                (pawn.equipment != null && pawn.equipment.Contains(item as ThingWithComps));
+
+                            bool isHeldByPawn = isEquipped ||
+                                (!sourceItemRequireEquipped && pawn.inventory != null && pawn.inventory.innerContainer.Contains(item));
 
                             if (item.Destroyed || item.Spawned || !isHeldByPawn)
                             {
@@ -1755,6 +1760,7 @@ namespace ShapeshifterFramework.Hediffs
                 }
             }
             Scribe_Collections.Look(ref sourceItems, "sourceItems", LookMode.Reference);
+            Scribe_Values.Look(ref sourceItemRequireEquipped, "sourceItemRequireEquipped", false);
             Scribe_Collections.Look(ref generatedApparel, "generatedApparel", LookMode.Reference);
             Scribe_Collections.Look(ref generatedWeapons, "generatedWeapons", LookMode.Reference);
 

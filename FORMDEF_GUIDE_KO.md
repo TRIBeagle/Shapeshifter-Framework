@@ -695,8 +695,8 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 |------|----------|--------|
 | 유전자 | `GeneDef.abilities` | 유전자가 어빌리티 자동 부여 (Biotech). |
 | 헤디프 | `HediffCompProperties_GiveAbility` | hediff 보유 시 어빌리티 부여. |
-| 아이템 (장비) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=true`) | 장비 시 어빌리티 부여. |
-| 아이템 (소지) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=false`) | 인벤토리 소지 시 부여. |
+| 아이템 (장비) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=true`) | 장비 시 어빌리티 부여. 어빌리티로 변신 시 해당 아이템이 `sourceItem`으로 등록되며 `sourceItemRequireEquipped=true` — 장비 해제 시 변신 해제. |
+| 아이템 (소지) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=false`) | 인벤토리 소지 시 부여. 해당 아이템이 `sourceItem`으로 등록되며 `sourceItemRequireEquipped=false` — 드롭/파괴 시 해제, 인벤토리 이동은 유지. |
 | 약물 | `IngestionOutcomeDoer_Shapeshift` | 복용 시 직접 변신. `hediffDef` / `formDefName` 지원. |
 | 스크롤/사용 | `CompProperties_UseEffect_Shapeshift` | 사용 시 직접 변신. `hediffDef` / `formDefName` 지원. |
 | 투사체 | `PolymorphProjectileExtension` | 명중 시 변신. `hediffDef` / `formDefName`, `aoeRadius`, `affectAllies` 지원. |

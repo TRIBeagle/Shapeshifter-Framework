@@ -190,6 +190,9 @@
 ### 수동 확인
 - [ ] `[M]` 7-9. revertOnDowned=true → 의식 상실 시 자동 해제
 - [ ] `[M]` 7-10. MagicStone 드롭 시 변신 유지 여부 확인
+- [ ] `[M]` 7-11. sourceItemRequireEquipped=true 장비 해제(인벤토리 이동) → 변신 해제 확인
+- [ ] `[M]` 7-12. sourceItemRequireEquipped=false 장비 해제(인벤토리 이동) → 변신 유지 확인
+- [ ] `[M]` 7-13. sourceItem 파괴 시 → 변신 해제 확인 (requireEquipped 무관)
 
 ---
 
