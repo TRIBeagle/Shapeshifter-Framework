@@ -1,6 +1,6 @@
 # Shapeshifter Framework — FormDef Creation Guide
 
-> Complete reference for creating custom transformation forms. Reflects the actual C# fields in `ShapeshiftFormDef.cs`.
+> Complete reference for creating custom transformation forms. Reflects the HediffComp-based architecture where **HediffDef is the entry point** and **FormDef is the visual/behavioral data sheet**.
 
 All fields are **optional** unless noted otherwise. Omitted fields fall back to vanilla defaults.
 
@@ -8,9 +8,10 @@ All fields are **optional** unless noted otherwise. Omitted fields fall back to 
 
 ## Quick Start
 
-A minimal form only needs `defName` and visual settings:
+A minimal setup requires two pieces: a **FormDef** (visuals, gear, tools) and a **HediffDef** (entry point, stats).
 
 ```xml
+<!-- 1. FormDef — visual/behavioral data sheet -->
 <ShapeshifterFramework.ShapeshiftFormDef>
   <defName>MyForm</defName>
   <label>My Form</label>
@@ -19,17 +20,33 @@ A minimal form only needs `defName` and visual settings:
     <replacementTexPath>Things/Pawn/MyCreature/MyCreature</replacementTexPath>
   </body>
   <head><mode>Hidden</mode></head>
-  <durationTicks>30000</durationTicks>
 </ShapeshifterFramework.ShapeshiftFormDef>
+
+<!-- 2. HediffDef — entry point with stats -->
+<HediffDef ParentName="SSF_ShapeshiftFormBase">
+  <defName>MyForm_Hediff</defName>
+  <label>my form</label>
+  <stages>
+    <li>
+      <statOffsets><MoveSpeed>1.5</MoveSpeed></statOffsets>
+    </li>
+  </stages>
+  <comps>
+    <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+      <formDef>MyForm</formDef>
+      <durationTicks>30000</durationTicks>
+    </li>
+  </comps>
+</HediffDef>
 ```
 
-For stat/capacity modifiers, add a `linkedHediff` pointing to a vanilla HediffDef with `statOffsets`/`statFactors`/`capMods` in its stages.
+Stats and capacities go on the **HediffDef stages** (vanilla `statOffsets`, `statFactors`, `capMods`). The FormDef only holds visuals, gear, tools, sounds, and sustain conditions.
 
 ---
 
 ## Abstract Base Forms
 
-Three pre-built parents in `SSF_BaseForms.xml`:
+Three pre-built FormDef parents in `SSF_BaseForms.xml`:
 
 | Parent | Equipment | Visual Hiding | Best For |
 |--------|-----------|---------------|----------|
@@ -51,32 +68,81 @@ Usage: `<ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal
 | `label` | string | Display name. |
 | `description` | string | Tooltip text. |
 
-### 2. Linked Hediff
+### 2. HediffDef Entry Point
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `linkedHediff` | HediffDef | Optional. Hediff applied during transformation. Removing it externally auto-reverts the form. Define stat/capacity modifiers in its HediffDef stages. |
+The **HediffDef** is the entry point for all transformations. The FormDef is a pure data sheet referenced by the HediffDef's `HediffCompProperties_ShapeshiftCore.formDef`.
+
+**Architecture:**
+- HediffDef owns the comp `HediffComp_ShapeshiftCore` which references a FormDef.
+- Stats/capacities are defined on HediffDef stages (vanilla `statOffsets`, `statFactors`, `capMods`).
+- N:1 mapping: multiple HediffDefs can reference the **same** FormDef (same visuals, different stat profiles).
+- Removing the hediff externally auto-reverts the form.
+
+**Abstract base:** Use `SSF_ShapeshiftFormBase` as `ParentName` to inherit all required defaults (`hediffClass`, `isBad`, `initialSeverity`, etc.).
 
 ```xml
-<!-- If you need stats, define them on the HediffDef -->
-<HediffDef>
-  <defName>MyForm_Hediff</defName>
-  <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
-  <label>my form</label>
-  <isBad>false</isBad>
+<HediffDef ParentName="SSF_ShapeshiftFormBase">
+  <defName>WolfForm_Hediff</defName>
+  <label>wolf form</label>
   <stages>
     <li>
-      <statOffsets><MoveSpeed>1.5</MoveSpeed></statOffsets>
+      <statOffsets><MoveSpeed>2.5</MoveSpeed></statOffsets>
       <capMods>
         <li><capacity>Moving</capacity><postFactor>1.30</postFactor></li>
       </capMods>
     </li>
   </stages>
+  <comps>
+    <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+      <formDef>WolfForm</formDef>
+    </li>
+  </comps>
+</HediffDef>
+```
+
+**N:1 mapping example** — same visuals, different stats:
+
+```xml
+<!-- Two HediffDefs sharing one FormDef -->
+<HediffDef ParentName="SSF_ShapeshiftFormBase">
+  <defName>WolfForm_Normal</defName>
+  <label>wolf form</label>
+  <stages><li><statOffsets><MoveSpeed>1.5</MoveSpeed></statOffsets></li></stages>
+  <comps>
+    <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+      <formDef>WolfForm</formDef>
+    </li>
+  </comps>
 </HediffDef>
 
-<!-- Then reference it -->
-<linkedHediff>MyForm_Hediff</linkedHediff>
+<HediffDef ParentName="SSF_ShapeshiftFormBase">
+  <defName>WolfForm_Alpha</defName>
+  <label>alpha wolf form</label>
+  <stages><li><statOffsets><MoveSpeed>3.0</MoveSpeed><ArmorRating_Sharp>0.5</ArmorRating_Sharp></statOffsets></li></stages>
+  <comps>
+    <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+      <formDef>WolfForm</formDef>
+      <durationTicks>15000</durationTicks>
+    </li>
+  </comps>
+</HediffDef>
 ```
+
+**CompProperties override fields** (null = use FormDef default):
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `formDef` | ShapeshiftFormDef | null | **Core.** The FormDef this hediff applies. null = set at runtime via `SetFormDef()`. |
+| `durationTicks` | int? | null | Override form duration. null = use FormDef value. |
+| `canRevertVoluntarily` | bool? | null | Override voluntary revert. null = use FormDef value. |
+| `revertOnDowned` | bool? | null | Override revert-on-downed. null = use FormDef value. |
+| `sustainApparels` | List\<ThingDef\> | null | Override sustain apparel list. |
+| `sustainWeapons` | List\<ThingDef\> | null | Override sustain weapon list. |
+| `sustainHediffs` | List\<HediffDef\> | null | Override sustain hediff list. |
+| `sustainGenes` | List\<GeneDef\> | null | Override sustain gene list (Biotech). |
+| `sustainMode` | SustainMode? | null | Override sustain mode (`All` / `Any`). |
+| `revertDrops` | List\<ThingDefCountClass\> | null | Override revert drops. |
+| `revertAddHediffs` | List\<HediffAddEntry\> | null | Override revert hediffs. |
 
 ### 3. Race / Mutant Filters
 
@@ -270,13 +336,25 @@ Auto-attack default: first ranged verb is ON, rest OFF. Toggling one verb ON tur
 
 **Duration & Revert:**
 
+Duration and revert behavior fields can be set on the **FormDef** (as defaults) or overridden on the **HediffCompProperties_ShapeshiftCore** (see Section 2).
+
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `durationTicks` | int? | null (infinite) | Form duration in ticks. 60000 = 1 in-game day. |
 | `canRevertVoluntarily` | bool | true | `false` = no revert gizmo (forced/curse forms). |
 | `revertOnDowned` | bool | false | Auto-revert on incapacitation. |
 | `revertDrops` | List\<ThingDefCountClass\> | — | Items dropped on revert (shed skin, crystals, etc.). |
-| `revertAddHediffs` | List\<HediffDef\> | — | Hediffs applied on revert (fatigue, etc.). **Not tracked** — follows vanilla lifecycle. |
+| `revertAddHediffs` | List\<HediffAddEntry\> | — | Hediffs applied on revert (fatigue, etc.). **Not tracked** — follows vanilla lifecycle. Uses the same `HediffAddEntry` structure as `addHediffs` (see Section 11). |
+
+```xml
+<!-- revertAddHediffs example — apply fatigue to whole body on revert -->
+<revertAddHediffs>
+  <li>
+    <hediff>SSF_TransformFatigue</hediff>
+    <severity>0.5</severity>
+  </li>
+</revertAddHediffs>
+```
 
 **Gizmo Icons:**
 - `gizmoIconPathEnter` / `gizmoIconPathRevert` — custom button icons.
@@ -320,13 +398,53 @@ Auto-attack default: first ranged verb is ON, rest OFF. Toggling one verb ON tur
 
 ### 15. Mod Compatibility
 
+Mod-specific fields are now placed in **DefModExtension** blocks on the FormDef, keeping the core FormDef clean.
+
 **HAR (Humanoid Alien Races):**
-- `showHarAddons` (bool, default false) — keep BodyAddons visible. `MayRequire: erdelf.HumanoidAlienRaces`
+
+```xml
+<ShapeshifterFramework.ShapeshiftFormDef>
+  <defName>MyForm</defName>
+  <!-- ... other fields ... -->
+  <modExtensions>
+    <li Class="ShapeshifterFramework.Compat.HARFormExtension" MayRequire="erdelf.HumanoidAlienRaces">
+      <showHarAddons>true</showHarAddons>
+    </li>
+  </modExtensions>
+</ShapeshifterFramework.ShapeshiftFormDef>
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `showHarAddons` | bool | false | Keep HAR BodyAddons visible during transformation. |
 
 **Facial Animation:**
-All fields `MayRequire: Nals.FacialAnimation`:
-- `faHeadTypeDef`, `faEyeballTypeDef`, `faLidTypeDef`, `faBrowTypeDef`, `faMouthTypeDef`, `faSkinTypeDef`
-- `faEyeColor` / `faEyeColor2` (ColorInt)
+
+```xml
+<modExtensions>
+  <li Class="ShapeshifterFramework.Compat.FAFormExtension" MayRequire="Nals.FacialAnimation">
+    <faHeadTypeDef>Cat_Head</faHeadTypeDef>
+    <faEyeballTypeDef>Cat_Eyeball</faEyeballTypeDef>
+    <faLidTypeDef>Cat_Lid</faLidTypeDef>
+    <faBrowTypeDef>Cat_Brow</faBrowTypeDef>
+    <faMouthTypeDef>Cat_Mouth</faMouthTypeDef>
+    <faSkinTypeDef>Cat_Skin</faSkinTypeDef>
+    <faEyeColor>(255, 200, 0, 255)</faEyeColor>
+    <faEyeColor2>(200, 150, 0, 255)</faEyeColor2>
+  </li>
+</modExtensions>
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `faHeadTypeDef` | string | FA head type override. |
+| `faEyeballTypeDef` | string | FA eyeball type override. |
+| `faLidTypeDef` | string | FA lid type override. |
+| `faBrowTypeDef` | string | FA brow type override. |
+| `faMouthTypeDef` | string | FA mouth type override. |
+| `faSkinTypeDef` | string | FA skin type override. |
+| `faEyeColor` | ColorInt | FA eye color (R, G, B, A). |
+| `faEyeColor2` | ColorInt | FA secondary eye color (R, G, B, A). |
 
 **Simple Sidearms:** Automatic — no XML needed. Weapon memory is backed up on transform and restored on revert.
 
@@ -334,7 +452,7 @@ All fields `MayRequire: Nals.FacialAnimation`:
 
 ## Trigger System
 
-The FormDef defines **what** the form looks like. **How** and **when** it activates is handled separately:
+The FormDef defines **what** the form looks like. The HediffDef defines **stats and entry point**. **How** and **when** the transformation activates is handled by trigger components:
 
 ### Base AbilityDefs (Abstract Parents)
 
@@ -354,7 +472,8 @@ Attach to an `AbilityDef`'s `<comps>`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `formDefName` | string | FormDef defName to apply. |
+| `hediffDef` | HediffDef | **Preferred.** The HediffDef to apply (must contain `HediffCompProperties_ShapeshiftCore`). |
+| `formDefName` | string | Legacy fallback. FormDef defName to apply (uses generic hediff). Ignored if `hediffDef` is set. |
 | `successChance` | float | Success probability (default 1.0). |
 | `allowedRaces` / `disallowedRaces` | List\<ThingDef\> | Caster race filter. |
 | `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | Caster mutant filter (Anomaly). |
@@ -369,9 +488,11 @@ Attach to an `AbilityDef`'s `<comps>`:
 | Hediff | `HediffCompProperties_GiveAbility` | Hediff grants ability while present. |
 | Item (equipped) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=true`) | Equipped item grants ability. |
 | Item (inventory) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=false`) | Inventory item grants ability. |
-| Drug | `IngestionOutcomeDoer_Shapeshift` | Drug triggers shift directly. |
-| Scroll/UseItem | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. |
-| Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `aoeRadius`, `affectAllies`. |
+| Drug | `IngestionOutcomeDoer_Shapeshift` | Drug triggers shift directly. Fields: `hediffDef` (preferred), `formDefName` (fallback). |
+| Scroll/UseItem | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Fields: `hediffDef` (preferred), `formDefName` (fallback). |
+| Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `hediffDef` (preferred), `formDefName` (fallback), `aoeRadius`, `affectAllies`. |
+
+> **Vanilla GiveHediff compatibility:** Because the entry point is a standard HediffDef, vanilla `GiveHediff` operations (e.g., from other mods, dev tools, or vanilla hediff givers) will work. When the hediff is added, `HediffComp_ShapeshiftCore.CompPostPostAdd` automatically calls `ApplyForm()`.
 
 ### HediffComp_AutoShift (Conditional Auto-Shift)
 
@@ -379,7 +500,8 @@ Attach `HediffCompProperties_AutoShift` to any HediffDef. Triggers transformatio
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `formDefName` | string | — | FormDef to shift into. |
+| `hediffDef` | HediffDef | — | **Preferred.** HediffDef to apply for the shift. |
+| `formDefName` | string | — | Legacy fallback. FormDef defName. Ignored if `hediffDef` is set. |
 | `healthThreshold` | float | 0 (disabled) | Trigger below this health %. E.g., `0.3` = 30%. |
 | `triggerMentalStates` | List\<MentalStateDef\> | — | Trigger on these mental states. |
 | `triggerSunGlowBelow` | float | 0 (disabled) | Trigger when sun glow is below this value. `0.5` = night. |
@@ -398,7 +520,7 @@ Attach `HediffCompProperties_AutoShift` to any HediffDef. Triggers transformatio
   <isBad>false</isBad>
   <comps>
     <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
-      <formDefName>WerewolfForm</formDefName>
+      <hediffDef>WerewolfForm_Hediff</hediffDef>
       <healthThreshold>0.3</healthThreshold>
       <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
       <successChance>0.8</successChance>
@@ -420,32 +542,47 @@ Stage 1 (BeastkinForm) → addAbilities grants [FullBeast ability]
 
 ---
 
+## Events / External Mod Integration
+
+The framework exposes C# events for external mods to react to transformations:
+
+```csharp
+// Subscribe (e.g., in your mod's HarmonyInit or GameComponent)
+ShapeshifterFramework.Utilities.ShapeshiftCoreUtility.OnFormApplied += MyOnFormApplied;
+ShapeshifterFramework.Utilities.ShapeshiftCoreUtility.OnFormRemoved += MyOnFormRemoved;
+
+// Handlers
+private static void MyOnFormApplied(Pawn pawn, ShapeshiftFormDef form)
+{
+    // Called after a form is fully applied (visuals, gear, hediffs all set).
+    Log.Message($"{pawn.LabelShortCap} shifted into {form.defName}");
+}
+
+private static void MyOnFormRemoved(Pawn pawn, ShapeshiftFormDef form)
+{
+    // Called after a form is fully reverted (originals restored).
+    Log.Message($"{pawn.LabelShortCap} reverted from {form.defName}");
+}
+```
+
+| Event | Signature | Fires When |
+|-------|-----------|------------|
+| `OnFormApplied` | `Action<Pawn, ShapeshiftFormDef>` | After `HediffComp_ShapeshiftCore.ApplyForm()` completes successfully. |
+| `OnFormRemoved` | `Action<Pawn, ShapeshiftFormDef>` | After `HediffComp_ShapeshiftCore.RemoveForm()` completes successfully. |
+
+> **Note:** Event handlers are cleared on game load (`GameComponent.FinalizeInit`). Re-subscribe in your `GameComponent.FinalizeInit` or use a Harmony postfix on `ShapeshiftCoreUtility.ClearEvents` to re-register.
+
+---
+
 ## Complete Example
 
 ```xml
 <Defs>
-  <!-- 1. Hediff for stats (optional) -->
-  <HediffDef>
-    <defName>SSF_WolfFormHediff</defName>
-    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
-    <label>wolf form</label>
-    <isBad>false</isBad>
-    <stages>
-      <li>
-        <statOffsets>
-          <MoveSpeed>2.5</MoveSpeed>
-          <ArmorRating_Sharp>0.4</ArmorRating_Sharp>
-        </statOffsets>
-      </li>
-    </stages>
-  </HediffDef>
-
-  <!-- 2. Form definition -->
+  <!-- 1. FormDef — visuals, gear, tools (no stats, no linkedHediff) -->
   <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
     <defName>SSF_WolfForm</defName>
     <label>Wolf Form</label>
     <description>A powerful wolf form.</description>
-    <linkedHediff>SSF_WolfFormHediff</linkedHediff>
 
     <bodyDrawScale>1.5</bodyDrawScale>
     <body>
@@ -466,11 +603,30 @@ Stage 1 (BeastkinForm) → addAbilities grants [FullBeast ability]
 
     <soundWounded>Pawn_Dog_Injured</soundWounded>
     <bloodDef>Filth_Blood</bloodDef>
-    <durationTicks>30000</durationTicks>
     <gizmoIconPathEnter>UI/Commands/TransformWolf</gizmoIconPathEnter>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- 3. Ability to trigger the form -->
+  <!-- 2. HediffDef — entry point with stats, references the FormDef -->
+  <HediffDef ParentName="SSF_ShapeshiftFormBase">
+    <defName>SSF_WolfFormHediff</defName>
+    <label>wolf form</label>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>2.5</MoveSpeed>
+          <ArmorRating_Sharp>0.4</ArmorRating_Sharp>
+        </statOffsets>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSF_WolfForm</formDef>
+        <durationTicks>30000</durationTicks>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- 3. Ability to trigger the form (references HediffDef, not FormDef) -->
   <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSF_Ability_Wolf</defName>
     <label>wolf shift</label>
@@ -478,7 +634,7 @@ Stage 1 (BeastkinForm) → addAbilities grants [FullBeast ability]
     <cooldownTicksRange>3000</cooldownTicksRange>
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
-        <formDefName>SSF_WolfForm</formDefName>
+        <hediffDef>SSF_WolfFormHediff</hediffDef>
       </li>
     </comps>
   </AbilityDef>
