@@ -69,11 +69,8 @@ namespace ShapeshifterFramework.Hediffs
         private readonly List<Apparel> prevApparels = new List<Apparel>();
         private readonly List<ThingWithComps> prevWeapons = new List<ThingWithComps>();
 
-        // 변신을 유발한 원본 아이템 (예: 변신 반지) - 드랍 보호용
+        // 변신을 유발한 원본 아이템 (예: 변신 반지) - 장착 해제/파괴/드랍 시 변신 해제
         public List<Thing> sourceItems = new List<Thing>();
-
-        // true: sourceItems가 장비 슬롯(apparel/equipment)에 있어야 유지. false: 인벤토리 소지만으로도 유지.
-        public bool sourceItemRequireEquipped = false;
 
         // 변신 시 소환된 폼 전용 장비 추적 (해제 시 삭제 및 복사 방지용)
         private List<Apparel> generatedApparel = new List<Apparel>();
@@ -586,10 +583,7 @@ namespace ShapeshifterFramework.Hediffs
                                 (item is Apparel ap && pawn.apparel != null && pawn.apparel.Contains(ap)) ||
                                 (item is ThingWithComps tc && pawn.equipment != null && pawn.equipment.Contains(tc));
 
-                            bool isHeldByPawn = isEquipped ||
-                                (!sourceItemRequireEquipped && pawn.inventory != null && pawn.inventory.innerContainer.Contains(item));
-
-                            if (item.Destroyed || item.Spawned || !isHeldByPawn)
+                            if (item.Destroyed || item.Spawned || !isEquipped)
                             {
                                 ShapeshiftDiagnostics.Info("Source item lost. Forcing shapeshift revert.");
                                 Messages.Message("SSF_Message_RevertDueToItemLost".Translate(pawn.LabelShortCap, item.Label), pawn, MessageTypeDefOf.NegativeEvent, false);
@@ -961,7 +955,6 @@ namespace ShapeshifterFramework.Hediffs
                 generatedWeapons.Clear();
             }
             if (this.sourceItems != null) this.sourceItems.Clear();
-            this.sourceItemRequireEquipped = false;
 
             // 능력 회수
             if (pawn.abilities != null && tempAddedAbilities.Count > 0)
@@ -1805,7 +1798,6 @@ namespace ShapeshifterFramework.Hediffs
                 }
             }
             Scribe_Collections.Look(ref sourceItems, "sourceItems", LookMode.Reference);
-            Scribe_Values.Look(ref sourceItemRequireEquipped, "sourceItemRequireEquipped", false);
             Scribe_Collections.Look(ref generatedApparel, "generatedApparel", LookMode.Reference);
             Scribe_Collections.Look(ref generatedWeapons, "generatedWeapons", LookMode.Reference);
 

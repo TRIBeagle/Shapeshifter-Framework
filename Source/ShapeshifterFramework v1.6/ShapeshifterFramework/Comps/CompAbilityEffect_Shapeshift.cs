@@ -130,24 +130,19 @@ namespace ShapeshifterFramework.Comps
 
             // 자기 자신에게 사용 시에만 아이템 추적 (타인 변신 시 캐스터 아이템은 대상에게 무의미)
             List<Thing> sources = null;
-            bool srcRequireEquipped = false;
             var caster = parent?.pawn;
             if (caster != null && caster == pawn)
             {
                 Thing grantingItem = FindGrantingItem(caster, parent.def);
                 if (grantingItem != null)
-                {
                     sources = new List<Thing> { grantingItem };
-                    var giveComp = grantingItem.TryGetComp<CompGiveAbility_Shapeshift>();
-                    if (giveComp != null)
-                        srcRequireEquipped = giveComp.Props.requireEquipped;
-                }
             }
 
-            ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance, sources, srcRequireEquipped);
+            ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance, sources);
         }
 
-        /// <summary>캐스터의 장비/인벤토리에서 해당 AbilityDef를 부여하는 아이템 탐색.</summary>
+        /// <summary>캐스터의 장착 장비에서 해당 AbilityDef를 부여하는 아이템 탐색.
+        /// 인벤토리 아이템은 sourceItem으로 추적하지 않음 (장착 해제 판정 불가).</summary>
         private static Thing FindGrantingItem(Pawn pawn, AbilityDef abilityDef)
         {
             if (abilityDef == null) return null;
@@ -171,16 +166,6 @@ namespace ShapeshifterFramework.Comps
                 {
                     var comp = allEquip[i].TryGetComp<CompGiveAbility_Shapeshift>();
                     if (comp != null && comp.Props.ability == abilityDef) return allEquip[i];
-                }
-            }
-
-            // 인벤토리 검색
-            if (pawn.inventory?.innerContainer != null)
-            {
-                foreach (var item in pawn.inventory.innerContainer)
-                {
-                    var comp = item.TryGetComp<CompGiveAbility_Shapeshift>();
-                    if (comp != null && comp.Props.ability == abilityDef) return item;
                 }
             }
 
