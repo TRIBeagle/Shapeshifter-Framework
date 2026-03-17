@@ -38,7 +38,10 @@
 
 ### 바닐라 GiveHediff 호환
 
-바닐라 방식으로 HediffDef를 부여하기만 하면 자동으로 변신이 트리거됩니다:
+바닐라 방식으로 HediffDef를 부여하기만 하면 자동으로 변신이 트리거됩니다.
+`CompPostPostAdd`에서 기존 변신 hediff가 있으면 자동 제거하므로 중첩 걱정은 없습니다:
+
+> **권장:** 약물/프로젝타일 트리거에는 바닐라 `IngestionOutcomeDoer_GiveHediff` 대신 `IngestionOutcomeDoer_Shapeshift`와 `Projectile_Polymorph`를 사용하세요. SSF 전용 클래스는 `successChance`(저항 판정)와 `ApplyShift()` 전체 흐름을 제공합니다.
 
 ```csharp
 // C# 코드에서

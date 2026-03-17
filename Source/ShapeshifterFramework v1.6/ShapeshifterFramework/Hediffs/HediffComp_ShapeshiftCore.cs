@@ -378,10 +378,35 @@ namespace ShapeshifterFramework.Hediffs
 
         #region 생명주기
 
-        /// <summary>Hediff 부여 직후 — needsInit 플래그만 설정. 실제 ApplyForm은 첫 Tick에서 실행.</summary>
+        /// <summary>Hediff 부여 직후 — 기존 변신 hediff 제거 + needsInit 플래그 설정. 실제 ApplyForm은 첫 Tick에서 실행.</summary>
+        /// <remarks>바닐라 GiveHediff 경로(데브 도구, 외부 모드 등)에서도 변신 중첩을 방지하기 위해
+        /// 자기 자신을 제외한 기존 변신 hediff를 자동 제거합니다.</remarks>
         public override void CompPostPostAdd(DamageInfo? dinfo, float amount)
         {
             base.CompPostPostAdd(dinfo, amount);
+
+            // 기존 변신 hediff 제거 (동시 적용 방지) — 자기 자신(parent)은 제외
+            var pawn = Pawn;
+            if (pawn?.health?.hediffSet != null)
+            {
+                var hediffs = pawn.health.hediffSet.hediffs;
+                for (int i = hediffs.Count - 1; i >= 0; i--)
+                {
+                    if (hediffs[i] == parent) continue; // 자기 자신 스킵
+                    var existingCore = (hediffs[i] as HediffWithComps)?.TryGetComp<HediffComp_ShapeshiftCore>();
+                    if (existingCore != null)
+                    {
+                        if (existingCore.isTransformed)
+                        {
+                            try { existingCore.RemoveForm(); }
+                            catch (Exception ex) { Log.Error($"[SSF] RemoveForm failed during CompPostPostAdd for {pawn.Name}: {ex}"); }
+                        }
+                        pawn.health.RemoveHediff(hediffs[i]);
+                        break; // 동시에 1개만
+                    }
+                }
+            }
+
             needsInit = true;
         }
 

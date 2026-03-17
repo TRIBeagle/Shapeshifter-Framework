@@ -492,7 +492,9 @@ Attach to an `AbilityDef`'s `<comps>`:
 | Scroll/UseItem | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Fields: `hediffDef` (preferred), `formDefName` (fallback). |
 | Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `hediffDef` (preferred), `formDefName` (fallback), `aoeRadius`, `affectAllies`. |
 
-> **Vanilla GiveHediff compatibility:** Because the entry point is a standard HediffDef, vanilla `GiveHediff` operations (e.g., from other mods, dev tools, or vanilla hediff givers) will work. When the hediff is added, `HediffComp_ShapeshiftCore.CompPostPostAdd` automatically calls `ApplyForm()`.
+> **Vanilla GiveHediff compatibility:** Because the entry point is a standard HediffDef, vanilla `GiveHediff` operations (e.g., from other mods, dev tools, or vanilla hediff givers) will work. When the hediff is added, `HediffComp_ShapeshiftCore.CompPostPostAdd` automatically removes any existing shapeshift hediff (preventing stacking) and calls `ApplyForm()`.
+>
+> **Recommended:** For drug/projectile triggers, prefer `IngestionOutcomeDoer_Shapeshift` and `Projectile_Polymorph` over vanilla `IngestionOutcomeDoer_GiveHediff`. The SSF variants provide `successChance` (resistance roll) and proper `ApplyShift()` flow. While vanilla GiveHediff works (CompPostPostAdd handles stacking), the SSF variants offer a richer feature set.
 
 ### HediffComp_AutoShift (Conditional Auto-Shift)
 
