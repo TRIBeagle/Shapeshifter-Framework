@@ -4,6 +4,7 @@
   <!-- ======================================================
        폼별 메인 HediffDef: 변신 상태 마커 + 스탯/능력치 보정
        hediffClass: ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm
+       HediffCompProperties_ShapeshiftCore.formDef로 FormDef 매핑 (단방향)
        ====================================================== -->
 
   <!-- 1) 베어 폼 메인 헤디프 -->
@@ -31,6 +32,11 @@
         </capMods>
       </li>
     </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_BearForm</formDef>
+      </li>
+    </comps>
   </HediffDef>
 
   <!-- 2) 곰 전사 폼 메인 헤디프 -->
@@ -52,6 +58,11 @@
         </statFactors>
       </li>
     </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_BearWarriorForm</formDef>
+      </li>
+    </comps>
   </HediffDef>
 
   <!-- 3) 양 폼 메인 헤디프 -->
@@ -69,6 +80,11 @@
         </statOffsets>
       </li>
     </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_SheepForm</formDef>
+      </li>
+    </comps>
   </HediffDef>
 
   <!-- 4) 암흑 기사 폼 메인 헤디프 -->
@@ -91,6 +107,11 @@
         </statFactors>
       </li>
     </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_DarkKnightForm</formDef>
+      </li>
+    </comps>
   </HediffDef>
 
   <!-- 5a) 수인 폼 메인 헤디프 -->
@@ -112,6 +133,11 @@
         </statFactors>
       </li>
     </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_BeastkinForm</formDef>
+      </li>
+    </comps>
   </HediffDef>
 
   <!-- 5b) 야수 폼 메인 헤디프 -->
@@ -132,6 +158,11 @@
         </statFactors>
       </li>
     </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_FullBeastForm</formDef>
+      </li>
+    </comps>
   </HediffDef>
 
   <!-- 6) 수호자 폼 메인 헤디프 -->
@@ -152,6 +183,11 @@
         </statFactors>
       </li>
     </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_GuardianForm</formDef>
+      </li>
+    </comps>
   </HediffDef>
 
   <!-- 7) 유령 폼 메인 헤디프 -->
@@ -169,6 +205,11 @@
         </statOffsets>
       </li>
     </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_PhantomForm</formDef>
+      </li>
+    </comps>
   </HediffDef>
 
   <!-- 8) 종족 제한 폼 메인 헤디프 -->
@@ -190,6 +231,11 @@
         </statFactors>
       </li>
     </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_RaceLockedForm</formDef>
+      </li>
+    </comps>
   </HediffDef>
 
   <!-- ======================================================
@@ -259,7 +305,8 @@
     </stages>
     <comps>
       <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
-        <formDefName>SSFTest_BearWarriorForm</formDefName>
+        <!-- hediffDef 경로 테스트: formDefName 대신 hediffDef 직접 지정 -->
+        <hediffDef>SSFTest_BearWarriorFormHediff</hediffDef>
         <triggerInCombat>true</triggerInCombat>
         <checkIntervalTicks>60</checkIntervalTicks>
         <triggerOnce>true</triggerOnce>

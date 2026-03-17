@@ -113,7 +113,8 @@
       </li>
       <li Class="CompProperties_UseEffectDestroySelf" />
       <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_Shapeshift">
-        <formDefName>SSFTest_BearForm</formDefName>
+        <!-- hediffDef 경로 테스트: formDefName 대신 hediffDef 직접 지정 -->
+        <hediffDef>SSFTest_BearFormHediff</hediffDef>
         <successChance>1.0</successChance>
       </li>
     </comps>

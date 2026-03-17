@@ -3,7 +3,7 @@
 // 용도 : - CompPostTick에서 주기적으로 체력/정신상태/밝기/전투 조건을 검사.
 //        - 조건 충족 시 ShapeshiftTargetUtility.TryShiftPawn() 호출.
 //        - triggerOnce=true면 발동 후 hediff 자체 제거 (1회성 저주 등).
-// 주의 : CompShapeshifter를 직접 수정하지 않음. 독립적인 HediffComp로 동작.
+// 주의 : HediffComp_ShapeshiftCore를 직접 수정하지 않음. 독립적인 HediffComp로 동작.
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;

@@ -5,7 +5,6 @@
 using HarmonyLib;
 using RimWorld;
 using Verse;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 
 namespace ShapeshifterFramework.Patches

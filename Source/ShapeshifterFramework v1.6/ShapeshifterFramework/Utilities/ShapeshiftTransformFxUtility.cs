@@ -1,5 +1,5 @@
 ﻿// ShapeshifterFramework | Utilities | ShapeshiftTransformFxUtility.cs
-// 목적 : CompShapeshifter 등에서 FX 재생을 요청할 때 사용하는 간편한 정적(Static) API.
+// 목적 : HediffComp_ShapeshiftCore 등에서 FX 재생을 요청할 때 사용하는 간편한 정적(Static) API.
 // 용도 : 대상 폼의 설정(Delay, Cooldown)을 읽어와 ShapeshiftTransformFxRunner의 실행 큐(Enqueue)에 이펙트 발동을 스케줄링함.
 
 using Verse;

@@ -3,7 +3,6 @@
 // 용도 : Postfix에서 바닐라의 bodySizeFactor 제곱근 비율 계산식을 재현한 뒤, 폼에 지정된 커스텀 헤드 오프셋(headOffset)을 폰이 바라보는 방향(Rotation)에 맞춰 적용함.
 
 using HarmonyLib;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using UnityEngine;
 using Verse;

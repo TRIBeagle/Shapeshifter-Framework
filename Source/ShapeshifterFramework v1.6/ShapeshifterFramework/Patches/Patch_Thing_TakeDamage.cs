@@ -5,7 +5,6 @@
 //        "teeth"만 표시되도록 함. damageSourceDef가 명시적으로 지정된 경우 해당 ThingDef 사용.
 
 using HarmonyLib;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using System.Reflection;
 using Verse;

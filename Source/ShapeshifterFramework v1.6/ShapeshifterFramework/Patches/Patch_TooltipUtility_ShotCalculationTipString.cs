@@ -4,7 +4,6 @@
 
 using HarmonyLib;
 using RimWorld;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Text;

@@ -3,7 +3,6 @@
 // 용도 : GetDisabledWorkTypes에 Postfix로 개입하여 폼에 지정된 불가 작업을 결과 리스트(__result)에 밀어 넣으며, 태그 기반 파싱은 성능을 위해 Dictionary에 런타임 캐싱됨.
 
 using HarmonyLib;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using Verse;

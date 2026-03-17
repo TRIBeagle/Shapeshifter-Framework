@@ -122,12 +122,6 @@ namespace ShapeshifterFramework.Compat
         /// <summary>Report 전 준비.</summary>
         private static void RegisterBeforeReport()
         {
-            // HAR AddComp 보장
-            if (HAR.IsActive)
-            {
-                try { Compat_HAR_AddComp.EnsureInitialized(); }
-                catch (System.Exception e) { Log.Warning($"{HAR.LogPrefix} Compatibility failed to load: {e.Message}"); }
-            }
             // FA 폼 검증
             if (FA.IsActive)
             {

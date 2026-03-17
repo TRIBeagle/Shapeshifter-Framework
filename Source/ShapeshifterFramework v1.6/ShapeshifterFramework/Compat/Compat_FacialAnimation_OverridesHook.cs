@@ -1,10 +1,10 @@
 ﻿// ShapeshifterFramework | Compat | Compat_FacialAnimation_OverridesHook.cs
 // 변신 시 FA FaceTypeDef/눈 색상을 폼 데이터로 덮어씌우고 해제 시 원복.
 // FAStateStore: Pawn별 원본 FA 상태 딥세이브, 주기 청소.
-// Harmony Hooks: ApplyForm/RemoveForm/PostExposeData에 개입. 오류는 동일 id당 1회만 경고.
+// Harmony Hooks: ApplyForm/RemoveForm/CompExposeData에 개입. 오류는 동일 id당 1회만 경고.
 
 using HarmonyLib;
-using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Hediffs;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
@@ -34,12 +34,15 @@ namespace ShapeshifterFramework.Compat
                 var f = all[i];
                 if (f == null) continue;
 
-                ValidateDefField("HeadControllerComp", f.faHeadTypeDef, f);
-                ValidateDefField("EyeballControllerComp", f.faEyeballTypeDef, f);
-                ValidateDefField("LidControllerComp", f.faLidTypeDef, f);
-                ValidateDefField("BrowControllerComp", f.faBrowTypeDef, f);
-                ValidateDefField("MouthControllerComp", f.faMouthTypeDef, f);
-                ValidateDefField("SkinControllerComp", f.faSkinTypeDef, f);
+                var faExt = f.GetModExtension<FAFormExtension>();
+                if (faExt == null) continue;
+
+                ValidateDefField("HeadControllerComp", faExt.faHeadTypeDef, f);
+                ValidateDefField("EyeballControllerComp", faExt.faEyeballTypeDef, f);
+                ValidateDefField("LidControllerComp", faExt.faLidTypeDef, f);
+                ValidateDefField("BrowControllerComp", faExt.faBrowTypeDef, f);
+                ValidateDefField("MouthControllerComp", faExt.faMouthTypeDef, f);
+                ValidateDefField("SkinControllerComp", faExt.faSkinTypeDef, f);
             }
         }
 
@@ -145,37 +148,40 @@ namespace ShapeshifterFramework.Compat
         {
             if (!Active || pawn == null || form == null) return;
 
+            var faExt = form.GetModExtension<FAFormExtension>();
+            if (faExt == null) return;
+
             // AllComps 1회 순회로 6개 컨트롤러 일괄 수집
             var comps = GetTmpComps();
             FindAllFAControllerComps(pawn, comps);
 
-            ApplyDefByComp(comps[0], "HeadControllerComp", form.faHeadTypeDef);
-            ApplyDefByComp(comps[1], "EyeballControllerComp", form.faEyeballTypeDef);
-            ApplyDefByComp(comps[2], "LidControllerComp", form.faLidTypeDef);
-            ApplyDefByComp(comps[3], "BrowControllerComp", form.faBrowTypeDef);
-            ApplyDefByComp(comps[4], "MouthControllerComp", form.faMouthTypeDef);
-            ApplyDefByComp(comps[5], "SkinControllerComp", form.faSkinTypeDef);
+            ApplyDefByComp(comps[0], "HeadControllerComp", faExt.faHeadTypeDef);
+            ApplyDefByComp(comps[1], "EyeballControllerComp", faExt.faEyeballTypeDef);
+            ApplyDefByComp(comps[2], "LidControllerComp", faExt.faLidTypeDef);
+            ApplyDefByComp(comps[3], "BrowControllerComp", faExt.faBrowTypeDef);
+            ApplyDefByComp(comps[4], "MouthControllerComp", faExt.faMouthTypeDef);
+            ApplyDefByComp(comps[5], "SkinControllerComp", faExt.faSkinTypeDef);
 
             // 눈 색상 적용
-            if (form.faEyeColor.HasValue || form.faEyeColor2.HasValue)
+            if (faExt.faEyeColor.HasValue || faExt.faEyeColor2.HasValue)
             {
                 var eyeComp = comps[1]; // EyeballControllerComp
                 if (eyeComp != null)
                 {
                     bool any = false;
 
-                    if (form.faEyeColor.HasValue)
+                    if (faExt.faEyeColor.HasValue)
                     {
-                        var c1 = form.faEyeColor.Value.ToColor;
+                        var c1 = faExt.faEyeColor.Value.ToColor;
                         if (!ShapeshiftReflectionCache.TrySetInstanceProperty(eyeComp, "FaceColor", c1))
                             ReportOnceFailed("EyeColor:MissingProperty:FaceColor",
                                 "property FaceColor not found or not writable");
                         else any = true;
                     }
 
-                    if (form.faEyeColor2.HasValue)
+                    if (faExt.faEyeColor2.HasValue)
                     {
-                        var c2 = form.faEyeColor2.Value.ToColor;
+                        var c2 = faExt.faEyeColor2.Value.ToColor;
                         if (!ShapeshiftReflectionCache.TrySetInstanceProperty(eyeComp, "FaceSecondColor", c2))
                             ReportOnceFailed("EyeColor2:MissingProperty:FaceSecondColor",
                                 "property FaceSecondColor not found or not writable");
@@ -490,16 +496,16 @@ namespace ShapeshifterFramework.Compat
 
     #endregion
 
-    #region Harmony hooks: CompShapeshifter ↔ FacialAnimationCompat
+    #region Harmony hooks: HediffComp_ShapeshiftCore ↔ FacialAnimationCompat
 
-    /// <summary>CompShapeshifter 라이프사이클에 FA 백업/적용/원복 훅.</summary>
+    /// <summary>HediffComp_ShapeshiftCore 라이프사이클에 FA 백업/적용/원복 훅.</summary>
     [HarmonyPatch]
     internal static class Compat_FacialAnimation_OverridesHook
     {
         private static bool counted;
 
         /// <summary>ApplyForm Postfix.</summary>
-        [HarmonyPatch(typeof(CompShapeshifter), "ApplyForm", new System.Type[] { typeof(ShapeshiftFormDef), typeof(string), typeof(System.Collections.Generic.List<Verse.Thing>) })]
+        [HarmonyPatch(typeof(HediffComp_ShapeshiftCore), "ApplyForm", new System.Type[] { typeof(ShapeshiftFormDef), typeof(string), typeof(System.Collections.Generic.List<Verse.Thing>) })]
         static class Patch_ApplyForm2
         {
             /// <summary>FA 비활성 시 패치 비적용.</summary>
@@ -511,11 +517,11 @@ namespace ShapeshifterFramework.Compat
             }
 
             /// <summary>변신 직후 백업 후 오버라이드 적용.</summary>
-            static void Postfix(CompShapeshifter __instance, ShapeshiftFormDef form)
+            static void Postfix(HediffComp_ShapeshiftCore __instance, ShapeshiftFormDef form)
             {
                 try
                 {
-                    var pawn = __instance?.parent as Pawn;
+                    var pawn = __instance?.Pawn;
                     if (pawn == null || form == null) return;
 
                     var store = Current.Game?.GetComponent<FAStateStore>();
@@ -527,7 +533,6 @@ namespace ShapeshifterFramework.Compat
                 }
                 catch (Exception e)
                 {
-                    // 훅 예외는 1회만 보고
                     if (!CompatManager.FA.HasFailed("OverridesHook:ApplyForm2:Exception"))
                         CompatManager.FA.Failed("OverridesHook:ApplyForm2:Exception", e.Message);
                 }
@@ -535,16 +540,16 @@ namespace ShapeshifterFramework.Compat
         }
 
         /// <summary>RemoveForm Prefix: 백업 기준 원복 후 제거.</summary>
-        [HarmonyPatch(typeof(CompShapeshifter), "RemoveForm")]
+        [HarmonyPatch(typeof(HediffComp_ShapeshiftCore), "RemoveForm")]
         static class Patch_RemoveForm
         {
             static bool Prepare() => CompatManager.FA.IsActive;
 
-            static void Prefix(CompShapeshifter __instance)
+            static void Prefix(HediffComp_ShapeshiftCore __instance)
             {
                 try
                 {
-                    var pawn = __instance?.parent as Pawn;
+                    var pawn = __instance?.Pawn;
                     if (pawn == null) return;
 
                     var store = Current.Game?.GetComponent<FAStateStore>();
@@ -563,20 +568,20 @@ namespace ShapeshifterFramework.Compat
             }
         }
 
-        /// <summary>PostExposeData Postfix: 로드 후 변신 상태면 오버라이드 재적용.</summary>
-        [HarmonyPatch(typeof(CompShapeshifter), "PostExposeData")]
-        static class Patch_PostExposeData
+        /// <summary>CompExposeData Postfix: 로드 후 변신 상태면 오버라이드 재적용.</summary>
+        [HarmonyPatch(typeof(HediffComp_ShapeshiftCore), "CompExposeData")]
+        static class Patch_CompExposeData
         {
             static bool Prepare() => CompatManager.FA.IsActive;
 
-            static void Postfix(CompShapeshifter __instance)
+            static void Postfix(HediffComp_ShapeshiftCore __instance)
             {
                 try
                 {
                     // 로드 후 변신 상태면 재적용
                     if (Scribe.mode == LoadSaveMode.PostLoadInit && __instance != null && __instance.isTransformed && __instance.currentForm != null)
                     {
-                        var pawn = __instance.parent as Pawn;
+                        var pawn = __instance.Pawn;
                         if (pawn == null) return;
 
                         var store = Current.Game?.GetComponent<FAStateStore>();
@@ -592,8 +597,8 @@ namespace ShapeshifterFramework.Compat
                 }
                 catch (Exception e)
                 {
-                    if (!CompatManager.FA.HasFailed("OverridesHook:PostExposeData:Exception"))
-                        CompatManager.FA.Failed("OverridesHook:PostExposeData:Exception", e.Message);
+                    if (!CompatManager.FA.HasFailed("OverridesHook:CompExposeData:Exception"))
+                        CompatManager.FA.Failed("OverridesHook:CompExposeData:Exception", e.Message);
                 }
             }
         }

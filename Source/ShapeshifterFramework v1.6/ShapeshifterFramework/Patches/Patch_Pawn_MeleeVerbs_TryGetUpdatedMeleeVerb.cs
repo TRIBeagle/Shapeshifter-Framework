@@ -6,7 +6,6 @@
 
 using HarmonyLib;
 using RimWorld;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using Verse;

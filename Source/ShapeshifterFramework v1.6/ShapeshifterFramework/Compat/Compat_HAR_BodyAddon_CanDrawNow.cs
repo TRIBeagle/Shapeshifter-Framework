@@ -74,10 +74,15 @@ namespace ShapeshifterFramework.Compat
                 Pawn pawn = __1.pawn;
                 if (pawn == null) return true;
 
-                if (ShapeshiftRegistry.TryGet(pawn, out var comp, out var form) && !form.showHarAddons)
+                if (ShapeshiftRegistry.TryGet(pawn, out var comp, out var form))
                 {
-                    __result = false;
-                    return false;
+                    var harExt = form.GetModExtension<HARFormExtension>();
+                    bool show = harExt != null && harExt.showHarAddons;
+                    if (!show)
+                    {
+                        __result = false;
+                        return false;
+                    }
                 }
             }
             catch (Exception e)

@@ -54,6 +54,7 @@ namespace ShapeshifterFramework.Utilities
         public override void FinalizeInit()
         {
             base.FinalizeInit();
+            ShapeshiftCoreUtility.ClearEvents();
             ShapeshiftRuntimeCaches.ClearAll();
 
             // 캐시 클리어로 유실된 변신 폰 레지스트리 + 런타임 캐시 재등록

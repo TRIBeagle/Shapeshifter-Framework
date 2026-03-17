@@ -1,8 +1,9 @@
 // ShapeshifterFramework | Root | ShapeshiftFormDef.cs
 // 목적 : 변신 폼(Form)의 비주얼·장비·도구·사운드·VFX 등 정적 데이터를 정의하는 최상위 XML Def.
-// 용도 : 모더가 XML로 폼을 정의하면, CompShapeshifter가 이 데이터를 읽어 변신을 적용/해제.
-//        스탯 보정이 필요하면 linkedHediff(선택)에 바닐라 HediffDef stages를 설정.
-// 주의 : XML 로드 시 확정되는 읽기 전용 데이터. 런타임에 수정 금지.
+// 용도 : 모더가 XML로 폼을 정의하면, HediffComp_ShapeshiftCore가 이 데이터를 읽어 변신을 적용/해제.
+//        스탯 보정은 HediffDef의 stages(statOffsets/statFactors/capMods)에서 정의.
+//        HediffDef → FormDef 매핑은 HediffCompProperties_ShapeshiftCore.formDef로 설정 (단방향).
+// 주의 : XML 로드 시 확정되는 읽기 전용 데이터 시트/템플릿. 런타임에 수정 금지.
 
 using RimWorld;
 using ShapeshifterFramework.Utilities;
@@ -89,10 +90,8 @@ namespace ShapeshifterFramework
     /// <summary>변신 폼 Def. 비주얼/장비/도구/사운드/VFX 등 폼 전체 정의.</summary>
     public class ShapeshiftFormDef : Def
     {
-        // ── 연동 헤디프 (선택). 지정 시 변신 중 이 hediff가 부여되며, 외부에서 제거하면 변신이 자동 해제됨.
-        // 스탯/능력치 보정이 필요하면 이 HediffDef의 stages에 바닐라 패턴(statOffsets/statFactors/capMods)으로 정의.
-        // null이면 hediff 없이 변신만 적용 — 순수 비주얼/장비/도구 변신에 적합.
-        public HediffDef linkedHediff;
+        // ── linkedHediff 삭제됨: HediffDef → FormDef 매핑은 HediffCompProperties_ShapeshiftCore.formDef로 단방향 설정.
+        //    FormDef는 순수 데이터 시트이며, 어떤 HediffDef와 연결될지는 HediffDef 쪽에서 결정.
 
         /// <summary>이 폼을 적용받을 수 있는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
         public List<ThingDef> formAllowedRaces;
@@ -250,8 +249,8 @@ namespace ShapeshifterFramework
         // ── [변신 해제 시 부산물] ──
         /// <summary>변신 해제 시 드랍할 아이템 목록 (허물, 결정 등).</summary>
         public List<ThingDefCountClass> revertDrops;
-        /// <summary>변신 해제 시 부여할 hediff 목록. 프레임워크가 추적/제거하지 않음 (바닐라 수명).</summary>
-        public List<HediffDef> revertAddHediffs;
+        /// <summary>변신 해제 시 부여할 hediff 목록. HediffAddEntry로 부위/severity/정책 지정 가능. 프레임워크가 추적/제거하지 않음 (바닐라 수명).</summary>
+        public List<HediffAddEntry> revertAddHediffs;
 
         // 버튼/기타
         public string gizmoIconPathEnter;   // 변신 버튼 아이콘
@@ -292,19 +291,6 @@ namespace ShapeshifterFramework
         [Unsaved] internal CompiledFilterSet _showGeneDefNames;
         [Unsaved] internal CompiledFilterSet _hideHediffDefNames;
         [Unsaved] internal CompiledFilterSet _showHediffDefNames;
-
-        // HAR 옵션
-        [MayRequire("erdelf.HumanoidAlienRaces")] public bool showHarAddons = false;
-
-        // Facial Animation 옵션
-        [MayRequire("Nals.FacialAnimation")] public string faHeadTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public string faEyeballTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public string faLidTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public string faBrowTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public string faMouthTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public string faSkinTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor;
-        [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor2;
 
         public override void ResolveReferences()
         {

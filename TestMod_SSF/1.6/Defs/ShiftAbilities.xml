@@ -13,7 +13,8 @@
     <displayOrder>500</displayOrder>
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
-        <formDefName>SSFTest_BearWarriorForm</formDefName>
+        <!-- hediffDef 경로 테스트: formDefName 대신 hediffDef 직접 지정 -->
+        <hediffDef>SSFTest_BearWarriorFormHediff</hediffDef>
         <successChance>1.0</successChance>
       </li>
     </comps>

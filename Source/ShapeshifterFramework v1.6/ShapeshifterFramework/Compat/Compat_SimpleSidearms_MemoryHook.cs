@@ -5,7 +5,7 @@
 // 주의 : SS 어셈블리에 하드 참조 없이 리플렉션으로 접근. 메인 스레드 단일 실행 전제.
 
 using HarmonyLib;
-using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Hediffs;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections;
@@ -348,16 +348,16 @@ namespace ShapeshifterFramework.Compat
 
     #endregion
 
-    #region Harmony hooks: CompShapeshifter ↔ SimpleSidearmsCompat
+    #region Harmony hooks: HediffComp_ShapeshiftCore ↔ SimpleSidearmsCompat
 
-    /// <summary>CompShapeshifter 라이프사이클에 SS 메모리 백업/클리어/원복 훅.</summary>
+    /// <summary>HediffComp_ShapeshiftCore 라이프사이클에 SS 메모리 백업/클리어/원복 훅.</summary>
     [HarmonyPatch]
     internal static class Compat_SimpleSidearms_MemoryHook
     {
         private static bool counted;
 
         /// <summary>ApplyForm Prefix: SS 메모리 백업 후 클리어.</summary>
-        [HarmonyPatch(typeof(CompShapeshifter), "ApplyForm",
+        [HarmonyPatch(typeof(HediffComp_ShapeshiftCore), "ApplyForm",
             new Type[] { typeof(ShapeshiftFormDef), typeof(string),
                 typeof(List<Thing>) })]
         static class Patch_ApplyForm
@@ -370,11 +370,11 @@ namespace ShapeshifterFramework.Compat
             }
 
             /// <summary>변신 직전: SS 메모리 백업 → 클리어 (무기 제거 시 SS 간섭 방지).</summary>
-            static void Prefix(CompShapeshifter __instance)
+            static void Prefix(HediffComp_ShapeshiftCore __instance)
             {
                 try
                 {
-                    var pawn = __instance?.parent as Pawn;
+                    var pawn = __instance?.Pawn;
                     if (pawn == null) return;
 
                     var backup = SimpleSidearmsCompat.BackupMemory(pawn);
@@ -394,17 +394,17 @@ namespace ShapeshifterFramework.Compat
         }
 
         /// <summary>RemoveForm Postfix: SS 메모리 원복.</summary>
-        [HarmonyPatch(typeof(CompShapeshifter), "RemoveForm")]
+        [HarmonyPatch(typeof(HediffComp_ShapeshiftCore), "RemoveForm")]
         static class Patch_RemoveForm
         {
             static bool Prepare() => CompatManager.SS.IsActive;
 
             /// <summary>변신 해제 후: 원래 SS 메모리 복원.</summary>
-            static void Postfix(CompShapeshifter __instance)
+            static void Postfix(HediffComp_ShapeshiftCore __instance)
             {
                 try
                 {
-                    var pawn = __instance?.parent as Pawn;
+                    var pawn = __instance?.Pawn;
                     if (pawn == null) return;
 
                     var store = Current.Game?.GetComponent<SSMemoryStore>();

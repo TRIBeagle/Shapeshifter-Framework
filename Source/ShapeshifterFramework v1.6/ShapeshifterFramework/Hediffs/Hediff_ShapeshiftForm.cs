@@ -1,10 +1,11 @@
-﻿// ShapeshifterFramework | Hediffs | Hediff_ShapeshiftForm.cs
+// ShapeshifterFramework | Hediffs | Hediff_ShapeshiftForm.cs
 // 목적 : 변신 상태를 증명하고, 바닐라 헤디프 시스템을 통해 건강 탭에 폼의 스탯/능력치 변동을 직관적으로 표시하기 위한 커스텀 헤디프.
 // 용도 : 실제 스탯 연산은 바닐라 엔진에 전적으로 위임하고, UI 툴팁에 '폼 이름'과 '남은 시간'만 가볍게 덧그려 성능 저하 없이 바닐라 UI에 녹아들게 함.
+//        기즈모(해제/verb)는 Core HediffComp에 위임.
 
 using RimWorld;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
+using System.Collections.Generic;
 using System.Text;
 using Verse;
 
@@ -13,21 +14,23 @@ namespace ShapeshifterFramework.Hediffs
     /// <summary>변신 폼 활성 상태를 나타내는 헤디프. 건강 탭에 스탯 변동과 남은 시간을 표시.</summary>
     public class Hediff_ShapeshiftForm : HediffWithComps
     {
-        // CompShapeshifter 캐시(매 프레임 TryGetComp 호출 방지)
-        private CompShapeshifter _cachedComp;
+        /// <summary>이 Hediff에 부착된 HediffComp_ShapeshiftCore 접근.</summary>
+        public HediffComp_ShapeshiftCore Core =>
+            this.TryGetComp<HediffComp_ShapeshiftCore>();
 
-        private CompShapeshifter Comp
+        /// <summary>기즈모 생성 — Core에 위임.</summary>
+        public override IEnumerable<Gizmo> GetGizmos()
         {
-            get
+            // 바닐라 기즈모 먼저
+            foreach (var g in base.GetGizmos())
+                yield return g;
+
+            // Core 기즈모(해제/verb 등)
+            var core = Core;
+            if (core != null)
             {
-                if (_cachedComp == null && pawn != null)
-                {
-                    if (ShapeshiftRegistry.TryGet(pawn, out var regComp, out _))
-                        _cachedComp = regComp;
-                    else
-                        _cachedComp = pawn.TryGetComp<CompShapeshifter>();
-                }
-                return _cachedComp;
+                foreach (var g in core.GetGizmosExtra())
+                    yield return g;
             }
         }
 
@@ -38,14 +41,14 @@ namespace ShapeshifterFramework.Hediffs
             {
                 var sb = new StringBuilder();
 
-                var comp = Comp;
-                if (comp != null && comp.isTransformed && comp.currentForm != null)
+                var core = Core;
+                if (core != null && core.isTransformed && core.currentForm != null)
                 {
-                    var form = comp.currentForm;
                     // 1. 지속 시간이 있는 폼일 경우
-                    if (form.durationTicks.HasValue && form.durationTicks.Value > 0)
+                    var resolvedDuration = core.ResolvedDurationTicks;
+                    if (resolvedDuration.HasValue && resolvedDuration.Value > 0)
                     {
-                        int remain = comp.RemainingShapeshiftTicks;
+                        int remain = core.RemainingShapeshiftTicks;
                         if (remain > 0)
                         {
                             string timeStr = GenDate.ToStringTicksToPeriod(remain,
@@ -69,23 +72,34 @@ namespace ShapeshifterFramework.Hediffs
             }
         }
 
-        // 디버그 부여 방어 및 자동 소멸 로직
+        // 자동 소멸 로직 — Core 상태 기반
         public override bool ShouldRemove
         {
             get
             {
-                var comp = Comp;
-                // 1. 폰에게 Shapeshifter 컴프가 없거나
-                // 2. 변신 상태가 아니거나
-                // 3. 부여된 헤디프가 현재 폼의 공식 헤디프가 아니면 삭제
-                if (comp == null || !comp.isTransformed || comp.currentForm == null || comp.currentForm.linkedHediff != this.def)
-                {
+                var core = Core;
+
+                // 초기화 진행 중이면 보호 (자동 소멸 방지)
+                if (core?.needsInit == true)
+                    return false;
+
+                // Core가 없거나 변신 상태가 아니면 삭제
+                if (core == null || !core.isTransformed || core.currentForm == null)
                     return true;
-                }
 
                 // 정식 변신 상태라면 바닐라 엔진이 멋대로 지우지 못하게 보호
                 return false;
             }
+        }
+
+        /// <summary>Hediff 제거 시 레지스트리 해제.</summary>
+        public override void PostRemoved()
+        {
+            base.PostRemoved();
+
+            // 방어적 레지스트리 해제
+            if (pawn != null)
+                ShapeshiftRegistry.Unregister(pawn);
         }
 
         /// <summary>세이브/로드.</summary>
