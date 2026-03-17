@@ -201,6 +201,7 @@
 
 ### [A] Auto-Verify
 - [ ] healthThreshold: HP 30% 미만에서 자동 변신
+- [ ] severityThreshold: hediff severity가 기준값 이상에서 자동 변신
 - [ ] triggerSunGlowBelow: 밤(SunGlow < 0.5) 자동 변신
 - [ ] triggerInCombat: 징집 + 적 근접 시 자동 변신
 - [ ] triggerOnce=true: 1회 발동 후 hediff 자체 제거

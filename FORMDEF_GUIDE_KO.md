@@ -715,6 +715,7 @@
 |------|------|--------|------|
 | `hediffDef` | `HediffDef` | null | **필수** — 적용할 폼 헤디프 |
 | `healthThreshold` | `float?` | null | HP%가 이 값 미만이면 발동 |
+| `severityThreshold` | `float?` | null | 이 hediff의 severity가 해당 값 이상이면 발동 |
 | `triggerMentalStates` | `List<MentalStateDef>` | null | 이 정신 상태 발동 시 트리거 |
 | `triggerSunGlowBelow` | `float?` | null | 햇빛이 이 값 미만이면 발동 |
 | `triggerInCombat` | `bool` | false | 징집 + 근처 적 시 발동 |

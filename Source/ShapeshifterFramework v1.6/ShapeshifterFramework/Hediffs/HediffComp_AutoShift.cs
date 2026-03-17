@@ -82,6 +82,11 @@ namespace ShapeshifterFramework.Hediffs
                 }
             }
 
+            // severity 조건 (이 hediff 자체의 severity)
+            if (Props.severityThreshold.HasValue
+                && parent.Severity >= Props.severityThreshold.Value)
+                return true;
+
             // 밝기 조건 (SunGlow 기반, 바이옴/계절 자동 반영)
             if (Props.triggerSunGlowBelow.HasValue && pawn.Spawned && pawn.Map != null)
             {

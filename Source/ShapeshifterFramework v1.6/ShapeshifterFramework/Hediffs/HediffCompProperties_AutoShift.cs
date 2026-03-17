@@ -24,6 +24,9 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>SunGlow가 이 값 미만이면 트리거. null이면 미사용. 예: 0.5=밤, 0.3=깊은 밤.</summary>
         public float? triggerSunGlowBelow;
 
+        /// <summary>이 hediff의 severity가 해당 값 이상이면 트리거. null이면 미사용. 예: 0.7 = severity 70% 이상.</summary>
+        public float? severityThreshold;
+
         /// <summary>전투 중(징집 + 근처 적대 폰) 트리거. false면 미사용.</summary>
         public bool triggerInCombat = false;
 

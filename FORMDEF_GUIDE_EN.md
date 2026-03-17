@@ -719,6 +719,7 @@ Multiple HediffDefs can share one FormDef with different stats:
 |-------|------|---------|-------------|
 | `hediffDef` | `HediffDef` | null | **required** — form hediff to apply |
 | `healthThreshold` | `float?` | null | Trigger when HP% below this |
+| `severityThreshold` | `float?` | null | Trigger when this hediff's severity >= value |
 | `triggerMentalStates` | `List<MentalStateDef>` | null | Trigger on these mental states |
 | `triggerSunGlowBelow` | `float?` | null | Trigger when sun glow below this |
 | `triggerInCombat` | `bool` | false | Trigger when drafted + enemies nearby |
