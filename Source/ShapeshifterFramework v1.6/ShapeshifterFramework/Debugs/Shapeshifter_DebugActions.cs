@@ -1150,6 +1150,7 @@ namespace ShapeshifterFramework.Debugs
             sb.AppendLine($"  disabledWorkTags={f.disabledWorkTagsOnTransform}");
             DumpWorkTypes(sb, f.disabledWorkTypesOnTransform);
             sb.AppendLine($"  suppressIdeologyUncoveredThoughts={f.suppressIdeologyUncoveredThoughts}");
+            sb.AppendLine($"  linkedSacredAnimalDef={f.linkedSacredAnimalDef?.defName ?? "null"}");
         }
 
         private static string CapList(Tool t)

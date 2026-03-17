@@ -213,8 +213,12 @@ namespace ShapeshifterFramework
         // WorkTags 기반 일괄 차단(예: Violent, Caring 등) — XML에서 콤마로 OR 결합: <disabledWorkTagsOnTransform>Violent, Crafting</disabledWorkTagsOnTransform>
         public WorkTags disabledWorkTagsOnTransform = WorkTags.None;
 
-        // ── 이념 관련 외모 노출 계열 억제(폼별)
+        // ── 이념 관련(폼별)
         public bool suppressIdeologyUncoveredThoughts = true; // 기본 on: 하의/상의/머리/얼굴 노출 사상 비활성
+
+        /// <summary>이 폼이 대표하는 동물 종족. 이데올로기 숭배(성스러운) 동물과 매칭하여 기분 보너스 부여.</summary>
+        [MayRequire("Ludeon.RimWorld.Ideology")]
+        public ThingDef linkedSacredAnimalDef;
 
         // ── [VFX/SFX: 변신 시작/해제] 폼별 이펙트·사운드 (원샷 중심)
         public SoundDef transformEnterSound;     // 변신 시작

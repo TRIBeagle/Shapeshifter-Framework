@@ -26,6 +26,7 @@
 | Additions | `addHediffs` (HediffAddEntry list), `addAbilities` (AbilityDef list) |
 | Combat | `verbs`, `tools`, `replaceNativeVerbs`, `replaceNativeTools`, `verbGizmoOptions`, `damageSourceDef` |
 | Work | `disabledWorkTypesOnTransform`, `disabledWorkTagsOnTransform`, `suppressIdeologyUncoveredThoughts` |
+| Ideology | `linkedSacredAnimalDef` — venerated animal match → +5 mood. Precept `SSF_Shapeshifting` (Taboo/Neutral/Honorable) |
 | VFX/SFX | `transformEnterSound`/`ExitSound`, `transformEnterEffecter`/`ExitEffecter`, `transformEnterFleck`/`ExitFleck` (+Count, +Scale), FX delay/cooldown ticks |
 | Ambient VFX | `ambientEffecter`, `ambientFleck`, `ambientFleckIntervalTicks`, `ambientFleckScale` |
 | Revert | `revertDrops` (ThingDefCountClass list), `revertAddHediffs` (HediffDef list) |

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- ======================================================
+       변신(Shapeshifting) 규율 — Ideology DLC 전용
+       MayRequire로 DLC 미설치 시 자동 무시
+       ====================================================== -->
+
+  <!-- 이슈: 변신 수용도 -->
+  <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting</defName>
+    <label>변신</label>
+    <iconPath>UI/Issues/SSF_Shapeshifting</iconPath>
+  </IssueDef>
+
+  <!-- ── 단계 0: 금기 ── -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting_Taboo</defName>
+    <issue>SSF_Shapeshifting</issue>
+    <label>금기</label>
+    <description>변신은 자연의 질서를 거스르는 금기이다.</description>
+    <impact>High</impact>
+    <displayOrderInIssue>0</displayOrderInIssue>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <comps>
+      <!-- 변신 중 기분 -10 (상황 감정) -->
+      <li Class="PreceptComp_SituationalThought">
+        <thoughtDef>SSF_Thought_Shapeshifted_Taboo</thoughtDef>
+      </li>
+      <!-- 변신자에 대한 의견 -20 (사회 감정) -->
+      <li Class="PreceptComp_SituationalThought">
+        <thoughtDef>SSF_Thought_Shapeshifted_Taboo_Social</thoughtDef>
+      </li>
+      <!-- 금기를 어김 기억 감정 -10 (변신 시 1회 부여) — 툴팁 표시용 -->
+      <li Class="PreceptComp_SelfTookMemoryThought">
+        <thoughtDef>SSF_Thought_ShapeshiftTabooViolated</thoughtDef>
+        <description>변신 금기를 어겼을 때 기억에 남는다.</description>
+      </li>
+    </comps>
+  </PreceptDef>
+
+  <!-- ── 단계 1: 중립 ── -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting_Neutral</defName>
+    <issue>SSF_Shapeshifting</issue>
+    <label>중립</label>
+    <description>변신은 특별히 좋지도 나쁘지도 않다.</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>10</displayOrderInIssue>
+    <defaultSelectionWeight>2</defaultSelectionWeight>
+  </PreceptDef>
+
+  <!-- ── 단계 2: 명예로움 ── -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting_Honorable</defName>
+    <issue>SSF_Shapeshifting</issue>
+    <label>명예로움</label>
+    <description>변신은 명예로운 행위이며, 존경받아 마땅하다.</description>
+    <impact>High</impact>
+    <displayOrderInIssue>20</displayOrderInIssue>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <comps>
+      <!-- 변신 중 기분 +10 (상황 감정) -->
+      <li Class="PreceptComp_SituationalThought">
+        <thoughtDef>SSF_Thought_Shapeshifted_Honorable</thoughtDef>
+      </li>
+      <!-- 변신자에 대한 의견 +20 (사회 감정) -->
+      <li Class="PreceptComp_SituationalThought">
+        <thoughtDef>SSF_Thought_Shapeshifted_Honorable_Social</thoughtDef>
+      </li>
+    </comps>
+  </PreceptDef>
+
+</Defs>

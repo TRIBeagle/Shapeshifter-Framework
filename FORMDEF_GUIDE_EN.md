@@ -399,6 +399,7 @@ Form auto-reverts when conditions are no longer met. `sustainMode` controls whet
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `suppressIdeologyUncoveredThoughts` | `bool` | `true` | Suppress "uncovered" thoughts from Ideology |
+| `linkedSacredAnimalDef` | `ThingDef` | `null` | Animal race this form represents. Grants +5 mood if it matches the pawn's ideology venerated animal |
 
 ### 3.15 VFX & Sound (Enter/Exit)
 | Field | Type | Description |

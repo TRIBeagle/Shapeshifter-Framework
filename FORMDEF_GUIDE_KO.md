@@ -395,6 +395,7 @@
 | 필드 | 타입 | 기본값 | 설명 |
 |------|------|--------|------|
 | `suppressIdeologyUncoveredThoughts` | `bool` | `true` | 이데올로기 "노출" 감정 억제 |
+| `linkedSacredAnimalDef` | `ThingDef` | `null` | 이 폼이 대표하는 동물 종족. 이데올로기 숭배(성스러운) 동물과 일치 시 기분 +5 |
 
 ### 3.15 VFX & 사운드 (진입/해제)
 | 필드 | 타입 | 설명 |

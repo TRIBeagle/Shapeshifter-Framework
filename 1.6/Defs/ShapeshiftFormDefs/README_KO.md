@@ -26,6 +26,7 @@
 | 부여물 | `addHediffs` (HediffAddEntry 목록), `addAbilities` (AbilityDef 목록) |
 | 전투 | `verbs`, `tools`, `replaceNativeVerbs`, `replaceNativeTools`, `verbGizmoOptions`, `damageSourceDef` |
 | 작업 | `disabledWorkTypesOnTransform`, `disabledWorkTagsOnTransform`, `suppressIdeologyUncoveredThoughts` |
+| 이데올로기 | `linkedSacredAnimalDef` — 숭배 동물 일치 시 기분 +5. 규율 `SSF_Shapeshifting` (금기/중립/명예로움) |
 | VFX/SFX | `transformEnterSound`/`ExitSound`, `transformEnterEffecter`/`ExitEffecter`, `transformEnterFleck`/`ExitFleck` (+Count, +Scale), FX 지연/쿨다운 틱 |
 | 앰비언트 VFX | `ambientEffecter`, `ambientFleck`, `ambientFleckIntervalTicks`, `ambientFleckScale` |
 | 해제 부산물 | `revertDrops` (ThingDefCountClass 목록), `revertAddHediffs` (HediffDef 목록) |
