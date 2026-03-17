@@ -128,11 +128,11 @@ namespace ShapeshifterFramework.Comps
                 return;
             }
 
-            // 캐스터의 장비에서 이 어빌리티를 부여한 CompGiveAbility_Shapeshift 아이템 탐색
+            // 자기 자신에게 사용 시에만 아이템 추적 (타인 변신 시 캐스터 아이템은 대상에게 무의미)
             List<Thing> sources = null;
             bool srcRequireEquipped = false;
             var caster = parent?.pawn;
-            if (caster != null)
+            if (caster != null && caster == pawn)
             {
                 Thing grantingItem = FindGrantingItem(caster, parent.def);
                 if (grantingItem != null)

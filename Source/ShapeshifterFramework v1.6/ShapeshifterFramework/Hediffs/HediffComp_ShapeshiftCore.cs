@@ -539,8 +539,8 @@ namespace ShapeshifterFramework.Hediffs
                             if (item == null) continue;
 
                             bool isEquipped =
-                                (pawn.apparel != null && pawn.apparel.Contains(item as Apparel)) ||
-                                (pawn.equipment != null && pawn.equipment.Contains(item as ThingWithComps));
+                                (item is Apparel ap && pawn.apparel != null && pawn.apparel.Contains(ap)) ||
+                                (item is ThingWithComps tc && pawn.equipment != null && pawn.equipment.Contains(tc));
 
                             bool isHeldByPawn = isEquipped ||
                                 (!sourceItemRequireEquipped && pawn.inventory != null && pawn.inventory.innerContainer.Contains(item));
@@ -917,6 +917,7 @@ namespace ShapeshifterFramework.Hediffs
                 generatedWeapons.Clear();
             }
             if (this.sourceItems != null) this.sourceItems.Clear();
+            this.sourceItemRequireEquipped = false;
 
             // 능력 회수
             if (pawn.abilities != null && tempAddedAbilities.Count > 0)
