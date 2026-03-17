@@ -92,6 +92,11 @@ namespace ShapeshifterFramework.Utilities
 
             // 새 hediff 생성 및 부여
             Hediff newHediff = HediffMaker.MakeHediff(hediffDef, pawn);
+            if (newHediff == null)
+            {
+                Log.Error($"[SSF] HediffMaker.MakeHediff returned null for {hediffDef.defName}");
+                return false;
+            }
 
             // comp에 sources 사전 설정 (CompPostPostAdd 전에 설정 불가하므로, 부여 후 설정)
             pawn.health.AddHediff(newHediff);

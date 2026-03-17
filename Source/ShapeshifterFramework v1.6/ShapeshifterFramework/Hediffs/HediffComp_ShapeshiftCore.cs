@@ -943,6 +943,7 @@ namespace ShapeshifterFramework.Hediffs
                             }
                             else
                             {
+                                if (pawn.RaceProps?.body == null) continue;
                                 var allParts = pawn.RaceProps.body.AllParts;
                                 for (int pIdx = 0; pIdx < allParts.Count; pIdx++)
                                 {
@@ -1243,7 +1244,7 @@ namespace ShapeshifterFramework.Hediffs
                                 Apparel existingAp = worn[j];
                                 if ((sourceItems != null && sourceItems.Contains(existingAp)) || generatedApparel.Contains(existingAp)) continue;
 
-                                if (!ApparelUtility.CanWearTogether(apparelDef, existingAp.def, pawn.RaceProps.body))
+                                if (pawn.RaceProps?.body != null && !ApparelUtility.CanWearTogether(apparelDef, existingAp.def, pawn.RaceProps.body))
                                 {
                                     pawn.apparel.Remove(existingAp);
                                     if (form.conflictingGearHandling == GearHandling.Drop)

@@ -33,7 +33,7 @@ namespace ShapeshifterFramework.Patches
                     return chewer.RaceProps.soundEating;
 
                 LocalTargetInfo target = toil.actor.CurJob.GetTarget(ingestibleInd);
-                return target.HasThing ? target.Thing.def.ingestible.ingestSound : null;
+                return target.HasThing ? target.Thing.def?.ingestible?.ingestSound : null;
             });
         }
     }
