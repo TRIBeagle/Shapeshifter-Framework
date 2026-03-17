@@ -91,8 +91,8 @@
     <Compile Include="Patches\Patch_Pawn_PathFollower_TryEnterNextPathCell.cs" />
     <Compile Include="Patches\Patch_Toils_Ingest_ChewIngestible.cs" />
     <Compile Include="Patches\Patch_Verb_MeleeAttack_Sounds.cs" />
-    <Compile Include="Projectiles\Projectile_Polymorph.cs" />
-    <Compile Include="Extensions\PolymorphProjectileExtension.cs" />
+    <Compile Include="Extensions\GiveHediffProjectileExtension_Shapeshift.cs" />
+    <Compile Include="Projectiles\Projectile_GiveHediff_Shapeshift.cs" />
     <Compile Include="Patches\Patch_PawnWoundDrawer_WriteCache.cs" />
     <Compile Include="Patches\Patch_Pawn_HealthTracker_DropBloodFilth.cs" />
     <Compile Include="Patches\Patch_FilthMaker_TryMakeFilth.cs" />

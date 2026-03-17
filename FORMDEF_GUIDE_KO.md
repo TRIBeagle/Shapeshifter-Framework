@@ -36,7 +36,7 @@
 바닐라 방식으로 HediffDef를 부여하기만 하면 자동으로 변신이 트리거됩니다.
 `CompPostPostAdd`에서 기존 변신 hediff가 있으면 자동 제거하므로 중첩 걱정은 없습니다:
 
-> **참고:** SSF 트리거 클래스(`IngestionOutcomeDoer_Shapeshift`, `Projectile_Polymorph`)는 내부적으로 `ShapeshiftCoreUtility.GiveShiftHediff()`를 호출하며, sourceItem 추적 등 편의 기능을 제공합니다. 하지만 기본적인 변신에는 바닐라 `AddHediff`/`GiveHediff`만으로도 충분합니다 (`CompPostPostAdd`가 자동으로 처리).
+> **참고:** SSF 트리거 클래스(`IngestionOutcomeDoer_Shapeshift`, `Projectile_GiveHediff_Shapeshift`)는 내부적으로 `ShapeshiftCoreUtility.GiveShiftHediff()`를 호출하며, sourceItem 추적 등 편의 기능을 제공합니다. 하지만 기본적인 변신에는 바닐라 `AddHediff`/`GiveHediff`만으로도 충분합니다 (`CompPostPostAdd`가 자동으로 처리).
 
 ```csharp
 // C# 코드에서
@@ -629,7 +629,7 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 
 ### 트리거 클래스의 hediffDef 지정
 
-모든 트리거 클래스(`CompProperties_AbilityShapeshift`, `CompProperties_UseEffect_Shapeshift`, `IngestionOutcomeDoer_Shapeshift`, `PolymorphProjectileExtension`)에서 `hediffDef` 필드로 변신할 HediffDef를 지정합니다.
+모든 트리거 클래스(`CompProperties_AbilityShapeshift`, `CompProperties_UseEffect_Shapeshift`, `IngestionOutcomeDoer_Shapeshift`, `GiveHediffProjectileExtension_Shapeshift`)에서 `hediffDef` 필드로 변신할 HediffDef를 지정합니다.
 
 ```xml
 <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
@@ -670,7 +670,7 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 | 아이템 (장비) | `CompProperties_GiveAbility_Shapeshift` | 장비 시 어빌리티 부여. 어빌리티로 변신 시 해당 아이템이 `sourceItem`으로 등록 — 장비 해제 시 변신 해제. |
 | 약물 | `IngestionOutcomeDoer_Shapeshift` | 복용 시 직접 변신. `hediffDef` 지정. |
 | 스크롤/사용 | `CompProperties_UseEffect_Shapeshift` | 사용 시 직접 변신. `hediffDef` 지정. |
-| 투사체 | `PolymorphProjectileExtension` | 명중 시 변신. `hediffDef`, `aoeRadius`, `affectAllies` 지원. |
+| 투사체 | `GiveHediffProjectileExtension_Shapeshift` | 명중 시 변신. `hediffDef`, `aoeRadius`, `affectAllies` 지원. |
 
 ### HediffComp_AutoShift (조건부 자동 변신)
 

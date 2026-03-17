@@ -26,7 +26,7 @@
   </AbilityDef>
 
   <!-- ======================================================
-       7) 변신 투사체 무기 — Projectile_Polymorph 테스트
+       7) 변신 투사체 무기 — Projectile_GiveHediff_Shapeshift 테스트
        저주받은 활: 화살에 맞으면 양으로 변신
        ====================================================== -->
 
@@ -38,7 +38,7 @@
       <texPath>Things/Projectile/Arrow_Small</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
-    <thingClass>ShapeshifterFramework.Projectiles.Projectile_Polymorph</thingClass>
+    <thingClass>ShapeshifterFramework.Projectiles.Projectile_GiveHediff_Shapeshift</thingClass>
     <projectile>
       <damageDef>Arrow</damageDef>
       <damageAmountBase>8</damageAmountBase>
@@ -47,7 +47,7 @@
       <speed>38</speed>
     </projectile>
     <modExtensions>
-      <li Class="ShapeshifterFramework.Extensions.PolymorphProjectileExtension">
+      <li Class="ShapeshifterFramework.Extensions.GiveHediffProjectileExtension_Shapeshift">
         <hediffDef>SSFTest_SheepFormHediff</hediffDef>
         <!-- aoeRadius 0 = 단일 타겟만 -->
       </li>

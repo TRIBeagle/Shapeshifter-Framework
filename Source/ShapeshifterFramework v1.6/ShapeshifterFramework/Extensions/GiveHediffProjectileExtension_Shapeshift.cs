@@ -1,17 +1,17 @@
-﻿// ShapeshifterFramework | Extensions | PolymorphProjectileExtension.cs
-// 목적 : 총알이나 마법 등 투사체(Projectile) 명중 시 대상을 변신시키기 위한 속성(Data Container) 확장 클래스.
+// ShapeshifterFramework | Extensions | GiveHediffProjectileExtension_Shapeshift.cs
+// 목적 : 투사체(Projectile) 명중 시 대상에게 HediffDef를 부여하기 위한 속성(Data Container) 확장 클래스.
 // 용도 : ThingDef의 <modExtensions>에 부착되어, 타겟에게 적용할 hediffDef와 광역 적용을 위한 반경(aoeRadius) 설정값을 제공함.
 
 using Verse;
 
 namespace ShapeshifterFramework.Extensions
 {
-    /// <summary>투사체 명중 시 대상에게 변신 폼을 적용하기 위한 확장 데이터.</summary>
-    public class PolymorphProjectileExtension : DefModExtension
+    /// <summary>투사체 명중 시 대상에게 HediffDef를 부여하기 위한 확장 데이터.</summary>
+    public class GiveHediffProjectileExtension_Shapeshift : DefModExtension
     {
         #region 설정 필드
 
-        /// <summary>변신 적용에 사용할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</summary>
+        /// <summary>부여할 HediffDef.</summary>
         public Verse.HediffDef hediffDef;
 
         // AoE 반경. 0 이하면 단일 타겟만 적용

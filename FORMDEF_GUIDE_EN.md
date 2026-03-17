@@ -487,11 +487,11 @@ Attach to an `AbilityDef`'s `<comps>`:
 | Item (equipped) | `CompProperties_GiveAbility_Shapeshift` | Equipped item grants ability. When the ability triggers a shift, the item is tracked as a `sourceItem` — unequipping reverts the form. |
 | Drug | `IngestionOutcomeDoer_Shapeshift` | Drug triggers shift directly. Field: `hediffDef`. |
 | Scroll/UseItem | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Field: `hediffDef`. |
-| Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `hediffDef`, `aoeRadius`, `affectAllies`. |
+| Projectile | `GiveHediffProjectileExtension_Shapeshift` | Projectile hit triggers shift. Fields: `hediffDef`, `aoeRadius`, `affectAllies`. |
 
 > **Vanilla GiveHediff compatibility:** Because the entry point is a standard HediffDef, vanilla `GiveHediff` operations (e.g., from other mods, dev tools, or vanilla hediff givers) will work. When the hediff is added, `HediffComp_ShapeshiftCore.CompPostPostAdd` automatically removes any existing shapeshift hediff (preventing stacking) and triggers `ApplyForm()` on the next tick.
 >
-> **Note:** SSF trigger classes (`IngestionOutcomeDoer_Shapeshift`, `Projectile_Polymorph`) internally call `GiveShiftHediff()` which provides convenience features like sourceItem tracking. For basic transformation, vanilla `AddHediff`/`GiveHediff` works just as well.
+> **Note:** SSF trigger classes (`IngestionOutcomeDoer_Shapeshift`, `Projectile_GiveHediff_Shapeshift`) internally call `GiveShiftHediff()` which provides convenience features like sourceItem tracking. For basic transformation, vanilla `AddHediff`/`GiveHediff` works just as well.
 
 ### HediffComp_AutoShift (Conditional Auto-Shift)
 

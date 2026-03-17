@@ -364,7 +364,7 @@
 - [ ] `[M]` 15-1. 데브 도구로 변신 hediff A 부여 → 정상 변신
 - [ ] `[M]` 15-2. 변신 A 중 데브 도구로 다른 변신 hediff B 부여 → A 자동 해제 후 B 적용 (중첩 없음)
 - [ ] `[M]` 15-3. 변신 A 중 같은 hediff A 재부여 → severity 갱신만 (중복 hediff 생성 안 됨)
-- [ ] `[M]` 15-4. Projectile_Polymorph AoE → 적대 폰만 변신, 아군 스킵 확인
+- [ ] `[M]` 15-4. Projectile_GiveHediff_Shapeshift AoE → 적대 폰만 변신, 아군 스킵 확인
 
 ---
 
