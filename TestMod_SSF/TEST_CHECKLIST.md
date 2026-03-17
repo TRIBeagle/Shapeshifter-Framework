@@ -258,14 +258,6 @@
 - [ ] `[M]` 10-16. 같은 어빌리티 복수 경로 → 중복 없이 1개, 한 경로 제거해도 유지
 - [ ] `[M]` 10-17. 각 경로별 세이브/로드 후 어빌리티 + 변신 상태 유지
 
-### 저항 판정 (Resist Check)
-- [ ] `[M]` 10-18. 어빌리티: resistStat=PsychicSensitivity, baseSuccessChance=0.8 → 감응력 0 폰 변신 실패
-- [ ] `[M]` 10-19. 어빌리티: resistStat 설정 + 아군 대상 → 저항 체크 없이 100% 성공
-- [ ] `[M]` 10-20. 어빌리티: resistStat 미설정(null) → 기존처럼 항상 성공
-- [ ] `[M]` 10-21. 투사체: resistStat=ToxicResistance, resistMode=Resistance → 독 저항 1.0 폰 면역
-- [ ] `[M]` 10-22. 투사체: affectAllies=true + resistStat → 아군에도 저항 체크 수행
-- [ ] `[M]` 10-23. resistMode=Sensitivity vs Resistance 방향성 정상 작동
-
 ---
 
 ## 11. 조건부 자동 변신 (HediffComp_AutoShift)

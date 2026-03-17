@@ -121,10 +121,6 @@ namespace ShapeshifterFramework.Comps
             if (Props.affectHostileOnly && parent?.pawn != null && !pawn.HostileTo(parent.pawn))
                 return;
 
-            // 저항 판정: 적대 대상이 resistStat 기반으로 변신을 저항
-            if (ShapeshiftCoreUtility.ResistAbility(parent?.pawn, pawn, Props.baseSuccessChance, Props.resistStat, Props.resistMode))
-                return;
-
             // HediffDef 기반 변신 진입
             if (Props.hediffDef == null)
             {

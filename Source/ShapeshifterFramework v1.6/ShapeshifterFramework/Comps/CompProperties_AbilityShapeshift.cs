@@ -4,7 +4,6 @@
 //        캐스트 조건(종족/뮤턴트)도 여기서 정의하여 ShouldHideGizmo/CanApplyOn에서 검사.
 
 using RimWorld;
-using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using Verse;
 
@@ -29,20 +28,6 @@ namespace ShapeshifterFramework.Comps
         // ── AoE 팩션 필터 ──
         // true 시 캐스터에 적대인 폰만 Apply, 아군/중립 스킵
         public bool affectHostileOnly;
-
-        // ── 저항 판정 (적대 대상 전용) ──
-        // 최종 성공률 = baseSuccessChance × target.GetStatValue(resistStat)
-        // resistStat이 null이면 저항 체크 없이 항상 성공.
-        // 아군 대상은 바닐라 Psycast 패턴에 따라 저항 체크 생략.
-
-        /// <summary>기본 성공 확률 (0~1). 기본값 1 = 항상 성공.</summary>
-        public float baseSuccessChance = 1f;
-
-        /// <summary>저항에 사용할 StatDef. 예: PsychicSensitivity, ToxicResistance 등. null이면 저항 체크 생략.</summary>
-        public StatDef resistStat;
-
-        /// <summary>스탯 방향성. Sensitivity=높을수록 취약, Resistance=높을수록 면역.</summary>
-        public ResistMode resistMode = ResistMode.Sensitivity;
 
         // ── 변신 중 시전 허용 폼 (defName 문자열) ──
         // null/비어있으면: 변신 중 시전 불가 (기즈모 비활성)
