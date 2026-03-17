@@ -15,7 +15,7 @@
       <Ability_EffectRadius>5</Ability_EffectRadius>
     </statBases>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_SheepFormHediff</hediffDef>
         <affectHostileOnly>true</affectHostileOnly>
       </li>

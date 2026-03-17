@@ -1,8 +1,9 @@
-// ShapeshifterFramework | Comps | CompAbilityEffect_Shapeshift.cs
-// 목적 : Ability를 사용하여 대상(Pawn)을 변신시키는 효과(Effect) 컴포넌트.
+// ShapeshifterFramework | Comps | CompAbilityEffect_GiveHediff_Shapeshift.cs
+// 목적 : 바닐라 CompAbilityEffect_GiveHediff를 확장하여 SSF 전용 캐스트 조건 + sourceItem 추적을 추가.
 // 용도 : - ShouldHideGizmo: 캐스터의 종족/뮤턴트 조건 + 같은 폼 재시전 차단
 //        - CanApplyOn: 대상 유효성 판별
-//        - Apply: hediffDef 기반 GiveShiftHediff 호출
+//        - Apply: 바닐라 hediff 부여 위임 + sourceItem 후처리
+//        - GizmoDisabled: allowedFromForms 체크
 
 using RimWorld;
 using ShapeshifterFramework.Hediffs;
@@ -12,10 +13,10 @@ using Verse;
 
 namespace ShapeshifterFramework.Comps
 {
-    /// <summary>대상 Pawn을 폼으로 변신시키는 Ability 효과.</summary>
-    public class CompAbilityEffect_Shapeshift : CompAbilityEffect
+    /// <summary>바닐라 GiveHediff를 확장한 SSF 어빌리티 효과. hediff 부여는 바닐라에 위임.</summary>
+    public class CompAbilityEffect_GiveHediff_Shapeshift : CompAbilityEffect_GiveHediff
     {
-        public new CompProperties_AbilityShapeshift Props => (CompProperties_AbilityShapeshift)props;
+        public new CompProperties_AbilityGiveHediff_Shapeshift Props => (CompProperties_AbilityGiveHediff_Shapeshift)props;
 
         // 캐시: hediffDef → HediffCompProperties_ShapeshiftCore.formDef
         private ShapeshiftFormDef _cachedFormDef;
@@ -111,7 +112,7 @@ namespace ShapeshifterFramework.Comps
             return true;
         }
 
-        /// <summary>대상 Pawn에 폼 변신 시도.</summary>
+        /// <summary>대상 Pawn에 폼 변신 시도. hediff 부여는 바닐라에 위임, sourceItem만 후처리.</summary>
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             var pawn = target.Pawn;
@@ -121,24 +122,17 @@ namespace ShapeshifterFramework.Comps
             if (Props.affectHostileOnly && parent?.pawn != null && !pawn.HostileTo(parent.pawn))
                 return;
 
-            // HediffDef 기반 변신 진입
-            if (Props.hediffDef == null)
-            {
-                Log.Error("[SSF] CompAbilityEffect_Shapeshift: hediffDef가 지정되지 않았습니다.");
-                return;
-            }
+            // 바닐라가 hediff 부여 (ApplyInner 호출)
+            base.Apply(target, dest);
 
-            // 자기 자신에게 사용 시에만 아이템 추적 (타인 변신 시 캐스터 아이템은 대상에게 무의미)
-            List<Thing> sources = null;
+            // 후처리: 자기 자신에게 사용 시에만 아이템 추적 (타인 변신 시 캐스터 아이템은 대상에게 무의미)
             var caster = parent?.pawn;
             if (caster != null && caster == pawn)
             {
                 Thing grantingItem = FindGrantingItem(caster, parent.def);
-                if (grantingItem != null)
-                    sources = new List<Thing> { grantingItem };
+                if (grantingItem != null && ShapeshiftCoreUtility.TryGetCore(pawn, out var core))
+                    core.sourceItems = new List<Thing> { grantingItem };
             }
-
-            ShapeshiftCoreUtility.GiveShiftHediff(pawn, Props.hediffDef, sources);
         }
 
         /// <summary>캐스터의 장착 장비에서 해당 AbilityDef를 부여하는 아이템 탐색.

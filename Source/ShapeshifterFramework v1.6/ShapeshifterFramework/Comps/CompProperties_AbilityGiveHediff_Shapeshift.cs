@@ -1,7 +1,6 @@
-// ShapeshifterFramework | Comps | CompProperties_AbilityShapeshift.cs
-// 목적 : XML에서 Ability(초능력/마법)의 변신 효과를 정의하기 위한 속성(Properties) 클래스.
-// 용도 : 대상에게 적용할 hediffDef를 보관.
-//        캐스트 조건(종족/뮤턴트)도 여기서 정의하여 ShouldHideGizmo/CanApplyOn에서 검사.
+// ShapeshifterFramework | Comps | CompProperties_AbilityGiveHediff_Shapeshift.cs
+// 목적 : 바닐라 CompProperties_AbilityGiveHediff를 확장하여 SSF 전용 캐스트 조건을 추가하는 속성 클래스.
+// 용도 : hediffDef는 바닐라에서 상속. 종족/뮤턴트 필터, 폼 시전 허용, 적대 전용 등 SSF 고유 조건을 정의.
 
 using RimWorld;
 using System.Collections.Generic;
@@ -9,12 +8,9 @@ using Verse;
 
 namespace ShapeshifterFramework.Comps
 {
-    /// <summary>Ability 변신 효과 속성 정의.</summary>
-    public class CompProperties_AbilityShapeshift : CompProperties_AbilityEffect
+    /// <summary>바닐라 GiveHediff를 확장한 SSF 어빌리티 속성. hediffDef는 바닐라에서 상속.</summary>
+    public class CompProperties_AbilityGiveHediff_Shapeshift : CompProperties_AbilityGiveHediff
     {
-        /// <summary>변신 적용에 사용할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</summary>
-        public Verse.HediffDef hediffDef;
-
         // ── 캐스트 조건: 종족/뮤턴트 필터 ──
         // 조건 미충족 시 ShouldHideGizmo → true, CanApplyOn → false
         public List<ThingDef> allowedRaces;
@@ -33,9 +29,9 @@ namespace ShapeshifterFramework.Comps
         // null/비어있으면: 변신 중 시전 불가 (기즈모 비활성)
         public List<string> allowedFromForms;
 
-        public CompProperties_AbilityShapeshift()
+        public CompProperties_AbilityGiveHediff_Shapeshift()
         {
-            compClass = typeof(CompAbilityEffect_Shapeshift);
+            compClass = typeof(CompAbilityEffect_GiveHediff_Shapeshift);
         }
     }
 }

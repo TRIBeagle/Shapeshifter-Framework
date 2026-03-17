@@ -7,7 +7,7 @@
 - **HediffDef** → Entry point for transformation. Defines stat offsets (`statOffsets`, `statFactors`, `capMods`) in `stages`
 - **HediffComp_ShapeshiftCore** → Included in HediffDef `comps`. References a FormDef via `formDef` to execute shift logic
 - **ShapeshiftFormDef** → Pure data sheet. Visuals, equipment, tools, sounds, VFX
-- **CompProperties_AbilityShapeshift** → Cast conditions (races, mutants), success chance
+- **CompProperties_AbilityGiveHediff_Shapeshift** → Cast conditions (races, mutants), success chance
 - **Ability sources** → Genes, hediffs, items, drugs, scrolls, projectiles
 
 ## FormDef Fields Summary
@@ -72,7 +72,7 @@
   <defName>MyAbility</defName>
   <label>my shift</label>
   <comps>
-    <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+    <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
       <hediffDef>MyFormHediff</hediffDef>
     </li>
   </comps>

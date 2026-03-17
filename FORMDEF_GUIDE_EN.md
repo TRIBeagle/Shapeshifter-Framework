@@ -155,7 +155,7 @@ These filter the **target** (who receives the form). They apply to all trigger p
 | `formAllowedMutants` | List\<MutantDef\> | Only these mutants can receive the form. (`MayRequire: Ludeon.RimWorld.Anomaly`) |
 | `formDisallowedMutants` | List\<MutantDef\> | These mutants cannot receive the form. (`MayRequire: Ludeon.RimWorld.Anomaly`) |
 
-> **Caster-side** filters (`allowedRaces`, `disallowedRaces`) are on `CompProperties_AbilityShapeshift`, not on the FormDef.
+> **Caster-side** filters (`allowedRaces`, `disallowedRaces`) are on `CompProperties_AbilityGiveHediff_Shapeshift`, not on the FormDef.
 
 ### 4. Scale & Offset
 
@@ -466,7 +466,7 @@ Use these as `ParentName` to inherit common settings:
 
 All three share: `category=SSF_Shapeshift`, `iconPath=UI/Commands/SSF_Shift_Enter`, `casterMustBeCapableOfViolence=false`.
 
-### CompProperties_AbilityShapeshift
+### CompProperties_AbilityGiveHediff_Shapeshift
 
 Attach to an `AbilityDef`'s `<comps>`:
 
@@ -629,7 +629,7 @@ private static void MyOnFormRemoved(Pawn pawn, ShapeshiftFormDef form)
     <description>Transform into a wolf.</description>
     <cooldownTicksRange>3000</cooldownTicksRange>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSF_WolfFormHediff</hediffDef>
       </li>
     </comps>

@@ -54,7 +54,7 @@ A RimWorld 1.6 mod framework for shapeshifting mechanics. Define custom transfor
 **Ability Acquisition**
 - 6 trigger sources: Gene, Hediff, Item (equipped/inventory), Drug, Scroll/UseItem, AoE Projectile
 - Conditional auto-shift: `HediffComp_AutoShift` triggers transformation on health/mental state/night/combat conditions
-- Race/mutant cast restrictions via `CompProperties_AbilityShapeshift`
+- Race/mutant cast restrictions via `CompProperties_AbilityGiveHediff_Shapeshift`
 - Per-form race filtering (`formAllowedRaces`, `formDisallowedRaces`)
 
 **External Mod Integration**
@@ -137,7 +137,7 @@ Not yet available. Will be released via Steam Workshop and GitHub when ready.
 **어빌리티 획득**
 - 6가지 트리거 소스: 유전자, 헤디프, 아이템(장비/소지), 약물, 스크롤/사용아이템, AoE 투사체
 - 조건부 자동 변신: `HediffComp_AutoShift` — 체력/정신상태/밤/전투 조건 충족 시 자동 변신
-- 종족/뮤턴트 캐스트 제한 (`CompProperties_AbilityShapeshift`)
+- 종족/뮤턴트 캐스트 제한 (`CompProperties_AbilityGiveHediff_Shapeshift`)
 - 폼별 종족 필터링 (`formAllowedRaces`, `formDisallowedRaces`)
 
 **외부 모드 연동**

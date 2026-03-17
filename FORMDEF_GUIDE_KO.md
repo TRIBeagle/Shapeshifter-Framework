@@ -332,7 +332,7 @@ FormDef는 변신의 **비주얼, 장비, 도구, 사운드, VFX** 데이터를 
 | `formAllowedMutants` | List\<MutantDef\> | 이 뮤턴트만 변신 가능. (`MayRequire: Ludeon.RimWorld.Anomaly`) |
 | `formDisallowedMutants` | List\<MutantDef\> | 이 뮤턴트는 변신 불가. (`MayRequire: Ludeon.RimWorld.Anomaly`) |
 
-> **시전자 측** 필터(`allowedRaces`, `disallowedRaces`)는 `CompProperties_AbilityShapeshift`에서 설정합니다.
+> **시전자 측** 필터(`allowedRaces`, `disallowedRaces`)는 `CompProperties_AbilityGiveHediff_Shapeshift`에서 설정합니다.
 
 ### 3. 크기 및 위치
 
@@ -629,10 +629,10 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 
 ### 트리거 클래스의 hediffDef 지정
 
-모든 트리거 클래스(`CompProperties_AbilityShapeshift`, `CompProperties_UseEffect_Shapeshift`, `IngestionOutcomeDoer_Shapeshift`, `GiveHediffProjectileExtension_Shapeshift`)에서 `hediffDef` 필드로 변신할 HediffDef를 지정합니다.
+모든 트리거 클래스(`CompProperties_AbilityGiveHediff_Shapeshift`, `CompProperties_UseEffect_Shapeshift`, `IngestionOutcomeDoer_Shapeshift`, `GiveHediffProjectileExtension_Shapeshift`)에서 `hediffDef` 필드로 변신할 HediffDef를 지정합니다.
 
 ```xml
-<li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+<li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
   <hediffDef>MyForm_Hediff</hediffDef>
 </li>
 ```
@@ -649,7 +649,7 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 
 세 가지 모두 공통: `category=SSF_Shapeshift`, `iconPath=UI/Commands/SSF_Shift_Enter`, `casterMustBeCapableOfViolence=false`.
 
-### CompProperties_AbilityShapeshift
+### CompProperties_AbilityGiveHediff_Shapeshift
 
 `AbilityDef`의 `<comps>`에 부착합니다:
 
@@ -779,7 +779,7 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
     <description>늑대로 변신한다.</description>
     <cooldownTicksRange>3000</cooldownTicksRange>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSF_WolfFormHediff</hediffDef>
       </li>
     </comps>
@@ -876,7 +876,7 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
     <description>분노한 용인으로 변신. 강력하지만 짧고 해제 불가.</description>
     <cooldownTicksRange>6000</cooldownTicksRange>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSF_DragonkinRage</hediffDef>
       </li>
     </comps>

@@ -12,7 +12,7 @@
     <cooldownTicksRange>1500</cooldownTicksRange>
     <displayOrder>500</displayOrder>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <!-- hediffDef 경로 테스트: formDefName 대신 hediffDef 직접 지정 -->
         <hediffDef>SSFTest_BearWarriorFormHediff</hediffDef>
       </li>
@@ -43,7 +43,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_SheepFormHediff</hediffDef>
       </li>
     </comps>
@@ -71,7 +71,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_DarkKnightFormHediff</hediffDef>
       </li>
     </comps>
@@ -99,7 +99,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_BeastkinFormHediff</hediffDef>
       </li>
     </comps>
@@ -116,7 +116,7 @@
     <cooldownTicksRange>0</cooldownTicksRange>
     <displayOrder>511</displayOrder>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_FullBeastFormHediff</hediffDef>
         <!-- 수인 폼에서만 2단 변신 허용 -->
         <allowedFromForms>
@@ -147,7 +147,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_GuardianFormHediff</hediffDef>
       </li>
     </comps>
@@ -174,7 +174,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_PhantomFormHediff</hediffDef>
       </li>
     </comps>
@@ -202,7 +202,7 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_RaceLockedFormHediff</hediffDef>
         <!-- 종족 제한: 인간만 -->
         <allowedRaces>

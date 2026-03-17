@@ -7,7 +7,7 @@
 - **HediffDef** → 변신 진입점. `stages`에서 스탯 보정 (`statOffsets`, `statFactors`, `capMods`) 정의
 - **HediffComp_ShapeshiftCore** → HediffDef의 `comps`에 포함. `formDef`로 FormDef를 참조하여 변신 로직 실행
 - **ShapeshiftFormDef** → 순수 데이터 시트. 비주얼, 장비, 도구, 사운드, VFX 등 외형/연출 정보
-- **CompProperties_AbilityShapeshift** → 캐스트 조건 (종족, 뮤턴트), 성공 확률
+- **CompProperties_AbilityGiveHediff_Shapeshift** → 캐스트 조건 (종족, 뮤턴트), 성공 확률
 - **어빌리티 소스** → 유전자, 헤디프, 아이템, 약물, 스크롤, 투사체
 
 ## FormDef 필드 요약
@@ -72,7 +72,7 @@
   <defName>MyAbility</defName>
   <label>나의 변신</label>
   <comps>
-    <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
+    <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
       <hediffDef>MyFormHediff</hediffDef>
     </li>
   </comps>
