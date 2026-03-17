@@ -746,6 +746,9 @@ namespace ShapeshifterFramework.Hediffs
             var pawn = Pawn;
             if (pawn == null || form == null) return;
             if (_isApplyingOrRemoving) return; // 재진입 방지
+            _isApplyingOrRemoving = true;
+            try
+            {
 
             string prev = prevOverride ?? ((isTransformed && currentForm != null) ? currentForm.defName : null);
 
@@ -755,9 +758,14 @@ namespace ShapeshifterFramework.Hediffs
                 return;
             }
 
-            // 전환 시 기존 폼 먼저 해제
+            // 전환 시 기존 폼 먼저 해제 — RemoveForm 내부 재진입 검사를 우회해야 하므로 플래그 일시 해제
             if (isTransformed)
+            {
+                _isApplyingOrRemoving = false;
                 RemoveForm();
+                if (_isApplyingOrRemoving) return; // RemoveForm 중 재진입 발생 시 중단
+                _isApplyingOrRemoving = true;
+            }
 
             this.sourceItems = sources ?? new List<Thing>();
 
@@ -854,6 +862,16 @@ namespace ShapeshifterFramework.Hediffs
 
             // 이벤트 발행
             ShapeshiftCoreUtility.FireFormApplied(pawn, form);
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[SSF] ApplyForm failed for {pawn?.Name}: {ex}");
+            }
+            finally
+            {
+                _isApplyingOrRemoving = false;
+            }
         }
 
         /// <summary>현재 폼 해제.</summary>
@@ -925,7 +943,9 @@ namespace ShapeshifterFramework.Hediffs
                     for (int j = list.Count - 1; j >= 0; j--)
                     {
                         if (remaining.Count == 0) break;
+                        if (list[j] == null) continue;
                         var hd = list[j].def;
+                        if (hd == null) continue;
                         if (remaining.TryGetValue(hd, out int cnt) && cnt > 0)
                         {
                             remaining[hd] = cnt - 1;
