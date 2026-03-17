@@ -23,9 +23,6 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>XML 속성 접근.</summary>
         public HediffCompProperties_ShapeshiftCore Props => (HediffCompProperties_ShapeshiftCore)props;
 
-        /// <summary>소유 Pawn 접근 (parent.pawn).</summary>
-        public Pawn Pawn => parent?.pawn;
-
         #endregion
 
         /// <summary>초기화 진행 중에는 바닐라 severity 기반 자동 소멸을 차단.</summary>
@@ -380,9 +377,9 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>Hediff 부여 직후 — 기존 변신 hediff 제거 + needsInit 플래그 설정. 실제 ApplyForm은 첫 Tick에서 실행.</summary>
         /// <remarks>바닐라 GiveHediff 경로(데브 도구, 외부 모드 등)에서도 변신 중첩을 방지하기 위해
         /// 자기 자신을 제외한 기존 변신 hediff를 자동 제거합니다.</remarks>
-        public override void CompPostPostAdd(DamageInfo? dinfo, float amount)
+        public override void CompPostPostAdd(DamageInfo? dinfo)
         {
-            base.CompPostPostAdd(dinfo, amount);
+            base.CompPostPostAdd(dinfo);
 
             // 기존 변신 hediff 제거 (동시 적용 방지) — 자기 자신(parent)은 제외
             var pawn = Pawn;
@@ -729,21 +726,24 @@ namespace ShapeshifterFramework.Hediffs
             }
         }
 
-        /// <summary>인스펙트 추가 문자열.</summary>
-        public override string CompInspectStringExtra()
+        /// <summary>헤디프 툴팁 추가 문자열 (1.6: CompTipStringExtra 프로퍼티).</summary>
+        public override string CompTipStringExtra
         {
-            if (!isTransformed || currentForm == null)
-                return null;
+            get
+            {
+                if (!isTransformed || currentForm == null)
+                    return null;
 
-            var resolvedDuration = ResolvedDurationTicks;
-            if (!resolvedDuration.HasValue || resolvedDuration.Value <= 0)
-                return "SSF_Inspect_Permanent".Translate();
+                var resolvedDuration = ResolvedDurationTicks;
+                if (!resolvedDuration.HasValue || resolvedDuration.Value <= 0)
+                    return "SSF_Inspect_Permanent".Translate();
 
-            int remain = transformTimer;
-            if (remain <= 0) return null;
+                int remain = transformTimer;
+                if (remain <= 0) return null;
 
-            string timeStr = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: false);
-            return "SSF_Inspect_Remaining".Translate(timeStr);
+                string timeStr = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: false);
+                return "SSF_Inspect_Remaining".Translate(timeStr);
+            }
         }
 
         #endregion
