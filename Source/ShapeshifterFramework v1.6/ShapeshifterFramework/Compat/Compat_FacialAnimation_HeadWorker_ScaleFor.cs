@@ -7,6 +7,7 @@ using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Verse;
 
@@ -107,7 +108,12 @@ namespace ShapeshifterFramework.Compat
         #region Helpers
 
         // FA 컨트롤러 보유 여부 캐시 — AllComps 순회 방지 (게임 중 FA 컴프는 변하지 않음)
-        private static readonly Dictionary<int, bool> _faCompCache = new Dictionary<int, bool>(256);
+        // ConditionalWeakTable: Pawn GC 시 캐시 엔트리 자동 제거 → stale 데이터 방지
+        private static readonly ConditionalWeakTable<Pawn, BoolBox> _faCompCache
+            = new ConditionalWeakTable<Pawn, BoolBox>();
+
+        /// <summary>ConditionalWeakTable 값 래퍼 (value type을 참조로 보관).</summary>
+        private sealed class BoolBox { public bool value; public bool resolved; }
 
         /// <summary>게임 로드/전환 시 FA 컴프 캐시 정리.</summary>
         internal static void ClearFACompCache() { _faCompCache.Clear(); }
@@ -115,13 +121,12 @@ namespace ShapeshifterFramework.Compat
         /// <summary>Pawn이 FA 컨트롤러 컴프를 보유하는지 캐시 조회. 최초 1회만 AllComps 순회.</summary>
         private static bool HasFAControllerCompCached(Pawn pawn)
         {
-            int id = pawn.thingIDNumber;
-            if (_faCompCache.TryGetValue(id, out bool has))
-                return has;
+            var box = _faCompCache.GetOrCreateValue(pawn);
+            if (box.resolved) return box.value;
 
-            has = HasFAControllerCompScan(pawn);
-            _faCompCache[id] = has;
-            return has;
+            box.value = HasFAControllerCompScan(pawn);
+            box.resolved = true;
+            return box.value;
         }
 
         /// <summary>Pawn이 FA 컨트롤러 컴프를 보유하는지 실제 검사.</summary>

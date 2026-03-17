@@ -120,11 +120,10 @@ namespace ShapeshifterFramework.Compat
         /// <summary>ConditionalWeakTable 값 래퍼 (value type을 참조로 보관).</summary>
         private sealed class BoolBox { public bool value; }
 
-        /// <summary>게임 로드/전환 시 헤드 애드온 캐시 정리. ConditionalWeakTable은 자동 정리되지만 명시적 비움용.</summary>
+        /// <summary>게임 로드/전환 시 헤드 애드온 캐시 정리.</summary>
         internal static void ClearHeadAddonCache()
         {
-            // ConditionalWeakTable에는 Clear()가 없으므로 새 인스턴스를 사용할 수 없음 (readonly).
-            // GC가 자연 정리하므로 별도 처리 불필요. 호출부 호환성 유지를 위해 빈 구현.
+            _headAddonCache.Clear();
         }
 
         /// <summary>
