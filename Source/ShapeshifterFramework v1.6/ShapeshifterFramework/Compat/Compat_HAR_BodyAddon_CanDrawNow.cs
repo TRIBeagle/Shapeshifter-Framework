@@ -76,6 +76,8 @@ namespace ShapeshifterFramework.Compat
 
                 if (ShapeshiftRegistry.TryGet(pawn, out var comp, out var form))
                 {
+                    // HARFormExtension 미지정 시 기본적으로 HAR 애드온을 숨김 (변신 폼의 외형 일관성 보장).
+                    // 모더가 <showHarAddons>true</showHarAddons>를 명시해야 HAR 애드온이 표시됨.
                     var harExt = form.GetModExtension<HARFormExtension>();
                     bool show = harExt != null && harExt.showHarAddons;
                     if (!show)

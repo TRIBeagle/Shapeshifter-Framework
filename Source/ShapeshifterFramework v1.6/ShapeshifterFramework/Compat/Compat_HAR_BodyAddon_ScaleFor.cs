@@ -112,11 +112,20 @@ namespace ShapeshifterFramework.Compat
 
         #region Head-addon 판정 (캐시)
 
-        // 헤드 애드온 판정 캐시 — 노드 해시코드 기반. 게임 중 노드의 헤드 소속 여부는 변하지 않음.
-        private static readonly Dictionary<int, bool> _headAddonCache = new Dictionary<int, bool>(128);
+        // 헤드 애드온 판정 캐시 — 노드 인스턴스 참조 기반. 게임 중 노드의 헤드 소속 여부는 변하지 않음.
+        // ConditionalWeakTable: 노드가 GC되면 캐시 엔트리도 자동 제거 → 해시 충돌/stale 데이터 방지
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<PawnRenderNode, BoolBox> _headAddonCache
+            = new System.Runtime.CompilerServices.ConditionalWeakTable<PawnRenderNode, BoolBox>();
 
-        /// <summary>게임 로드/전환 시 헤드 애드온 캐시 정리.</summary>
-        internal static void ClearHeadAddonCache() { _headAddonCache.Clear(); }
+        /// <summary>ConditionalWeakTable 값 래퍼 (value type을 참조로 보관).</summary>
+        private sealed class BoolBox { public bool value; }
+
+        /// <summary>게임 로드/전환 시 헤드 애드온 캐시 정리. ConditionalWeakTable은 자동 정리되지만 명시적 비움용.</summary>
+        internal static void ClearHeadAddonCache()
+        {
+            // ConditionalWeakTable에는 Clear()가 없으므로 새 인스턴스를 사용할 수 없음 (readonly).
+            // GC가 자연 정리하므로 별도 처리 불필요. 호출부 호환성 유지를 위해 빈 구현.
+        }
 
         /// <summary>
         /// 헤드 계열 판정(캐시 우선). 최초 1회만 리플렉션 판정 후 결과를 캐싱.
@@ -125,13 +134,11 @@ namespace ShapeshifterFramework.Compat
         {
             if (node == null) return false;
 
-            // RuntimeHelpers.GetHashCode: 객체 ID 기반 (노드 인스턴스 단위 캐싱)
-            int key = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(node);
-            if (_headAddonCache.TryGetValue(key, out bool cached))
-                return cached;
+            if (_headAddonCache.TryGetValue(node, out var cached))
+                return cached.value;
 
             bool result = IsHeadAddonScan(node, pawn);
-            _headAddonCache[key] = result;
+            _headAddonCache.GetOrCreateValue(node).value = result;
             return result;
         }
 

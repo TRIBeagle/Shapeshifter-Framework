@@ -365,6 +365,14 @@ namespace ShapeshifterFramework.Compat
             static bool Prepare()
             {
                 if (!CompatManager.SS.IsActive) return false;
+                // 대상 메서드 존재 여부 확인 — 시그니처 변경 시 silent fail 방지
+                var target = AccessTools.Method(typeof(HediffComp_ShapeshiftCore), "ApplyForm",
+                    new Type[] { typeof(ShapeshiftFormDef), typeof(string), typeof(List<Thing>) });
+                if (target == null)
+                {
+                    CompatManager.SS.Failed("MemoryHook:Prepare", "ApplyForm signature not found");
+                    return false;
+                }
                 if (!counted) { counted = true; CompatManager.SS.Patched("MemoryHook"); }
                 return true;
             }

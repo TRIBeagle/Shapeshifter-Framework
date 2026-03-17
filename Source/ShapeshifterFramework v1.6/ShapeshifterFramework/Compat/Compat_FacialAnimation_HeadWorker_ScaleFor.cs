@@ -30,10 +30,11 @@ namespace ShapeshifterFramework.Compat
         /// <summary>패치 적용 가능 여부 판정.</summary>
         static bool Prepare()
         {
-            // FA 비활성이면 패치 비적용
-            if (!CompatManager.FA.IsActive || T_BaseWorker == null || T_FAHeadWorker == null)
+            // FA 비활성이면 패치 비적용 — 실패 기록 불필요
+            if (!CompatManager.FA.IsActive) return false;
+            if (T_BaseWorker == null || T_FAHeadWorker == null)
             {
-                CompatManager.FA.Failed("HeadScale", "not active or types missing");
+                CompatManager.FA.Failed("HeadScale", "types missing");
                 return false;
             }
             return true;

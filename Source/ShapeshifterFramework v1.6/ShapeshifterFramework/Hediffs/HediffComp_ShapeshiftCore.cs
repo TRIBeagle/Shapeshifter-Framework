@@ -501,10 +501,11 @@ namespace ShapeshifterFramework.Hediffs
 
                     if (pawn.Map != null)
                     {
-                        var allThings = pawn.Map.listerThings.AllThings;
-                        for (int i = 0; i < allThings.Count; i++)
+                        // AllThings 대신 HaulableEverOrMinifiable로 범위 축소 — 대형 맵 성능 개선
+                        var haulables = pawn.Map.listerThings.ThingsInGroup(ThingRequestGroup.HaulableEverOrMinifiable);
+                        for (int i = 0; i < haulables.Count; i++)
                         {
-                            var t = allThings[i];
+                            var t = haulables[i];
                             if (__tmpPrevApIds != null && __tmpPrevApIds.Contains(t.ThingID) && t is Apparel ap)
                             {
                                 prevApparels.Add(ap);
@@ -645,20 +646,20 @@ namespace ShapeshifterFramework.Hediffs
                 return apparelMet || weaponMet || hediffMet || geneMet;
         }
 
-        // sustain 체크용 재활용 HashSet — 재진입 안전을 위해 apparel/weapon 분리
-        private static readonly HashSet<ThingDef> _tmpSustainApparelDefs = new HashSet<ThingDef>();
-        private static readonly HashSet<ThingDef> _tmpSustainWeaponDefs = new HashSet<ThingDef>();
+        // sustain 체크용 재활용 HashSet — 재진입 안전을 위해 ThreadStatic
+        [ThreadStatic] private static HashSet<ThingDef> _tmpSustainDefs;
 
         private static bool CheckSustainApparels(Pawn pawn, List<ThingDef> required)
         {
             if (pawn.apparel == null) return false;
+            if (_tmpSustainDefs == null) _tmpSustainDefs = new HashSet<ThingDef>();
             var worn = pawn.apparel.WornApparel;
-            _tmpSustainApparelDefs.Clear();
+            _tmpSustainDefs.Clear();
             for (int j = 0; j < worn.Count; j++)
-                _tmpSustainApparelDefs.Add(worn[j].def);
+                _tmpSustainDefs.Add(worn[j].def);
             for (int i = 0; i < required.Count; i++)
             {
-                if (!_tmpSustainApparelDefs.Contains(required[i])) return false;
+                if (!_tmpSustainDefs.Contains(required[i])) return false;
             }
             return true;
         }
@@ -666,13 +667,14 @@ namespace ShapeshifterFramework.Hediffs
         private static bool CheckSustainWeapons(Pawn pawn, List<ThingDef> required)
         {
             if (pawn.equipment == null) return false;
+            if (_tmpSustainDefs == null) _tmpSustainDefs = new HashSet<ThingDef>();
             var eqs = pawn.equipment.AllEquipmentListForReading;
-            _tmpSustainWeaponDefs.Clear();
+            _tmpSustainDefs.Clear();
             for (int j = 0; j < eqs.Count; j++)
-                _tmpSustainWeaponDefs.Add(eqs[j].def);
+                _tmpSustainDefs.Add(eqs[j].def);
             for (int i = 0; i < required.Count; i++)
             {
-                if (!_tmpSustainWeaponDefs.Contains(required[i])) return false;
+                if (!_tmpSustainDefs.Contains(required[i])) return false;
             }
             return true;
         }
@@ -819,8 +821,8 @@ namespace ShapeshifterFramework.Hediffs
                 Log.Error($"[SSF] Error handling gear during transform for {pawn.Name}: {ex}");
             }
 
-            // 체형/컬러 백업
-            if (!isTransformed && pawn.story != null)
+            // 체형/컬러 백업 — hasSavedColors로 중복 백업 방지 (RemoveForm 예외 시 isTransformed 오판 방어)
+            if (!hasSavedColors && pawn.story != null)
             {
                 originalBodyType = pawn.story.bodyType;
                 originalHeadType = pawn.story.headType;
@@ -1123,8 +1125,13 @@ namespace ShapeshifterFramework.Hediffs
                 for (int i = 0; i < __oldForm.revertAddHediffs.Count; i++)
                 {
                     var entry = __oldForm.revertAddHediffs[i];
-                    if (entry?.hediff != null)
-                        pawn.health.AddHediff(entry.hediff);
+                    if (entry?.hediff == null) continue;
+                    Hediff h = pawn.health.AddHediff(entry.hediff);
+                    if (h != null && entry.severity.HasValue)
+                    {
+                        try { h.Severity = entry.severity.Value; }
+                        catch (Exception ex) { Log.Warning($"[SSF] revertAddHediffs (FormDef) severity set failed: {ex}"); }
+                    }
                 }
             }
 
@@ -1783,6 +1790,14 @@ namespace ShapeshifterFramework.Hediffs
             Scribe_Collections.Look(ref sourceItems, "sourceItems", LookMode.Reference);
             Scribe_Collections.Look(ref generatedApparel, "generatedApparel", LookMode.Reference);
             Scribe_Collections.Look(ref generatedWeapons, "generatedWeapons", LookMode.Reference);
+
+            // Scribe_Collections.Look은 노드 미존재 시 null을 반환 — PostLoadInit 전 접근 방어
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                if (sourceItems == null) sourceItems = new List<Thing>();
+                if (generatedApparel == null) generatedApparel = new List<Apparel>();
+                if (generatedWeapons == null) generatedWeapons = new List<ThingWithComps>();
+            }
 
             // PostLoadInit
 

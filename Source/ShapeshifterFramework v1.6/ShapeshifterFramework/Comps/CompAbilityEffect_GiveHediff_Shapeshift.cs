@@ -233,13 +233,16 @@ namespace ShapeshifterFramework.Comps
             return true;
         }
 
-        // 뮤턴트 수집용 재사용 리스트 — UI 렌더 경로(ShouldHideGizmo)에서 GC 할당 방지
-        private static readonly List<MutantDef> _tmpPawnMutants = new List<MutantDef>(4);
+        // 뮤턴트 수집용 재사용 리스트 — UI 렌더 경로(ShouldHideGizmo)에서 재진입 안전을 위해 ThreadStatic
+        [ThreadStatic] private static List<MutantDef> _tmpPawnMutants;
 
         private static bool PassMutantFilter(Pawn pawn, List<MutantDef> allow, List<MutantDef> disallow)
         {
             var hediffs = pawn?.health?.hediffSet?.hediffs;
             if (hediffs == null) return !Active(allow); // allow 있으면 실패
+
+            // ThreadStatic은 initializer가 동작하지 않으므로 null 체크
+            if (_tmpPawnMutants == null) _tmpPawnMutants = new List<MutantDef>(4);
 
             // Pawn의 뮤턴트 수집 (역인덱스 O(1) 조회)
             _tmpPawnMutants.Clear();
