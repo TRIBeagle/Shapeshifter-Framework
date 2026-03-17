@@ -39,7 +39,7 @@
 - [ ] `[M]` 1-3. 수영 시 SwimmingBear 텍스처 + 수영색 (255,255,255)
 
 ### Auto-Verify
-- [ ] `[A]` 1-AV1. linkedHediff 스탯(이동+1.5, 근접명중x1.20, 근접회피x1.15, capMods 4종)
+- [ ] `[A]` 1-AV1. HediffDef stages 스탯(이동+1.5, 근접명중x1.20, 근접회피x1.15, capMods 4종)
 - [ ] `[A]` 1-AV2. addHediff(FibrousMechanites sev0.5, BeastArm 양팔)
 - [ ] `[A]` 1-AV3. addAbility(Berserk)
 - [ ] `[A]` 1-AV4. gear(apparel=Drop, weapon=Drop)
@@ -66,7 +66,7 @@
 - [ ] `[M]` 2-1. Ability_BuffAlly 아군/자기 타겟 변신 + 쿨다운 1500틱
 
 ### Auto-Verify
-- [ ] `[A]` 2-AV1. linkedHediff 스탯(이동+0.5, 근접회피+10, 피해배율x0.8)
+- [ ] `[A]` 2-AV1. HediffDef stages 스탯(이동+0.5, 근접회피+10, 피해배율x0.8)
 - [ ] `[A]` 2-AV2. soundCache(Pawn_Bear_Angry)
 - [ ] `[A]` 2-AV3. timer(15000틱)
 
@@ -91,7 +91,7 @@
 - [ ] `[M]` 3-3. 성별 텍스처 분기 (SheepMale / SheepFemale) + bodyDrawScale 0.6
 
 ### Auto-Verify
-- [ ] `[A]` 3-AV1. linkedHediff 스탯(이동-1.0)
+- [ ] `[A]` 3-AV1. HediffDef stages 스탯(이동-1.0)
 - [ ] `[A]` 3-AV2. workTags(Violent)
 - [ ] `[A]` 3-AV3. timer(10000틱)
 
@@ -106,7 +106,7 @@
 - [ ] `[M]` 4-1. Ability_DarkKnight 자기변신 + 쿨다운 3000틱
 
 ### Auto-Verify
-- [ ] `[A]` 4-AV1. linkedHediff 스탯
+- [ ] `[A]` 4-AV1. HediffDef stages 스탯
 - [ ] `[A]` 4-AV2. gear(apparel=Inventory, weapon=Inventory)
 - [ ] `[A]` 4-AV3. spawnApparel(PlateArmor) + spawnWeapon(LongSword)
 - [ ] `[A]` 4-AV4. stuff(Plasteel)
@@ -158,7 +158,7 @@
 - [ ] `[M]` 6-3. 수인 해제 시 FullBeast 어빌리티 제거
 
 ### Auto-Verify
-- [ ] `[A]` 6-AV1. linkedHediff 스탯(이동+2.0, 피해배율x0.7)
+- [ ] `[A]` 6-AV1. HediffDef stages 스탯(이동+2.0, 피해배율x0.7)
 - [ ] `[A]` 6-AV2. verbTracker(fangs+claws, replaceNativeTools)
 - [ ] `[A]` 6-AV3. timer(12000틱)
 
@@ -184,7 +184,7 @@
 - [ ] `[M]` 7-8. 세이브/로드 후 앰비언트 자동 재생성
 
 ### Auto-Verify
-- [ ] `[A]` 7-AV1. linkedHediff 스탯(이동+0.3, 피해배율x0.85)
+- [ ] `[A]` 7-AV1. HediffDef stages 스탯(이동+0.3, 피해배율x0.85)
 - [ ] `[A]` 7-AV2. timer(12000틱)
 
 ### 수동 확인
@@ -218,7 +218,7 @@
 - [ ] `[A]` 9-AV1. raceFilter(Human 통과, 비인간 차단)
 - [ ] `[A]` 9-AV2. headType(Male_AverageNormal)
 - [ ] `[A]` 9-AV3. equipLock(apparel=Locked, weapon=Unlocked)
-- [ ] `[A]` 9-AV4. linkedHediff 스탯
+- [ ] `[A]` 9-AV4. HediffDef stages 스탯
 - [ ] `[A]` 9-AV5. timer(12000틱)
 
 ### 뮤턴트 필터 (Anomaly)
@@ -313,12 +313,47 @@
 
 ---
 
-## 13. 디버그 액션
+## 13. HediffComp 마이그레이션 검증
 
-- [ ] `[M]` 13-1. Inspect Active Form: linkedHediff 기준 스탯/캐퍼 표시
-- [ ] `[M]` 13-2. Dump Pawn State: Stat Offsets/Factors/Capacity Mods 출력
-- [ ] `[M]` 13-3. AddedPart/Hediff 실패 시 `[SSF]` 경고 로그
-- [ ] `[M]` 13-4. 장시간 플레이 후 메모리 누적 없음
+### N:1 매핑 (같은 FormDef, 다른 HediffDef)
+- [ ] `[A]` 13-1. 같은 FormDef를 참조하는 서로 다른 HediffDef 2개 → 각각 다른 stages 스탯 적용
+- [ ] `[A]` 13-2. HediffDef_A 적용 시 스탯 세트 A, HediffDef_B 적용 시 스탯 세트 B 확인
+- [ ] `[M]` 13-3. N:1 매핑된 HediffDef 간 전환 시 스탯 정상 교체
+
+### CompProperties 오버라이드 (HediffCompProperties_ShapeshiftCore)
+- [ ] `[A]` 13-4. durationTicks 오버라이드: FormDef 기본값 대신 CompProperties 값 적용
+- [ ] `[A]` 13-5. canRevertVoluntarily 오버라이드: FormDef 기본값 대신 CompProperties 값 적용
+- [ ] `[M]` 13-6. 오버라이드 미지정 시 FormDef 기본값 사용 확인
+
+### 바닐라 GiveHediff 트리거
+- [ ] `[M]` 13-7. 바닐라 GiveHediff로 HediffDef 부여 → HediffComp_ShapeshiftCore 감지 → 변신 자동 발동
+- [ ] `[M]` 13-8. 바닐라 경로로 부여된 Hediff 제거 → 변신 자동 해제
+
+### 트리거 클래스 hediffDef 필드
+- [ ] `[A]` 13-9. 어빌리티 트리거: hediffDef 필드로 지정된 HediffDef 부여 확인
+- [ ] `[A]` 13-10. 아이템 트리거: hediffDef 필드 정상 작동
+- [ ] `[A]` 13-11. 약물 트리거: hediffDef 필드 정상 작동
+- [ ] `[A]` 13-12. 투사체 트리거: hediffDef 필드 정상 작동
+- [ ] `[A]` 13-13. AutoShift 트리거: hediffDef 필드 정상 작동
+
+### DefModExtension (FA/HAR 호환)
+- [ ] `[M]` 13-14. FAFormExtension 설정 시 Facial Animation 연동 정상
+- [ ] `[M]` 13-15. HARFormExtension 설정 시 Humanoid Alien Races 연동 정상
+- [ ] `[M]` 13-16. FA/HAR 미설치 시 Extension 무시 + 에러 없음
+
+### 이벤트: OnFormApplied / OnFormRemoved
+- [ ] `[A]` 13-17. 변신 적용 시 OnFormApplied 이벤트 발화 확인
+- [ ] `[A]` 13-18. 변신 해제 시 OnFormRemoved 이벤트 발화 확인
+- [ ] `[M]` 13-19. 이벤트 핸들러에서 폰 상태 접근 시 정상 동작
+
+---
+
+## 14. 디버그 액션
+
+- [ ] `[M]` 14-1. Inspect Active Form: HediffDef 기준 스탯/캐퍼 표시
+- [ ] `[M]` 14-2. Dump Pawn State: Stat Offsets/Factors/Capacity Mods 출력
+- [ ] `[M]` 14-3. AddedPart/Hediff 실패 시 `[SSF]` 경고 로그
+- [ ] `[M]` 14-4. 장시간 플레이 후 메모리 누적 없음
 
 ---
 
