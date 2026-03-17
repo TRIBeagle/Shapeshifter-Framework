@@ -4,375 +4,258 @@
 
 ---
 
-## 준비
-
-1. TestMod_SSF + ShapeshifterFramework 활성화, 개발자 모드 ON
-2. 새 게임 (자유지대, 식민자 3명+)
-3. `SSF: Dump Form Info`로 9개 폼 로드 확인, `[SSF]` 에러 없음
-
----
-
 ## 폼 요약
 
-| 폼 | 부모 | 트리거 | 핵심 기능 |
-|----|------|--------|-----------|
-| BearForm | Animal | 약물/스크롤 | body Replace, 수영텍스처, tools, addHediffs, revertDrops, FX |
-| BearWarriorForm | Armored | 어빌리티(대상) | 사운드, Effecter, gear Keep |
-| SheepForm | Animal | 어빌리티(적대)/AoE | 성별텍스처, canRevertVoluntarily=false, workTags |
-| DarkKnightForm | Armored | 어빌리티(자기) | spawnApparel/Weapon, equipLock, revertAddHediffs |
-| BeastkinForm | Humanoid | 어빌리티(자기) | renderNodes, 5종 verb+기즈모, addAbilities 체인 |
-| FullBeastForm | Animal | addAbilities 체인 | allowedFromForms, 2단 변신 |
-| GuardianForm | Humanoid | 어빌리티(소지아이템) | sustain, portrait/shadow, ambientFleck, revertOnDowned |
-| PhantomForm | Humanoid | 어빌리티(유전자/의류) | head Replace, Transparent 셰이더, FX delay |
-| RaceLockedForm | Armored | 어빌리티(Hediff) | formAllowedRaces, headType, 비대칭 equipLock |
+| # | FormDef | 부모 | 트리거 | 핵심 테스트 |
+|---|---------|------|--------|------------|
+| 1 | SSFTest_BearForm | Animal | 아군 어빌리티, 약물 | 전체 텍스처 교체, 수영, 도구, 헤디프, 해제 드랍, FX |
+| 2 | SSFTest_BearWarriorForm | Armored | 적 어빌리티 | 사운드, 이펙터, 아이콘, 장비 유지 |
+| 3 | SSFTest_SheepForm | Animal | AoE, 투사체 | 성별 텍스처, 작업 태그 비활성, 강제 변신(해제 불가) |
+| 4 | SSFTest_DarkKnightForm | Armored | 자기 어빌리티 (무기 부여) | 스폰 장비, 장비 잠금, 해제 헤디프 |
+| 5 | SSFTest_BeastkinForm | Humanoid | 자기 어빌리티 (유전자) | 렌더 노드, 보이스, 5개 버브, 기즈모, 헤어 색상 |
+| 6 | SSFTest_FullBeastForm | Animal | 자기 어빌리티 (2단계) | allowedFromForms, 듀얼 도구 |
+| 7 | SSFTest_GuardianForm | Humanoid | 자기 어빌리티 | 초상화 스케일, 오프셋, 그림자, 유지 조건, 앰비언트 VFX |
+| 8 | SSFTest_PhantomForm | Humanoid | 자기 어빌리티 (의류 부여) | 투명 셰이더, 체형, 피부 색상, FX 딜레이 |
+| 9 | SSFTest_RaceLockedForm | Armored | 자기 어빌리티 (헤디프) | 종족 필터, 비대칭 장비 잠금, 머리형 |
 
 ---
 
-## 1. BearForm — 동물형 기본
+## 1. BearForm (곰) — Animal 완전 변신
 
-### 트리거
-- [ ] `[M]` 1-1. ShiftScroll_Self / ShiftScroll_Target / BearElixir 각각 변신 성공
+### [A] Auto-Verify
+- [ ] 변신 진입 시 body 텍스처가 `SSFTest/Pawn/Bear`로 교체
+- [ ] head, hair, beard, tattoo가 Hidden
+- [ ] 의류/무기가 인벤토리로 이동
+- [ ] 도구 `fangs` (Bite 18), `claws` (Scratch 12) 활성
+- [ ] `replaceNativeTools=true` — 바닐라 도구 비활성
+- [ ] addHediffs: `SSFTest_BeastArm` 부여 확인
+- [ ] 해제 시 addHediffs 제거, 이전 장비 복귀
+- [ ] revertDrops: `WoolMuffalo 10` 드랍
 
-### 비주얼
-- [ ] `[M]` 1-2. 곰 텍스처 + bodyDrawScale 2.5 + 기본색 (112,82,65)
-- [ ] `[M]` 1-2a. 줌아웃 시 곰 텍스처 잘림 없음 (DrawSize 컬링 바운드 확인)
-- [ ] `[M]` 1-3. 수영 시 SwimmingBear 텍스처 + 수영색 (255,255,255)
-
-### Auto-Verify
-- [ ] `[A]` 1-AV1. HediffDef stages 스탯(이동+1.5, 근접명중x1.20, 근접회피x1.15, capMods 4종)
-- [ ] `[A]` 1-AV2. addHediff(FibrousMechanites sev0.5, BeastArm 양팔)
-- [ ] `[A]` 1-AV3. addAbility(Berserk)
-- [ ] `[A]` 1-AV4. gear(apparel=Drop, weapon=Drop)
-- [ ] `[A]` 1-AV5. verbTracker(replaceNativeTools)
-- [ ] `[A]` 1-AV6. bloodCache
-- [ ] `[A]` 1-AV7. timer(15000틱)
-- [ ] `[A]` 1-AV8. [Revert] hediff 제거, bodyType 원복, addAbility 제거
-- [ ] `[A]` 1-AV9. transformFxCooldownTicks(30) 설정값 검증
-
-### 수동 확인
-- [ ] `[M]` 1-4. 물기(teeth) 근접공격만 사용
-- [ ] `[M]` 1-5. 혈흔 Filth_BloodInsect + 크롤링 smear + fleshType Insectoid
-- [ ] `[M]` 1-6. 진입/해제 Fleck + Sound 재생 확인
-- [ ] `[M]` 1-7. revertDrops: 해제 시 아이템 드랍 확인
-- [ ] `[M]` 1-8. Revert 기즈모 수동 해제 가능
-- [ ] `[M]` 1-9. 해제 후 텍스처/체형/스탯/hediff 전부 원복
-- [ ] `[M]` 1-10. 다른 폼 상태에서 스크롤/약물로 덮어쓰기 가능
+### [M] 수동 확인
+- [ ] 수영 시 텍스처가 `SSFTest/Pawn/Bear_Swimming`으로 전환
+- [ ] shadowVolume `(0.5, 0, 0.6)` 적용 (그림자 크기 확인)
+- [ ] 남성/여성 텍스처 분기 (male/female 텍스처 경로 확인)
+- [ ] transformEnterFleck 재생 (FleckStatic_PsychicPulse × 3, 스케일 1.5)
+- [ ] bloodDef, bloodSmearDef 오버라이드 확인 (피격 시 혈흔 확인)
+- [ ] 기즈모 아이콘 표시 (Enter/Revert)
+- [ ] 해제 드랍 아이템이 폰 위치에 생성
 
 ---
 
-## 2. BearWarriorForm — 아머드형, 사운드/이펙터
+## 2. BearWarriorForm (곰전사) — Armored
 
-### 트리거
-- [ ] `[M]` 2-1. Ability_BuffAlly 아군/자기 타겟 변신 + 쿨다운 1500틱
+### [A] Auto-Verify
+- [ ] body/head/hair 유지 (Default)
+- [ ] 기존 장비 유지 (Keep)
+- [ ] apparelEquipLock=Locked, weaponEquipLock=Unlocked
+- [ ] 스탯 오프셋 적용 확인
 
-### Auto-Verify
-- [ ] `[A]` 2-AV1. HediffDef stages 스탯(이동+0.5, 근접회피+10, 피해배율x0.8)
-- [ ] `[A]` 2-AV2. soundCache(Pawn_Bear_Angry)
-- [ ] `[A]` 2-AV3. timer(15000틱)
-
-### 수동 확인
-- [ ] `[M]` 2-2. 근접 사운드: 히트(폰)=SmallScratch_HitPawn, 히트(건물)=SmallScratch_HitBuilding, 미스=SmallScratch_Miss
-- [ ] `[M]` 2-3. 진입 Effecter Vaporize_Heatwave / 해제 ImpactSmallDustCloud
-- [ ] `[M]` 2-4. 커스텀 기즈모 아이콘
-- [ ] `[M]` 2-5. 장비 유지 (Keep)
-
----
-
-## 3. SheepForm — 적대 디버프, 강제 변신
-
-### 트리거
-- [ ] `[M]` 3-1. Ability_DebuffEnemy 적 타겟 변신 + Ability_MassPolymorph AoE 변신
-- [ ] `[M]` 3-2. 비폭력 폰 캐스트 불가
-- [ ] `[M]` 3-5. MassPolymorph 바닥 클릭(location 타겟) 시 캐스팅 정상 작동
-- [ ] `[M]` 3-6. MassPolymorph AoE 반경 내 아군 미적용 (affectHostileOnly=true)
-- [ ] `[M]` 3-7. MassPolymorph 기즈모 아이콘 정상 표시
-
-### 비주얼
-- [ ] `[M]` 3-3. 성별 텍스처 분기 (SheepMale / SheepFemale) + bodyDrawScale 0.6
-
-### Auto-Verify
-- [ ] `[A]` 3-AV1. HediffDef stages 스탯(이동-1.0)
-- [ ] `[A]` 3-AV2. workTags(Violent)
-- [ ] `[A]` 3-AV3. timer(10000틱)
-
-### 수동 확인
-- [ ] `[M]` 3-4. Revert 기즈모 없음 (canRevertVoluntarily=false)
+### [M] 수동 확인
+- [ ] transformEnterSound 재생
+- [ ] transformEnterEffecter 재생
+- [ ] 커스텀 기즈모 아이콘 (gizmoIconPathEnter/Revert)
+- [ ] 의류 장착 시도 시 차단 메시지 표시
+- [ ] 무기는 자유롭게 교체 가능
 
 ---
 
-## 4. DarkKnightForm — 장비 소환
+## 3. SheepForm (양) — Animal, 강제 변신
 
-### 트리거
-- [ ] `[M]` 4-1. Ability_DarkKnight 자기변신 + 쿨다운 3000틱
+### [A] Auto-Verify
+- [ ] `canRevertVoluntarily=false` — 해제 기즈모 없음
+- [ ] 작업 태그 비활성: `disabledWorkTagsOnTransform` 적용
+- [ ] 전체 그래픽 숨김 (All 필터)
 
-### Auto-Verify
-- [ ] `[A]` 4-AV1. HediffDef stages 스탯
-- [ ] `[A]` 4-AV2. gear(apparel=Inventory, weapon=Inventory)
-- [ ] `[A]` 4-AV3. spawnApparel(PlateArmor) + spawnWeapon(LongSword)
-- [ ] `[A]` 4-AV4. stuff(Plasteel)
-- [ ] `[A]` 4-AV5. equipLock(apparel=Locked, weapon=Locked)
-- [ ] `[A]` 4-AV6. timer(18000틱)
-- [ ] `[A]` 4-AV7. [Revert] 소환장비 소멸, equipLock 해제
-
-### 수동 확인
-- [ ] `[M]` 4-2. 변신 중 장비 교체 시도 → 차단 메시지
-- [ ] `[M]` 4-3. revertAddHediffs: 해제 시 hediff 부여 확인 (바닐라 수명, 프레임워크 비추적)
-- [ ] `[M]` 4-4. 해제 시 소환 장비 소멸 + 기존 장비 인벤토리에서 재장착
+### [M] 수동 확인
+- [ ] 성별 텍스처: 남성/여성 다른 body 텍스처 적용
+- [ ] AoE 어빌리티로 적대 폰만 변신 (아군 무시)
+- [ ] 투사체(CursedArrow) 명중 시 변신 적용
+- [ ] duration 만료 시 자동 해제
+- [ ] 작업 스케줄에서 비활성 작업 표시
 
 ---
 
-## 5. BeastkinForm — 휴머노이드, 2단 변신 1단계
+## 4. DarkKnightForm (암흑기사) — Armored, 스폰 장비
 
-### 트리거
-- [ ] `[M]` 5-1. Ability_Beastkin 자기변신 + 쿨다운 1200틱
+### [A] Auto-Verify
+- [ ] spawnApparel: PlateArmor (Steel) 생성 및 착용
+- [ ] spawnWeapon: LongSword (Plasteel) 생성 및 장비
+- [ ] 충돌 기존 장비 → 인벤토리 이동 (conflictingGearHandling)
+- [ ] equipLock: 의류=Locked, 무기=Locked
+- [ ] 해제 시 스폰 장비 제거, 기존 장비 복구
+- [ ] revertAddHediffs 적용 확인
 
-### 비주얼
-- [ ] `[M]` 5-2. 렌더노드: 머리에 FloppyEars(Skin색), 몸에 FurryTail(Hair색)
-- [ ] `[M]` 5-3. bodyDrawScale 1.20 + headDrawScale 1.05 + headOffset (0, 0.03)
-- [ ] `[M]` 5-4. 오버헤드 의류 숨김, Cape/Tuque만 표시
-
-### Auto-Verify
-- [ ] `[A]` 5-AV1. hairColor(0.85,0.85,0.95)
-- [ ] `[A]` 5-AV2. verbTracker(돌격소총/수류탄/화염방사/화염분사/광선빔 + claws)
-- [ ] `[A]` 5-AV3. gear(apparel=Inventory)
-- [ ] `[A]` 5-AV4. addHediff(FibrousMechanites)
-- [ ] `[A]` 5-AV5. addAbility(Waterskip)
-- [ ] `[A]` 5-AV6. workTags(Crafting+Cooking)
-- [ ] `[A]` 5-AV7. [Revert] hairColor/addAbility 원복
-
-### 수동 확인
-- [ ] `[M]` 5-5. 보이스: call/death/wounded/angry/eating/melee 커스텀 사운드
-- [ ] `[M]` 5-6. Verb 기즈모: 돌격소총 자동공격 ON / 나머지 4종 OFF + verbLabel 매칭 커스텀 아이콘/라벨
-- [ ] `[M]` 5-9. 다중 선택 시 같은 폼 verb 기즈모 병합 + 토글 숨김
-- [ ] `[M]` 5-10. 모드옵션 showVerbAutoToggle OFF → 토글 기즈모 숨김 + 자동사격 전부 OFF
-- [ ] `[M]` 5-7. replaceNativeTools=false → 기존 도구 유지 + claws 추가
-- [ ] `[M]` 5-8. Insectoid 혈흔 + 진입/해제 Fleck
+### [M] 수동 확인
+- [ ] 무기 부여(CompGiveAbility_Shapeshift) 장비 시 어빌리티 획득
+- [ ] 무기 해제 시 어빌리티 제거
+- [ ] 스폰된 장비의 재질(stuff) 올바른지 확인
+- [ ] 해제 후 이전 장비가 올바르게 재착용
 
 ---
 
-## 6. FullBeastForm — 2단 변신 체인
+## 5. BeastkinForm (수인) — Humanoid, 렌더 노드
 
-### 체이닝
-- [ ] `[M]` 6-1. 인간 상태에서 진입 불가 (어빌리티 없음)
-- [ ] `[M]` 6-2. 수인(BeastkinForm) 상태에서만 Ability_FullBeast 표시 + 진입 가능
-- [ ] `[M]` 6-3. 수인 해제 시 FullBeast 어빌리티 제거
+### [A] Auto-Verify
+- [ ] body/head/hair 유지
+- [ ] renderNode: FloppyEar, FurryTail 추가 확인
+- [ ] 5개 커스텀 버브 활성
+- [ ] verbGizmoOptions 각 버브별 라벨 확인
+- [ ] hairColor 오버라이드 적용
+- [ ] addAbilities 확인
 
-### Auto-Verify
-- [ ] `[A]` 6-AV1. HediffDef stages 스탯(이동+2.0, 피해배율x0.7)
-- [ ] `[A]` 6-AV2. verbTracker(fangs+claws, replaceNativeTools)
-- [ ] `[A]` 6-AV3. timer(12000틱)
-
-### 수동 확인
-- [ ] `[M]` 6-4. 야수 해제 후 복귀 동작 확인
-
----
-
-## 7. GuardianForm — 조건부 유지, 앰비언트 VFX
-
-### 유지 조건 (sustainMode=Any)
-- [ ] `[M]` 7-2. Hediff_GuardianMark 보유 → 변신 가능
-- [ ] `[M]` 7-3. 둘 다 없으면 변신 불가 / 둘 다 있어도 OK
-
-### 비주얼
-- [ ] `[M]` 7-4. bodyDrawScale 1.4 + portraitDrawScale 1.3 + bodyOffset (0, -0.1) + 줌아웃 잘림 없음
-- [ ] `[M]` 7-5. shadowVolume (0.6,1.0,0.6) + shadowOffset (0,0,-0.05)
-
-### 앰비언트 VFX
-- [ ] `[M]` 7-6. ambientFleck: 지정 간격마다 Fleck 스폰 확인
-- [ ] `[M]` 7-7. 맵 밖(캐러밴) → VFX 미재생 + 에러 없음
-- [ ] `[M]` 7-8. 세이브/로드 후 앰비언트 자동 재생성
-
-### Auto-Verify
-- [ ] `[A]` 7-AV1. HediffDef stages 스탯(이동+0.3, 피해배율x0.85)
-- [ ] `[A]` 7-AV2. timer(12000틱)
-
-### 수동 확인
-- [ ] `[M]` 7-9. revertOnDowned=true → 의식 상실 시 자동 해제
-- [ ] `[M]` 7-11. 장비형 아이템으로 변신 → 장비 해제 시 변신 해제 확인
-- [ ] `[M]` 7-13. sourceItem 파괴 시 → 변신 해제 확인
+### [M] 수동 확인
+- [ ] 유전자(Gene_BeastkinShift)로 어빌리티 획득
+- [ ] 렌더 노드(귀, 꼬리) 4방향 회전 확인
+- [ ] 버브별 자동공격 토글 기즈모
+- [ ] 보이스 오버라이드 (call, wounded, death, angry)
+- [ ] 작업 제한 (disabledWorkTypesOnTransform) 확인
+- [ ] Overhead 레이어만 숨겨지는지 확인
 
 ---
 
-## 8. PhantomForm — 비주얼 오버라이드, FX 딜레이
+## 6. FullBeastForm (완전수) — Animal, 2단계 체인
 
-### 비주얼
-- [ ] `[M]` 8-1. 머리 텍스처 Male_AverageNormal + 셰이더 Transparent(반투명)
-- [ ] `[M]` 8-2. 머리색 (0.7,0.8,1.0,0.5) 푸른빛 + 머리카락 숨김
+### [A] Auto-Verify
+- [ ] allowedFromForms: BeastkinForm에서만 시전 가능
+- [ ] 미변신 상태에서 기즈모 비활성 (disabled, not hidden)
+- [ ] 듀얼 도구 (fangs + claws) 활성
+- [ ] 이전 폼(Beastkin) 해제 후 FullBeast 적용
 
-### Auto-Verify
-- [ ] `[A]` 8-AV1. bodyType(Thin)
-- [ ] `[A]` 8-AV2. skinColor(0.7,0.8,1.0)
-- [ ] `[A]` 8-AV3. workTypes(Firefighter)
-- [ ] `[A]` 8-AV4. timer(10000틱)
-- [ ] `[A]` 8-AV5. [Revert] bodyType/skinColor/headType 원복
-
-### 수동 확인
-- [ ] `[M]` 8-3. FX 딜레이: 진입 30틱 / 해제 15틱
-- [ ] `[M]` 8-4. 해제 후 머리/체형/셰이더/피부색/머리카락 전부 원복
+### [M] 수동 확인
+- [ ] Beastkin → FullBeast 연속 변신
+- [ ] FullBeast에서 Beastkin 복귀 불가 (allowedFromForms 미포함)
+- [ ] 해제 시 원래 상태로 완전 복귀 (2단계 모두 해제)
 
 ---
 
-## 9. RaceLockedForm — 종족 제한, 비대칭 잠금
+## 7. GuardianForm (수호자) — Humanoid, 유지 조건
 
-### Auto-Verify
-- [ ] `[A]` 9-AV1. raceFilter(Human 통과, 비인간 차단)
-- [ ] `[A]` 9-AV2. headType(Male_AverageNormal)
-- [ ] `[A]` 9-AV3. equipLock(apparel=Locked, weapon=Unlocked)
-- [ ] `[A]` 9-AV4. HediffDef stages 스탯
-- [ ] `[A]` 9-AV5. timer(12000틱)
+### [A] Auto-Verify
+- [ ] portraitDrawScale 적용 확인
+- [ ] bodyOffset 적용 확인
+- [ ] shadowVolume/shadowOffset 오버라이드
+- [ ] sustainHediffs: GuardianMark 보유 시 유지
+- [ ] sustainMode=Any
+- [ ] GuardianMark 제거 → 자동 해제
 
-### 뮤턴트 필터 (Anomaly)
-- [ ] `[M]` 9-1. formAllowedMutants → 해당 뮤턴트만 변신 가능
-- [ ] `[M]` 9-2. formDisallowedMutants → 해당 뮤턴트 차단
-- [ ] `[M]` 9-3. 비-어빌리티 경로에서도 뮤턴트 필터 작동
-- [ ] `[M]` 9-4. Anomaly DLC 미설치 시 에러 없음 (MayRequire)
-
----
-
-## 10. 트리거 소스별 검증
-
-### 어빌리티 경로
-- [ ] `[M]` 10-1. AoE 투사체: 사거리 25 + 반경 5칸 + 양 변신
-- [ ] `[M]` 10-2. CursedArrow 투사체: 양 변신
-
-### 아이템/약물
-- [ ] `[M]` 10-3. ShiftScroll_Self: 사용 후 파괴, stackLimit 5
-- [ ] `[M]` 10-4. ShiftScroll_Target: 타겟 선택 UI + 이동 후 사용
-- [ ] `[M]` 10-5. BearElixir: DrugLab 제작, 복용 120틱
-
-### 유전자 (Biotech)
-- [ ] `[M]` 10-7. Gene_BeastkinShift / Gene_PhantomShift → 어빌리티 부여 + 변신 작동
-- [ ] `[M]` 10-8. 유전자 제거 → 어빌리티 즉시 제거
-- [ ] `[M]` 10-9. Biotech 미설치 시 에러 없음 (MayRequire)
-
-### 장착 아이템
-- [ ] `[M]` 10-10. Weapon_DarkBlade 장착 → DarkKnight 어빌리티 / 해제 시 제거
-- [ ] `[M]` 10-11. Apparel_PhantomCloak 착용 → Phantom 어빌리티 / 탈의 시 제거
-- [ ] `[M]` 10-12. 인벤토리만 보유 → 어빌리티 미부여
-
-### Hediff 기반
-- [ ] `[M]` 10-14. Hediff_ShiftBlessing → BuffAlly 어빌리티 / 제거 시 회수
-- [ ] `[M]` 10-15. Hediff_RacialAwakening → RaceLocked 어빌리티
-
-### 크로스 경로
-- [ ] `[M]` 10-16. 같은 어빌리티 복수 경로 → 중복 없이 1개, 한 경로 제거해도 유지
-- [ ] `[M]` 10-17. 각 경로별 세이브/로드 후 어빌리티 + 변신 상태 유지
+### [M] 수동 확인
+- [ ] ambientFleck 주기적 스폰 (interval, scale 확인)
+- [ ] 초상화에서 스케일 변경 반영
+- [ ] 유지 조건 위반 시 메시지 표시
 
 ---
 
-## 11. 조건부 자동 변신 (HediffComp_AutoShift)
+## 8. PhantomForm (환영) — Humanoid, 셰이더
 
-- [ ] `[M]` 11-1. healthThreshold: 체력 30% 미만 → 자동 변신
-- [ ] `[M]` 11-2. triggerMentalStates: Berserk 진입 → 트리거
-- [ ] `[M]` 11-3. triggerSunGlowBelow: 밝기 0.5 미만(밤) → 트리거
-- [ ] `[M]` 11-4. triggerInCombat: 징집/피격 + 적 근처 → 트리거 (NPC 포함)
-- [ ] `[M]` 11-5. 이미 변신 중 → 재트리거 건너뜀
-- [ ] `[M]` 11-6. triggerOnce=true → 발동 후 hediff 제거
-- [ ] `[M]` 11-8. triggerOnce=false → 해제 후 재트리거 가능
-- [ ] `[M]` 11-9. checkIntervalTicks 간격 정상 (60 vs 120 vs 240)
-- [ ] `[M]` 11-10. 세이브/로드 후 hasTriggered 플래그 유지
+### [A] Auto-Verify
+- [ ] head: mode=Replace + shaderTypeDefName=Transparent
+- [ ] bodyType=Thin 적용
+- [ ] skinColor 오버라이드 적용
+- [ ] durationTicks 만료 시 자동 해제
 
----
-
-## 12. 공통 테스트
-
-### 세이브/로드
-- [ ] `[M]` 12-1. 변신 상태 세이브 → 로드 → 스탯/hediff/텍스처/컬러/체형 정상 + 해제 복원
-- [ ] `[M]` 12-1a. 로드 직후 변신 그래픽(텍스처/스케일) 즉시 적용 확인 (인간 형태로 안 나옴)
-
-### 엣지 케이스
-- [ ] `[M]` 12-2. 변신 중 사망 → 시체/사운드/혈흔 정상
-- [ ] `[M]` 12-3. 변신 중 징집/비징집 전환
-- [ ] `[M]` 12-4. 같은 폼 재사용 → 기즈모 숨김 / 다른 폼 → 비활성 + 툴팁
-- [ ] `[M]` 12-5. allowedFromForms 허용 폼 → 변신 중에도 활성
-- [ ] `[M]` 12-6. 카라반/동면관/수송포드 중 변신 유지
-- [ ] `[M]` 12-6a. 줌아웃 시 대형 폼(bodyDrawScale≥2) 화면 가장자리 잘림 없음
-- [ ] `[M]` 12-7. 인공팔/결손팔에 BeastArm ForceAdd 정상
-
-### 재진입 / 예외 복구
-- [ ] `[M]` 12-R1. ApplyForm 재진입 방지: 이벤트 핸들러(OnFormApplied)에서 재호출 시 무한재귀 없음
-- [ ] `[M]` 12-R2. RemoveForm 도중 hediff 제거 실패(예외) → 좀비 변신 상태 없음 (currentForm=null 강제 정리)
-- [ ] `[M]` 12-R3. RemoveForm 2차 hediff 정리 시 null hediff 항목 → NRE 없이 건너뜀
-- [ ] `[M]` 12-R4. RemoveForm 예외 후 즉시 새 폼 ApplyForm → 정상 적용 (리스트 Clear 후 재구축)
-
-### 해제 부산물
-- [ ] `[M]` 12-8. revertDrops: despawned 폰 → 드랍 건너뜀 + 에러 없음
-- [ ] `[M]` 12-9. revertAddHediffs: 사망 폰 → 부여 건너뜀 + 에러 없음
-- [ ] `[M]` 12-10. addHediffs(추적)와 revertAddHediffs(비추적) 동시 사용 시 독립 작동
-
-### 앰비언트 VFX
-- [ ] `[M]` 12-11. ambientEffecter 설정 폼 → 변신 중 Effecter 지속 재생
-- [ ] `[M]` 12-12. ambientEffecter 해제 시 Cleanup → 잔상 없음
-- [ ] `[M]` 12-13. 세이브/로드 후 ambientEffecter 자동 재생성
-
-### 이념 (Ideology)
-- [ ] `[M]` 12-14. 동물형 변신 시 알몸 무드 페널티 억제
-
-### Simple Sidearms
-- [ ] `[M]` 12-15. SS 활성: 변신 시 메모리 클리어 → 해제 시 원복 → 세이브/로드 정상
-- [ ] `[M]` 12-16. SS 비활성: 호환 패치 미적용, 에러 없음
+### [M] 수동 확인
+- [ ] 의류(PhantomCloak) 착용으로 어빌리티 획득
+- [ ] 의류 해제 시 어빌리티 제거
+- [ ] 투명 셰이더 시각 확인
+- [ ] transformEnterFxDelayTicks 지연 후 FX 재생
+- [ ] transformExitFxDelayTicks 지연 후 FX 재생
 
 ---
 
-## 13. HediffComp 아키텍처 검증
+## 9. RaceLockedForm (종족 제한) — Armored
 
-### N:1 매핑 (같은 FormDef, 다른 HediffDef)
-- [ ] `[A]` 13-1. 같은 FormDef를 참조하는 서로 다른 HediffDef 2개 → 각각 다른 stages 스탯 적용
-- [ ] `[A]` 13-2. HediffDef_A 적용 시 스탯 세트 A, HediffDef_B 적용 시 스탯 세트 B 확인
-- [ ] `[M]` 13-3. N:1 매핑된 HediffDef 간 전환 시 스탯 정상 교체
+### [A] Auto-Verify
+- [ ] formAllowedRaces: Human만 사용 가능
+- [ ] 비인간 종족에서 어빌리티 숨김
+- [ ] 비대칭 잠금: apparelEquipLock=Locked, weaponEquipLock=Unlocked
+- [ ] headType 오버라이드 적용
 
-### CompProperties 오버라이드 (HediffCompProperties_ShapeshiftCore)
-- [ ] `[A]` 13-4. durationTicks 오버라이드: FormDef 기본값 대신 CompProperties 값 적용
-- [ ] `[A]` 13-5. canRevertVoluntarily 오버라이드: FormDef 기본값 대신 CompProperties 값 적용
-- [ ] `[M]` 13-6. 오버라이드 미지정 시 FormDef 기본값 사용 확인
-
-### 바닐라 GiveHediff 트리거
-- [ ] `[M]` 13-7. 바닐라 GiveHediff로 HediffDef 부여 → HediffComp_ShapeshiftCore 감지 → 변신 자동 발동
-- [ ] `[M]` 13-8. 바닐라 경로로 부여된 Hediff 제거 → 변신 자동 해제
-
-### 트리거 클래스 hediffDef 필드
-- [ ] `[A]` 13-9. 어빌리티 트리거: hediffDef 필드로 지정된 HediffDef 부여 확인
-- [ ] `[A]` 13-10. 아이템 트리거: hediffDef 필드 정상 작동
-- [ ] `[A]` 13-11. 약물 트리거: hediffDef 필드 정상 작동
-- [ ] `[A]` 13-12. 투사체 트리거: hediffDef 필드 정상 작동
-- [ ] `[A]` 13-13. AutoShift 트리거: hediffDef 필드 정상 작동
-
-### DefModExtension (FA/HAR 호환)
-- [ ] `[M]` 13-14. FAFormExtension 설정 시 Facial Animation 연동 정상
-- [ ] `[M]` 13-15. HARFormExtension 설정 시 Humanoid Alien Races 연동 정상
-- [ ] `[M]` 13-16. FA/HAR 미설치 시 Extension 무시 + 에러 없음
-
-### 이벤트: OnFormApplied / OnFormRemoved
-- [ ] `[A]` 13-17. 변신 적용 시 OnFormApplied 이벤트 발화 확인
-- [ ] `[A]` 13-18. 변신 해제 시 OnFormRemoved 이벤트 발화 확인
-- [ ] `[M]` 13-19. 이벤트 핸들러에서 폰 상태 접근 시 정상 동작
+### [M] 수동 확인
+- [ ] 헤디프(Hediff_RacialAwakening)로 어빌리티 획득
+- [ ] 인간 폰에서 정상 사용
+- [ ] 비인간 폰에서 기즈모 숨김 확인
 
 ---
 
-## 14. 디버그 액션
+## 10. 트리거 소스 교차 테스트
 
-- [ ] `[M]` 14-1. Inspect Active Form: HediffDef 기준 스탯/캐퍼 표시
-- [ ] `[M]` 14-2. Dump Pawn State: Stat Offsets/Factors/Capacity Mods 출력
-- [ ] `[M]` 14-3. AddedPart/Hediff 실패 시 `[SSF]` 경고 로그
-- [ ] `[M]` 14-4. 장시간 플레이 후 메모리 누적 없음
-- [ ] `[M]` 14-5. FailedVerbClasses 캐시: 맵 전환/게임 로드 시 ClearAll에서 정리 확인 (무한 성장 방지)
+### [A] Auto-Verify
+- [ ] 어빌리티 자기 시전: 변신 진입 + 해제
+- [ ] 어빌리티 타인 시전: 대상 변신
+- [ ] AoE 어빌리티: 반경 내 적대만 변신 (affectHostileOnly)
+- [ ] 약물(BearElixir): 복용 후 변신
+- [ ] 스크롤(자기): 사용 후 변신 + 아이템 소멸
+- [ ] 스크롤(대상): CompTargetable → 대상 변신
+- [ ] 투사체(CursedArrow): 명중 시 변신
+
+### [M] 수동 확인
+- [ ] 장비 부여(Weapon_DarkBlade): 장비 시 어빌리티 → 해제 시 제거
+- [ ] 의류 부여(Apparel_PhantomCloak): 착용 시 어빌리티 → 탈착 시 제거
+- [ ] 유전자(Gene_BeastkinShift): 유전자 보유 시 어빌리티
+- [ ] 헤디프(Hediff_ShiftBlessing): 헤디프 보유 시 어빌리티
 
 ---
 
-## 15. 바닐라 GiveHediff 경로 — 변신 중첩 방어
+## 11. AutoShift 테스트
 
-- [ ] `[M]` 15-1. 데브 도구로 변신 hediff A 부여 → 정상 변신
-- [ ] `[M]` 15-2. 변신 A 중 데브 도구로 다른 변신 hediff B 부여 → A 자동 해제 후 B 적용 (중첩 없음)
-- [ ] `[M]` 15-3. 변신 A 중 같은 hediff A 재부여 → severity 갱신만 (중복 hediff 생성 안 됨)
-- [ ] `[M]` 15-4. Projectile_GiveHediff_Shapeshift AoE → 적대 폰만 변신, 아군 스킵 확인
+### [A] Auto-Verify
+- [ ] healthThreshold: HP 30% 미만에서 자동 변신
+- [ ] triggerSunGlowBelow: 밤(SunGlow < 0.5) 자동 변신
+- [ ] triggerInCombat: 징집 + 적 근접 시 자동 변신
+- [ ] triggerOnce=true: 1회 발동 후 hediff 자체 제거
+- [ ] triggerOnce=false: 반복 발동 (해제 후 재조건 충족 시)
+
+### [M] 수동 확인
+- [ ] checkIntervalTicks 간격 확인 (빠른/느린)
+- [ ] 이미 변신 중일 때 AutoShift 미발동
+- [ ] 조건 미충족 시 변신 안 함
 
 ---
 
-## 요약
+## 12. 세이브/로드
 
-| 구분 | 항목 수 | 넘버링 |
-|------|---------|--------|
-| **[A] Auto-Verify** | ~55개 (1-AV1 ~ 13-18) | `섹션-AV번호` / `섹션-번호` |
-| **[M] 수동 확인** | ~95개 (1-1 ~ 14-5) | `섹션-번호` |
+### [M] 수동 확인
+- [ ] 변신 중 세이브 → 로드 후 폼 유지
+- [ ] 변신 중 duration 남은 시간 보존
+- [ ] 변신 중 장비 상태 보존 (인벤토리, 스폰 장비)
+- [ ] 변신 중 verbAutoToggle 상태 보존
+- [ ] 해제 후 세이브 → 로드 후 정상 상태
+- [ ] PostLoadInit: 레지스트리 재등록, 캐시 재빌드
 
-> Auto-Verify 로그에 체크리스트 번호가 `[X-AVn]` 형식으로 표시됩니다. 에러 발생 시 해당 번호로 체크리스트를 바로 참조하세요.
+---
+
+## 13. 엣지 케이스
+
+### [A] Auto-Verify
+- [ ] 같은 폼 재시전 차단 (ShouldHideGizmo)
+- [ ] 사망 Pawn에 변신 시도 → 실패
+- [ ] 쓰러진 Pawn + revertOnDowned=true → 자동 해제
+- [ ] 다른 변신 중 새 변신 → 이전 폼 해제 후 새 폼 적용
+
+### [M] 수동 확인
+- [ ] 카라반 참여 중 변신/해제
+- [ ] 수면 중 duration 만료 → 해제
+- [ ] 정신 이상 중 변신/해제
+- [ ] 변신 중 사망 → 시체 원래 외형 복귀
+- [ ] 변신 중 체포/구속 → 장비 처리 확인
+
+---
+
+## 14. 호환성
+
+### [M] 수동 확인
+- [ ] HAR 종족에서 변신 (body addon 스케일링)
+- [ ] Facial Animation 활성 시 변신/해제 (얼굴 백업/복구)
+- [ ] Simple Sidearms 활성 시 변신/해제 (무기 메모리 백업/복구)
+- [ ] 이데올로기 노출 감정 억제 (`suppressIdeologyUncoveredThoughts`)
+
+---
+
+## 15. 성능 & 안정성
+
+### [M] 수동 확인
+- [ ] 다수 폰 동시 변신 (5+) — 프레임 저하 없음
+- [ ] 장시간 변신 유지 — 메모리 누수 없음
+- [ ] 빈번한 변신/해제 반복 — 크래시 없음
+- [ ] 맵 전환 시 캐시 정리 (ClearAll) 확인
