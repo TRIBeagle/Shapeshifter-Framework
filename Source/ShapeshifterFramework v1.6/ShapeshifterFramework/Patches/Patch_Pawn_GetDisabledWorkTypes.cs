@@ -25,8 +25,9 @@ namespace ShapeshifterFramework.Patches
         private static readonly Dictionary<WorkTags, List<WorkTypeDef>> _workTypesByTagsCache
             = new Dictionary<WorkTags, List<WorkTypeDef>>(16);
 
-        // 중복 방지용 재활용 HashSet (GC 절감, List.Contains O(n) → HashSet O(1))
-        private static readonly HashSet<WorkTypeDef> _tmpExisting = new HashSet<WorkTypeDef>();
+        // 재진입 안전을 위해 static HashSet 제거, 호출 빈도가 낮아 로컬 할당 허용
+        [System.ThreadStatic]
+        private static HashSet<WorkTypeDef> _tmpExisting;
 
         public static void ClearCache()
         {
@@ -43,8 +44,9 @@ namespace ShapeshifterFramework.Patches
             bool hasTags = form.disabledWorkTagsOnTransform != WorkTags.None;
             if (!hasExtra && !hasTags) return;
 
-            // 기존 결과를 HashSet으로 변환 — 이후 O(1) 중복 체크
-            _tmpExisting.Clear();
+            // ThreadStatic으로 재진입 안전 + GC 절감
+            if (_tmpExisting == null) _tmpExisting = new HashSet<WorkTypeDef>();
+            else _tmpExisting.Clear();
             for (int i = 0; i < __result.Count; i++)
                 _tmpExisting.Add(__result[i]);
 

@@ -84,6 +84,9 @@ namespace ShapeshifterFramework.Hediffs
 
         public bool suppressEquipLock = false;
 
+        // ApplyForm/RemoveForm 재진입 방지 플래그 (이벤트 콜백으로 인한 중첩 호출 차단)
+        private bool _isApplyingOrRemoving = false;
+
         // PostLoadInit에서 Reference 연결 완료 후 AddRange하기 위한 임시 보관 필드
         private List<Hediff> __tmpHediffsLoad = null;
         private HashSet<string> __tmpPrevApIds = null;
@@ -487,6 +490,10 @@ namespace ShapeshifterFramework.Hediffs
                         }
                     }
 
+                    if (__tmpPrevApIds != null && __tmpPrevApIds.Count > 0)
+                        Log.Warning($"[SSF] {__tmpPrevApIds.Count} prev apparel(s) could not be resolved for {pawn?.Name}. Items may be lost on revert.");
+                    if (__tmpPrevWpIds != null && __tmpPrevWpIds.Count > 0)
+                        Log.Warning($"[SSF] {__tmpPrevWpIds.Count} prev weapon(s) could not be resolved for {pawn?.Name}. Items may be lost on revert.");
                     __tmpPrevApIds = null;
                     __tmpPrevWpIds = null;
                 }
@@ -611,19 +618,20 @@ namespace ShapeshifterFramework.Hediffs
                 return apparelMet || weaponMet || hediffMet || geneMet;
         }
 
-        // sustain 체크용 재활용 HashSet (GC 절감)
-        private static readonly HashSet<ThingDef> _tmpSustainDefs = new HashSet<ThingDef>();
+        // sustain 체크용 재활용 HashSet — 재진입 안전을 위해 apparel/weapon 분리
+        private static readonly HashSet<ThingDef> _tmpSustainApparelDefs = new HashSet<ThingDef>();
+        private static readonly HashSet<ThingDef> _tmpSustainWeaponDefs = new HashSet<ThingDef>();
 
         private static bool CheckSustainApparels(Pawn pawn, List<ThingDef> required)
         {
             if (pawn.apparel == null) return false;
             var worn = pawn.apparel.WornApparel;
-            _tmpSustainDefs.Clear();
+            _tmpSustainApparelDefs.Clear();
             for (int j = 0; j < worn.Count; j++)
-                _tmpSustainDefs.Add(worn[j].def);
+                _tmpSustainApparelDefs.Add(worn[j].def);
             for (int i = 0; i < required.Count; i++)
             {
-                if (!_tmpSustainDefs.Contains(required[i])) return false;
+                if (!_tmpSustainApparelDefs.Contains(required[i])) return false;
             }
             return true;
         }
@@ -632,12 +640,12 @@ namespace ShapeshifterFramework.Hediffs
         {
             if (pawn.equipment == null) return false;
             var eqs = pawn.equipment.AllEquipmentListForReading;
-            _tmpSustainDefs.Clear();
+            _tmpSustainWeaponDefs.Clear();
             for (int j = 0; j < eqs.Count; j++)
-                _tmpSustainDefs.Add(eqs[j].def);
+                _tmpSustainWeaponDefs.Add(eqs[j].def);
             for (int i = 0; i < required.Count; i++)
             {
-                if (!_tmpSustainDefs.Contains(required[i])) return false;
+                if (!_tmpSustainWeaponDefs.Contains(required[i])) return false;
             }
             return true;
         }
@@ -737,6 +745,7 @@ namespace ShapeshifterFramework.Hediffs
         {
             var pawn = Pawn;
             if (pawn == null || form == null) return;
+            if (_isApplyingOrRemoving) return; // 재진입 방지
 
             string prev = prevOverride ?? ((isTransformed && currentForm != null) ? currentForm.defName : null);
 
@@ -852,7 +861,11 @@ namespace ShapeshifterFramework.Hediffs
         {
             var pawn = Pawn;
             if (pawn == null) return;
+            if (_isApplyingOrRemoving) return; // 재진입 방지
+            _isApplyingOrRemoving = true;
             var __oldForm = currentForm;
+            try
+            {
 
             // 전용 장비 파괴
             using (new ShapeshiftEquipLockScope(this))
@@ -897,16 +910,28 @@ namespace ShapeshifterFramework.Hediffs
                     }
                 }
 
-                // 2차: 참조 실패분 → def 기준 단일 패스 제거 O(n+m)
+                // 2차: 참조 실패분 → def 기준 카운팅 제거 (동일 def 복수 부여 대응)
                 if (tempAddedHediffsDefCache != null && tempAddedHediffsDefCache.Count > 0)
                 {
-                    var remaining = new HashSet<HediffDef>(tempAddedHediffsDefCache);
+                    var remaining = new Dictionary<HediffDef, int>();
+                    for (int i = 0; i < tempAddedHediffsDefCache.Count; i++)
+                    {
+                        var d = tempAddedHediffsDefCache[i];
+                        if (d == null) continue;
+                        if (remaining.ContainsKey(d)) remaining[d]++;
+                        else remaining[d] = 1;
+                    }
                     List<Hediff> list = pawn.health.hediffSet.hediffs;
                     for (int j = list.Count - 1; j >= 0; j--)
                     {
                         if (remaining.Count == 0) break;
-                        if (remaining.Remove(list[j].def))
+                        var hd = list[j].def;
+                        if (remaining.TryGetValue(hd, out int cnt) && cnt > 0)
+                        {
+                            remaining[hd] = cnt - 1;
+                            if (cnt <= 1) remaining.Remove(hd);
                             pawn.health.RemoveHediff(list[j]);
+                        }
                     }
                 }
 
@@ -922,7 +947,8 @@ namespace ShapeshifterFramework.Hediffs
                         catch (Exception ex) { Log.Warning($"[SSF] RestorePart failed for '{rec.Part.Label}': {ex}"); }
                     }
 
-                    if (rec.PreExistingAdded != null && rec.PreExistingAdded.Count > 0)
+                    if (rec.PreExistingAdded != null && rec.PreExistingAdded.Count > 0
+                        && !pawn.health.hediffSet.PartIsMissing(rec.Part))
                     {
                         for (int k = 0; k < rec.PreExistingAdded.Count; k++)
                         {
@@ -1059,6 +1085,15 @@ namespace ShapeshifterFramework.Hediffs
             // 이벤트 발행
             if (__oldForm != null)
                 ShapeshiftCoreUtility.FireFormRemoved(pawn, __oldForm);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[SSF] RemoveForm failed for {pawn?.Name}: {ex}");
+            }
+            finally
+            {
+                _isApplyingOrRemoving = false;
+            }
         }
 
         /// <summary>하위 부위 여부 확인.</summary>
@@ -1700,11 +1735,16 @@ namespace ShapeshifterFramework.Hediffs
 
                 if (__tmpHediffsLoad != null)
                 {
+                    int lostCount = 0;
                     for (int i = 0; i < __tmpHediffsLoad.Count; i++)
                     {
                         if (__tmpHediffsLoad[i] != null)
                             tempAddedHediffs.Add(__tmpHediffsLoad[i]);
+                        else
+                            lostCount++;
                     }
+                    if (lostCount > 0)
+                        Log.Warning($"[SSF] {lostCount} hediff reference(s) lost during load for pawn {pawn?.Name}. Revert may leave orphaned hediffs.");
                     __tmpHediffsLoad = null;
                 }
                 else
@@ -1727,6 +1767,69 @@ namespace ShapeshifterFramework.Hediffs
                 {
                     ApplyRuntimeCaches(pawn, currentForm);
                     ShapeshiftRegistry.Register(pawn, this);
+                }
+                else if (pawn != null && !pawn.Dead && currentForm == null
+                    && (tempAddedHediffs.Count > 0 || tempAddedAbilities.Count > 0
+                        || generatedApparel.Count > 0 || generatedWeapons.Count > 0))
+                {
+                    // FormDef 삭제 등으로 currentForm이 null이지만 변신 잔여 데이터 존재 → 정리
+                    Log.Warning($"[SSF] Pawn {pawn.Name}: orphaned transform data found (FormDef removed?). Forcing cleanup.");
+
+                    // hediff 잔여 제거
+                    if (pawn.health != null)
+                    {
+                        for (int i = 0; i < tempAddedHediffs.Count; i++)
+                        {
+                            var h = tempAddedHediffs[i];
+                            if (h != null && pawn.health.hediffSet.hediffs.Contains(h))
+                                pawn.health.RemoveHediff(h);
+                        }
+                    }
+                    tempAddedHediffs.Clear();
+                    tempAddedHediffsDefCache.Clear();
+
+                    // 능력 잔여 제거
+                    if (pawn.abilities != null)
+                    {
+                        for (int i = 0; i < tempAddedAbilities.Count; i++)
+                        {
+                            if (tempAddedAbilities[i] != null)
+                                pawn.abilities.RemoveAbility(tempAddedAbilities[i]);
+                        }
+                    }
+                    tempAddedAbilities.Clear();
+
+                    // 생성 장비 파괴
+                    for (int i = generatedApparel.Count - 1; i >= 0; i--)
+                    {
+                        if (generatedApparel[i] != null && !generatedApparel[i].Destroyed)
+                            generatedApparel[i].Destroy(DestroyMode.Vanish);
+                    }
+                    generatedApparel.Clear();
+                    for (int i = generatedWeapons.Count - 1; i >= 0; i--)
+                    {
+                        if (generatedWeapons[i] != null && !generatedWeapons[i].Destroyed)
+                            generatedWeapons[i].Destroy(DestroyMode.Vanish);
+                    }
+                    generatedWeapons.Clear();
+
+                    // 체형 원복
+                    if (pawn.story != null)
+                    {
+                        if (originalBodyType != null) pawn.story.bodyType = originalBodyType;
+                        if (originalHeadType != null) pawn.story.headType = originalHeadType;
+                        if (hasSavedColors)
+                        {
+                            if (originalHairColor.HasValue) pawn.story.HairColor = originalHairColor.Value;
+                            pawn.story.skinColorOverride = originalSkinColor;
+                            hasSavedColors = false;
+                        }
+                    }
+
+                    tempPartRestoreRecords.Clear();
+                    shapeshiftVerbTracker = null;
+
+                    try { RefreshPawn(pawn, this); } catch (Exception ex) { Log.Warning($"[SSF] Orphan cleanup RefreshPawn error: {ex}"); }
                 }
             }
         }

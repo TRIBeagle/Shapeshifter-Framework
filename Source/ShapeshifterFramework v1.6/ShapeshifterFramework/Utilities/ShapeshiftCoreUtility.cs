@@ -82,7 +82,8 @@ namespace ShapeshifterFramework.Utilities
                         var existingCore = existingShift.TryGetComp<HediffComp_ShapeshiftCore>();
                         if (existingCore != null && existingCore.isTransformed)
                         {
-                            existingCore.RemoveForm();
+                            try { existingCore.RemoveForm(); }
+                            catch (Exception ex) { Log.Error($"[SSF] RemoveForm failed during re-transform for {pawn.Name}: {ex}"); }
                         }
                         pawn.health.RemoveHediff(existingShift);
                         break; // 동시에 1개만

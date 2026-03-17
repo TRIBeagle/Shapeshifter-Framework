@@ -585,10 +585,16 @@ namespace ShapeshifterFramework.Compat
                         if (pawn == null) return;
 
                         var store = Current.Game?.GetComponent<FAStateStore>();
-                        // 빈 백업 방지, 없으면 경고
+                        // 빈 백업 방지, 없으면 현재 상태를 fallback 백업으로 캡처
                         if (store == null || !store.TryGet(pawn, out var backup) || backup == null || backup.IsEmpty)
                         {
-                            Log.Warning($"[SSF] FA backup missing for transformed pawn {pawn.Name}. Facial revert might fail later.");
+                            Log.Warning($"[SSF] FA backup missing for transformed pawn {pawn.Name}. Capturing current state as fallback.");
+                            if (store != null)
+                            {
+                                var fallback = store.GetOrCreate(pawn);
+                                if (fallback != null)
+                                    FacialAnimationCompat.BackupCurrent(pawn, fallback);
+                            }
                         }
 
                         // 오버라이드 적용

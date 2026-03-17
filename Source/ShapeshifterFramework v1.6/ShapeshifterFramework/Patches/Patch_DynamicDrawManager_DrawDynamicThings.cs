@@ -28,9 +28,11 @@ namespace ShapeshifterFramework.Patches
             viewRect.ClipInsideMap(___map);
             CellRect normalRect = viewRect.ExpandedBy(1);
 
-            // 변신 폰 순회 — 보통 0~수 명이므로 성능 영향 무시 가능
-            foreach (var entry in ShapeshiftRegistry.ActiveDict)
+            // 변신 폰 순회 — 스냅샷으로 순회 중 Unregister 안전 보장
+            var snapshot = ShapeshiftRegistry.GetSnapshot();
+            for (int idx = 0; idx < snapshot.Count; idx++)
             {
+                var entry = snapshot[idx];
                 Pawn pawn = entry.Key;
                 if (pawn == null || !pawn.Spawned || pawn.Map != ___map) continue;
 

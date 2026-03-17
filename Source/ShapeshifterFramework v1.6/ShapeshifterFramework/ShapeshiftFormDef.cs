@@ -312,5 +312,67 @@ namespace ShapeshifterFramework
             _hideHediffDefNames = CompiledFilterSet.Compile(renderHideHediffDefNames);
             _showHediffDefNames = CompiledFilterSet.Compile(renderShowHediffDefNames);
         }
+
+        /// <summary>Def 참조 유효성 검증. 로드 시 깨진 참조 조기 검출.</summary>
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (var e in base.ConfigErrors())
+                yield return e;
+
+            // 능력 참조
+            if (addAbilities != null)
+            {
+                for (int i = 0; i < addAbilities.Count; i++)
+                    if (addAbilities[i] == null)
+                        yield return $"addAbilities[{i}]: null AbilityDef reference";
+            }
+
+            // hediff 참조
+            if (addHediffs != null)
+            {
+                for (int i = 0; i < addHediffs.Count; i++)
+                {
+                    var entry = addHediffs[i];
+                    if (entry == null) { yield return $"addHediffs[{i}]: null entry"; continue; }
+                    if (entry.hediff == null) yield return $"addHediffs[{i}]: null HediffDef reference";
+                }
+            }
+
+            // sustain 참조
+            if (sustainApparels != null)
+                for (int i = 0; i < sustainApparels.Count; i++)
+                    if (sustainApparels[i] == null) yield return $"sustainApparels[{i}]: null ThingDef reference";
+            if (sustainWeapons != null)
+                for (int i = 0; i < sustainWeapons.Count; i++)
+                    if (sustainWeapons[i] == null) yield return $"sustainWeapons[{i}]: null ThingDef reference";
+            if (sustainHediffs != null)
+                for (int i = 0; i < sustainHediffs.Count; i++)
+                    if (sustainHediffs[i] == null) yield return $"sustainHediffs[{i}]: null HediffDef reference";
+
+            // 소환 장비 참조
+            if (spawnApparelOnTransform != null)
+                for (int i = 0; i < spawnApparelOnTransform.Count; i++)
+                    if (spawnApparelOnTransform[i] == null) yield return $"spawnApparelOnTransform[{i}]: null ThingDef reference";
+            if (spawnWeaponOnTransform != null)
+                for (int i = 0; i < spawnWeaponOnTransform.Count; i++)
+                    if (spawnWeaponOnTransform[i] == null) yield return $"spawnWeaponOnTransform[{i}]: null ThingDef reference";
+
+            // 작업 제한 참조
+            if (disabledWorkTypesOnTransform != null)
+                for (int i = 0; i < disabledWorkTypesOnTransform.Count; i++)
+                    if (disabledWorkTypesOnTransform[i] == null) yield return $"disabledWorkTypesOnTransform[{i}]: null WorkTypeDef reference";
+
+            // 해제 부산물 참조
+            if (revertDrops != null)
+                for (int i = 0; i < revertDrops.Count; i++)
+                    if (revertDrops[i]?.thingDef == null) yield return $"revertDrops[{i}]: null ThingDef reference";
+            if (revertAddHediffs != null)
+                for (int i = 0; i < revertAddHediffs.Count; i++)
+                {
+                    var entry = revertAddHediffs[i];
+                    if (entry == null) { yield return $"revertAddHediffs[{i}]: null entry"; continue; }
+                    if (entry.hediff == null) yield return $"revertAddHediffs[{i}]: null HediffDef reference";
+                }
+        }
     }
 }
