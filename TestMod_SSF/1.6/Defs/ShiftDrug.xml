@@ -29,7 +29,7 @@
       <baseIngestTicks>120</baseIngestTicks>
       <outcomeDoers>
         <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_Shapeshift">
-          <formDefName>SSFTest_BearForm</formDefName>
+          <hediffDef>SSFTest_BearFormHediff</hediffDef>
           <successChance>0.85</successChance>
         </li>
       </outcomeDoers>

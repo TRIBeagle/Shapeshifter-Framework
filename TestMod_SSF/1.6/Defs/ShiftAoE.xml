@@ -16,7 +16,7 @@
     </statBases>
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityShapeshift">
-        <formDefName>SSFTest_SheepForm</formDefName>
+        <hediffDef>SSFTest_SheepFormHediff</hediffDef>
         <successChance>0.6</successChance>
         <affectHostileOnly>true</affectHostileOnly>
       </li>
@@ -49,7 +49,7 @@
     </projectile>
     <modExtensions>
       <li Class="ShapeshifterFramework.Extensions.PolymorphProjectileExtension">
-        <formDefName>SSFTest_SheepForm</formDefName>
+        <hediffDef>SSFTest_SheepFormHediff</hediffDef>
         <successChance>0.4</successChance>
         <!-- aoeRadius 0 = 단일 타겟만 -->
       </li>

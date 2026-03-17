@@ -280,7 +280,7 @@
     </stages>
     <comps>
       <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
-        <formDefName>SSFTest_BearForm</formDefName>
+        <hediffDef>SSFTest_BearFormHediff</hediffDef>
         <healthThreshold>0.3</healthThreshold>
         <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
         <checkIntervalTicks>120</checkIntervalTicks>

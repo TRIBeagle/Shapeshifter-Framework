@@ -40,10 +40,10 @@
     </addAbilities>
     <apparelOnTransform>Drop</apparelOnTransform>
     <weaponsOnTransform>Drop</weaponsOnTransform>
-    <!-- ★ 해제 시 잔해 드랍 테스트: 곰 변신 해제 시 인시절로이드 젤리 2개 드랍 -->
+    <!-- ★ 해제 시 잔해 드랍 테스트: 곰 변신 해제 시 나무 2개 드랍 -->
     <revertDrops>
       <li>
-        <thingDef>InsectJelly</thingDef>
+        <thingDef>WoodLog</thingDef>
         <count>2</count>
       </li>
     </revertDrops>
