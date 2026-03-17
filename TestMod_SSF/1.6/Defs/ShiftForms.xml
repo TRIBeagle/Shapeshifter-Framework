@@ -42,10 +42,7 @@
     <weaponsOnTransform>Drop</weaponsOnTransform>
     <!-- ★ 해제 시 잔해 드랍 테스트: 곰 변신 해제 시 나무 2개 드랍 -->
     <revertDrops>
-      <li>
-        <thingDef>WoodLog</thingDef>
-        <count>2</count>
-      </li>
+      <WoodLog>2</WoodLog>
     </revertDrops>
     <tools>
       <li>
