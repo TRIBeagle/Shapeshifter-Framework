@@ -1,10 +1,9 @@
 // ShapeshifterFramework | Hediffs | Hediff_ShapeshiftForm.cs
-// 목적 : 변신 상태를 증명하고, 바닐라 헤디프 시스템을 통해 건강 탭에 폼의 스탯/능력치 변동을 직관적으로 표시하기 위한 커스텀 헤디프.
-// 용도 : 실제 스탯 연산은 바닐라 엔진에 전적으로 위임하고, UI 툴팁에 '폼 이름'과 '남은 시간'만 가볍게 덧그려 성능 저하 없이 바닐라 UI에 녹아들게 함.
-//        기즈모(해제/verb)는 Core HediffComp에 위임.
+// 목적 : 변신 상태를 나타내는 커스텀 헤디프. 기즈모 위임 + 건강 탭 툴팁 표시.
+// 용도 : GetGizmos → Core에 위임, TipStringExtra → 남은 시간/무제한 표시.
+//        수명 관리는 severity 기반(바닐라 기본). 정리는 CompPostPostRemoved에서 수행.
 
 using RimWorld;
-using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using System.Text;
 using Verse;
@@ -70,42 +69,6 @@ namespace ShapeshifterFramework.Hediffs
 
                 return sb.ToString().TrimEnd();
             }
-        }
-
-        // 자동 소멸 로직 — Core 상태 기반
-        public override bool ShouldRemove
-        {
-            get
-            {
-                var core = Core;
-
-                // 초기화 진행 중이면 보호 (자동 소멸 방지)
-                if (core?.needsInit == true)
-                    return false;
-
-                // Core가 없거나 변신 상태가 아니면 삭제
-                if (core == null || !core.isTransformed || core.currentForm == null)
-                    return true;
-
-                // 정식 변신 상태라면 바닐라 엔진이 멋대로 지우지 못하게 보호
-                return false;
-            }
-        }
-
-        /// <summary>Hediff 제거 시 레지스트리 해제.</summary>
-        public override void PostRemoved()
-        {
-            base.PostRemoved();
-
-            // 방어적 레지스트리 해제
-            if (pawn != null)
-                ShapeshiftRegistry.Unregister(pawn);
-        }
-
-        /// <summary>세이브/로드.</summary>
-        public override void ExposeData()
-        {
-            base.ExposeData();
         }
     }
 }
