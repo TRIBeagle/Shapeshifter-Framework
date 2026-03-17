@@ -8,20 +8,15 @@
 
 ## 아키텍처 개요
 
-> **v2 HediffComp 마이그레이션**으로 변신 시스템의 진입점과 데이터 구조가 근본적으로 변경되었습니다.
+변신 시스템은 **HediffDef + HediffComp_ShapeshiftCore** 구조로 동작합니다.
 
-### 핵심 변경 요약
+| 구성 요소 | 역할 |
+|-----------|------|
+| **HediffDef** | 변신 진입점. `stages`에서 스탯/능력치 보정(statOffsets, statFactors, capMods) 정의 |
+| **HediffComp_ShapeshiftCore** | HediffDef의 `comps`에 포함. `formDef`로 FormDef를 참조하여 변신 로직 실행 |
+| **ShapeshiftFormDef** | 순수 데이터 시트. 비주얼, 장비, 도구, 사운드, VFX 등 외형/연출 정보만 담당 |
 
-| 항목 | 이전 | 현재 |
-|------|------|------|
-| 변신 진입점 | FormDef 직접 참조 | **HediffDef 부여** (HediffComp_ShapeshiftCore 포함) |
-| FormDef 역할 | 데이터 + 일부 로직 | **순수 데이터 시트/템플릿** (비주얼, 장비, 도구, 사운드, VFX만) |
-| 스탯/능력치 보정 | FormDef.linkedHediff → HediffDef stages | **HediffDef stages** (statOffsets, statFactors, capMods)에서 직접 정의 |
-| 매핑 방향 | FormDef.linkedHediff → HediffDef (양방향) | **HediffDef → FormDef 단방향** (HediffCompProperties_ShapeshiftCore.formDef) |
-| N:1 매핑 | 불가 | **지원** — 같은 FormDef를 여러 HediffDef가 참조 가능 |
-| CompShapeshifter | ThingDef에 패치 필요 (HumanPatch.xml) | **삭제** — ThingDef 패치 불필요 |
-| FA/HAR 필드 | FormDef 내 직접 필드 | **DefModExtension으로 분리** (FAFormExtension, HARFormExtension) |
-| revertAddHediffs | List\<HediffDef\> | **List\<HediffAddEntry\>** (severity/부위 지원) |
+> **매핑 방향:** HediffDef → FormDef **단방향**. 여러 HediffDef가 같은 FormDef를 참조하는 **N:1 매핑**도 지원됩니다.
 
 ### 데이터 흐름
 
@@ -935,17 +930,3 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 </Defs>
 ```
 
----
-
-## 마이그레이션 체크리스트
-
-기존 모드를 HediffComp 아키텍처로 마이그레이션할 때 확인할 사항:
-
-1. **FormDef에서 `linkedHediff` 제거** — 이 필드는 더 이상 존재하지 않습니다.
-2. **HediffDef 생성** — 각 변신 폼에 대응하는 HediffDef를 만들고, `HediffCompProperties_ShapeshiftCore.formDef`로 FormDef를 참조합니다.
-3. **스탯을 HediffDef stages로 이동** — 이전에 별도 HediffDef에 정의했던 스탯은 동일하게 유지하되, `formDef` 연결을 `comps`에 추가합니다.
-4. **CompShapeshifter 참조 제거** — ThingDef 패치(HumanPatch.xml 등)를 삭제합니다.
-5. **revertAddHediffs 형식 변경** — `List<HediffDef>` → `List<HediffAddEntry>` 형식으로 수정합니다.
-6. **FA/HAR 필드 이동** — `showHarAddons` → `HARFormExtension`, FA 필드 → `FAFormExtension`으로 `<modExtensions>`에 배치합니다.
-7. **트리거에 hediffDef 추가** — 기존 `formDefName`은 계속 동작하지만, 새 `hediffDef` 필드 사용을 권장합니다.
-8. **추상 부모 활용** — `SSF_ShapeshiftFormBase`를 `ParentName`으로 사용하면 HediffDef 보일러플레이트를 줄일 수 있습니다.
