@@ -49,7 +49,7 @@ namespace ShapeshifterFramework.Patches
                 __result = form.soundMeleeHitBuilding;
         }
 
-        // Miss
+        // 빗나감
         [HarmonyPatch(typeof(Verb_MeleeAttack), "SoundMiss")]
         [HarmonyPostfix]
         static void Postfix_Miss(Verb_MeleeAttack __instance, ref SoundDef __result)

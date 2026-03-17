@@ -117,7 +117,7 @@ namespace ShapeshifterFramework.Patches
 
             switch (cached.ownerKind)
             {
-                case 1: // Gene
+                case 1: // 유전자
                 {
                     var gene = (Gene)cached.owner;
 
@@ -142,14 +142,14 @@ namespace ShapeshifterFramework.Patches
                     return;
                 }
 
-                case 2: // Apparel
+                case 2: // 의류
                 {
                     if (ShapeshiftVisualFilter.ShouldHideApparelGraphic(pawn, (Apparel)cached.owner))
                         __result = null;
                     return;
                 }
 
-                case 3: // Hediff
+                case 3: // 헤디프
                 {
                     if (ShapeshiftVisualFilter.ShouldHideHediffGraphic(pawn, (Hediff)cached.owner))
                         __result = null;

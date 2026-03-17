@@ -1,6 +1,6 @@
 ﻿// ShapeshifterFramework | Compat | Compat_FacialAnimation_HeadWorker_ScaleFor.cs
-// FA HeadWorker ScaleFor Postfix: 변신 시 FA 머리 스케일을 폼에 맞춰 동기화.
-// 대상 워커가 NLFacialAnimationHeadNodeWorker일 때만 배율 적용. 타입은 ReflectionCache로 캐싱.
+// 목적 : Facial Animation 머리 스케일 동기화 — 변신 시 FA 머리 스케일을 폼에 맞춰 적용.
+// 용도 : FA HeadWorker ScaleFor Postfix로, 대상 워커가 NLFacialAnimationHeadNodeWorker일 때만 배율 적용. 타입은 ReflectionCache로 캐싱.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;

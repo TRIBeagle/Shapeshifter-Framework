@@ -18,11 +18,11 @@ namespace ShapeshifterFramework.Patches
             Vector3 rootLoc, float angle, Rot4 bodyFacing, RotDrawMode bodyDrawType, PawnRenderFlags flags,
             ref PawnDrawParms __result)
         {
-            // Pawn
+            // 폰 가져오기
             Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
             if (pawn == null) return;
 
-            // ShapeShift Comp/Form
+            // 변신 컴프/폼 조회
             if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
 
             // A) 수영 중 NoBody 해제 (헤드 숨김 폼 투명화 방지)

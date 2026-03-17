@@ -1,7 +1,7 @@
 ﻿// ShapeshifterFramework | Compat | Compat_FacialAnimation_OverridesHook.cs
-// 변신 시 FA FaceTypeDef/눈 색상을 폼 데이터로 덮어씌우고 해제 시 원복.
-// FAStateStore: Pawn별 원본 FA 상태 딥세이브, 주기 청소.
-// Harmony Hooks: ApplyForm/RemoveForm/CompExposeData에 개입. 오류는 동일 id당 1회만 경고.
+// 목적 : Facial Animation 모드 호환 — 변신 시 FA FaceTypeDef/눈 색상을 폼 데이터로 덮어씌우고 해제 시 원복.
+// 용도 : FAStateStore로 Pawn별 원본 FA 상태를 딥세이브/주기 청소. Harmony Hooks로 ApplyForm/RemoveForm/CompExposeData에 개입.
+// 주의 : 오류는 동일 id당 1회만 경고.
 
 using HarmonyLib;
 using ShapeshifterFramework.Hediffs;

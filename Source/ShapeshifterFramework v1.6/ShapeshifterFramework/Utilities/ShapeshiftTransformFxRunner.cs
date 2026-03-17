@@ -39,7 +39,7 @@ namespace ShapeshifterFramework.Utilities
         private readonly List<int> _removeBuffer = new List<int>(32);
 
         // ──────────────────────────────────────────────────────────────
-        // Configurable values
+        // 설정 상수
         private const int CooldownExpiryTicks = 60000; // 1게임일 후 자동 정리
         private const int MaxFleckCount = 50;          // Fleck 안전상한
         // ──────────────────────────────────────────────────────────────
