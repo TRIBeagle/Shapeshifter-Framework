@@ -157,11 +157,34 @@ namespace ShapeshifterFramework.Debugs
         {
             if (!Prefs.DevMode || pawn == null || pawn.DestroyedOrNull()) return;
 
-            // HediffComp_ShapeshiftCore 기반 조회
+            // HediffComp_ShapeshiftCore 기반 조회 — 없으면 ShapeshiftCore comp를 가진 HediffDef로 부트스트랩
             if (!ShapeshiftCoreUtility.TryGetCore(pawn, out var comp))
             {
-                Log.Warning("[SSF-Test] Pawn has no HediffComp_ShapeshiftCore.");
-                return;
+                // HediffCompProperties_ShapeshiftCore를 가진 HediffDef 검색
+                HediffDef bootstrapDef = null;
+                var allHediffDefs = DefDatabase<HediffDef>.AllDefsListForReading;
+                for (int i = 0; i < allHediffDefs.Count; i++)
+                {
+                    var hd = allHediffDefs[i];
+                    if (hd?.comps == null) continue;
+                    for (int c = 0; c < hd.comps.Count; c++)
+                    {
+                        if (hd.comps[c] is HediffCompProperties_ShapeshiftCore)
+                        { bootstrapDef = hd; break; }
+                    }
+                    if (bootstrapDef != null) break;
+                }
+                if (bootstrapDef == null)
+                {
+                    Log.Warning("[SSF-Test] No HediffDef with HediffCompProperties_ShapeshiftCore found.");
+                    return;
+                }
+                ShapeshiftCoreUtility.ApplyShift(pawn, bootstrapDef);
+                if (!ShapeshiftCoreUtility.TryGetCore(pawn, out comp))
+                {
+                    Log.Warning("[SSF-Test] Failed to bootstrap HediffComp_ShapeshiftCore.");
+                    return;
+                }
             }
 
             // 기존 변신 해제
