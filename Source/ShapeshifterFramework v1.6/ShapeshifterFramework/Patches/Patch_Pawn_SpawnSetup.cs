@@ -22,14 +22,14 @@ namespace ShapeshifterFramework.Patches
         {
             if (__instance == null || __instance.health?.hediffSet == null) return;
 
-            // Hediff_ShapeshiftForm을 보유한 pawn만 처리
+            // HediffComp_ShapeshiftCore를 보유한 pawn만 처리
             var hediffs = __instance.health.hediffSet.hediffs;
             for (int i = 0; i < hediffs.Count; i++)
             {
-                if (hediffs[i] is Hediff_ShapeshiftForm shiftHediff)
+                var core = (hediffs[i] as HediffWithComps)?.TryGetComp<HediffComp_ShapeshiftCore>();
+                if (core != null)
                 {
-                    var core = shiftHediff.TryGetComp<HediffComp_ShapeshiftCore>();
-                    if (core != null && core.isTransformed && core.currentForm != null)
+                    if (core.isTransformed && core.currentForm != null)
                     {
                         core.OnPawnSpawned(respawningAfterLoad);
                     }

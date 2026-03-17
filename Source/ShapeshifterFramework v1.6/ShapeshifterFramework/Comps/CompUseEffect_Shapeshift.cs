@@ -54,16 +54,13 @@ namespace ShapeshifterFramework.Comps
                 target = user;
             }
 
-            // hediffDef가 지정되면 HediffDef 경로 우선 사용
-            if (Props.hediffDef != null)
+            // HediffDef 기반 변신 진입
+            if (Props.hediffDef == null)
             {
-                ShapeshiftCoreUtility.ApplyShift(target, Props.hediffDef, Props.successChance);
+                Log.Error("[SSF] CompUseEffect_Shapeshift: hediffDef가 지정되지 않았습니다.");
+                return;
             }
-            else
-            {
-                // formDefName 폴백
-                ShapeshiftTargetUtility.TryShiftPawn(target, Props.formDefName, Props.successChance);
-            }
+            ShapeshiftCoreUtility.ApplyShift(target, Props.hediffDef, Props.successChance);
         }
     }
 }

@@ -77,15 +77,15 @@ namespace ShapeshifterFramework.Utilities
                 var hediffs = pawn.health.hediffSet.hediffs;
                 for (int i = hediffs.Count - 1; i >= 0; i--)
                 {
-                    if (hediffs[i] is Hediff_ShapeshiftForm existingShift)
+                    var existingCore = (hediffs[i] as HediffWithComps)?.TryGetComp<HediffComp_ShapeshiftCore>();
+                    if (existingCore != null)
                     {
-                        var existingCore = existingShift.TryGetComp<HediffComp_ShapeshiftCore>();
-                        if (existingCore != null && existingCore.isTransformed)
+                        if (existingCore.isTransformed)
                         {
                             try { existingCore.RemoveForm(); }
                             catch (Exception ex) { Log.Error($"[SSF] RemoveForm failed during re-transform for {pawn.Name}: {ex}"); }
                         }
-                        pawn.health.RemoveHediff(existingShift);
+                        pawn.health.RemoveHediff(hediffs[i]);
                         break; // 동시에 1개만
                     }
                 }
@@ -149,11 +149,8 @@ namespace ShapeshifterFramework.Utilities
                 var hediffs = pawn.health.hediffSet.hediffs;
                 for (int i = 0; i < hediffs.Count; i++)
                 {
-                    if (hediffs[i] is Hediff_ShapeshiftForm shiftHediff)
-                    {
-                        core = shiftHediff.TryGetComp<HediffComp_ShapeshiftCore>();
-                        if (core != null) return true;
-                    }
+                    core = (hediffs[i] as HediffWithComps)?.TryGetComp<HediffComp_ShapeshiftCore>();
+                    if (core != null) return true;
                 }
             }
 

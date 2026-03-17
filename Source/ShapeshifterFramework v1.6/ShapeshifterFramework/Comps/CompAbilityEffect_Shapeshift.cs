@@ -2,7 +2,7 @@
 // 목적 : Ability를 사용하여 대상(Pawn)을 변신시키는 효과(Effect) 컴포넌트.
 // 용도 : - ShouldHideGizmo: 캐스터의 종족/뮤턴트 조건 + 같은 폼 재시전 차단
 //        - CanApplyOn: 대상 유효성 판별
-//        - Apply: hediffDef가 있으면 ShapeshiftCoreUtility.ApplyShift, 없으면 ShapeshiftTargetUtility.TryShiftPawn(formDefName) 폴백
+//        - Apply: hediffDef 기반 ShapeshiftCoreUtility.ApplyShift 호출
 
 using RimWorld;
 using ShapeshifterFramework.Hediffs;
@@ -17,17 +17,23 @@ namespace ShapeshifterFramework.Comps
     {
         public new CompProperties_AbilityShapeshift Props => (CompProperties_AbilityShapeshift)props;
 
-        // 캐시: formDefName → ShapeshiftFormDef
+        // 캐시: hediffDef → HediffCompProperties_ShapeshiftCore.formDef
         private ShapeshiftFormDef _cachedFormDef;
         private bool _formDefResolved;
 
+        /// <summary>hediffDef에 바인딩된 ShapeshiftFormDef 조회 (캐시).</summary>
         private ShapeshiftFormDef ResolvedFormDef
         {
             get
             {
                 if (!_formDefResolved)
                 {
-                    _cachedFormDef = DefDatabase<ShapeshiftFormDef>.GetNamedSilentFail(Props.formDefName);
+                    _cachedFormDef = null;
+                    if (Props.hediffDef != null)
+                    {
+                        var coreProps = Props.hediffDef.CompProps<HediffCompProperties_ShapeshiftCore>();
+                        _cachedFormDef = coreProps?.formDef;
+                    }
                     _formDefResolved = true;
                 }
                 return _cachedFormDef;
@@ -65,7 +71,7 @@ namespace ShapeshifterFramework.Comps
                 {
                     if (core.isTransformed && core.currentForm != null)
                     {
-                        if (string.Equals(core.currentForm.defName, Props.formDefName, System.StringComparison.Ordinal))
+                        if (core.currentForm == ResolvedFormDef)
                             return true;
                     }
                 }
@@ -96,7 +102,7 @@ namespace ShapeshifterFramework.Comps
             if (ShapeshiftCoreUtility.TryGetCore(pawn, out var core))
             {
                 if (core.isTransformed && core.currentForm != null
-                    && string.Equals(core.currentForm.defName, Props.formDefName, System.StringComparison.Ordinal))
+                    && core.currentForm == ResolvedFormDef)
                 {
                     return false;
                 }
@@ -115,16 +121,13 @@ namespace ShapeshifterFramework.Comps
             if (Props.affectHostileOnly && parent?.pawn != null && !pawn.HostileTo(parent.pawn))
                 return;
 
-            // hediffDef가 지정되면 HediffDef 경로 우선 사용
-            if (Props.hediffDef != null)
+            // HediffDef 기반 변신 진입
+            if (Props.hediffDef == null)
             {
-                ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance);
+                Log.Error("[SSF] CompAbilityEffect_Shapeshift: hediffDef가 지정되지 않았습니다.");
+                return;
             }
-            else
-            {
-                // formDefName 폴백
-                ShapeshiftTargetUtility.TryShiftPawn(pawn, Props.formDefName, Props.successChance);
-            }
+            ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance);
         }
 
         /// <summary>변신 중 다른 폼 어빌리티 비활성화 (allowedFromForms 허용 시 제외).</summary>

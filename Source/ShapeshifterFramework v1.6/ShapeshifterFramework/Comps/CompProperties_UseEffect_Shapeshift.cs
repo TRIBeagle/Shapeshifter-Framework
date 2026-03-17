@@ -9,8 +9,7 @@ namespace ShapeshifterFramework.Comps
     /// <summary>아이템 사용 변신 효과 속성 정의.</summary>
     public class CompProperties_UseEffect_Shapeshift : CompProperties_UseEffect
     {
-        public string formDefName;
-        /// <summary>HediffDef 기반 변신 (Phase 2). hediffDef가 지정되면 formDefName보다 우선 사용.</summary>
+        /// <summary>변신 적용에 사용할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</summary>
         public Verse.HediffDef hediffDef;
         public float successChance = 1.0f;
 

@@ -126,7 +126,7 @@
     <Compile Include="Utilities\ShapeshiftDiagnostics.cs" />
     <Compile Include="Utilities\ShapeshiftOverlayUtility.cs" />
     <Compile Include="Utilities\ShapeshiftFilthScope.cs" />
-    <Compile Include="Utilities\ShapeshiftTargetUtility.cs" />
+
     <Compile Include="Utilities\ShapeshiftPartControlUtility.cs" />
     <Compile Include="Utilities\ShapeshiftWaterTileGraphicsDirty.cs" />
     <Compile Include="Utilities\ShapeshiftVoiceUtility.cs" />

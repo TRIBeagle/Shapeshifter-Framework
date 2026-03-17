@@ -1,7 +1,7 @@
 // ShapeshifterFramework | Hediffs | HediffComp_AutoShift.cs
 // 목적 : 조건부 자동 변신 로직. 특정 hediff를 보유한 Pawn이 조건 충족 시 자동으로 변신.
 // 용도 : - CompPostTick에서 주기적으로 체력/정신상태/밝기/전투 조건을 검사.
-//        - 조건 충족 시 ShapeshiftTargetUtility.TryShiftPawn() 호출.
+//        - 조건 충족 시 ShapeshiftCoreUtility.ApplyShift() 호출.
 //        - triggerOnce=true면 발동 후 hediff 자체 제거 (1회성 저주 등).
 // 주의 : HediffComp_ShapeshiftCore를 직접 수정하지 않음. 독립적인 HediffComp로 동작.
 
@@ -45,16 +45,13 @@ namespace ShapeshifterFramework.Hediffs
             // 조건 판정 (OR: 하나라도 충족 시 트리거)
             if (!AnyConditionMet(pawn)) return;
 
-            // 변신 시도 — hediffDef 우선, formDefName 폴백
-            bool shifted;
-            if (Props.hediffDef != null)
+            // HediffDef 기반 변신 진입
+            if (Props.hediffDef == null)
             {
-                shifted = ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance);
+                Log.Error("[SSF] HediffComp_AutoShift: hediffDef가 지정되지 않았습니다.");
+                return;
             }
-            else
-            {
-                shifted = ShapeshiftTargetUtility.TryShiftPawn(pawn, Props.formDefName, Props.successChance);
-            }
+            bool shifted = ShapeshiftCoreUtility.ApplyShift(pawn, Props.hediffDef, Props.successChance);
 
             // triggerOnce: 성공 시 hediff 제거
             if (shifted && Props.triggerOnce)

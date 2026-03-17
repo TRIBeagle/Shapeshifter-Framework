@@ -12,10 +12,7 @@ namespace ShapeshifterFramework.Hediffs
     /// <summary>조건부 자동 변신 프로퍼티.</summary>
     public class HediffCompProperties_AutoShift : HediffCompProperties
     {
-        /// <summary>변신할 ShapeshiftFormDef의 defName.</summary>
-        public string formDefName;
-
-        /// <summary>HediffDef 기반 변신 (Phase 2). hediffDef가 지정되면 formDefName보다 우선 사용.</summary>
+        /// <summary>변신 적용에 사용할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</summary>
         public HediffDef hediffDef;
 
         /// <summary>체력 비율이 이 값 미만이면 트리거. null이면 미사용. 예: 0.3 = 30%.</summary>

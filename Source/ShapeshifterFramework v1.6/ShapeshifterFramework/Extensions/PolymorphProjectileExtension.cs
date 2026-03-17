@@ -11,10 +11,7 @@ namespace ShapeshifterFramework.Extensions
     {
         #region 설정 필드
 
-        // 적용할 폼의 defName (formDefName 또는 hediffDef 중 하나 필수)
-        public string formDefName;
-
-        /// <summary>HediffDef 기반 변신 (Phase 2). hediffDef가 지정되면 formDefName보다 우선 사용.</summary>
+        /// <summary>변신 적용에 사용할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</summary>
         public Verse.HediffDef hediffDef;
 
         // 성공 확률(0~1), 기본 1.0

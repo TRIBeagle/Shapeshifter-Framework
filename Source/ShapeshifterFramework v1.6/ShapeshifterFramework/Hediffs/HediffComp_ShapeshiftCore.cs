@@ -1862,7 +1862,7 @@ namespace ShapeshifterFramework.Hediffs
 
         #region 기즈모 생성
 
-        /// <summary>해제 및 verb 지즈모 생성. Hediff_ShapeshiftForm.GetGizmos()에서 호출.</summary>
+        /// <summary>해제 및 verb 기즈모 생성. hediff의 GetGizmos()에서 호출.</summary>
         public IEnumerable<Gizmo> GetGizmosExtra()
         {
             var pawn = Pawn;
