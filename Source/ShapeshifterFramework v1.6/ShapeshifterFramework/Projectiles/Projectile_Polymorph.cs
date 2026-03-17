@@ -5,7 +5,6 @@
 // 주의 : 투사체의 기본 이펙트나 파괴 로직을 정상 수행하기 위해, 변신 처리가 끝난 후 마지막에 반드시 base.Impact()를 호출하도록 설계됨.
 // AoE 팩션 필터: affectAllies=false(기본값)이면 시전자에게 적대적인 폰만 변신. true이면 모든 폰.
 
-using RimWorld;
 using ShapeshifterFramework.Extensions;
 using ShapeshifterFramework.Utilities;
 using Verse;
@@ -62,9 +61,13 @@ namespace ShapeshifterFramework.Projectiles
             base.Impact(hitThing, blockedByShield);
         }
 
-        /// <summary>확장 설정에 따라 대상에게 변신 적용.</summary>
+        /// <summary>확장 설정에 따라 대상에게 변신 적용. 저항 판정 포함.</summary>
         private static void ApplyShiftToTarget(Pawn target, PolymorphProjectileExtension ext)
         {
+            // 저항 판정: 투사체는 부정적 효과이므로 아군 면제 없음
+            if (ShapeshiftCoreUtility.ResistProjectile(target, ext.baseSuccessChance, ext.resistStat, ext.resistMode))
+                return;
+
             ShapeshiftCoreUtility.GiveShiftHediff(target, ext.hediffDef);
         }
     }

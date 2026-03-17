@@ -660,6 +660,14 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 | `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | 시전자 뮤턴트 필터 (Anomaly). |
 | `allowedFromForms` | List\<string\> | 변신 중 시전 허용 폼 목록. 비우면 변신 중 비활성(회색). |
 | `affectHostileOnly` | bool | true 시 AoE 어빌리티에서 캐스터에 적대인 폰만 적용. 기본 false. |
+| `baseSuccessChance` | float | 기본 성공 확률 (0~1). 기본값 1 = 항상 성공. 적대 대상에만 체크, 아군은 항상 성공 (바닐라 Psycast 패턴). |
+| `resistStat` | StatDef | 저항에 사용할 스탯. 예: `PsychicSensitivity`, `ToxicResistance`. null(기본값) = 저항 체크 없음. |
+| `resistMode` | ResistMode | 스탯 방향성: `Sensitivity`(높을수록 취약, 기본) 또는 `Resistance`(높을수록 면역). |
+
+> **저항 공식:**
+> - `Sensitivity` 모드: `최종확률 = baseSuccessChance × target.GetStatValue(resistStat)` — 예: 정신 감응력 0 = 면역, 2.0 = 매우 취약.
+> - `Resistance` 모드: `최종확률 = baseSuccessChance × (1 − clamp01(스탯값))` — 예: 독성 저항력 1.0 = 완전 면역.
+> - 어빌리티의 경우 아군은 저항 체크 면제 (투사체는 면제 없음).
 
 ### 획득 경로
 
@@ -670,7 +678,7 @@ FormDef는 폼의 **모습**을 정의합니다. **언제/어떻게** 발동되�
 | 아이템 (장비) | `CompProperties_GiveAbility_Shapeshift` | 장비 시 어빌리티 부여. 어빌리티로 변신 시 해당 아이템이 `sourceItem`으로 등록 — 장비 해제 시 변신 해제. |
 | 약물 | `IngestionOutcomeDoer_Shapeshift` | 복용 시 직접 변신. `hediffDef` 지정. |
 | 스크롤/사용 | `CompProperties_UseEffect_Shapeshift` | 사용 시 직접 변신. `hediffDef` 지정. |
-| 투사체 | `PolymorphProjectileExtension` | 명중 시 변신. `hediffDef`, `aoeRadius`, `affectAllies` 지원. |
+| 투사체 | `PolymorphProjectileExtension` | 명중 시 변신. `hediffDef`, `aoeRadius`, `affectAllies`, `baseSuccessChance`, `resistStat`, `resistMode` 지원. |
 
 ### HediffComp_AutoShift (조건부 자동 변신)
 

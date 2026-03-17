@@ -1,9 +1,11 @@
 // ShapeshifterFramework | Utilities | ShapeshiftCoreUtility.cs
-// 목적 : 변신 이벤트 콜백 + 조회 헬퍼.
+// 목적 : 변신 이벤트 콜백 + 조회 헬퍼 + 저항 판정.
 // 용도 : 변신은 바닐라 AddHediff로 진입 → CompPostPostAdd → 첫 Tick ApplyForm.
 //        외부 모드 확장점: OnFormApplied / OnFormRemoved 이벤트.
+//        저항 판정: 적대적 변신 시 대상의 스탯 기반 확률 체크 (능력/투사체 공용).
 // 주의 : ClearEvents()는 GameComponent.FinalizeInit에서 호출 (HarmonyInit은 모드 로드 시 1회만).
 
+using RimWorld;
 using ShapeshifterFramework.Hediffs;
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,20 @@ using Verse;
 
 namespace ShapeshifterFramework.Utilities
 {
-    /// <summary>변신 이벤트 콜백 + 조회 헬퍼.</summary>
+    /// <summary>
+    /// 저항 스탯의 방향성.
+    /// Sensitivity: 높을수록 취약 (PsychicSensitivity 등). chance = base × stat.
+    /// Resistance: 높을수록 면역 (ToxicResistance 등). chance = base × (1 - clamp01(stat)).
+    /// </summary>
+    public enum ResistMode
+    {
+        /// <summary>높을수록 취약. 예: PsychicSensitivity (0=면역, 2=매우 취약).</summary>
+        Sensitivity,
+        /// <summary>높을수록 면역. 예: ToxicResistance (0=무방비, 1=완전 면역).</summary>
+        Resistance
+    }
+
+    /// <summary>변신 이벤트 콜백 + 조회 헬퍼 + 저항 판정.</summary>
     public static class ShapeshiftCoreUtility
     {
         #region 이벤트 콜백
@@ -133,6 +148,62 @@ namespace ShapeshifterFramework.Utilities
                 return form != null;
             }
             return false;
+        }
+
+        #endregion
+
+        #region 저항 판정
+
+        /// <summary>
+        /// resistStat과 resistMode에 따라 최종 성공 확률을 계산한다.
+        /// Sensitivity: chance = base × statValue (높을수록 취약).
+        /// Resistance:  chance = base × (1 - clamp01(statValue)) (높을수록 면역).
+        /// </summary>
+        private static float CalcSuccessChance(Pawn target, float baseSuccessChance, StatDef resistStat, ResistMode mode)
+        {
+            float stat = target.GetStatValue(resistStat);
+            if (mode == ResistMode.Resistance)
+                return baseSuccessChance * (1f - UnityEngine.Mathf.Clamp01(stat));
+            return baseSuccessChance * stat;
+        }
+
+        /// <summary>
+        /// 능력(Ability) 기반 변신 저항 판정.
+        /// 아군 대상은 바닐라 Psycast 패턴에 따라 저항 체크를 생략한다 (항상 성공).
+        /// </summary>
+        /// <param name="caster">시전자. null이면 저항 체크 생략.</param>
+        /// <param name="target">대상 Pawn.</param>
+        /// <param name="baseSuccessChance">기본 성공 확률 (0~1). 1 이상이면 항상 성공.</param>
+        /// <param name="resistStat">저항에 사용할 StatDef. null이면 저항 체크 생략 (항상 성공).</param>
+        /// <param name="mode">스탯 방향성. Sensitivity(높을수록 취약) / Resistance(높을수록 면역).</param>
+        /// <returns>true면 저항 성공 (변신 안 됨).</returns>
+        public static bool ResistAbility(Pawn caster, Pawn target, float baseSuccessChance, StatDef resistStat, ResistMode mode = ResistMode.Sensitivity)
+        {
+            if (resistStat == null) return false;
+            if (baseSuccessChance >= 1f && mode == ResistMode.Sensitivity) return false;
+            if (caster == null || caster == target) return false;
+            if (!target.HostileTo(caster)) return false;
+
+            float chance = CalcSuccessChance(target, baseSuccessChance, resistStat, mode);
+            return !Rand.Chance(chance);
+        }
+
+        /// <summary>
+        /// 투사체(Projectile) 기반 변신 저항 판정.
+        /// 투사체는 부정적 효과이므로 아군 면제 없이 모든 대상에게 저항 체크를 수행한다.
+        /// </summary>
+        /// <param name="target">대상 Pawn.</param>
+        /// <param name="baseSuccessChance">기본 성공 확률 (0~1). 1 이상이면 항상 성공.</param>
+        /// <param name="resistStat">저항에 사용할 StatDef. null이면 저항 체크 생략 (항상 성공).</param>
+        /// <param name="mode">스탯 방향성. Sensitivity(높을수록 취약) / Resistance(높을수록 면역).</param>
+        /// <returns>true면 저항 성공 (변신 안 됨).</returns>
+        public static bool ResistProjectile(Pawn target, float baseSuccessChance, StatDef resistStat, ResistMode mode = ResistMode.Sensitivity)
+        {
+            if (resistStat == null) return false;
+            if (baseSuccessChance >= 1f && mode == ResistMode.Sensitivity) return false;
+
+            float chance = CalcSuccessChance(target, baseSuccessChance, resistStat, mode);
+            return !Rand.Chance(chance);
         }
 
         #endregion

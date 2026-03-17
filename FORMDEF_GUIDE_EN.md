@@ -477,6 +477,14 @@ Attach to an `AbilityDef`'s `<comps>`:
 | `allowedMutants` / `disallowedMutants` | List\<MutantDef\> | Caster mutant filter (Anomaly). |
 | `allowedFromForms` | List\<string\> | Forms from which this ability can be cast while transformed. Empty = disabled while transformed. |
 | `affectHostileOnly` | bool | If true, AoE abilities only apply to pawns hostile to the caster. Default false. |
+| `baseSuccessChance` | float | Base success probability (0–1). Default 1 = always succeeds. Only checked against hostile targets; allies always succeed (vanilla psycast pattern). |
+| `resistStat` | StatDef | Stat used for resistance check. E.g., `PsychicSensitivity`, `ToxicResistance`. null (default) = no resistance check. |
+| `resistMode` | ResistMode | Stat direction: `Sensitivity` (higher stat = more vulnerable, default) or `Resistance` (higher stat = more immune). |
+
+> **Resistance formula:**
+> - `Sensitivity` mode: `finalChance = baseSuccessChance × target.GetStatValue(resistStat)` — e.g., PsychicSensitivity 0 = immune, 2.0 = very vulnerable.
+> - `Resistance` mode: `finalChance = baseSuccessChance × (1 − clamp01(statValue))` — e.g., ToxicResistance 1.0 = fully immune.
+> - Allies are exempt from resistance checks for abilities (not for projectiles).
 
 ### Acquisition Sources
 
@@ -487,7 +495,7 @@ Attach to an `AbilityDef`'s `<comps>`:
 | Item (equipped) | `CompProperties_GiveAbility_Shapeshift` | Equipped item grants ability. When the ability triggers a shift, the item is tracked as a `sourceItem` — unequipping reverts the form. |
 | Drug | `IngestionOutcomeDoer_Shapeshift` | Drug triggers shift directly. Field: `hediffDef`. |
 | Scroll/UseItem | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Field: `hediffDef`. |
-| Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `hediffDef`, `aoeRadius`, `affectAllies`. |
+| Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `hediffDef`, `aoeRadius`, `affectAllies`, `baseSuccessChance`, `resistStat`, `resistMode`. |
 
 > **Vanilla GiveHediff compatibility:** Because the entry point is a standard HediffDef, vanilla `GiveHediff` operations (e.g., from other mods, dev tools, or vanilla hediff givers) will work. When the hediff is added, `HediffComp_ShapeshiftCore.CompPostPostAdd` automatically removes any existing shapeshift hediff (preventing stacking) and triggers `ApplyForm()` on the next tick.
 >
