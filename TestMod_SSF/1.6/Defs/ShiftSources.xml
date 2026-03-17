@@ -44,8 +44,7 @@
   </GeneDef>
 
   <!-- ======================================================
-       3) 장착 무기 (requireEquipped=true)
-       이 검을 장비 슬롯에 장착해야만 암흑 기사 변신 어빌리티 부여
+       3) 장착 무기       이 검을 장비 슬롯에 장착해야만 암흑 기사 변신 어빌리티 부여
        무기를 내려놓으면 어빌리티 즉시 회수
        ====================================================== -->
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
@@ -84,14 +83,12 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_Shapeshift">
         <ability>SSFTest_Ability_DarkKnight</ability>
-        <requireEquipped>true</requireEquipped>
       </li>
     </comps>
   </ThingDef>
 
   <!-- ======================================================
-       4) 장착 의류 (requireEquipped=true)
-       이 망토를 착용해야만 유령 변신 어빌리티 부여
+       4) 장착 의류       이 망토를 착용해야만 유령 변신 어빌리티 부여
        벗으면 어빌리티 즉시 회수
        ====================================================== -->
   <ThingDef ParentName="ApparelMakeableBase">
@@ -124,7 +121,6 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_Shapeshift">
         <ability>SSFTest_Ability_Phantom</ability>
-        <requireEquipped>true</requireEquipped>
       </li>
     </comps>
   </ThingDef>

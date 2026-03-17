@@ -170,7 +170,7 @@
 ## 7. GuardianForm — 조건부 유지, 앰비언트 VFX
 
 ### 유지 조건 (sustainMode=Any)
-- [ ] `[M]` 7-1. MagicStone 인벤토리 소지 → 변신 가능
+- [ ] `[M]` 7-1. (삭제됨 — MagicStone 인벤토리 소지 기능 제거)
 - [ ] `[M]` 7-2. Hediff_GuardianMark 보유 → 변신 가능
 - [ ] `[M]` 7-3. 둘 다 없으면 변신 불가 / 둘 다 있어도 OK
 
@@ -189,9 +189,8 @@
 
 ### 수동 확인
 - [ ] `[M]` 7-9. revertOnDowned=true → 의식 상실 시 자동 해제
-- [ ] `[M]` 7-10. MagicStone 드롭 시 변신 유지 여부 확인
-- [ ] `[M]` 7-11. requireEquipped=true 아이템으로 변신 → 장비 해제 시 변신 해제 확인
-- [ ] `[M]` 7-12. requireEquipped=false 아이템으로 변신 → 장비 해제해도 변신 유지 확인 (sourceItem 미추적)
+- [ ] `[M]` 7-10. (삭제됨 — MagicStone 인벤토리 소지 기능 제거)
+- [ ] `[M]` 7-11. 장비형 아이템으로 변신 → 장비 해제 시 변신 해제 확인
 - [ ] `[M]` 7-13. sourceItem 파괴 시 → 변신 해제 확인
 
 ---
@@ -242,7 +241,7 @@
 - [ ] `[M]` 10-3. ShiftScroll_Self: 사용 후 파괴, stackLimit 5
 - [ ] `[M]` 10-4. ShiftScroll_Target: 타겟 선택 UI + 이동 후 사용
 - [ ] `[M]` 10-5. BearElixir: DrugLab 제작, 복용 120틱
-- [ ] `[M]` 10-6. MagicStone: 인벤토리 소지 (소비 안 됨)
+- [ ] `[M]` 10-6. (삭제됨 — MagicStone 인벤토리 소지 기능 제거)
 
 ### 유전자 (Biotech)
 - [ ] `[M]` 10-7. Gene_BeastkinShift / Gene_PhantomShift → 어빌리티 부여 + 변신 작동
@@ -255,7 +254,7 @@
 - [ ] `[M]` 10-12. 인벤토리만 보유 → 어빌리티 미부여
 
 ### 소지 아이템
-- [ ] `[M]` 10-13. MagicStone 인벤토리 → Guardian 어빌리티 / 드롭 시 제거 / 재소지 시 재부여
+- [ ] `[M]` 10-13. (삭제됨 — MagicStone 인벤토리 소지 기능 제거)
 
 ### Hediff 기반
 - [ ] `[M]` 10-14. Hediff_ShiftBlessing → BuffAlly 어빌리티 / 제거 시 회수

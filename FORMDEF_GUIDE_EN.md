@@ -487,8 +487,7 @@ Attach to an `AbilityDef`'s `<comps>`:
 |--------|-----------|---------|
 | Gene | `GeneDef.abilities` | Gene grants ability (Biotech). |
 | Hediff | `HediffCompProperties_GiveAbility` | Hediff grants ability while present. |
-| Item (equipped) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=true`) | Equipped item grants ability. When the ability triggers a shift, the item is tracked as a `sourceItem` — unequipping reverts the form. |
-| Item (inventory) | `CompProperties_GiveAbility_Shapeshift` (`requireEquipped=false`) | Inventory item grants ability. The item is **not** tracked as a `sourceItem` — the shift persists independently; the ability is revoked when the item is dropped. |
+| Item (equipped) | `CompProperties_GiveAbility_Shapeshift` | Equipped item grants ability. When the ability triggers a shift, the item is tracked as a `sourceItem` — unequipping reverts the form. |
 | Drug | `IngestionOutcomeDoer_Shapeshift` | Drug triggers shift directly. Fields: `hediffDef` (preferred), `formDefName` (fallback). |
 | Scroll/UseItem | `CompProperties_UseEffect_Shapeshift` | Item use triggers shift directly. Fields: `hediffDef` (preferred), `formDefName` (fallback). |
 | Projectile | `PolymorphProjectileExtension` | Projectile hit triggers shift. Fields: `hediffDef` (preferred), `formDefName` (fallback), `aoeRadius`, `affectAllies`. |

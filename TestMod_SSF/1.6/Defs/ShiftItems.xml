@@ -62,30 +62,6 @@
        아이템 정의
        ====================================================== -->
 
-  <!-- 마력의 돌 — CompGiveAbility_Shapeshift 테스트: 소지만으로 Guardian 어빌리티 부여 -->
-  <ThingDef ParentName="ResourceBase">
-    <defName>SSFTest_MagicStone</defName>
-    <label>Test: 마력의 돌</label>
-    <description>인벤토리에 소지하기만 해도 수호자 변신 어빌리티가 부여되는 신비한 돌입니다. 바닥에 버리면 어빌리티가 사라집니다.</description>
-    <graphicData>
-      <texPath>Things/Item/Resource/Jade</texPath>
-      <graphicClass>Graphic_StackCount</graphicClass>
-    </graphicData>
-    <statBases>
-      <MarketValue>500</MarketValue>
-      <Mass>0.1</Mass>
-    </statBases>
-    <thingCategories>
-      <li>Manufactured</li>
-    </thingCategories>
-    <comps>
-      <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_Shapeshift">
-        <ability>SSFTest_Ability_Guardian</ability>
-        <requireEquipped>false</requireEquipped>
-      </li>
-    </comps>
-  </ThingDef>
-
   <!-- ======================================================
        2a) 아이템 변신 — 자기 자신 (CompTargetable 없음)
        ====================================================== -->
