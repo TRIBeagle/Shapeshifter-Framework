@@ -71,4 +71,6 @@
 
   <SSF_GizmoDisabled_RaceNotAllowed>이 폼은 {0} 종족에게 사용할 수 없습니다.</SSF_GizmoDisabled_RaceNotAllowed>
 
+  <SSF_GizmoDisabled_IdeologyForbidden>이데올로기가 변신을 금지합니다.</SSF_GizmoDisabled_IdeologyForbidden>
+
 </LanguageData>

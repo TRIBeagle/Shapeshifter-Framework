@@ -1,5 +1,5 @@
 // ShapeshifterFramework | Utilities | ShapeshiftEligibility.cs
-// 목적 : 기본적인 변신 가능 여부 판정 (종족/뮤턴트 필터, 같은 폼 재변신 방지, 사망 체크).
+// 목적 : 기본적인 변신 가능 여부 판정 (종족/뮤턴트 필터, 같은 폼 재변신 방지, 사망 체크, 이데올로기 금지).
 // 용도 : 모든 변신 경로(어빌리티/약물/스크롤/투사체)에서 공통으로 사용하는 FormDef 수준 필터.
 //        어빌리티 시전자 조건(Comp.allowedRaces/allowedMutants)은 CompAbilityEffect_GiveHediff_Shapeshift에서 별도 처리.
 
@@ -60,11 +60,33 @@ namespace ShapeshifterFramework.Utilities
             return true;
         }
 
-        /// <summary>기본 변신 가능 여부 판정. 종족/뮤턴트 필터, 같은 폼 재변신 방지, 사망 체크.</summary>
+        /// <summary>이데올로기 규율에 의해 변신이 금지되는지 판정. SSF_Shapeshifting_Abhorrent 규율 시 금지.</summary>
+        public static bool IsIdeologyForbidden(Pawn pawn)
+        {
+            if (!ModsConfig.IdeologyActive) return false;
+            if (pawn == null || pawn.Ideo == null) return false;
+
+            var preceptDef = DefDatabase<PreceptDef>.GetNamedSilentFail("SSF_Shapeshifting_Abhorrent");
+            if (preceptDef == null) return false;
+
+            // Pawn의 이데올로기가 해당 규율을 보유하고 있으면 금지
+            for (int i = 0; i < pawn.Ideo.PreceptsListForReading.Count; i++)
+            {
+                if (pawn.Ideo.PreceptsListForReading[i].def == preceptDef)
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>기본 변신 가능 여부 판정. 종족/뮤턴트 필터, 같은 폼 재변신 방지, 사망 체크, 이데올로기 금지.</summary>
         public static bool CanTransformBasic(Pawn pawn, ShapeshiftFormDef form, string currentFormDefName)
         {
             if (pawn == null || form == null) return false;
             if (pawn.Dead) return false;
+
+            // 이데올로기 금지
+            if (IsIdeologyForbidden(pawn)) return false;
 
             // 종족 필터
             if (!IsRaceAllowed(pawn, form)) return false;

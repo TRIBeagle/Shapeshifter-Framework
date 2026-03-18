@@ -172,6 +172,13 @@ namespace ShapeshifterFramework.Comps
             var caster = parent?.pawn;
             if (caster == null) { reason = null; return false; }
 
+            // 이데올로기 금지 체크
+            if (ShapeshiftEligibility.IsIdeologyForbidden(caster))
+            {
+                reason = "SSF_GizmoDisabled_IdeologyForbidden".Translate();
+                return true;
+            }
+
             // 캐스터 종족이 폼의 formAllowedRaces에 없으면 비활성
             var selfForm = ResolvedFormDef;
             if (selfForm != null && !ShapeshiftEligibility.IsRaceAllowed(caster, selfForm))

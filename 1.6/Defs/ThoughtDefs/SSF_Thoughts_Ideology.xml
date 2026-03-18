@@ -3,84 +3,163 @@
 
   <!-- ======================================================
        변신 규율 연동 감정 — Ideology DLC 전용
+       5단계: 절대 금기 / 혐오 / 중립 / 존중 / 숭고
        ====================================================== -->
 
-  <!-- ── 금기: 변신 중 기분 -10 (상황 감정) ── -->
+  <!-- ══════════════ 절대 금기 (섭리에 대한 모독) ══════════════ -->
+
+  <!-- 변신 중 기분 -10 (상황 감정) -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
-    <defName>SSF_Thought_Shapeshifted_Taboo</defName>
+    <defName>SSF_Thought_Shapeshifted_Abhorrent</defName>
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
     <stages>
       <li>
-        <label>변신 중 (금기)</label>
-        <description>내가 변신하다니… 이것은 금기를 어기는 행위이다.</description>
+        <label>변신 중 (모독)</label>
+        <description>이 몸은 내가 아니다. 역겹고 끔찍하다.</description>
         <baseMoodEffect>-10</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>
 
-  <!-- ── 금기: 변신자에 대한 의견 -20 (사회 감정) ── -->
+  <!-- 변신자에 대한 의견 -20 (사회 감정) -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
-    <defName>SSF_Thought_Shapeshifted_Taboo_Social</defName>
+    <defName>SSF_Thought_Shapeshifted_Abhorrent_Social</defName>
     <thoughtClass>Thought_SituationalSocial</thoughtClass>
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
     <stages>
       <li>
-        <label>변신자 (금기)</label>
-        <description>자연의 질서를 거스르는 변신을 하다니.</description>
+        <label>변신자 (모독)</label>
+        <description>몸을 바꾸다니, 보기만 해도 소름이 돋는다.</description>
         <baseOpinionOffset>-20</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
 
-  <!-- ── 명예로움: 변신 중 기분 +10 (상황 감정) ── -->
-  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
-    <defName>SSF_Thought_Shapeshifted_Honorable</defName>
-    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
-    <stages>
-      <li>
-        <label>변신 중 (명예)</label>
-        <description>변신은 명예로운 행위이다. 자부심이 느껴진다.</description>
-        <baseMoodEffect>10</baseMoodEffect>
-      </li>
-    </stages>
-  </ThoughtDef>
-
-  <!-- ── 명예로움: 변신자에 대한 의견 +20 (사회 감정) ── -->
-  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
-    <defName>SSF_Thought_Shapeshifted_Honorable_Social</defName>
-    <thoughtClass>Thought_SituationalSocial</thoughtClass>
-    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
-    <stages>
-      <li>
-        <label>변신자 (명예)</label>
-        <description>명예롭게 변신한 자이다.</description>
-        <baseOpinionOffset>20</baseOpinionOffset>
-      </li>
-    </stages>
-  </ThoughtDef>
-
-  <!-- ── 금기 위반 기억 감정 -10 (변신 시 1회 부여, 5일 지속) ── -->
+  <!-- 금기 위반 기억 감정 -10 (변신 시 1회 부여, 5일 지속) -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Thought_ShapeshiftTabooViolated</defName>
     <durationDays>5</durationDays>
     <stackLimit>1</stackLimit>
     <stages>
       <li>
-        <label>변신 금기를 어김</label>
-        <description>금기인 변신을 하고 말았다. 자연의 법칙을 어기다니.</description>
+        <label>변신해 버렸다</label>
+        <description>해선 안 되는 짓을 하고 말았다. 머릿속이 복잡하다.</description>
         <baseMoodEffect>-10</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>
 
-  <!-- ── 성스러운 동물 폼 +5 (규율과 독립, 상황 감정) ── -->
+  <!-- ══════════════ 혐오 (부자연스러운 힘) ══════════════ -->
+
+  <!-- 변신 중 기분 -5 (상황 감정) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Disapproved</defName>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
+    <stages>
+      <li>
+        <label>변신 중 (혐오)</label>
+        <description>이 모습이 영 불편하다.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 변신자에 대한 의견 -10 (사회 감정) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Disapproved_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
+    <stages>
+      <li>
+        <label>변신자 (혐오)</label>
+        <description>변신을 하다니, 눈살이 찌푸려진다.</description>
+        <baseOpinionOffset>-10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 혐오 위반 기억 감정 -5 (변신 시 1회 부여, 3일 지속) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_ShapeshiftDisapprovedViolated</defName>
+    <durationDays>3</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages>
+      <li>
+        <label>변신을 하고 말았다</label>
+        <description>찝찝하다. 좀 그런 거 안 했으면 좋겠는데.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- ══════════════ 존중 (특별한 재능) ══════════════ -->
+
+  <!-- 변신 중 기분 +5 (상황 감정) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Respected</defName>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
+    <stages>
+      <li>
+        <label>변신 중 (존중)</label>
+        <description>이 모습도 나쁘지 않군. 꽤 괜찮다.</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 변신자에 대한 의견 +10 (사회 감정) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Respected_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
+    <stages>
+      <li>
+        <label>변신자 (존중)</label>
+        <description>변신하는 모습이 꽤 인상적이다.</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- ══════════════ 숭고 (신이 내린 축복) ══════════════ -->
+
+  <!-- 변신 중 기분 +10 (상황 감정) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Sublime</defName>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
+    <stages>
+      <li>
+        <label>변신 중 (축복)</label>
+        <description>내 안의 힘이 깨어난 느낌이다. 기분이 좋다.</description>
+        <baseMoodEffect>10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 변신자에 대한 의견 +20 (사회 감정) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Sublime_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
+    <stages>
+      <li>
+        <label>변신자 (축복)</label>
+        <description>축복받은 변신의 힘을 지니다니, 경이롭다.</description>
+        <baseOpinionOffset>20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- ══════════════ 공통 (규율 독립) ══════════════ -->
+
+  <!-- 성스러운 동물 폼 +5 (규율과 독립, 상황 감정) -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Thought_SacredAnimalForm</defName>
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_SacredAnimalForm</workerClass>
     <stages>
       <li>
         <label>성스러운 동물의 형상</label>
-        <description>성스러운 동물의 형상을 취하고 있다. 경건한 기분이 든다.</description>
+        <description>성스러운 동물의 모습을 하고 있다. 경건한 기분이 든다.</description>
         <baseMoodEffect>5</baseMoodEffect>
       </li>
     </stages>

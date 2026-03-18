@@ -71,4 +71,6 @@
 
   <SSF_GizmoDisabled_RaceNotAllowed>This form is not available for {0}.</SSF_GizmoDisabled_RaceNotAllowed>
 
+  <SSF_GizmoDisabled_IdeologyForbidden>Ideology forbids shapeshifting.</SSF_GizmoDisabled_IdeologyForbidden>
+
 </LanguageData>

@@ -401,6 +401,18 @@ Form auto-reverts when conditions are no longer met. `sustainMode` controls whet
 | `suppressIdeologyUncoveredThoughts` | `bool` | `true` | Suppress "uncovered" thoughts from Ideology |
 | `linkedSacredAnimalDef` | `ThingDef` | `null` | Animal race this form represents. Grants +5 mood if it matches the pawn's ideology venerated animal |
 
+**Shapeshifting Precept (5 stages):**
+
+| Stage | Label | Mood | Opinion | Memory | Special |
+|-------|-------|------|---------|--------|---------|
+| 0 | Blasphemy against nature | -10 | -20 | -10 (5d) | **Forbidden** |
+| 1 | Unnatural power | -5 | -10 | -5 (3d) | - |
+| 2 | No opinion | - | - | - | - |
+| 3 | Special talent | +5 | +10 | - | - |
+| 4 | Divine blessing | +10 | +20 | - | - |
+
+> At the "Blasphemy against nature" stage, the ability gizmo is disabled and all shapeshifting paths (ability/drug/projectile) are blocked.
+
 ### 3.15 VFX & Sound (Enter/Exit)
 | Field | Type | Description |
 |-------|------|-------------|
