@@ -109,14 +109,14 @@ namespace ShapeshifterFramework.Compat
 
         // FA 컨트롤러 보유 여부 캐시 — AllComps 순회 방지 (게임 중 FA 컴프는 변하지 않음)
         // ConditionalWeakTable: Pawn GC 시 캐시 엔트리 자동 제거 → stale 데이터 방지
-        private static readonly ConditionalWeakTable<Pawn, BoolBox> _faCompCache
+        private static ConditionalWeakTable<Pawn, BoolBox> _faCompCache
             = new ConditionalWeakTable<Pawn, BoolBox>();
 
         /// <summary>ConditionalWeakTable 값 래퍼 (value type을 참조로 보관).</summary>
         private sealed class BoolBox { public bool value; public bool resolved; }
 
         /// <summary>게임 로드/전환 시 FA 컴프 캐시 정리.</summary>
-        internal static void ClearFACompCache() { _faCompCache.Clear(); }
+        internal static void ClearFACompCache() { _faCompCache = new ConditionalWeakTable<Pawn, BoolBox>(); }
 
         /// <summary>Pawn이 FA 컨트롤러 컴프를 보유하는지 캐시 조회. 최초 1회만 AllComps 순회.</summary>
         private static bool HasFAControllerCompCached(Pawn pawn)

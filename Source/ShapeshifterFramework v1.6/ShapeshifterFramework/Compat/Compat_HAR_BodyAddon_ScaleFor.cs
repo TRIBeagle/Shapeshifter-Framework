@@ -114,7 +114,7 @@ namespace ShapeshifterFramework.Compat
 
         // 헤드 애드온 판정 캐시 — 노드 인스턴스 참조 기반. 게임 중 노드의 헤드 소속 여부는 변하지 않음.
         // ConditionalWeakTable: 노드가 GC되면 캐시 엔트리도 자동 제거 → 해시 충돌/stale 데이터 방지
-        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<PawnRenderNode, BoolBox> _headAddonCache
+        private static System.Runtime.CompilerServices.ConditionalWeakTable<PawnRenderNode, BoolBox> _headAddonCache
             = new System.Runtime.CompilerServices.ConditionalWeakTable<PawnRenderNode, BoolBox>();
 
         /// <summary>ConditionalWeakTable 값 래퍼 (value type을 참조로 보관).</summary>
@@ -123,7 +123,7 @@ namespace ShapeshifterFramework.Compat
         /// <summary>게임 로드/전환 시 헤드 애드온 캐시 정리.</summary>
         internal static void ClearHeadAddonCache()
         {
-            _headAddonCache.Clear();
+            _headAddonCache = new System.Runtime.CompilerServices.ConditionalWeakTable<PawnRenderNode, BoolBox>();
         }
 
         /// <summary>
