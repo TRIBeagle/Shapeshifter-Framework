@@ -43,6 +43,10 @@
         <eventDef>SSF_Shapeshifted</eventDef>
         <thought>SSF_Thought_ShapeshiftTabooViolated</thought>
       </li>
+      <!-- 규율 패널에 "금지됨: 변신" 표시 -->
+      <li Class="PreceptComp_UnwillingToDo">
+        <eventDef>SSF_Shapeshifted</eventDef>
+      </li>
     </comps>
   </PreceptDef>
 
