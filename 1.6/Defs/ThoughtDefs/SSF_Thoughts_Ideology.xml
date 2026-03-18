@@ -21,8 +21,8 @@
   <!-- ── 금기: 변신자에 대한 의견 -20 (사회 감정) ── -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Thought_Shapeshifted_Taboo_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
-    <isSocial>true</isSocial>
     <stages>
       <li>
         <label>변신자 (금기)</label>
@@ -48,8 +48,8 @@
   <!-- ── 명예로움: 변신자에 대한 의견 +20 (사회 감정) ── -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Thought_Shapeshifted_Honorable_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
-    <isSocial>true</isSocial>
     <stages>
       <li>
         <label>변신자 (명예)</label>
@@ -62,7 +62,6 @@
   <!-- ── 금기 위반 기억 감정 -10 (변신 시 1회 부여, 5일 지속) ── -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Thought_ShapeshiftTabooViolated</defName>
-    <thoughtClass>Thought_MemoryPrecept</thoughtClass>
     <durationDays>5</durationDays>
     <stackLimit>1</stackLimit>
     <stages>

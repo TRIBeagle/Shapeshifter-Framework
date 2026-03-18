@@ -6,6 +6,12 @@
        MayRequire로 DLC 미설치 시 자동 무시
        ====================================================== -->
 
+  <!-- 변신 발생 이력 이벤트 (PreceptComp_SelfTookMemoryThought 연동) -->
+  <HistoryEventDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifted</defName>
+    <label>변신</label>
+  </HistoryEventDef>
+
   <!-- 이슈: 변신 수용도 -->
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifting</defName>
@@ -25,16 +31,16 @@
     <comps>
       <!-- 변신 중 기분 -10 (상황 감정) -->
       <li Class="PreceptComp_SituationalThought">
-        <thoughtDef>SSF_Thought_Shapeshifted_Taboo</thoughtDef>
+        <thought>SSF_Thought_Shapeshifted_Taboo</thought>
       </li>
       <!-- 변신자에 대한 의견 -20 (사회 감정) -->
       <li Class="PreceptComp_SituationalThought">
-        <thoughtDef>SSF_Thought_Shapeshifted_Taboo_Social</thoughtDef>
+        <thought>SSF_Thought_Shapeshifted_Taboo_Social</thought>
       </li>
-      <!-- 금기를 어김 기억 감정 -10 (변신 시 1회 부여) — 툴팁 표시용 -->
+      <!-- 금기를 어김 기억 감정 -10 (변신 시 1회 부여) — HistoryEvent 기반 -->
       <li Class="PreceptComp_SelfTookMemoryThought">
-        <thoughtDef>SSF_Thought_ShapeshiftTabooViolated</thoughtDef>
-        <description>변신 금기를 어겼을 때 기억에 남는다.</description>
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_ShapeshiftTabooViolated</thought>
       </li>
     </comps>
   </PreceptDef>
@@ -62,11 +68,11 @@
     <comps>
       <!-- 변신 중 기분 +10 (상황 감정) -->
       <li Class="PreceptComp_SituationalThought">
-        <thoughtDef>SSF_Thought_Shapeshifted_Honorable</thoughtDef>
+        <thought>SSF_Thought_Shapeshifted_Honorable</thought>
       </li>
       <!-- 변신자에 대한 의견 +20 (사회 감정) -->
       <li Class="PreceptComp_SituationalThought">
-        <thoughtDef>SSF_Thought_Shapeshifted_Honorable_Social</thoughtDef>
+        <thought>SSF_Thought_Shapeshifted_Honorable_Social</thought>
       </li>
     </comps>
   </PreceptDef>
