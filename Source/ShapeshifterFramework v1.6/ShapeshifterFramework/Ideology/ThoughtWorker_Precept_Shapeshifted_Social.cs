@@ -12,6 +12,12 @@ namespace ShapeshifterFramework.Ideology
     /// <summary>변신 중인 상대에 대한 의견을 주는 규율 사회 감정 워커.</summary>
     public class ThoughtWorker_Precept_Shapeshifted_Social : ThoughtWorker_Precept
     {
+        /// <summary>자기 자신에 대한 판정 — 사회 감정이므로 항상 비활성.</summary>
+        protected override ThoughtState ShouldHaveThought(Pawn p)
+        {
+            return ThoughtState.Inactive;
+        }
+
         /// <summary>상대(otherPawn)가 변신 중이면 활성.</summary>
         protected override ThoughtState CurrentSocialStateInternal(Pawn p, Pawn otherPawn)
         {

@@ -9,6 +9,7 @@
 //     </li>
 //   </outcomeDoers>
 
+using RimWorld;
 using ShapeshifterFramework.Utilities;
 using Verse;
 
