@@ -14,6 +14,12 @@ namespace ShapeshifterFramework.Comps
 
         private Pawn boundPawn;
 
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_References.Look(ref boundPawn, "boundPawn");
+        }
+
         public override void CompTick()
         {
             base.CompTick();

@@ -150,7 +150,7 @@ namespace ShapeshifterFramework.Utilities
         {
             try
             {
-                if (pawn == null || form == null) return;
+                if (pawn == null || pawn.Destroyed || form == null) return;
 
                 // 맵/스폰 체크: 시각효과는 맵에서만, 사운드는 맵 사운드로 1회
                 if (!pawn.Spawned || pawn.MapHeld == null)

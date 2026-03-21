@@ -214,7 +214,8 @@ namespace ShapeshifterFramework.Utilities
                 fi = t.GetField("owner", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 OwnerFieldByWorker[t] = fi;
             }
-            return fi != null ? fi.GetValue(worker) : null;
+            if (fi == null) return null;
+            try { return fi.GetValue(worker); } catch { return null; /* 워커 owner 필드 읽기 실패 방어 */ }
         }
 
         #endregion

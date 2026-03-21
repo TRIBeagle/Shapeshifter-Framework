@@ -61,17 +61,33 @@ namespace ShapeshifterFramework.Utilities
         internal static Dictionary<Pawn, HediffComp_ShapeshiftCore> ActiveDict => _active;
 
         // 순회 중 수정이 발생할 수 있는 경우를 위한 스냅샷 리스트
+        // _snapshotInUse 플래그로 중첩 호출 시 새 리스트 할당
         private static readonly List<KeyValuePair<Pawn, HediffComp_ShapeshiftCore>> _snapshot
             = new List<KeyValuePair<Pawn, HediffComp_ShapeshiftCore>>(32);
+        private static bool _snapshotInUse;
 
         /// <summary>활성 딕셔너리 스냅샷 반환. 순회 중 Register/Unregister 안전.</summary>
+        /// <remarks>중첩 호출 감지 시 새 리스트를 할당하여 데이터 손상을 방지.</remarks>
         internal static List<KeyValuePair<Pawn, HediffComp_ShapeshiftCore>> GetSnapshot()
         {
+            // 이미 스냅샷 순회 중이면 새 리스트를 반환하여 데이터 손상 방지
+            if (_snapshotInUse)
+            {
+                var copy = new List<KeyValuePair<Pawn, HediffComp_ShapeshiftCore>>(_active.Count);
+                foreach (var kv in _active)
+                    copy.Add(kv);
+                return copy;
+            }
+
+            _snapshotInUse = true;
             _snapshot.Clear();
             foreach (var kv in _active)
                 _snapshot.Add(kv);
             return _snapshot;
         }
+
+        /// <summary>스냅샷 순회 완료 후 호출 — 재사용 리스트 반환 허용.</summary>
+        internal static void ReleaseSnapshot() { _snapshotInUse = false; }
 
         /// <summary>게임 리셋/맵 전환 시 전체 초기화.</summary>
         internal static void Clear()

@@ -105,10 +105,10 @@ Power suit / armor transformation. Keeps human appearance and existing gear. Con
 ### 3.1 Race & Mutant Filters
 | Field | Type | Description |
 |-------|------|-------------|
-| `formAllowedRaces` | `List<ThingDef>` | Only these races can use this form. Empty = no restriction. |
-| `formDisallowedRaces` | `List<ThingDef>` | These races are blocked. Takes priority over allow. |
-| `formAllowedMutants` | `List<MutantDef>` | [Anomaly] Only these mutant types allowed. |
-| `formDisallowedMutants` | `List<MutantDef>` | [Anomaly] These mutant types blocked. |
+| `formAllowedRaces` | `List<ThingDef>` | Only these races can use this form. Empty = no restriction. Null entries produce ConfigError. |
+| `formDisallowedRaces` | `List<ThingDef>` | These races are blocked. Takes priority over allow. Null entries produce ConfigError. |
+| `formAllowedMutants` | `List<MutantDef>` | [Anomaly] Only these mutant types allowed. Null entries produce ConfigError. |
+| `formDisallowedMutants` | `List<MutantDef>` | [Anomaly] These mutant types blocked. Null entries produce ConfigError. |
 
 ```xml
 <formAllowedRaces><li>Human</li></formAllowedRaces>
@@ -222,8 +222,8 @@ Spawn equipment when transforming. Removed automatically on revert.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `spawnApparelOnTransform` | `List<ThingDef>` | Apparel to spawn and wear |
-| `spawnWeaponOnTransform` | `List<ThingDef>` | Weapons to spawn and equip |
+| `spawnApparelOnTransform` | `List<ThingDef>` | Apparel to spawn and wear. Must be IsApparel; non-apparel entries produce ConfigError. |
+| `spawnWeaponOnTransform` | `List<ThingDef>` | Weapons to spawn and equip. Must be IsWeapon; non-weapon entries produce ConfigError. |
 | `spawnApparelStuff` | `ThingDef` | Material for spawned apparel |
 | `spawnWeaponStuff` | `ThingDef` | Material for spawned weapons |
 
@@ -283,7 +283,7 @@ Form auto-reverts when conditions are no longer met. `sustainMode` controls whet
 | `sustainApparels` | `List<ThingDef>` | Must wear these apparel |
 | `sustainWeapons` | `List<ThingDef>` | Must equip these weapons |
 | `sustainHediffs` | `List<HediffDef>` | Must have these hediffs |
-| `sustainGenes` | `List<GeneDef>` | [Biotech] Must have these genes |
+| `sustainGenes` | `List<GeneDef>` | [Biotech] Must have these genes. Null entries produce ConfigError. |
 | `sustainMode` | `SustainMode?` | `All` (default) / `Any` |
 
 ```xml

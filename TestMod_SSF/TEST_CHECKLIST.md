@@ -223,6 +223,8 @@
 - [ ] 변신 중 verbAutoToggle 상태 보존
 - [ ] 해제 후 세이브 → 로드 후 정상 상태
 - [ ] PostLoadInit: 레지스트리 재등록, 캐시 재빌드
+- [ ] CompGiveAbility_Shapeshift: 장비 착용 중 세이브/로드 후 boundPawn 유지 — 어빌리티 회수 정상 동작
+- [ ] needsInit 윈도우 중 세이브 → 로드 후 ApplyForm 정상 실행 (좀비 hediff 방지)
 
 ---
 
@@ -233,6 +235,7 @@
 - [ ] 사망 Pawn에 변신 시도 → 실패
 - [ ] 쓰러진 Pawn + revertOnDowned=true → 자동 해제
 - [ ] 다른 변신 중 새 변신 → 이전 폼 해제 후 새 폼 적용
+- [ ] 파괴된(Destroyed) 폰에 FX 재생 시도 → 크래시 없이 스킵
 
 ### [M] 수동 확인
 - [ ] 카라반 참여 중 변신/해제
@@ -240,6 +243,7 @@
 - [ ] 정신 이상 중 변신/해제
 - [ ] 변신 중 사망 → 시체 원래 외형 복귀
 - [ ] 변신 중 체포/구속 → 장비 처리 확인
+- [ ] Part가 null인 hediff 정리 시 크래시 없음 (CleanupNullPartHediffs 2-패스)
 
 ---
 
@@ -266,3 +270,18 @@
 - [ ] 장시간 변신 유지 — 메모리 누수 없음
 - [ ] 빈번한 변신/해제 반복 — 크래시 없음
 - [ ] 맵 전환 시 캐시 정리 (ClearAll) 확인
+- [ ] 대형 폼(bodyDrawScale > 1) 줌아웃 렌더링 — 스레드 안전 (ThreadStatic _invokeArgs)
+- [ ] 스냅샷 순회 중 Register/Unregister 안전성 확인 (ReleaseSnapshot)
+
+---
+
+## 16. ConfigErrors 검증
+
+### [A] Auto-Verify
+- [ ] sustainGenes에 존재하지 않는 GeneDef → ConfigError 출력
+- [ ] formAllowedRaces에 null ThingDef → ConfigError 출력
+- [ ] formDisallowedRaces에 null ThingDef → ConfigError 출력
+- [ ] formAllowedMutants에 null MutantDef → ConfigError 출력
+- [ ] formDisallowedMutants에 null MutantDef → ConfigError 출력
+- [ ] spawnApparelOnTransform에 비의류 ThingDef → ConfigError 출력
+- [ ] spawnWeaponOnTransform에 비무기 ThingDef → ConfigError 출력

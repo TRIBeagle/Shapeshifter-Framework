@@ -105,10 +105,10 @@
 ### 3.1 종족 & 뮤턴트 필터
 | 필드 | 타입 | 설명 |
 |------|------|------|
-| `formAllowedRaces` | `List<ThingDef>` | 이 종족만 사용 가능. 빈 목록 = 제한 없음. |
-| `formDisallowedRaces` | `List<ThingDef>` | 이 종족은 차단. allow보다 우선. |
-| `formAllowedMutants` | `List<MutantDef>` | [Anomaly] 이 뮤턴트만 허용. |
-| `formDisallowedMutants` | `List<MutantDef>` | [Anomaly] 이 뮤턴트 차단. |
+| `formAllowedRaces` | `List<ThingDef>` | 이 종족만 사용 가능. 빈 목록 = 제한 없음. null 항목 시 ConfigError 출력. |
+| `formDisallowedRaces` | `List<ThingDef>` | 이 종족은 차단. allow보다 우선. null 항목 시 ConfigError 출력. |
+| `formAllowedMutants` | `List<MutantDef>` | [Anomaly] 이 뮤턴트만 허용. null 항목 시 ConfigError 출력. |
+| `formDisallowedMutants` | `List<MutantDef>` | [Anomaly] 이 뮤턴트 차단. null 항목 시 ConfigError 출력. |
 
 ```xml
 <formAllowedRaces><li>Human</li></formAllowedRaces>
@@ -218,8 +218,8 @@
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
-| `spawnApparelOnTransform` | `List<ThingDef>` | 생성하여 착용할 의류 |
-| `spawnWeaponOnTransform` | `List<ThingDef>` | 생성하여 장비할 무기 |
+| `spawnApparelOnTransform` | `List<ThingDef>` | 생성하여 착용할 의류. IsApparel이어야 함; 비의류 시 ConfigError 출력. |
+| `spawnWeaponOnTransform` | `List<ThingDef>` | 생성하여 장비할 무기. IsWeapon이어야 함; 비무기 시 ConfigError 출력. |
 | `spawnApparelStuff` | `ThingDef` | 의류 재질 |
 | `spawnWeaponStuff` | `ThingDef` | 무기 재질 |
 
@@ -279,7 +279,7 @@
 | `sustainApparels` | `List<ThingDef>` | 착용 필수 의류 |
 | `sustainWeapons` | `List<ThingDef>` | 장비 필수 무기 |
 | `sustainHediffs` | `List<HediffDef>` | 보유 필수 헤디프 |
-| `sustainGenes` | `List<GeneDef>` | [Biotech] 보유 필수 유전자 |
+| `sustainGenes` | `List<GeneDef>` | [Biotech] 보유 필수 유전자. null 항목 시 ConfigError 출력. |
 | `sustainMode` | `SustainMode?` | `All` (기본값) / `Any` |
 
 ```xml

@@ -23,8 +23,11 @@ namespace ShapeshifterFramework.Patches
         private static readonly FieldInfo _resultsField =
             AccessTools.Field(typeof(PawnRenderer), "results");
 
-        // 프레임당 GC 할당 방지용 재사용 배열
-        private static readonly object[] _invokeArgs = new object[4];
+        // ParallelPreRenderPawnAt은 병렬 호출 가능 → ThreadStatic으로 스레드별 배열 사용
+        [System.ThreadStatic]
+        private static object[] _invokeArgs;
+
+        private static object[] InvokeArgs => _invokeArgs ?? (_invokeArgs = new object[4]);
 
         [HarmonyPrefix]
         static bool Prefix(PawnRenderer __instance, Vector3 drawLoc, Rot4? rotOverride, bool neverAimWeapon)
@@ -43,11 +46,12 @@ namespace ShapeshifterFramework.Patches
             if (scale <= 1f) return true;
 
             // disableCache = true로 호출 → useCached = false + renderTree.ParallelPreDraw 실행
-            _invokeArgs[0] = drawLoc;
-            _invokeArgs[1] = rotOverride;
-            _invokeArgs[2] = neverAimWeapon;
-            _invokeArgs[3] = true;
-            object result = _getPreRenderResults.Invoke(__instance, _invokeArgs);
+            var args = InvokeArgs;
+            args[0] = drawLoc;
+            args[1] = rotOverride;
+            args[2] = neverAimWeapon;
+            args[3] = true;
+            object result = _getPreRenderResults.Invoke(__instance, args);
             _resultsField.SetValue(__instance, result);
             return false;
         }

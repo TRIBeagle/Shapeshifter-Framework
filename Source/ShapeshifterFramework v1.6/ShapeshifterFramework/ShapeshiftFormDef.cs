@@ -352,14 +352,37 @@ namespace ShapeshifterFramework
             if (sustainHediffs != null)
                 for (int i = 0; i < sustainHediffs.Count; i++)
                     if (sustainHediffs[i] == null) yield return $"sustainHediffs[{i}]: null HediffDef reference";
+            if (sustainGenes != null)
+                for (int i = 0; i < sustainGenes.Count; i++)
+                    if (sustainGenes[i] == null) yield return $"sustainGenes[{i}]: null GeneDef reference";
 
-            // 소환 장비 참조
+            // 종족/뮤턴트 제한 참조
+            if (formAllowedRaces != null)
+                for (int i = 0; i < formAllowedRaces.Count; i++)
+                    if (formAllowedRaces[i] == null) yield return $"formAllowedRaces[{i}]: null ThingDef reference";
+            if (formDisallowedRaces != null)
+                for (int i = 0; i < formDisallowedRaces.Count; i++)
+                    if (formDisallowedRaces[i] == null) yield return $"formDisallowedRaces[{i}]: null ThingDef reference";
+            if (formAllowedMutants != null)
+                for (int i = 0; i < formAllowedMutants.Count; i++)
+                    if (formAllowedMutants[i] == null) yield return $"formAllowedMutants[{i}]: null MutantDef reference";
+            if (formDisallowedMutants != null)
+                for (int i = 0; i < formDisallowedMutants.Count; i++)
+                    if (formDisallowedMutants[i] == null) yield return $"formDisallowedMutants[{i}]: null MutantDef reference";
+
+            // 소환 장비 참조 + 카테고리 검증
             if (spawnApparelOnTransform != null)
                 for (int i = 0; i < spawnApparelOnTransform.Count; i++)
+                {
                     if (spawnApparelOnTransform[i] == null) yield return $"spawnApparelOnTransform[{i}]: null ThingDef reference";
+                    else if (!spawnApparelOnTransform[i].IsApparel) yield return $"spawnApparelOnTransform[{i}]: {spawnApparelOnTransform[i].defName} is not apparel";
+                }
             if (spawnWeaponOnTransform != null)
                 for (int i = 0; i < spawnWeaponOnTransform.Count; i++)
+                {
                     if (spawnWeaponOnTransform[i] == null) yield return $"spawnWeaponOnTransform[{i}]: null ThingDef reference";
+                    else if (!spawnWeaponOnTransform[i].IsWeapon) yield return $"spawnWeaponOnTransform[{i}]: {spawnWeaponOnTransform[i].defName} is not a weapon";
+                }
 
             // 작업 제한 참조
             if (disabledWorkTypesOnTransform != null)

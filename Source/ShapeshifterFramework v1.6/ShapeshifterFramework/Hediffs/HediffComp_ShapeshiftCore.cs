@@ -1669,6 +1669,7 @@ namespace ShapeshifterFramework.Hediffs
             base.CompExposeData();
 
             Scribe_Defs.Look(ref currentForm, "currentForm");
+            Scribe_Values.Look(ref needsInit, "needsInit", false);
             Scribe_Values.Look(ref transformTimer, "transformTimer", 0, true);
             Scribe_Defs.Look(ref originalBodyType, "originalBodyType");
             Scribe_Defs.Look(ref originalHeadType, "originalHeadType");

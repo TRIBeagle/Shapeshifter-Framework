@@ -268,6 +268,9 @@ namespace ShapeshifterFramework.Utilities
             return null;
         }
 
+        // RemoveHediff 대상을 수집하기 위한 재사용 버퍼 — GC 할당 방지
+        private static readonly List<Hediff> _cleanupRemoveBuffer = new List<Hediff>(8);
+
         static void CleanupNullPartHediffs(Pawn pawn, List<HediffDef> prevDefCache)
         {
             var list = pawn.health?.hediffSet?.hediffs;
@@ -275,28 +278,41 @@ namespace ShapeshifterFramework.Utilities
 
             bool requiresDirtyCache = false;
 
+            // 1단계: null 엔트리 제거 (RemoveAt은 리스트 내부 조작만 하므로 안전)
             for (int i = list.Count - 1; i >= 0; i--)
             {
-                var h = list[i];
-                if (h == null)
+                if (list[i] == null)
                 {
                     list.RemoveAt(i);
                     requiresDirtyCache = true;
-                    continue;
-                }
-
-                if ((h.def?.addedPartProps != null || h is Hediff_MissingPart) && h.Part == null)
-                {
-                    if (prevDefCache == null || !prevDefCache.Contains(h.def)) continue;
-                    try
-                    {
-                        // RemoveHediff는 내부에서 DirtyCache 호출
-                        pawn.health.RemoveHediff(h);
-                        ShapeshiftDiagnostics.Info($"Cleanup null-part hediff: {h.def?.defName ?? "null"}");
-                    }
-                    catch (System.Exception ex) { Log.Warning($"[SSF] RemoveHediff failed (cleanup): {h.def?.defName ?? "null"} — {ex.Message}"); }
                 }
             }
+
+            // 2단계: Part가 null인 AddedPart/MissingPart 수집 (순회 중 리스트를 수정하지 않음)
+            _cleanupRemoveBuffer.Clear();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var h = list[i];
+                if (h == null || h.def == null) continue;
+                if ((h.def.addedPartProps != null || h is Hediff_MissingPart) && h.Part == null)
+                {
+                    if (prevDefCache == null || !prevDefCache.Contains(h.def)) continue;
+                    _cleanupRemoveBuffer.Add(h);
+                }
+            }
+
+            // 3단계: 수집된 hediff를 안전하게 제거
+            for (int i = 0; i < _cleanupRemoveBuffer.Count; i++)
+            {
+                try
+                {
+                    // RemoveHediff는 내부에서 DirtyCache 호출
+                    pawn.health.RemoveHediff(_cleanupRemoveBuffer[i]);
+                    ShapeshiftDiagnostics.Info($"Cleanup null-part hediff: {_cleanupRemoveBuffer[i].def?.defName ?? "null"}");
+                }
+                catch (System.Exception ex) { Log.Warning($"[SSF] RemoveHediff failed (cleanup): {_cleanupRemoveBuffer[i].def?.defName ?? "null"} — {ex.Message}"); }
+            }
+            _cleanupRemoveBuffer.Clear();
 
             // RemoveAt 실행 시 수동 캐시 갱신
             if (requiresDirtyCache)

@@ -30,36 +30,43 @@ namespace ShapeshifterFramework.Patches
 
             // 변신 폰 순회 — 스냅샷으로 순회 중 Unregister 안전 보장
             var snapshot = ShapeshiftRegistry.GetSnapshot();
-            for (int idx = 0; idx < snapshot.Count; idx++)
+            try
             {
-                var entry = snapshot[idx];
-                Pawn pawn = entry.Key;
-                if (pawn == null || !pawn.Spawned || pawn.Map != ___map) continue;
-
-                HediffComp_ShapeshiftCore core = entry.Value;
-                ShapeshiftFormDef form = core.currentForm;
-                if (form == null) continue;
-
-                float sBody = form.bodyDrawScale.HasValue ? Mathf.Max(0.01f, form.bodyDrawScale.Value) : 1f;
-                if (sBody <= 1.5f) continue; // 1.5배 이하는 1셀 확장으로 충분
-
-                IntVec3 pos = pawn.Position;
-
-                // 이미 바닐라에서 그려졌으면 건너뜀
-                if (normalRect.Contains(pos)) continue;
-
-                // 확대된 범위 계산: bodyDrawScale에 비례 (최소 2, 최대 5)
-                int extraMargin = Mathf.Clamp(Mathf.CeilToInt(sBody), 2, 5);
-                CellRect extRect = viewRect.ExpandedBy(extraMargin);
-
-                if (extRect.Contains(pos))
+                for (int idx = 0; idx < snapshot.Count; idx++)
                 {
-                    // 안개(fog) 체크
-                    if (___map.fogGrid != null && ___map.fogGrid.IsFogged(pos)) continue;
+                    var entry = snapshot[idx];
+                    Pawn pawn = entry.Key;
+                    if (pawn == null || !pawn.Spawned || pawn.Map != ___map) continue;
 
-                    // Thing.DrawNowOrLater 대신 DynamicDraw 호출
-                    ((Thing)pawn).DynamicDrawPhaseAt(DrawPhase.Draw, pawn.DrawPos, false);
+                    HediffComp_ShapeshiftCore core = entry.Value;
+                    ShapeshiftFormDef form = core.currentForm;
+                    if (form == null) continue;
+
+                    float sBody = form.bodyDrawScale.HasValue ? Mathf.Max(0.01f, form.bodyDrawScale.Value) : 1f;
+                    if (sBody <= 1.5f) continue; // 1.5배 이하는 1셀 확장으로 충분
+
+                    IntVec3 pos = pawn.Position;
+
+                    // 이미 바닐라에서 그려졌으면 건너뜀
+                    if (normalRect.Contains(pos)) continue;
+
+                    // 확대된 범위 계산: bodyDrawScale에 비례 (최소 2, 최대 5)
+                    int extraMargin = Mathf.Clamp(Mathf.CeilToInt(sBody), 2, 5);
+                    CellRect extRect = viewRect.ExpandedBy(extraMargin);
+
+                    if (extRect.Contains(pos))
+                    {
+                        // 안개(fog) 체크
+                        if (___map.fogGrid != null && ___map.fogGrid.IsFogged(pos)) continue;
+
+                        // Thing.DrawNowOrLater 대신 DynamicDraw 호출
+                        ((Thing)pawn).DynamicDrawPhaseAt(DrawPhase.Draw, pawn.DrawPos, false);
+                    }
                 }
+            }
+            finally
+            {
+                ShapeshiftRegistry.ReleaseSnapshot();
             }
         }
     }
