@@ -58,12 +58,13 @@ namespace ShapeshifterFramework.Patches
             }
         }
 
-        [HarmonyPostfix, HarmonyPriority(Priority.High)]
-        static void Postfix(ref List<Verb> ___verbs, IVerbOwner ___directOwner)
+        /// <summary>Finalizer로 예외 발생 시에도 제거된 verb를 반드시 복원.</summary>
+        [HarmonyFinalizer, HarmonyPriority(Priority.High)]
+        static void Finalizer(ref List<Verb> ___verbs)
         {
             if (_strippedVerbs.Count == 0) return;
 
-            // 세이브 완료 후 제거한 verb 복원
+            // 세이브 완료(또는 예외) 후 제거한 verb 복원
             if (___verbs == null)
                 ___verbs = new List<Verb>();
 

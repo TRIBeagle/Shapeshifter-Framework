@@ -21,8 +21,12 @@ namespace ShapeshifterFramework.Patches
         /// <summary>DropBloodFilth, DropBloodSmear 두 메서드를 동시에 패치.</summary>
         static IEnumerable<MethodBase> TargetMethods()
         {
-            yield return AccessTools.Method(typeof(Pawn_HealthTracker), "DropBloodFilth");
-            yield return AccessTools.Method(typeof(Pawn_HealthTracker), "DropBloodSmear");
+            var filth = AccessTools.Method(typeof(Pawn_HealthTracker), "DropBloodFilth");
+            if (filth != null) yield return filth;
+
+            // DropBloodSmear는 바닐라 버전에 따라 존재하지 않을 수 있음
+            var smear = AccessTools.Method(typeof(Pawn_HealthTracker), "DropBloodSmear");
+            if (smear != null) yield return smear;
         }
 
         static void Prefix(Pawn_HealthTracker __instance)

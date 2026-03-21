@@ -24,8 +24,8 @@ namespace ShapeshifterFramework.Patches
                 var sel = Find.Selector?.SingleSelectedThing as Pawn;
                 if (sel == null || sel == target) return;
 
-                // 플레이어 조종 + 드래프트 상태만
-                if (sel.IsPlayerControlled && !sel.Drafted) return;
+                // 플레이어 조종 + 드래프트 상태만 (비플레이어 폰이면 스킵)
+                if (!sel.IsPlayerControlled || !sel.Drafted) return;
 
                 // 비폭력 Pawn이면 계산 스킵
                 if (sel.WorkTagIsDisabled(WorkTags.Violent)) return;
