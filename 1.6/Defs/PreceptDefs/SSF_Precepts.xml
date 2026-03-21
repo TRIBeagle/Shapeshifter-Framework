@@ -129,7 +129,6 @@
     <issue>SSF_Shapeshifting</issue>
     <label>숭고함</label>
     <description>변신은 신성한 축복이다. 그 힘을 지닌 자는 경외의 대상이다.</description>
-    <tipColoredLine>true</tipColoredLine>
     <impact>High</impact>
     <displayOrderInIssue>20</displayOrderInIssue>
     <defaultSelectionWeight>0.5</defaultSelectionWeight>
