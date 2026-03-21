@@ -645,8 +645,14 @@ namespace ShapeshifterFramework.Hediffs
 
             if (mode == SustainMode.All)
                 return apparelMet && weaponMet && hediffMet && geneMet;
-            else
-                return apparelMet || weaponMet || hediffMet || geneMet;
+
+            // Any 모드: 요구사항이 있는 카테고리 중 하나라도 충족하면 유지
+            // 빈 카테고리는 무시 (빈 카테고리가 true를 반환하면 Any가 절대 실패하지 않으므로)
+            if (hasApparels && CheckSustainApparels(pawn, apparels)) return true;
+            if (hasWeapons && CheckSustainWeapons(pawn, weapons)) return true;
+            if (hasHediffs && CheckSustainHediffs(pawn, hediffs)) return true;
+            if (hasGenes && CheckSustainGenes(pawn, genes)) return true;
+            return false;
         }
 
         // sustain 체크용 재활용 HashSet — 재진입 안전을 위해 ThreadStatic

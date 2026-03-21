@@ -54,11 +54,11 @@ namespace ShapeshifterFramework.Hediffs
             ShapeshiftCoreUtility.GiveShiftHediff(pawn, Props.hediffDef);
 
             // triggerOnce: 발동 후 hediff 제거
+            // CompPostTick 내부에서 RemoveHediff 호출 시 리스트 변조 위험 → severity=0으로 자연 제거 유도
             if (Props.triggerOnce)
             {
                 hasTriggered = true;
-                if (pawn.health != null)
-                    pawn.health.RemoveHediff(parent);
+                parent.Severity = 0f;
             }
         }
 
