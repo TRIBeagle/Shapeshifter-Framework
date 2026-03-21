@@ -435,8 +435,15 @@ namespace ShapeshifterFramework.Compat
             Scribe_Collections.Look(ref map, "faBackups",
                 LookMode.Reference, LookMode.Deep, ref tmpKeys, ref tmpVals);
 
+            // Scribe_Collections.Look은 데이터 누락/손상 시 map을 null로 설정할 수 있음
+            if (map == null) map = new Dictionary<Pawn, FacialAnimationCompat.Backup>();
+
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                // Scribe_Collections가 미해석 Pawn 참조를 null 키로 삽입할 수 있으므로 정리
+                CleanupNullKeys();
                 Cleanup();
+            }
         }
 
         // 60,000틱(1일)마다 죽은 폰 청소
@@ -447,6 +454,18 @@ namespace ShapeshifterFramework.Compat
             {
                 Cleanup();
             }
+        }
+
+        /// <summary>Scribe_Collections 로드 후 null 키 제거 — 딕셔너리 재구성.</summary>
+        private void CleanupNullKeys()
+        {
+            var clean = new Dictionary<Pawn, FacialAnimationCompat.Backup>(map.Count);
+            foreach (var kv in map)
+            {
+                if (kv.Key != null && kv.Value != null)
+                    clean[kv.Key] = kv.Value;
+            }
+            map = clean;
         }
 
         /// <summary>null/Destroyed Pawn 제거.</summary>
