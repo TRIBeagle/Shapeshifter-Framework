@@ -527,6 +527,8 @@ namespace ShapeshifterFramework.Hediffs
             }
 
             // 전환 시 기존 폼 먼저 해제 — RemoveForm 내부 재진입 검사를 우회해야 하므로 플래그 일시 해제
+            // 안전성: RemoveForm 예외 시 외부 finally(하단)가 _isApplyingOrRemoving = false를 보장.
+            //         RemoveForm 정상 완료 시 그 내부 finally가 false 설정 → 여기서 true로 복원.
             if (isTransformed)
             {
                 _isApplyingOrRemoving = false;

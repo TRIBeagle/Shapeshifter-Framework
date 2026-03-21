@@ -218,9 +218,6 @@ namespace ShapeshifterFramework.Hediffs
                 if (firstHash < 0) continue;
                 int secondHash = key.IndexOf('#', firstHash + 1);
                 if (secondHash < 0) continue;
-                // 3번째 # 없으면 이미 새 포맷 또는 2-part (formDef#verbName)
-                int thirdHash = key.IndexOf('#', secondHash + 1);
-
                 // 기존 포맷: "formDef#index#verbName" — index 부분이 숫자인지 확인
                 string middlePart = key.Substring(firstHash + 1, secondHash - firstHash - 1);
                 int dummy;

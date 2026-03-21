@@ -341,8 +341,11 @@ namespace ShapeshifterFramework.Hediffs
             {
                 Job first = toQueue[0];
                 pawn.jobs.TryTakeOrderedJob(first);
-                for (int i = 1; i < toQueue.Count; i++)
-                    pawn.jobs.jobQueue.EnqueueLast(toQueue[i]);
+                if (pawn.jobs.jobQueue != null)
+                {
+                    for (int i = 1; i < toQueue.Count; i++)
+                        pawn.jobs.jobQueue.EnqueueLast(toQueue[i]);
+                }
             }
 
             prevWeapons.Clear();
