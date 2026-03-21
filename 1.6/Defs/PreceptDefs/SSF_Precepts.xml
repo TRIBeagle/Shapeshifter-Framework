@@ -43,6 +43,11 @@
         <eventDef>SSF_Shapeshifted</eventDef>
         <thought>SSF_Thought_ShapeshiftTabooViolated</thought>
       </li>
+      <!-- 변신 목격 기억 감정 -8 (같은 이념 식민지인에게 부여) -->
+      <li Class="PreceptComp_KnowsMemoryThought">
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_WitnessedShapeshift_Abhorrent</thought>
+      </li>
       <!-- 규율 패널에 "금지됨: 변신" 표시 -->
       <li Class="PreceptComp_UnwillingToDo">
         <eventDef>SSF_Shapeshifted</eventDef>
@@ -72,6 +77,11 @@
       <li Class="PreceptComp_SelfTookMemoryThought">
         <eventDef>SSF_Shapeshifted</eventDef>
         <thought>SSF_Thought_ShapeshiftDisapprovedViolated</thought>
+      </li>
+      <!-- 변신 목격 기억 감정 -4 (같은 이념 식민지인에게 부여) -->
+      <li Class="PreceptComp_KnowsMemoryThought">
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_WitnessedShapeshift_Disapproved</thought>
       </li>
     </comps>
   </PreceptDef>
@@ -105,6 +115,11 @@
       <li Class="PreceptComp_SituationalThought">
         <thought>SSF_Thought_Shapeshifted_Respected_Social</thought>
       </li>
+      <!-- 변신 목격 기억 감정 +4 (같은 이념 식민지인에게 부여) -->
+      <li Class="PreceptComp_KnowsMemoryThought">
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_WitnessedShapeshift_Respected</thought>
+      </li>
     </comps>
   </PreceptDef>
 
@@ -126,6 +141,11 @@
       <!-- 변신자에 대한 의견 +20 (사회 감정) -->
       <li Class="PreceptComp_SituationalThought">
         <thought>SSF_Thought_Shapeshifted_Sublime_Social</thought>
+      </li>
+      <!-- 변신 목격 기억 감정 +8 (같은 이념 식민지인에게 부여) -->
+      <li Class="PreceptComp_KnowsMemoryThought">
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_WitnessedShapeshift_Sublime</thought>
       </li>
     </comps>
   </PreceptDef>

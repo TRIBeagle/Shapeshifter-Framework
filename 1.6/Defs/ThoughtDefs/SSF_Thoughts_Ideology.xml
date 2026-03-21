@@ -150,6 +150,68 @@
     </stages>
   </ThoughtDef>
 
+  <!-- ══════════════ 변신 목격 기억 감정 ══════════════ -->
+
+  <!-- 변신 목격 — 절대적으로 혐오함: -8 (5일) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_WitnessedShapeshift_Abhorrent</defName>
+    <durationDays>5</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>변신을 목격함</label>
+        <description>누군가 눈앞에서 몸을 바꾸었다. 소름이 끼치고 역겹다.</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 변신 목격 — 못마땅함: -4 (3일) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_WitnessedShapeshift_Disapproved</defName>
+    <durationDays>3</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>변신을 목격함</label>
+        <description>누군가 몸을 바꾸는 걸 봤다. 좀 거슬린다.</description>
+        <baseMoodEffect>-4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 변신 목격 — 존중함: +4 (3일) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_WitnessedShapeshift_Respected</defName>
+    <durationDays>3</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>변신을 목격함</label>
+        <description>누군가 변신하는 모습을 봤다. 꽤 인상적이었다.</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 변신 목격 — 숭고함: +8 (5일) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_WitnessedShapeshift_Sublime</defName>
+    <durationDays>5</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>변신을 목격함</label>
+        <description>신성한 변신을 눈앞에서 목격했다. 경이로운 순간이었다.</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
   <!-- ══════════════ 공통 (규율 독립) ══════════════ -->
 
   <!-- 성스러운 동물 폼 +5 (규율과 독립, 상황 감정) -->
