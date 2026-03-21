@@ -20,8 +20,9 @@ namespace ShapeshifterFramework.Patches
         static readonly Type T_Gene = AccessTools.TypeByName("RimWorld.Gene");
 
         // Gene exclusionTags 수집용 재사용 셋 — 렌더 핫패스 GC 할당 방지 및 O(1) 중복 검사
-        static readonly HashSet<string> _tmpTagSet = new HashSet<string>(StringComparer.Ordinal);
-        static readonly List<string> _tmpTags = new List<string>(8);
+        // [ThreadStatic]: 병렬 렌더 패스(ParallelPreRenderPawnAt)에서 스레드 간 경합 방지
+        [ThreadStatic] static HashSet<string> _tmpTagSet;
+        [ThreadStatic] static List<string> _tmpTags;
 
         #region 노드 Owner 캐시 — 노드별 소유자(Gene/Apparel/Hediff)는 런타임에 변하지 않으므로 최초 1회만 탐색
 
@@ -122,6 +123,9 @@ namespace ShapeshifterFramework.Patches
                     var gene = (Gene)cached.owner;
 
                     // exclusionTags 수집 (재사용 셋+리스트, O(1) 중복 검사)
+                    // [ThreadStatic] 필드는 비주 스레드에서 초기화자가 실행되지 않으므로 지연 초기화
+                    if (_tmpTagSet == null) _tmpTagSet = new HashSet<string>(StringComparer.Ordinal);
+                    if (_tmpTags == null) _tmpTags = new List<string>(8);
                     _tmpTagSet.Clear();
                     _tmpTags.Clear();
 
