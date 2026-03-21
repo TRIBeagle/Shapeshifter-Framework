@@ -372,6 +372,7 @@ namespace ShapeshifterFramework.Hediffs
             for (int i = 0; i < things.Count; i++)
             {
                 var t = things[i];
+                if (t == null) continue;
                 if (__tmpPrevApIds != null && __tmpPrevApIds.Count > 0 && __tmpPrevApIds.Contains(t.ThingID) && t is Apparel ap)
                 {
                     prevApparels.Add(ap);

@@ -82,6 +82,7 @@ namespace ShapeshifterFramework.Utilities
             if (hediffs == null) return false;
             for (int i = 0; i < hediffs.Count; i++)
             {
+                if (hediffs[i] == null) continue;
                 var comps = hediffs[i].comps;
                 if (comps == null) continue;
                 for (int c = 0; c < comps.Count; c++)

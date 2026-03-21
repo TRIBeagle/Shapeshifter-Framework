@@ -392,7 +392,10 @@ namespace ShapeshifterFramework.Hediffs
             var worn = pawn.apparel.WornApparel;
             _tmpSustainDefs.Clear();
             for (int j = 0; j < worn.Count; j++)
+            {
+                if (worn[j] == null) continue;
                 _tmpSustainDefs.Add(worn[j].def);
+            }
             for (int i = 0; i < required.Count; i++)
             {
                 if (!_tmpSustainDefs.Contains(required[i])) return false;
@@ -407,7 +410,10 @@ namespace ShapeshifterFramework.Hediffs
             var eqs = pawn.equipment.AllEquipmentListForReading;
             _tmpSustainDefs.Clear();
             for (int j = 0; j < eqs.Count; j++)
+            {
+                if (eqs[j] == null) continue;
                 _tmpSustainDefs.Add(eqs[j].def);
+            }
             for (int i = 0; i < required.Count; i++)
             {
                 if (!_tmpSustainDefs.Contains(required[i])) return false;
