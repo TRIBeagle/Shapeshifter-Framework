@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- 절대적으로 혐오함 — 개인 감정 -->
+  <SSF_Thought_Shapeshifted_Abhorrent.stages.0.label>shapeshifted</SSF_Thought_Shapeshifted_Abhorrent.stages.0.label>
+  <SSF_Thought_Shapeshifted_Abhorrent.stages.0.description>This body is not mine. It's revolting and horrifying.</SSF_Thought_Shapeshifted_Abhorrent.stages.0.description>
+
+  <!-- 절대적으로 혐오함 — 사회 감정 -->
+  <SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.label>shapeshifter</SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.description>They changed their body. It makes my skin crawl.</SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.description>
+
+  <!-- 금기 위반 기억 -->
+  <SSF_Thought_ShapeshiftTabooViolated.stages.0.label>I shapeshifted</SSF_Thought_ShapeshiftTabooViolated.stages.0.label>
+  <SSF_Thought_ShapeshiftTabooViolated.stages.0.description>I did something I shouldn't have. My mind is troubled.</SSF_Thought_ShapeshiftTabooViolated.stages.0.description>
+
+  <!-- 못마땅함 — 개인 감정 -->
+  <SSF_Thought_Shapeshifted_Disapproved.stages.0.label>shapeshifted</SSF_Thought_Shapeshifted_Disapproved.stages.0.label>
+  <SSF_Thought_Shapeshifted_Disapproved.stages.0.description>This form feels uncomfortable.</SSF_Thought_Shapeshifted_Disapproved.stages.0.description>
+
+  <!-- 못마땅함 — 사회 감정 -->
+  <SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.label>shapeshifter</SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.description>Shapeshifting like that... it's off-putting.</SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.description>
+
+  <!-- 못마땅함 위반 기억 -->
+  <SSF_Thought_ShapeshiftDisapprovedViolated.stages.0.label>I shapeshifted</SSF_Thought_ShapeshiftDisapprovedViolated.stages.0.label>
+  <SSF_Thought_ShapeshiftDisapprovedViolated.stages.0.description>It feels wrong. I wish I hadn't done that.</SSF_Thought_ShapeshiftDisapprovedViolated.stages.0.description>
+
+  <!-- 존중함 — 개인 감정 -->
+  <SSF_Thought_Shapeshifted_Respected.stages.0.label>shapeshifted</SSF_Thought_Shapeshifted_Respected.stages.0.label>
+  <SSF_Thought_Shapeshifted_Respected.stages.0.description>This form isn't bad at all. Quite nice, actually.</SSF_Thought_Shapeshifted_Respected.stages.0.description>
+
+  <!-- 존중함 — 사회 감정 -->
+  <SSF_Thought_Shapeshifted_Respected_Social.stages.0.label>shapeshifter</SSF_Thought_Shapeshifted_Respected_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Respected_Social.stages.0.description>Their shapeshifting ability is quite impressive.</SSF_Thought_Shapeshifted_Respected_Social.stages.0.description>
+
+  <!-- 숭고함 — 개인 감정 -->
+  <SSF_Thought_Shapeshifted_Sublime.stages.0.label>shapeshifted</SSF_Thought_Shapeshifted_Sublime.stages.0.label>
+  <SSF_Thought_Shapeshifted_Sublime.stages.0.description>I can feel the power within me awakening. It feels wonderful.</SSF_Thought_Shapeshifted_Sublime.stages.0.description>
+
+  <!-- 숭고함 — 사회 감정 -->
+  <SSF_Thought_Shapeshifted_Sublime_Social.stages.0.label>shapeshifter</SSF_Thought_Shapeshifted_Sublime_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Sublime_Social.stages.0.description>They possess the blessed power of shapeshifting. How wondrous.</SSF_Thought_Shapeshifted_Sublime_Social.stages.0.description>
+
+  <!-- 성스러운 동물 폼 -->
+  <SSF_Thought_SacredAnimalForm.stages.0.label>sacred animal form</SSF_Thought_SacredAnimalForm.stages.0.label>
+  <SSF_Thought_SacredAnimalForm.stages.0.description>I've taken the form of a sacred animal. It feels reverent.</SSF_Thought_SacredAnimalForm.stages.0.description>
+
+</LanguageData>

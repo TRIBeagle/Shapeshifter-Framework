@@ -3,10 +3,10 @@
 
   <!-- ======================================================
        변신 규율 연동 감정 — Ideology DLC 전용
-       5단계: 절대 금기 / 혐오 / 중립 / 존중 / 숭고
+       5단계: 절대적으로 혐오함 / 못마땅함 / 관심 없음 / 존중함 / 숭고함
        ====================================================== -->
 
-  <!-- ══════════════ 절대 금기 (섭리에 대한 모독) ══════════════ -->
+  <!-- ══════════════ 절대적으로 혐오함 ══════════════ -->
 
   <!-- 변신 중 기분 -10 (상황 감정) -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -14,7 +14,7 @@
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
     <stages>
       <li>
-        <label>변신 중 (모독)</label>
+        <label>변신 중</label>
         <description>이 몸은 내가 아니다. 역겹고 끔찍하다.</description>
         <baseMoodEffect>-10</baseMoodEffect>
       </li>
@@ -28,7 +28,7 @@
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
     <stages>
       <li>
-        <label>변신자 (모독)</label>
+        <label>변신자</label>
         <description>몸을 바꾸다니, 보기만 해도 소름이 돋는다.</description>
         <baseOpinionOffset>-20</baseOpinionOffset>
       </li>
@@ -49,7 +49,7 @@
     </stages>
   </ThoughtDef>
 
-  <!-- ══════════════ 혐오 (부자연스러운 힘) ══════════════ -->
+  <!-- ══════════════ 못마땅함 ══════════════ -->
 
   <!-- 변신 중 기분 -5 (상황 감정) -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -57,7 +57,7 @@
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
     <stages>
       <li>
-        <label>변신 중 (혐오)</label>
+        <label>변신 중</label>
         <description>이 모습이 영 불편하다.</description>
         <baseMoodEffect>-5</baseMoodEffect>
       </li>
@@ -71,7 +71,7 @@
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
     <stages>
       <li>
-        <label>변신자 (혐오)</label>
+        <label>변신자</label>
         <description>변신을 하다니, 눈살이 찌푸려진다.</description>
         <baseOpinionOffset>-10</baseOpinionOffset>
       </li>
@@ -92,7 +92,7 @@
     </stages>
   </ThoughtDef>
 
-  <!-- ══════════════ 존중 (특별한 재능) ══════════════ -->
+  <!-- ══════════════ 존중함 ══════════════ -->
 
   <!-- 변신 중 기분 +5 (상황 감정) -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -100,7 +100,7 @@
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
     <stages>
       <li>
-        <label>변신 중 (존중)</label>
+        <label>변신 중</label>
         <description>이 모습도 나쁘지 않군. 꽤 괜찮다.</description>
         <baseMoodEffect>5</baseMoodEffect>
       </li>
@@ -114,14 +114,14 @@
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
     <stages>
       <li>
-        <label>변신자 (존중)</label>
+        <label>변신자</label>
         <description>변신하는 모습이 꽤 인상적이다.</description>
         <baseOpinionOffset>10</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
 
-  <!-- ══════════════ 숭고 (신이 내린 축복) ══════════════ -->
+  <!-- ══════════════ 숭고함 ══════════════ -->
 
   <!-- 변신 중 기분 +10 (상황 감정) -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -129,7 +129,7 @@
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
     <stages>
       <li>
-        <label>변신 중 (축복)</label>
+        <label>변신 중</label>
         <description>내 안의 힘이 깨어난 느낌이다. 기분이 좋다.</description>
         <baseMoodEffect>10</baseMoodEffect>
       </li>
@@ -143,7 +143,7 @@
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
     <stages>
       <li>
-        <label>변신자 (축복)</label>
+        <label>변신자</label>
         <description>축복받은 변신의 힘을 지니다니, 경이롭다.</description>
         <baseOpinionOffset>20</baseOpinionOffset>
       </li>
