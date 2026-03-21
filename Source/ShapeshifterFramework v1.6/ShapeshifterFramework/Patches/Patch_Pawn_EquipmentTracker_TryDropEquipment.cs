@@ -30,7 +30,10 @@ namespace ShapeshifterFramework.Patches
                         }
 
                         // 2. 시스템 강제 드랍 시 소멸 처리 (복사 방지)
+                        //    ThingOwner에서 먼저 제거해야 "Destroy but holdingOwner still set" 에러 방지
                         resultingEq = null;
+                        if (eq.holdingOwner != null)
+                            eq.holdingOwner.Remove(eq);
                         eq.Destroy(DestroyMode.Vanish);
                         __result = true; // 처리 완료로 보고
                         return false;    // 바닐라 드랍 스킵

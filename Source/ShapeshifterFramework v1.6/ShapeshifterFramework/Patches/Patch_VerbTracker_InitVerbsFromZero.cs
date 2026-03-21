@@ -161,6 +161,7 @@ namespace ShapeshifterFramework.Patches
             }
             catch (Exception e)
             {
+                _collected.Clear();
                 Log.Error("[SSF] InitVerbsFromZero Postfix failed: " + e);
             }
         }

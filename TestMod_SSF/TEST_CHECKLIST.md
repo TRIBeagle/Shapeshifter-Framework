@@ -285,3 +285,16 @@
 - [ ] formDisallowedMutants에 null MutantDef → ConfigError 출력
 - [ ] spawnApparelOnTransform에 비의류 ThingDef → ConfigError 출력
 - [ ] spawnWeaponOnTransform에 비무기 ThingDef → ConfigError 출력
+
+---
+
+## 17. 장비 잠금 & 드랍 안전성
+
+### [M] 수동 확인
+- [ ] 변신 중 무기 장착 시도 → 거부 메시지 + 장착 차단
+- [ ] 변신 중 의류 착용 시도 → 거부 메시지 + 착용 차단
+- [ ] suppressEquipLock=true 상태에서 내부 장비 복구 → 정상 장착/착용 허용
+- [ ] 변신 해제 후 장비/의류 자동 복구 → suppressEquipLock 경유 정상 동작
+- [ ] 폼 전용 생성 무기 드랍 시도 → 거부 메시지 (살아있는 플레이어 폰)
+- [ ] 폼 전용 생성 무기 시스템 드랍 → "holdingOwner still set" 에러 없이 소멸
+- [ ] 변신 중 비활성 작업(disabledWorkTypes) → 변신 해제 후 원래 작업 목록 복원 (캐시 오염 없음)

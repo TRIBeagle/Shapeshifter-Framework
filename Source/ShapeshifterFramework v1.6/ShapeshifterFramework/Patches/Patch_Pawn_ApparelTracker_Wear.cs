@@ -23,7 +23,10 @@ namespace ShapeshifterFramework.Patches
             if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out _)) return true;
             if (ShapeshiftEquipRules.LockApparel(comp))
             {
-                if (!comp.suppressEquipLock && pawn.IsColonistPlayerControlled)
+                // 내부 시스템(suppressEquipLock)에 의한 복구는 허용
+                if (comp.suppressEquipLock) return true;
+
+                if (pawn.IsColonistPlayerControlled)
                 {
                     Messages.Message("SSF_Message_CannotWear".Translate(pawn.Named("PAWN")),
                                      pawn, MessageTypeDefOf.RejectInput, false);

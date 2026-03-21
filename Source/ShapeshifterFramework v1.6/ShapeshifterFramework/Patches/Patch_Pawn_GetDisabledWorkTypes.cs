@@ -44,6 +44,9 @@ namespace ShapeshifterFramework.Patches
             bool hasTags = form.disabledWorkTagsOnTransform != WorkTags.None;
             if (!hasExtra && !hasTags) return;
 
+            // 바닐라가 캐싱된 리스트를 반환할 수 있으므로, 변경 전에 새 리스트로 복사
+            __result = new List<WorkTypeDef>(__result);
+
             // ThreadStatic으로 재진입 안전 + GC 절감
             if (_tmpExisting == null) _tmpExisting = new HashSet<WorkTypeDef>();
             else _tmpExisting.Clear();
