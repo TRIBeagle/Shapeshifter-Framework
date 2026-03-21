@@ -160,7 +160,7 @@
     <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
     <stages>
       <li>
-        <label>변신을 목격함</label>
+        <label>누군가 변신함</label>
         <description>누군가 눈앞에서 몸을 바꾸었다. 소름이 끼치고 역겹다.</description>
         <baseMoodEffect>-8</baseMoodEffect>
       </li>
@@ -175,7 +175,7 @@
     <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
     <stages>
       <li>
-        <label>변신을 목격함</label>
+        <label>누군가 변신함</label>
         <description>누군가 몸을 바꾸는 걸 봤다. 좀 거슬린다.</description>
         <baseMoodEffect>-4</baseMoodEffect>
       </li>
@@ -190,7 +190,7 @@
     <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
     <stages>
       <li>
-        <label>변신을 목격함</label>
+        <label>누군가 변신함</label>
         <description>누군가 변신하는 모습을 봤다. 꽤 인상적이었다.</description>
         <baseMoodEffect>4</baseMoodEffect>
       </li>
@@ -205,7 +205,7 @@
     <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
     <stages>
       <li>
-        <label>변신을 목격함</label>
+        <label>누군가 변신함</label>
         <description>신성한 변신을 눈앞에서 목격했다. 경이로운 순간이었다.</description>
         <baseMoodEffect>8</baseMoodEffect>
       </li>
