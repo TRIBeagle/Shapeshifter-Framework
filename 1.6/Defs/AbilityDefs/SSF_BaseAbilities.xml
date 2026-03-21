@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Defs>
 
-  <!-- 자기 대상 변신 어빌리티 베이스: 쿨다운0, 워밍업0, 비적대, SSF_Shapeshift 카테고리 -->
+  <!-- Self-target shapeshift ability base: cooldown 0, warmup 0, non-hostile, SSF_Shapeshift category -->
   <AbilityDef Name="SSF_BaseSelfShiftAbility" Abstract="True">
     <cooldownTicksRange>0</cooldownTicksRange>
     <hostile>false</hostile>
@@ -24,7 +24,7 @@
     </verbProperties>
   </AbilityDef>
 
-  <!-- 타인 대상 변신 어빌리티 베이스: 비적대, SSF_Shapeshift 카테고리 -->
+  <!-- Targeted shapeshift ability base: non-hostile, SSF_Shapeshift category -->
   <AbilityDef Name="SSF_BaseTargetedShiftAbility" Abstract="True">
     <hostile>false</hostile>
     <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
@@ -46,7 +46,7 @@
     </verbProperties>
   </AbilityDef>
 
-  <!-- AoE 범위 변신 어빌리티 베이스: 적대, 바닥+폰 타겟, SSF_Shapeshift 카테고리 -->
+  <!-- AoE shapeshift ability base: hostile, targets locations + pawns, SSF_Shapeshift category -->
   <AbilityDef Name="SSF_BaseAoEShiftAbility" Abstract="True">
     <hostile>true</hostile>
     <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>

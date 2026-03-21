@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Form main hediffs -->
+  <SSFTest_BearFormHediff.label>bear form</SSFTest_BearFormHediff.label>
+  <SSFTest_BearFormHediff.description>Shapeshifted into a bear. Increased movement speed, enhanced melee hit/dodge, reduced manipulation.</SSFTest_BearFormHediff.description>
+
+  <SSFTest_BearWarriorFormHediff.label>bear warrior form</SSFTest_BearWarriorFormHediff.label>
+  <SSFTest_BearWarriorFormHediff.description>Shapeshifted into a bear warrior. Increased movement speed, dodge, and damage reduction.</SSFTest_BearWarriorFormHediff.description>
+
+  <SSFTest_SheepFormHediff.label>sheep form</SSFTest_SheepFormHediff.label>
+  <SSFTest_SheepFormHediff.description>Shapeshifted into a sheep. Reduced movement speed.</SSFTest_SheepFormHediff.description>
+
+  <SSFTest_DarkKnightFormHediff.label>dark knight form</SSFTest_DarkKnightFormHediff.label>
+  <SSFTest_DarkKnightFormHediff.description>Shapeshifted into a dark knight. Reduced movement speed, increased dodge, significant damage reduction.</SSFTest_DarkKnightFormHediff.description>
+
+  <SSFTest_BeastkinFormHediff.label>beastkin form</SSFTest_BeastkinFormHediff.label>
+  <SSFTest_BeastkinFormHediff.description>Shapeshifted into a beastkin. Increased movement speed, dodge, and melee hit chance.</SSFTest_BeastkinFormHediff.description>
+
+  <SSFTest_FullBeastFormHediff.label>full beast form</SSFTest_FullBeastFormHediff.label>
+  <SSFTest_FullBeastFormHediff.description>Shapeshifted into a full beast. Greatly increased movement speed, damage reduction.</SSFTest_FullBeastFormHediff.description>
+
+  <SSFTest_GuardianFormHediff.label>guardian form</SSFTest_GuardianFormHediff.label>
+  <SSFTest_GuardianFormHediff.description>Shapeshifted into a guardian. Increased movement speed, damage reduction.</SSFTest_GuardianFormHediff.description>
+
+  <SSFTest_PhantomFormHediff.label>phantom form</SSFTest_PhantomFormHediff.label>
+  <SSFTest_PhantomFormHediff.description>Shapeshifted into a phantom. Increased movement speed.</SSFTest_PhantomFormHediff.description>
+
+  <SSFTest_RaceLockedFormHediff.label>race locked form</SSFTest_RaceLockedFormHediff.label>
+  <SSFTest_RaceLockedFormHediff.description>Human-only enhancement state. Increased movement speed, dodge, and damage reduction.</SSFTest_RaceLockedFormHediff.description>
+
+  <!-- Beast arm -->
+  <SSFTest_BeastArm.label>beast arm</SSFTest_BeastArm.label>
+  <SSFTest_BeastArm.description>A mutated beast arm grafted through shapeshifting.</SSFTest_BeastArm.description>
+
+  <!-- Shapeshifter's blessing -->
+  <SSFTest_Hediff_ShiftBlessing.label>shapeshifter's blessing</SSFTest_Hediff_ShiftBlessing.label>
+  <SSFTest_Hediff_ShiftBlessing.description>Shapeshifter's blessing. Grants the bear warrior transformation ability while this blessing persists.</SSFTest_Hediff_ShiftBlessing.description>
+
+  <!-- Racial awakening -->
+  <SSFTest_Hediff_RacialAwakening.label>racial awakening</SSFTest_Hediff_RacialAwakening.label>
+  <SSFTest_Hediff_RacialAwakening.description>Racial awakening. Grants the race-locked transformation ability while in this state. (Human only)</SSFTest_Hediff_RacialAwakening.description>
+
+  <!-- Guardian's mark -->
+  <SSFTest_Hediff_GuardianMark.label>guardian's mark</SSFTest_Hediff_GuardianMark.label>
+  <SSFTest_Hediff_GuardianMark.description>Guardian's mark. The guardian transformation can be maintained while this mark remains. Transformation reverts when the mark is lost.</SSFTest_Hediff_GuardianMark.description>
+
+  <!-- Beast curse (auto-shift) -->
+  <SSFTest_Hediff_AutoShiftCurse.label>beast curse (auto-shift test)</SSFTest_Hediff_AutoShiftCurse.label>
+  <SSFTest_Hediff_AutoShiftCurse.description>Beast curse. Automatically transforms into a bear with 80% chance when it's nighttime or health drops below 30%.</SSFTest_Hediff_AutoShiftCurse.description>
+
+  <!-- Combat instinct (auto-shift) -->
+  <SSFTest_Hediff_CombatAutoShift.label>combat instinct (auto-shift test)</SSFTest_Hediff_CombatAutoShift.label>
+  <SSFTest_Hediff_CombatAutoShift.description>Combat instinct. Automatically transforms into a bear warrior once when entering combat.</SSFTest_Hediff_CombatAutoShift.description>
+
+</LanguageData>

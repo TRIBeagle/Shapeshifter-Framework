@@ -45,4 +45,12 @@
   <SSFTest_Hediff_GuardianMark.label>수호자의 각인</SSFTest_Hediff_GuardianMark.label>
   <SSFTest_Hediff_GuardianMark.description>수호자의 각인. 이 표식이 남아있는 동안 수호자 변신 상태를 유지할 수 있다. 표식이 사라지면 변신이 해제된다.</SSFTest_Hediff_GuardianMark.description>
 
+  <!-- 야수의 저주 (자동 변신) -->
+  <SSFTest_Hediff_AutoShiftCurse.label>야수의 저주 (자동 변신 테스트)</SSFTest_Hediff_AutoShiftCurse.label>
+  <SSFTest_Hediff_AutoShiftCurse.description>야수의 저주. 밤이 되거나 체력이 30% 이하로 떨어지면 80% 확률로 곰으로 자동 변신한다.</SSFTest_Hediff_AutoShiftCurse.description>
+
+  <!-- 전투 본능 (자동 변신) -->
+  <SSFTest_Hediff_CombatAutoShift.label>전투 본능 (자동 변신 테스트)</SSFTest_Hediff_CombatAutoShift.label>
+  <SSFTest_Hediff_CombatAutoShift.description>전투 본능. 전투에 돌입하면 곰 전사로 1회 자동 변신한다.</SSFTest_Hediff_CombatAutoShift.description>
+
 </LanguageData>

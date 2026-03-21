@@ -2,19 +2,19 @@
 <Defs>
 
   <!-- ======================================================
-       어빌리티 획득 수단 다양화 테스트
-       ★ AbilityDef 체제 전환 후 각 경로별 어빌리티 부여/회수 정상 동작 검증
+       Ability acquisition source diversity test
+       Validates ability grant/revoke per source path after AbilityDef system migration
        ====================================================== -->
 
   <!-- ======================================================
-       1) 유전자 (GeneDef) — Biotech DLC
-       유전자 보유 시 수인 변신 어빌리티 자동 부여
-       MayRequire: Biotech DLC 없으면 무시
+       1) Gene (GeneDef) — Biotech DLC
+       Auto-grants beastkin shift ability when gene is present
+       MayRequire: ignored if Biotech DLC is absent
        ====================================================== -->
   <GeneDef MayRequire="Ludeon.RimWorld.Biotech">
     <defName>SSFTest_Gene_BeastkinShift</defName>
     <label>beastkin gene</label>
-    <description>수인 변신 능력이 내재된 유전자. 이 유전자를 보유한 폰은 수인 변신 어빌리티를 사용할 수 있다.</description>
+    <description>A gene with innate beastkin transformation ability. Pawns with this gene can use the beastkin shift ability.</description>
     <iconPath>UI/Icons/Genes/Gene_Claws_Retractable</iconPath>
     <displayCategory>Miscellaneous</displayCategory>
     <displayOrderInCategory>100</displayOrderInCategory>
@@ -26,13 +26,13 @@
   </GeneDef>
 
   <!-- ======================================================
-       2) 유전자 (GeneDef) — 유령 변신 유전자
-       다른 폼의 어빌리티도 유전자 경로로 테스트
+       2) Gene (GeneDef) — phantom shift gene
+       Tests gene-path ability grant for another form
        ====================================================== -->
   <GeneDef MayRequire="Ludeon.RimWorld.Biotech">
     <defName>SSFTest_Gene_PhantomShift</defName>
     <label>phantom gene</label>
-    <description>유령 변신 능력이 내재된 유전자. 이 유전자를 보유한 폰은 유령 변신 어빌리티를 사용할 수 있다.</description>
+    <description>A gene with innate phantom transformation ability. Pawns with this gene can use the phantom shift ability.</description>
     <iconPath>UI/Icons/Genes/Gene_Deathless</iconPath>
     <displayCategory>Miscellaneous</displayCategory>
     <displayOrderInCategory>101</displayOrderInCategory>
@@ -44,13 +44,13 @@
   </GeneDef>
 
   <!-- ======================================================
-       3) 장착 무기       이 검을 장비 슬롯에 장착해야만 암흑 기사 변신 어빌리티 부여
-       무기를 내려놓으면 어빌리티 즉시 회수
+       3) Equipped weapon — grants dark knight shift ability when equipped
+       Ability is immediately revoked when weapon is unequipped
        ====================================================== -->
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
     <defName>SSFTest_Weapon_DarkBlade</defName>
     <label>Test: dark blade</label>
-    <description>암흑의 힘이 깃든 검. 장비하면 암흑 기사 변신 어빌리티가 부여된다. 장비 해제 시 어빌리티가 사라진다.</description>
+    <description>A blade imbued with dark power. Equipping grants the dark knight transformation ability. Unequipping removes the ability.</description>
     <graphicData>
       <texPath>Things/Item/Equipment/WeaponMelee/LongSword</texPath>
       <graphicClass>Graphic_Single</graphicClass>
@@ -88,13 +88,13 @@
   </ThingDef>
 
   <!-- ======================================================
-       4) 장착 의류       이 망토를 착용해야만 유령 변신 어빌리티 부여
-       벗으면 어빌리티 즉시 회수
+       4) Equipped apparel — grants phantom shift ability when worn
+       Ability is immediately revoked when removed
        ====================================================== -->
   <ThingDef ParentName="ApparelMakeableBase">
     <defName>SSFTest_Apparel_PhantomCloak</defName>
     <label>Test: phantom cloak</label>
-    <description>유령의 힘이 깃든 망토. 착용하면 유령 변신 어빌리티가 부여된다. 벗으면 어빌리티가 사라진다.</description>
+    <description>A cloak imbued with phantom power. Wearing grants the phantom transformation ability. Removing it removes the ability.</description>
     <graphicData>
       <texPath>Things/Pawn/Humanlike/Apparel/Cape/Cape</texPath>
       <graphicClass>Graphic_Single</graphicClass>
@@ -126,15 +126,15 @@
   </ThingDef>
 
   <!-- ======================================================
-       5) Hediff 기반 어빌리티 부여 (HediffComp_GiveAbility)
-       바닐라 패턴: 헤디프 보유 시 어빌리티 자동 부여, 제거 시 회수
-       예: 축복 헤디프가 있으면 곰 전사 변신 가능
+       5) Hediff-based ability grant (HediffComp_GiveAbility)
+       Vanilla pattern: auto-grants ability while hediff is present, revokes on removal
+       Example: bear warrior shift available while blessing hediff persists
        ====================================================== -->
   <HediffDef>
     <defName>SSFTest_Hediff_ShiftBlessing</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>shapeshifter's blessing</label>
-    <description>변신술사의 축복. 이 축복이 깃든 동안 곰 전사 변신 어빌리티를 사용할 수 있다.</description>
+    <description>Shapeshifter's blessing. Grants the bear warrior transformation ability while this blessing persists.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.9, 0.7, 0.2)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
@@ -154,14 +154,14 @@
   </HediffDef>
 
   <!-- ======================================================
-       6) Hediff 기반 어빌리티 (종족 제한 폼)
-       종족 제한 테스트도 hediff 경로로 커버
+       6) Hediff-based ability (race-locked form)
+       Race restriction test also covered via hediff path
        ====================================================== -->
   <HediffDef>
     <defName>SSFTest_Hediff_RacialAwakening</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>racial awakening</label>
-    <description>종족적 각성. 이 상태에서는 종족 제한 변신 어빌리티를 사용할 수 있다. (인간 전용)</description>
+    <description>Racial awakening. Grants the race-locked transformation ability while in this state. (Human only)</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.8, 0.5, 0.3)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>

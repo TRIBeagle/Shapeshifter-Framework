@@ -2,31 +2,31 @@
 <Defs>
 
   <!-- ======================================================
-       어빌리티: 동료 변신 (버프형)
-       곰 전사 폼으로 변신시켜 전투력 강화
+       Ability: ally shapeshift (buff type)
+       Transforms ally into bear warrior form for combat enhancement
        ====================================================== -->
   <AbilityDef ParentName="SSF_BaseTargetedShiftAbility">
     <defName>SSFTest_Ability_BuffAlly</defName>
     <label>bestow bear warrior</label>
-    <description>동료에게 곰 전사의 힘을 부여한다. 장비를 유지한 채 스탯이 강화된다.</description>
+    <description>Bestow the power of the bear warrior upon an ally. Stats are enhanced while keeping equipment.</description>
     <cooldownTicksRange>1500</cooldownTicksRange>
     <displayOrder>500</displayOrder>
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
-        <!-- hediffDef 경로 테스트: formDefName 대신 hediffDef 직접 지정 -->
+        <!-- hediffDef path test: directly specifying hediffDef instead of formDefName -->
         <hediffDef>SSFTest_BearWarriorFormHediff</hediffDef>
       </li>
     </comps>
   </AbilityDef>
 
   <!-- ======================================================
-       어빌리티: 적 변신 (디버프형)
-       적을 양으로 변신시켜 무력화
+       Ability: enemy shapeshift (debuff type)
+       Polymorphs enemy into sheep to neutralize
        ====================================================== -->
   <AbilityDef ParentName="SSF_BaseTargetedShiftAbility">
     <defName>SSFTest_Ability_DebuffEnemy</defName>
     <label>polymorph: sheep</label>
-    <description>적을 양으로 변신시킨다. 전투력을 상실하며 자발적 해제 불가.</description>
+    <description>Polymorphs the target into a sheep. Combat ability is lost and voluntary revert is disabled.</description>
     <cooldownTicksRange>3000</cooldownTicksRange>
     <hostile>true</hostile>
     <displayOrder>501</displayOrder>
@@ -50,13 +50,13 @@
   </AbilityDef>
 
   <!-- ======================================================
-       어빌리티: 암흑 기사 변신
-       플라스틸 판금갑옷 + 장검 소환, 해제 시 소멸
+       Ability: dark knight transformation
+       Spawns plasteel plate armor + longsword, destroyed on revert
        ====================================================== -->
   <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_DarkKnight</defName>
     <label>dark knight transformation</label>
-    <description>암흑 기사로 변신한다. 전용 플라스틸 판금갑옷과 장검이 소환되며, 기존 장비는 인벤토리로 이동. 해제 시 소환 장비는 소멸한다.</description>
+    <description>Transform into a dark knight. Spawns dedicated plasteel plate armor and longsword. Existing gear moves to inventory. Spawned gear is destroyed on revert.</description>
     <cooldownTicksRange>3000</cooldownTicksRange>
     <displayOrder>505</displayOrder>
     <verbProperties>
@@ -78,13 +78,13 @@
   </AbilityDef>
 
   <!-- ======================================================
-       어빌리티: 수인 변신 (1단계)
-       인간 → 수인. 수인 상태에서 addAbilities로 FullBeast 진입 가능.
+       Ability: beastkin shift (Stage 1)
+       Human -> Beastkin. Can enter FullBeast via addAbilities while in beastkin form.
        ====================================================== -->
   <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_Beastkin</defName>
     <label>beastkin shift</label>
-    <description>수인 형태로 변신한다. 수인 상태에서는 2단 변신(완전 야수)이 가능.</description>
+    <description>Transform into beastkin form. Can perform 2nd-stage transformation to full beast while in this form.</description>
     <cooldownTicksRange>1200</cooldownTicksRange>
     <displayOrder>510</displayOrder>
     <verbProperties>
@@ -106,19 +106,19 @@
   </AbilityDef>
 
   <!-- ======================================================
-       어빌리티: 완전 야수 변신 (2단계)
-       수인 상태의 addAbilities로 부여됨
+       Ability: full beast shift (Stage 2)
+       Granted via beastkin form's addAbilities
        ====================================================== -->
   <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_FullBeast</defName>
     <label>full beast shift</label>
-    <description>완전한 야수 형태로 변신한다. 수인 상태에서만 사용 가능.</description>
+    <description>Transform into full beast form. Only usable while in beastkin form.</description>
     <cooldownTicksRange>0</cooldownTicksRange>
     <displayOrder>511</displayOrder>
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_FullBeastFormHediff</hediffDef>
-        <!-- 수인 폼에서만 2단 변신 허용 -->
+        <!-- Only allow 2nd-stage shift from beastkin form -->
         <allowedFromForms>
           <li>SSFTest_BeastkinForm</li>
         </allowedFromForms>
@@ -127,12 +127,12 @@
   </AbilityDef>
 
   <!-- ======================================================
-       어빌리티: 수호자 폼
+       Ability: guardian form
        ====================================================== -->
   <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_Guardian</defName>
     <label>guardian shift</label>
-    <description>수호자 형태로 변신한다.</description>
+    <description>Transform into guardian form.</description>
     <cooldownTicksRange>1500</cooldownTicksRange>
     <displayOrder>530</displayOrder>
     <verbProperties>
@@ -154,12 +154,12 @@
   </AbilityDef>
 
   <!-- ======================================================
-       어빌리티: 유령 폼
+       Ability: phantom form
        ====================================================== -->
   <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_Phantom</defName>
     <label>phantom shift</label>
-    <description>유령 형태로 변신한다. 반투명 머리, 마른 체형.</description>
+    <description>Transform into phantom form. Semi-transparent head, thin body type.</description>
     <cooldownTicksRange>1500</cooldownTicksRange>
     <displayOrder>531</displayOrder>
     <verbProperties>
@@ -181,13 +181,13 @@
   </AbilityDef>
 
   <!-- ======================================================
-       어빌리티: 종족 제한 (인간 전용)
-       allowedRaces를 comp에서 처리
+       Ability: race-locked (human only)
+       allowedRaces handled in comp
        ====================================================== -->
   <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
     <defName>SSFTest_Ability_RaceLocked</defName>
     <label>race-locked shift</label>
-    <description>인간 전용 강화 변신. 비인간 종족은 사용 불가.</description>
+    <description>Human-only enhancement transformation. Non-human races cannot use this.</description>
     <cooldownTicksRange>1500</cooldownTicksRange>
     <displayOrder>532</displayOrder>
     <verbProperties>
@@ -204,7 +204,7 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_RaceLockedFormHediff</hediffDef>
-        <!-- 종족 제한: 인간만 -->
+        <!-- Race restriction: human only -->
         <allowedRaces>
           <li>Human</li>
         </allowedRaces>

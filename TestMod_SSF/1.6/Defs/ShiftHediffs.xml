@@ -2,17 +2,17 @@
 <Defs>
 
   <!-- ======================================================
-       폼별 메인 HediffDef: 변신 상태 마커 + 스탯/능력치 보정
+       Per-form main HediffDef: shapeshift state marker + stat/capacity modifiers
        hediffClass: ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm
-       HediffCompProperties_ShapeshiftCore.formDef로 FormDef 매핑 (단방향)
+       Maps to FormDef via HediffCompProperties_ShapeshiftCore.formDef (one-way)
        ====================================================== -->
 
-  <!-- 1) 베어 폼 메인 헤디프 -->
+  <!-- 1) Bear form main hediff -->
   <HediffDef>
     <defName>SSFTest_BearFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>bear form</label>
-    <description>곰으로 변신한 상태. 이동 속도 증가, 근접 적중/회피 강화, 조작 능력 저하.</description>
+    <description>Shapeshifted into a bear. Increased movement speed, enhanced melee hit/dodge, reduced manipulation.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.4, 0.8, 0.4)</defaultLabelColor>
     <stages>
@@ -39,12 +39,12 @@
     </comps>
   </HediffDef>
 
-  <!-- 2) 곰 전사 폼 메인 헤디프 -->
+  <!-- 2) Bear warrior form main hediff -->
   <HediffDef>
     <defName>SSFTest_BearWarriorFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>bear warrior form</label>
-    <description>곰 전사로 변신한 상태. 이동 속도, 회피 증가, 피해 경감.</description>
+    <description>Shapeshifted into a bear warrior. Increased movement speed, dodge, and damage reduction.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.4, 0.8, 0.4)</defaultLabelColor>
     <stages>
@@ -65,12 +65,12 @@
     </comps>
   </HediffDef>
 
-  <!-- 3) 양 폼 메인 헤디프 -->
+  <!-- 3) Sheep form main hediff -->
   <HediffDef>
     <defName>SSFTest_SheepFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>sheep form</label>
-    <description>양으로 변신한 상태. 이동 속도 감소.</description>
+    <description>Shapeshifted into a sheep. Reduced movement speed.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.8, 0.8, 0.4)</defaultLabelColor>
     <stages>
@@ -87,12 +87,12 @@
     </comps>
   </HediffDef>
 
-  <!-- 4) 암흑 기사 폼 메인 헤디프 -->
+  <!-- 4) Dark knight form main hediff -->
   <HediffDef>
     <defName>SSFTest_DarkKnightFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>dark knight form</label>
-    <description>암흑 기사로 변신한 상태. 이동 속도 감소, 회피 증가, 대폭 피해 경감.</description>
+    <description>Shapeshifted into a dark knight. Reduced movement speed, increased dodge, significant damage reduction.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.4, 0.4, 0.8)</defaultLabelColor>
     <stages>
@@ -114,12 +114,12 @@
     </comps>
   </HediffDef>
 
-  <!-- 5a) 수인 폼 메인 헤디프 -->
+  <!-- 5a) Beastkin form main hediff -->
   <HediffDef>
     <defName>SSFTest_BeastkinFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>beastkin form</label>
-    <description>수인으로 변신한 상태. 이동 속도, 회피, 근접 적중 증가.</description>
+    <description>Shapeshifted into a beastkin. Increased movement speed, dodge, and melee hit chance.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.4, 0.8, 0.4)</defaultLabelColor>
     <stages>
@@ -140,12 +140,12 @@
     </comps>
   </HediffDef>
 
-  <!-- 5b) 야수 폼 메인 헤디프 -->
+  <!-- 5b) Full beast form main hediff -->
   <HediffDef>
     <defName>SSFTest_FullBeastFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>full beast form</label>
-    <description>완전한 야수로 변신한 상태. 이동 속도 대폭 증가, 피해 경감.</description>
+    <description>Shapeshifted into a full beast. Greatly increased movement speed, damage reduction.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <stages>
@@ -165,12 +165,12 @@
     </comps>
   </HediffDef>
 
-  <!-- 6) 수호자 폼 메인 헤디프 -->
+  <!-- 6) Guardian form main hediff -->
   <HediffDef>
     <defName>SSFTest_GuardianFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>guardian form</label>
-    <description>수호자로 변신한 상태. 이동 속도 증가, 피해 경감.</description>
+    <description>Shapeshifted into a guardian. Increased movement speed, damage reduction.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.4, 0.8, 0.8)</defaultLabelColor>
     <stages>
@@ -190,12 +190,12 @@
     </comps>
   </HediffDef>
 
-  <!-- 7) 유령 폼 메인 헤디프 -->
+  <!-- 7) Phantom form main hediff -->
   <HediffDef>
     <defName>SSFTest_PhantomFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>phantom form</label>
-    <description>유령으로 변신한 상태. 이동 속도 증가.</description>
+    <description>Shapeshifted into a phantom. Increased movement speed.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.6, 0.7, 0.9)</defaultLabelColor>
     <stages>
@@ -212,12 +212,12 @@
     </comps>
   </HediffDef>
 
-  <!-- 8) 종족 제한 폼 메인 헤디프 -->
+  <!-- 8) Race-locked form main hediff -->
   <HediffDef>
     <defName>SSFTest_RaceLockedFormHediff</defName>
     <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
     <label>race locked form</label>
-    <description>인간 전용 강화 상태. 이동 속도, 회피 증가, 피해 경감.</description>
+    <description>Human-only enhancement state. Increased movement speed, dodge, and damage reduction.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.8, 0.6, 0.4)</defaultLabelColor>
     <stages>
@@ -239,14 +239,14 @@
   </HediffDef>
 
   <!-- ======================================================
-       sustain 조건 테스트용 헤디프 — GuardianForm 유지 조건
-       FibrousMechanites 대신 커스텀 헤디프로 교체하여 독립적 테스트
+       Sustain condition test hediff — GuardianForm sustain condition
+       Replaced FibrousMechanites with custom hediff for independent testing
        ====================================================== -->
   <HediffDef>
     <defName>SSFTest_Hediff_GuardianMark</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>guardian's mark</label>
-    <description>수호자의 각인. 이 표식이 남아있는 동안 수호자 변신 상태를 유지할 수 있다. 표식이 사라지면 변신이 해제된다.</description>
+    <description>Guardian's mark. The guardian transformation can be maintained while this mark remains. Transformation reverts when the mark is lost.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.3, 0.8, 0.6)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
@@ -261,15 +261,15 @@
   </HediffDef>
 
   <!-- ======================================================
-       조건부 자동 변신 테스트 — HediffComp_AutoShift
-       이 hediff를 부여하면, 밝기 0.5 미만(밤) 또는 체력 30% 이하 시
-       80% 확률로 곰 폼으로 자동 변신
+       Conditional auto-shift test — HediffComp_AutoShift
+       When this hediff is applied, auto-shifts to bear form with
+       80% chance when light level below 0.5 (night) or health below 30%
        ====================================================== -->
   <HediffDef>
     <defName>SSFTest_Hediff_AutoShiftCurse</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>beast curse (auto-shift test)</label>
-    <description>야수의 저주. 밤이 되거나 체력이 30% 이하로 떨어지면 80% 확률로 곰으로 자동 변신한다.</description>
+    <description>Beast curse. Automatically transforms into a bear with 80% chance when it's nighttime or health drops below 30%.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.9, 0.4, 0.2)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
@@ -288,12 +288,12 @@
     </comps>
   </HediffDef>
 
-  <!-- 전투 자동 변신 테스트 — triggerInCombat + triggerOnce -->
+  <!-- Combat auto-shift test — triggerInCombat + triggerOnce -->
   <HediffDef>
     <defName>SSFTest_Hediff_CombatAutoShift</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>combat instinct (auto-shift test)</label>
-    <description>전투 본능. 전투에 돌입하면 곰 전사로 1회 자동 변신한다.</description>
+    <description>Combat instinct. Automatically transforms into a bear warrior once when entering combat.</description>
     <isBad>false</isBad>
     <defaultLabelColor>(0.8, 0.3, 0.3)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
@@ -304,7 +304,7 @@
     </stages>
     <comps>
       <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
-        <!-- hediffDef 경로 테스트: formDefName 대신 hediffDef 직접 지정 -->
+        <!-- hediffDef path test: directly specifying hediffDef instead of formDefName -->
         <hediffDef>SSFTest_BearWarriorFormHediff</hediffDef>
         <triggerInCombat>true</triggerInCombat>
         <checkIntervalTicks>60</checkIntervalTicks>

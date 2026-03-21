@@ -3,8 +3,8 @@
 
   <!--
     ═══════════════════════════════════════════════════════════════
-    SSF 추상 부모 HediffDef — 변신 폼 Hediff 공통 설정.
-    모든 변신 HediffDef는 이 추상 Def를 ParentName으로 상속.
+    SSF abstract parent HediffDef — common settings for shapeshift form hediffs.
+    All shapeshift HediffDefs inherit from this abstract Def via ParentName.
     ═══════════════════════════════════════════════════════════════
   -->
   <HediffDef Name="SSF_ShapeshiftFormBase" Abstract="True">
@@ -19,16 +19,16 @@
     <scenarioCanAdd>false</scenarioCanAdd>
     <comps>
       <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
-        <!-- formDef: 상속받는 HediffDef에서 지정. 여기서는 비워둠. -->
+        <!-- formDef: specified by inheriting HediffDef. Left empty here. -->
       </li>
     </comps>
   </HediffDef>
 
   <!--
     ═══════════════════════════════════════════════════════════════
-    SSF_GenericShapeshiftForm — 범용 / 디버그용 HediffDef.
-    formDef 미지정. 런타임에 comp.SetFormDef()로 폼 지정.
-    디버그 액션, 자동 검증(Auto-Verify) 등에서 사용.
+    SSF_GenericShapeshiftForm — generic / debug HediffDef.
+    formDef unset. Form assigned at runtime via comp.SetFormDef().
+    Used for debug actions, auto-verify, etc.
     ═══════════════════════════════════════════════════════════════
   -->
   <HediffDef ParentName="SSF_ShapeshiftFormBase">

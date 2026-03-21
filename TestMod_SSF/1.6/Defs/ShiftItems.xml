@@ -2,10 +2,10 @@
 <Defs>
 
   <!-- ======================================================
-       Hediff 정의
+       Hediff definitions
        ====================================================== -->
 
-  <!-- 야수 팔 (AddedPart) — 늑대 폼에서 팔 교체 테스트 -->
+  <!-- Beast arm (AddedPart) — arm replacement test for wolf form -->
   <HediffDef ParentName="AddedBodyPartBase">
     <defName>SSFTest_BeastArm</defName>
     <hediffClass>Hediff_AddedPart</hediffClass>
@@ -18,10 +18,10 @@
   </HediffDef>
 
   <!-- ======================================================
-       투사체 정의
+       Projectile definitions
        ====================================================== -->
 
-  <!-- 안전판 파편수류탄 — 수인 폼 verb 테스트용 -->
+  <!-- Safe frag grenade — for beastkin form verb test -->
   <ThingDef ParentName="BaseBullet">
     <defName>SSFTest_Proj_FragGrenade_Safe</defName>
     <label>frag grenade (SSF safe)</label>
@@ -43,10 +43,10 @@
   </ThingDef>
 
   <!-- ======================================================
-       필스(혈흔) 정의
+       Filth (blood smear) definitions
        ====================================================== -->
 
-  <!-- 곤충형 혈흔 — bloodSmearDef 테스트용 -->
+  <!-- Insectoid blood smear — for bloodSmearDef test -->
   <ThingDef ParentName="FilthBlood">
     <defName>SSFTest_Filth_BloodInsectSmear</defName>
     <label>blood smear</label>
@@ -59,16 +59,16 @@
   </ThingDef>
 
   <!-- ======================================================
-       아이템 정의
+       Item definitions
        ====================================================== -->
 
   <!-- ======================================================
-       2a) 아이템 변신 — 자기 자신 (CompTargetable 없음)
+       2a) Item shapeshift — self (no CompTargetable)
        ====================================================== -->
   <ThingDef ParentName="ResourceBase">
     <defName>SSFTest_ShiftScroll_Self</defName>
     <label>shift scroll (self)</label>
-    <description>사용하면 자기 자신이 늑대로 변신하는 주문서.</description>
+    <description>A scroll that transforms the user into a bear when used.</description>
     <graphicData>
       <texPath>Things/Item/Drug/Penoxycyline</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -89,19 +89,19 @@
       </li>
       <li Class="CompProperties_UseEffectDestroySelf" />
       <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_Shapeshift">
-        <!-- hediffDef 경로 테스트: formDefName 대신 hediffDef 직접 지정 -->
+        <!-- hediffDef path test: directly specifying hediffDef instead of formDefName -->
         <hediffDef>SSFTest_BearFormHediff</hediffDef>
       </li>
     </comps>
   </ThingDef>
 
   <!-- ======================================================
-       2b) 아이템 변신 — 대상 지정 (CompTargetable_SinglePawn)
+       2b) Item shapeshift — targeted (CompTargetable_SinglePawn)
        ====================================================== -->
   <ThingDef ParentName="ResourceBase">
     <defName>SSFTest_ShiftScroll_Target</defName>
     <label>shift scroll (target)</label>
-    <description>클릭한 대상을 늑대로 변신시키는 주문서. 대상을 선택하면 걸어가서 사용.</description>
+    <description>A scroll that transforms the clicked target into a bear. Select a target to walk over and use.</description>
     <graphicData>
       <texPath>Things/Item/Drug/Penoxycyline</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>

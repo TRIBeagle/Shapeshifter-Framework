@@ -2,13 +2,13 @@
 <Defs>
 
   <!-- ======================================================
-       6) 범위형 변신 어빌리티 (바닐라 패턴)
+       6) AoE shapeshift ability (vanilla pattern)
        Ability_EffectRadius + CompAbilityShapeshift
        ====================================================== -->
   <AbilityDef ParentName="SSF_BaseAoEShiftAbility">
     <defName>SSFTest_Ability_MassPolymorph</defName>
     <label>mass polymorph</label>
-    <description>반경 5칸 내 폰을 양으로 변신시키는 범위 마법. 60% 확률.</description>
+    <description>AoE magic that polymorphs pawns within a 5-tile radius into sheep. 60% chance.</description>
     <cooldownTicksRange>6000</cooldownTicksRange>
     <displayOrder>520</displayOrder>
     <statBases>
@@ -26,11 +26,11 @@
   </AbilityDef>
 
   <!-- ======================================================
-       7) 변신 투사체 무기 — Projectile_GiveHediff_Shapeshift 테스트
-       저주받은 활: 화살에 맞으면 양으로 변신
+       7) Shapeshift projectile weapon — Projectile_GiveHediff_Shapeshift test
+       Cursed bow: targets hit by arrows are polymorphed into sheep
        ====================================================== -->
 
-  <!-- 변신 화살 투사체 -->
+  <!-- Shapeshift arrow projectile -->
   <ThingDef ParentName="BaseBullet">
     <defName>SSFTest_Projectile_CursedArrow</defName>
     <label>cursed arrow</label>
@@ -49,16 +49,16 @@
     <modExtensions>
       <li Class="ShapeshifterFramework.Extensions.GiveHediffProjectileExtension_Shapeshift">
         <hediffDef>SSFTest_SheepFormHediff</hediffDef>
-        <!-- aoeRadius 0 = 단일 타겟만 -->
+        <!-- aoeRadius 0 = single target only -->
       </li>
     </modExtensions>
   </ThingDef>
 
-  <!-- 저주받은 활 무기 -->
+  <!-- Cursed bow weapon -->
   <ThingDef ParentName="BaseHumanMakeableGun">
     <defName>SSFTest_Weapon_CursedBow</defName>
     <label>cursed bow</label>
-    <description>저주가 깃든 활. 화살에 맞은 대상이 40% 확률로 양으로 변신한다.</description>
+    <description>A bow imbued with a curse. Targets hit by its arrows have a 40% chance of being polymorphed into a sheep.</description>
     <graphicData>
       <texPath>Things/Item/Equipment/WeaponRanged/BowRecurve</texPath>
       <graphicClass>Graphic_Single</graphicClass>

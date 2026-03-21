@@ -2,13 +2,13 @@
 <Defs>
 
   <!-- ======================================================
-       1) 약물로 변신 — IngestionOutcomeDoer_Shapeshift
-       먹으면 자기 자신이 곰으로 변신
+       1) Drug-based shapeshift — IngestionOutcomeDoer_Shapeshift
+       Consuming transforms the user into a bear
        ====================================================== -->
   <ThingDef ParentName="MakeableDrugBase">
     <defName>SSFTest_BearElixir</defName>
     <label>bear elixir</label>
-    <description>복용하면 곰으로 변신하는 영약. 85% 확률로 성공.</description>
+    <description>An elixir that transforms the drinker into a bear. 85% success chance.</description>
     <graphicData>
       <texPath>Things/Item/Drug/Penoxycyline</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>

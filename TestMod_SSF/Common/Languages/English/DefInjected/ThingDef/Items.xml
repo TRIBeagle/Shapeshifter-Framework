@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Drug -->
+  <SSFTest_BearElixir.label>bear elixir</SSFTest_BearElixir.label>
+  <SSFTest_BearElixir.description>An elixir that transforms the drinker into a bear. 85% success chance.</SSFTest_BearElixir.description>
+
+  <!-- Item: Self target -->
+  <SSFTest_ShiftScroll_Self.label>shift scroll (self)</SSFTest_ShiftScroll_Self.label>
+  <SSFTest_ShiftScroll_Self.description>A scroll that transforms the user into a bear when used.</SSFTest_ShiftScroll_Self.description>
+
+  <!-- Item: Target -->
+  <SSFTest_ShiftScroll_Target.label>shift scroll (target)</SSFTest_ShiftScroll_Target.label>
+  <SSFTest_ShiftScroll_Target.description>A scroll that transforms the clicked target into a bear. Select a target to walk over and use.</SSFTest_ShiftScroll_Target.description>
+
+  <!-- Projectile -->
+  <SSFTest_Projectile_CursedArrow.label>cursed arrow</SSFTest_Projectile_CursedArrow.label>
+
+  <!-- Weapon -->
+  <SSFTest_Weapon_CursedBow.label>cursed bow</SSFTest_Weapon_CursedBow.label>
+  <SSFTest_Weapon_CursedBow.description>A bow imbued with a curse. Targets hit by its arrows have a 40% chance of being polymorphed into a sheep.</SSFTest_Weapon_CursedBow.description>
+
+  <!-- Equip weapon: Dark blade -->
+  <SSFTest_Weapon_DarkBlade.label>Test: dark blade</SSFTest_Weapon_DarkBlade.label>
+  <SSFTest_Weapon_DarkBlade.description>A blade imbued with dark power. Equipping grants the dark knight transformation ability. Unequipping removes the ability.</SSFTest_Weapon_DarkBlade.description>
+
+  <!-- Equip apparel: Phantom cloak -->
+  <SSFTest_Apparel_PhantomCloak.label>Test: phantom cloak</SSFTest_Apparel_PhantomCloak.label>
+  <SSFTest_Apparel_PhantomCloak.description>A cloak imbued with phantom power. Wearing grants the phantom transformation ability. Removing it removes the ability.</SSFTest_Apparel_PhantomCloak.description>
+
+</LanguageData>

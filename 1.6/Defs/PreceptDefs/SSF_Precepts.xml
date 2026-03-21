@@ -2,83 +2,74 @@
 <Defs>
 
   <!-- ======================================================
-       변신(Shapeshifting) 규율 — Ideology DLC 전용
-       MayRequire로 DLC 미설치 시 자동 무시
-       5단계: 절대적으로 혐오함 / 못마땅함 / 관심 없음 / 존중함 / 숭고함
+       Shapeshifting Precepts — Ideology DLC only
+       MayRequire ensures auto-skip when DLC is not installed
+       5 levels: Abhorrent / Disapproved / Neutral / Respected / Sublime
        ====================================================== -->
 
-  <!-- 변신 발생 이력 이벤트 (PreceptComp_SelfTookMemoryThought 연동) -->
+  <!-- History event for shapeshifting (PreceptComp_SelfTookMemoryThought linkage) -->
   <HistoryEventDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifted</defName>
-    <label>변신</label>
+    <label>shapeshifted</label>
   </HistoryEventDef>
 
-  <!-- 이슈: 변신 수용도 -->
+  <!-- Issue: shapeshifting acceptance -->
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifting</defName>
-    <label>변신</label>
+    <label>shapeshifting</label>
     <iconPath>UI/Issues/SSF_Shapeshifting</iconPath>
   </IssueDef>
 
-  <!-- ── 단계 0: 절대적으로 혐오함 (금지) ── -->
+  <!-- ── Level 0: Absolute abhorrence (forbidden) ── -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifting_Abhorrent</defName>
     <issue>SSF_Shapeshifting</issue>
-    <label>절대적으로 혐오함</label>
-    <description>타고난 몸을 바꾸는 것은 자연에 대한 극악무도한 모독이다.</description>
+    <label>absolute abhorrence</label>
+    <description>Altering one's natural body is an utterly unforgivable desecration of nature.</description>
     <impact>High</impact>
     <displayOrderInIssue>0</displayOrderInIssue>
     <defaultSelectionWeight>0.5</defaultSelectionWeight>
     <comps>
-      <!-- 변신 중 기분 -10 (상황 감정) -->
       <li Class="PreceptComp_SituationalThought">
         <thought>SSF_Thought_Shapeshifted_Abhorrent</thought>
       </li>
-      <!-- 변신자에 대한 의견 -20 (사회 감정) -->
       <li Class="PreceptComp_SituationalThought">
         <thought>SSF_Thought_Shapeshifted_Abhorrent_Social</thought>
       </li>
-      <!-- 금기 위반 기억 감정 -10 (변신 시 1회 부여) -->
       <li Class="PreceptComp_SelfTookMemoryThought">
         <eventDef>SSF_Shapeshifted</eventDef>
         <thought>SSF_Thought_ShapeshiftTabooViolated</thought>
       </li>
-      <!-- 변신 목격 기억 감정 -8 (같은 이념 식민지인에게 부여) -->
       <li Class="PreceptComp_KnowsMemoryThought">
         <eventDef>SSF_Shapeshifted</eventDef>
         <thought>SSF_Thought_WitnessedShapeshift_Abhorrent</thought>
       </li>
-      <!-- 규율 패널에 "금지됨: 변신" 표시 -->
       <li Class="PreceptComp_UnwillingToDo">
         <eventDef>SSF_Shapeshifted</eventDef>
       </li>
     </comps>
   </PreceptDef>
 
-  <!-- ── 단계 1: 못마땅함 ── -->
+  <!-- ── Level 1: Disapproval ── -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifting_Disapproved</defName>
     <issue>SSF_Shapeshifting</issue>
-    <label>못마땅함</label>
-    <description>타고난 몸을 바꾸는 것은 역겹고 부자연스러운 행위다.</description>
+    <label>disapproval</label>
+    <description>Altering one's natural body is a disgusting and unnatural act.</description>
     <impact>Medium</impact>
     <displayOrderInIssue>5</displayOrderInIssue>
     <defaultSelectionWeight>1</defaultSelectionWeight>
     <comps>
-      <!-- 변신 중 기분 -5 (상황 감정) -->
       <li Class="PreceptComp_SituationalThought">
         <thought>SSF_Thought_Shapeshifted_Disapproved</thought>
       </li>
-      <!-- 변신자에 대한 의견 -10 (사회 감정) -->
       <li Class="PreceptComp_SituationalThought">
         <thought>SSF_Thought_Shapeshifted_Disapproved_Social</thought>
       </li>
-      <!-- 혐오 위반 기억 감정 -5 (변신 시 1회 부여) -->
       <li Class="PreceptComp_SelfTookMemoryThought">
         <eventDef>SSF_Shapeshifted</eventDef>
         <thought>SSF_Thought_ShapeshiftDisapprovedViolated</thought>
       </li>
-      <!-- 변신 목격 기억 감정 -4 (같은 이념 식민지인에게 부여) -->
       <li Class="PreceptComp_KnowsMemoryThought">
         <eventDef>SSF_Shapeshifted</eventDef>
         <thought>SSF_Thought_WitnessedShapeshift_Disapproved</thought>
@@ -86,36 +77,33 @@
     </comps>
   </PreceptDef>
 
-  <!-- ── 단계 2: 관심 없음 ── -->
+  <!-- ── Level 2: Indifferent ── -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifting_Neutral</defName>
     <issue>SSF_Shapeshifting</issue>
-    <label>관심 없음</label>
-    <description>변신은 특별히 좋지도 나쁘지도 않다.</description>
+    <label>indifferent</label>
+    <description>Shapeshifting is neither particularly good nor bad.</description>
     <impact>Low</impact>
     <displayOrderInIssue>10</displayOrderInIssue>
     <defaultSelectionWeight>2</defaultSelectionWeight>
   </PreceptDef>
 
-  <!-- ── 단계 3: 존중함 ── -->
+  <!-- ── Level 3: Respected ── -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifting_Respected</defName>
     <issue>SSF_Shapeshifting</issue>
-    <label>존중함</label>
-    <description>몸을 바꿀 수 있는 힘은 존경받을 만한 재능이다.</description>
+    <label>respected</label>
+    <description>The power to change one's body is a talent worthy of respect.</description>
     <impact>Medium</impact>
     <displayOrderInIssue>15</displayOrderInIssue>
     <defaultSelectionWeight>1</defaultSelectionWeight>
     <comps>
-      <!-- 변신 중 기분 +5 (상황 감정) -->
       <li Class="PreceptComp_SituationalThought">
         <thought>SSF_Thought_Shapeshifted_Respected</thought>
       </li>
-      <!-- 변신자에 대한 의견 +10 (사회 감정) -->
       <li Class="PreceptComp_SituationalThought">
         <thought>SSF_Thought_Shapeshifted_Respected_Social</thought>
       </li>
-      <!-- 변신 목격 기억 감정 +4 (같은 이념 식민지인에게 부여) -->
       <li Class="PreceptComp_KnowsMemoryThought">
         <eventDef>SSF_Shapeshifted</eventDef>
         <thought>SSF_Thought_WitnessedShapeshift_Respected</thought>
@@ -123,25 +111,22 @@
     </comps>
   </PreceptDef>
 
-  <!-- ── 단계 4: 숭고함 ── -->
+  <!-- ── Level 4: Sublime ── -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifting_Sublime</defName>
     <issue>SSF_Shapeshifting</issue>
-    <label>숭고함</label>
-    <description>변신은 신성한 축복이다. 그 힘을 지닌 자는 경외의 대상이다.</description>
+    <label>sublime</label>
+    <description>Shapeshifting is a divine blessing. Those who possess this power are to be revered.</description>
     <impact>High</impact>
     <displayOrderInIssue>20</displayOrderInIssue>
     <defaultSelectionWeight>0.5</defaultSelectionWeight>
     <comps>
-      <!-- 변신 중 기분 +10 (상황 감정) -->
       <li Class="PreceptComp_SituationalThought">
         <thought>SSF_Thought_Shapeshifted_Sublime</thought>
       </li>
-      <!-- 변신자에 대한 의견 +20 (사회 감정) -->
       <li Class="PreceptComp_SituationalThought">
         <thought>SSF_Thought_Shapeshifted_Sublime_Social</thought>
       </li>
-      <!-- 변신 목격 기억 감정 +8 (같은 이념 식민지인에게 부여) -->
       <li Class="PreceptComp_KnowsMemoryThought">
         <eventDef>SSF_Shapeshifted</eventDef>
         <thought>SSF_Thought_WitnessedShapeshift_Sublime</thought>
