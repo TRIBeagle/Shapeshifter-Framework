@@ -4,6 +4,7 @@
 //        단일 Dictionary.TryGetValue 호출로 대체. 비변신 폰은 ContainsKey 한 번으로 즉시 스킵.
 // 주의 : Register/Unregister는 ApplyForm, RemoveForm, PostLoadInit, PostSpawnSetup, PostDestroy에서만 호출.
 //        PostDeSpawn에서는 호출하지 않음 (상단/동면관/포드 진입 시 레지스트리 누락 방지).
+//        FinalizeInit 중 ClearAll → 재등록 사이에 _reinitializing 가드로 hediff 기반 폴백 조회 제공.
 
 using ShapeshifterFramework.Hediffs;
 using System.Collections.Generic;
@@ -15,6 +16,9 @@ namespace ShapeshifterFramework.Utilities
     {
         // HediffComp_ShapeshiftCore 기반 전역 레지스트리
         private static readonly Dictionary<Pawn, HediffComp_ShapeshiftCore> _active = new Dictionary<Pawn, HediffComp_ShapeshiftCore>(32);
+
+        // FinalizeInit 중 ClearAll → 재등록 사이 타이밍 이슈 방어
+        private static bool _reinitializing;
 
         /// <summary>변신 중인 폰을 레지스트리에 등록 (HediffComp_ShapeshiftCore).</summary>
         internal static void Register(Pawn pawn, HediffComp_ShapeshiftCore comp)
@@ -40,6 +44,11 @@ namespace ShapeshifterFramework.Utilities
                 form = comp.currentForm;
                 if (form != null) return true;
             }
+
+            // FinalizeInit 중 레지스트리가 비어 있을 때 hediff 기반 폴백
+            if (_reinitializing && pawn != null)
+                return TryGetFallback(pawn, out comp, out form);
+
             comp = null;
             form = null;
             return false;
@@ -48,7 +57,44 @@ namespace ShapeshifterFramework.Utilities
         /// <summary>변신 중인지 여부만 판정. O(1).</summary>
         internal static bool IsActive(Pawn pawn)
         {
-            return pawn != null && _active.ContainsKey(pawn);
+            if (pawn != null && _active.ContainsKey(pawn))
+                return true;
+
+            // FinalizeInit 중 hediff 기반 폴백
+            if (_reinitializing && pawn != null)
+                return TryGetFallback(pawn, out _, out _);
+
+            return false;
+        }
+
+        /// <summary>FinalizeInit 재초기화 시작 — 레지스트리 비어있을 때 hediff 폴백 활성화.</summary>
+        internal static void BeginReInit() { _reinitializing = true; }
+
+        /// <summary>FinalizeInit 재초기화 완료 — hediff 폴백 비활성화.</summary>
+        internal static void EndReInit() { _reinitializing = false; }
+
+        /// <summary>hediff 리스트 직접 탐색 폴백. FinalizeInit 중에만 사용.</summary>
+        private static bool TryGetFallback(Pawn pawn, out HediffComp_ShapeshiftCore comp, out ShapeshiftFormDef form)
+        {
+            comp = null;
+            form = null;
+            var hediffs = pawn.health?.hediffSet?.hediffs;
+            if (hediffs == null) return false;
+            for (int i = 0; i < hediffs.Count; i++)
+            {
+                var comps = hediffs[i].comps;
+                if (comps == null) continue;
+                for (int c = 0; c < comps.Count; c++)
+                {
+                    if (comps[c] is HediffComp_ShapeshiftCore core && core.currentForm != null)
+                    {
+                        comp = core;
+                        form = core.currentForm;
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         /// <summary>활성 변신 폰이 하나라도 있는지 O(1) 확인.</summary>

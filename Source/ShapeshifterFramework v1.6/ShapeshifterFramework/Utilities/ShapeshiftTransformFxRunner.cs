@@ -54,29 +54,40 @@ namespace ShapeshifterFramework.Utilities
         public override void FinalizeInit()
         {
             base.FinalizeInit();
-            ShapeshiftCoreUtility.ClearEvents();
-            ShapeshiftRuntimeCaches.ClearAll();
 
-            // 캐시 클리어로 유실된 변신 폰 레지스트리 + 런타임 캐시 재등록
-            if (Find.Maps != null)
+            // ClearAll → 재등록 사이에 다른 GameComponent가 레지스트리를 조회해도
+            // hediff 기반 폴백으로 정확한 결과를 반환하도록 가드
+            ShapeshiftRegistry.BeginReInit();
+            try
             {
-                for (int m = 0; m < Find.Maps.Count; m++)
+                ShapeshiftCoreUtility.ClearEvents();
+                ShapeshiftRuntimeCaches.ClearAll();
+
+                // 캐시 클리어로 유실된 변신 폰 레지스트리 + 런타임 캐시 재등록
+                if (Find.Maps != null)
                 {
-                    var pawns = Find.Maps[m]?.mapPawns?.AllPawnsSpawned;
-                    if (pawns == null) continue;
-                    for (int i = 0; i < pawns.Count; i++)
+                    for (int m = 0; m < Find.Maps.Count; m++)
                     {
-                        // HediffComp_ShapeshiftCore 기반 조회
-                        if (ShapeshiftCoreUtility.TryGetCore(pawns[i], out var core))
+                        var pawns = Find.Maps[m]?.mapPawns?.AllPawnsSpawned;
+                        if (pawns == null) continue;
+                        for (int i = 0; i < pawns.Count; i++)
                         {
-                            if (core.isTransformed && core.currentForm != null)
+                            // HediffComp_ShapeshiftCore 기반 조회
+                            if (ShapeshiftCoreUtility.TryGetCore(pawns[i], out var core))
                             {
-                                ShapeshiftRegistry.Register(pawns[i], core);
-                                HediffComp_ShapeshiftCore.ReapplyRuntimeCaches(pawns[i], core.currentForm);
+                                if (core.isTransformed && core.currentForm != null)
+                                {
+                                    ShapeshiftRegistry.Register(pawns[i], core);
+                                    HediffComp_ShapeshiftCore.ReapplyRuntimeCaches(pawns[i], core.currentForm);
+                                }
                             }
                         }
                     }
                 }
+            }
+            finally
+            {
+                ShapeshiftRegistry.EndReInit();
             }
         }
 

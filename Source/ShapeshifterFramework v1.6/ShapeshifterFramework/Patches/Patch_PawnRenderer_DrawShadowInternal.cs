@@ -13,7 +13,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(PawnRenderer), "DrawShadowInternal")]
     internal static class Patch_PawnRenderer_DrawShadowInternal
     {
-        private struct ShadowKey
+        private struct ShadowKey : System.IEquatable<ShadowKey>
         {
             public Vector3 v;
             public Vector3 o;
@@ -29,11 +29,14 @@ namespace ShapeshifterFramework.Patches
                 }
             }
 
+            public bool Equals(ShadowKey other)
+            {
+                return v == other.v && o == other.o;
+            }
+
             public override bool Equals(object obj)
             {
-                if (!(obj is ShadowKey)) return false;
-                ShadowKey other = (ShadowKey)obj;
-                return v == other.v && o == other.o;
+                return obj is ShadowKey key && Equals(key);
             }
         }
 
