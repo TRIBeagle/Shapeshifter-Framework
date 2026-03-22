@@ -310,6 +310,7 @@ namespace ShapeshifterFramework.Hediffs
 
             tempPartRestoreRecords.Clear();
             shapeshiftVerbTracker = null;
+            _verbKeyCache = null;
 
             try { RefreshPawn(pawn, this); } catch (Exception ex) { Log.Warning($"[SSF] Orphan cleanup RefreshPawn error: {ex}"); }
         }

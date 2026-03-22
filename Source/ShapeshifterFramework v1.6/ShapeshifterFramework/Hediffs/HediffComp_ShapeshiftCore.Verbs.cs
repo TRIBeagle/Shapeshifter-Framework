@@ -116,31 +116,56 @@ namespace ShapeshifterFramework.Hediffs
             return null;
         }
 
-        /// <summary>verb 키 생성. 동일 이름 verb가 복수일 때만 인덱스 부여.</summary>
-        string AutoKey(Verb v)
-        {
-            var f = currentForm?.defName ?? "None";
-            string vName = v?.verbProps?.label ?? v?.GetType().Name ?? "UnknownVerb";
+        /// <summary>폼 전환 시 빌드되는 verb별 키 캐시. AutoKey O(N²) → O(1) 최적화.</summary>
+        private Dictionary<Verb, string> _verbKeyCache;
 
-            // 동일 이름 verb 중복 여부 확인
-            int dupeCount = 0;
-            int myIndex = 0;
+        /// <summary>verb 키 캐시 초기화. 폼 전환 시 호출.</summary>
+        private void BuildVerbKeyCache()
+        {
             var vt = shapeshiftVerbTracker;
-            if (vt != null)
+            if (vt == null) { _verbKeyCache = null; return; }
+
+            var verbs = vt.AllVerbs;
+            var f = currentForm?.defName ?? "None";
+
+            // 이름별 총 개수 수집
+            var nameCount = new Dictionary<string, int>(verbs.Count);
+            for (int i = 0; i < verbs.Count; i++)
             {
-                var verbs = vt.AllVerbs;
-                for (int i = 0; i < verbs.Count; i++)
-                {
-                    string otherName = verbs[i]?.verbProps?.label ?? verbs[i]?.GetType().Name ?? "UnknownVerb";
-                    if (otherName == vName)
-                    {
-                        if (verbs[i] == v) myIndex = dupeCount;
-                        dupeCount++;
-                    }
-                }
+                string vName = verbs[i]?.verbProps?.label ?? verbs[i]?.GetType().Name ?? "UnknownVerb";
+                if (nameCount.ContainsKey(vName)) nameCount[vName]++;
+                else nameCount[vName] = 1;
             }
 
-            return dupeCount > 1 ? f + "#" + vName + "#" + myIndex : f + "#" + vName;
+            // verb → 키 문자열 매핑
+            _verbKeyCache = new Dictionary<Verb, string>(verbs.Count);
+            var idx = new Dictionary<string, int>(verbs.Count);
+            for (int i = 0; i < verbs.Count; i++)
+            {
+                var v = verbs[i];
+                if (v == null) continue;
+                string vName = v.verbProps?.label ?? v.GetType().Name ?? "UnknownVerb";
+                if (!idx.ContainsKey(vName)) idx[vName] = 0;
+                int myIdx = idx[vName]++;
+                _verbKeyCache[v] = nameCount[vName] > 1
+                    ? f + "#" + vName + "#" + myIdx
+                    : f + "#" + vName;
+            }
+        }
+
+        /// <summary>verb 키 생성. 캐시 우선 조회, 미스 시 폴백.</summary>
+        string AutoKey(Verb v)
+        {
+            // 캐시 히트
+            if (_verbKeyCache != null && v != null)
+            {
+                string key;
+                if (_verbKeyCache.TryGetValue(v, out key)) return key;
+            }
+            // 폴백: 캐시 없을 때 기존 로직 (인덱스 없이 단순 키)
+            var f = currentForm?.defName ?? "None";
+            string vName = v?.verbProps?.label ?? v?.GetType().Name ?? "UnknownVerb";
+            return f + "#" + vName;
         }
 
         /// <summary>verb 자동공격 활성 여부.</summary>
@@ -182,6 +207,7 @@ namespace ShapeshifterFramework.Hediffs
         private void InitAutoToggleForForm()
         {
             var vt = ShapeshiftVerbTracker;
+            BuildVerbKeyCache();
             if (vt == null) return;
 
             bool toggleEnabled = ShapeshifterFrameworkMod.Settings?.showVerbAutoToggle ?? true;

@@ -365,16 +365,17 @@ namespace ShapeshifterFramework.Hediffs
 
             var mode = ResolvedSustainMode;
 
-            bool apparelMet = !hasApparels || CheckSustainApparels(pawn, apparels);
-            bool weaponMet = !hasWeapons || CheckSustainWeapons(pawn, weapons);
-            bool hediffMet = !hasHediffs || CheckSustainHediffs(pawn, hediffs);
-            bool geneMet = !hasGenes || CheckSustainGenes(pawn, genes);
-
             if (mode == SustainMode.All)
+            {
+                // All 모드: 모든 카테고리 충족 필요
+                bool apparelMet = !hasApparels || CheckSustainApparels(pawn, apparels);
+                bool weaponMet = !hasWeapons || CheckSustainWeapons(pawn, weapons);
+                bool hediffMet = !hasHediffs || CheckSustainHediffs(pawn, hediffs);
+                bool geneMet = !hasGenes || CheckSustainGenes(pawn, genes);
                 return apparelMet && weaponMet && hediffMet && geneMet;
+            }
 
             // Any 모드: 요구사항이 있는 카테고리 중 하나라도 충족하면 유지
-            // 빈 카테고리는 무시 (빈 카테고리가 true를 반환하면 Any가 절대 실패하지 않으므로)
             if (hasApparels && CheckSustainApparels(pawn, apparels)) return true;
             if (hasWeapons && CheckSustainWeapons(pawn, weapons)) return true;
             if (hasHediffs && CheckSustainHediffs(pawn, hediffs)) return true;
@@ -818,6 +819,7 @@ namespace ShapeshifterFramework.Hediffs
 
             // VerbTracker 해제
             shapeshiftVerbTracker = null;
+            _verbKeyCache = null;
             verbAutoToggle.Clear();
 
             if (__oldForm != null)
@@ -1012,6 +1014,7 @@ namespace ShapeshifterFramework.Hediffs
                 if (comp != null && resetShapeshiftVerbs)
                 {
                     comp.shapeshiftVerbTracker = null;
+                    comp._verbKeyCache = null;
 
                     var vt = comp.ShapeshiftVerbTracker;
                     if (vt != null)

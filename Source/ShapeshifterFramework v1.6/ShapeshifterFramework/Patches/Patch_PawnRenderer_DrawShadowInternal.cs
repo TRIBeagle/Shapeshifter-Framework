@@ -4,6 +4,7 @@
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -40,8 +41,8 @@ namespace ShapeshifterFramework.Patches
             }
         }
 
-        private static readonly Dictionary<ShadowKey, Graphic_Shadow> FormShadowGraphicByKey =
-            new Dictionary<ShadowKey, Graphic_Shadow>(64);
+        private static readonly ConcurrentDictionary<ShadowKey, Graphic_Shadow> FormShadowGraphicByKey =
+            new ConcurrentDictionary<ShadowKey, Graphic_Shadow>();
 
         /// <summary>맵 전환/게임 로드 시 그림자 캐시 정리.</summary>
         public static void ClearCache() { FormShadowGraphicByKey.Clear(); }
@@ -85,13 +86,12 @@ namespace ShapeshifterFramework.Patches
                 return true;
 
             ShadowKey key = new ShadowKey { v = vol, o = off };
-            Graphic_Shadow formShadow;
-            if (!FormShadowGraphicByKey.TryGetValue(key, out formShadow) || formShadow == null)
+            // 멀티스레드 렌더링 안전: GetOrAdd로 원자적 캐시 조회·생성
+            Graphic_Shadow formShadow = FormShadowGraphicByKey.GetOrAdd(key, k =>
             {
-                ShadowData sd = new ShadowData { volume = vol, offset = off };
-                formShadow = new Graphic_Shadow(sd);
-                FormShadowGraphicByKey[key] = formShadow;
-            }
+                ShadowData sd = new ShadowData { volume = k.v, offset = k.o };
+                return new Graphic_Shadow(sd);
+            });
 
             formShadow.Draw(drawLoc, Rot4.North, pawn);
 

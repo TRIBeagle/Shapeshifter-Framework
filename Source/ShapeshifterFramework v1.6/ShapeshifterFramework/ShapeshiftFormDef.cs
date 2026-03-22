@@ -389,6 +389,12 @@ namespace ShapeshifterFramework
                 for (int i = 0; i < disabledWorkTypesOnTransform.Count; i++)
                     if (disabledWorkTypesOnTransform[i] == null) yield return $"disabledWorkTypesOnTransform[{i}]: null WorkTypeDef reference";
 
+            // 스케일 범위 검증
+            if (bodyDrawScale.HasValue && bodyDrawScale.Value <= 0f)
+                yield return $"bodyDrawScale must be > 0, got {bodyDrawScale.Value}";
+            if (headDrawScale.HasValue && headDrawScale.Value <= 0f)
+                yield return $"headDrawScale must be > 0, got {headDrawScale.Value}";
+
             // 해제 부산물 참조
             if (revertDrops != null)
                 for (int i = 0; i < revertDrops.Count; i++)
