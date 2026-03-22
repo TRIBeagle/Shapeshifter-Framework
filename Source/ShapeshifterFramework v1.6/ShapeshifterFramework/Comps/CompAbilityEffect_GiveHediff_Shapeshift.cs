@@ -89,15 +89,8 @@ namespace ShapeshifterFramework.Comps
             if (formDef != null && !ShapeshiftEligibility.IsRaceAllowed(pawn, formDef))
                 return false;
 
-            // 이미 다른 폼으로 변신 중이면 차단 (같은 폼은 갱신 허용)
-            if (ShapeshiftCoreUtility.TryGetCore(pawn, out var core))
-            {
-                if (core.isTransformed && core.currentForm != null
-                    && ResolvedFormDef != null && core.currentForm != ResolvedFormDef)
-                {
-                    return false;
-                }
-            }
+            if (Props.hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, Props.hediffDef))
+                return false;
 
             return true;
         }

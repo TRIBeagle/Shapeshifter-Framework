@@ -65,7 +65,6 @@ namespace ShapeshifterFramework.Projectiles
         /// <summary>확장 설정에 따라 대상에게 hediff 부여. 이미 다른 폼 변신 중이면 스킵.</summary>
         private static void ApplyHediffToTarget(Pawn target, GiveHediffProjectileExtension_Shapeshift ext)
         {
-            // 이미 다른 폼으로 변신 중이면 스킵 (같은 폼은 갱신 허용)
             if (ShapeshiftEligibility.IsTransformedIntoDifferentForm(target, ext.hediffDef))
                 return;
 

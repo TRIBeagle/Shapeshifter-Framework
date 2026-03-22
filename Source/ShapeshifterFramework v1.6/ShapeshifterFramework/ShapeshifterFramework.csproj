@@ -137,6 +137,7 @@
     <Compile Include="Utilities\ShapeshiftPatchStatus.cs" />
     <Compile Include="Utilities\ShapeshiftDiagnostics.cs" />
     <Compile Include="Utilities\ShapeshiftOverlayUtility.cs" />
+    <Compile Include="Utilities\FloatMenuPatchHelper.cs" />
     <Compile Include="Utilities\ShapeshiftFilthScope.cs" />
 
     <Compile Include="Utilities\ShapeshiftPartControlUtility.cs" />

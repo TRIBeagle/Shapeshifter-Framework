@@ -5,7 +5,6 @@
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Comps;
-using ShapeshifterFramework.Hediffs;
 using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,12 +20,8 @@ namespace ShapeshifterFramework.Patches
         {
             if (__result == null || __result.Count == 0) return;
 
-            // 대상 Pawn 확인
-            Pawn pawn = null;
-            if (context != null && context.FirstSelectedPawn != null) pawn = context.FirstSelectedPawn;
-            else if (selectedPawns != null && selectedPawns.Count > 0) pawn = selectedPawns[0];
+            var pawn = FloatMenuPatchHelper.GetHumanlikePawn(selectedPawns, context);
             if (pawn == null) return;
-            if (!pawn.RaceProps.Humanlike) return;
 
             bool ideologyForbidden = ShapeshiftEligibility.IsIdeologyForbidden(pawn);
 
@@ -39,13 +34,7 @@ namespace ShapeshifterFramework.Patches
                 var opt = __result[i];
                 if (opt == null || opt.Disabled) continue;
 
-                // 대상 Thing 추출
-                Thing target = opt.iconThing;
-                if (target == null)
-                {
-                    var ct = opt.revalidateClickTarget as Thing;
-                    if (ct != null) target = ct;
-                }
+                Thing target = FloatMenuPatchHelper.GetTargetThing(opt);
                 if (target == null) continue;
 
                 // 변신 약물 여부 확인: IngestionOutcomeDoer_Shapeshift가 포함된 약물인지 체크
@@ -65,15 +54,7 @@ namespace ShapeshifterFramework.Patches
 
                 if (blockReason == null) continue;
 
-                // 비활성 메뉴 생성
-                var disabled = new FloatMenuOption(opt.Label + " (" + blockReason + ")", null)
-                {
-                    Disabled = true,
-                    iconThing = opt.iconThing,
-                    tutorTag = opt.tutorTag,
-                    autoTakeable = false
-                };
-                __result[i] = disabled;
+                __result[i] = FloatMenuPatchHelper.MakeDisabled(opt, " (" + blockReason + ")");
             }
         }
 

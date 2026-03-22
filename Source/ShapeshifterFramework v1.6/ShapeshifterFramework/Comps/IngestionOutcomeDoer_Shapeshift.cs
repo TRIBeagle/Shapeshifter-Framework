@@ -31,10 +31,9 @@ namespace ShapeshifterFramework.Comps
                 return;
             }
 
-            // 방어적 이데올로기 차단 (FloatMenu 우회 방어 — 드래그&드롭 등)
+            // 방어적 이데올로기 차단 (드래그&드롭 등 FloatMenu 우회 방어)
             if (ShapeshiftEligibility.IsIdeologyForbidden(pawn)) return;
 
-            // 이미 다른 폼으로 변신 중이면 차단 (같은 폼은 갱신 허용)
             if (ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, hediffDef))
             {
                 Messages.Message("SSF_Message_AlreadyTransformed".Translate(), pawn, MessageTypeDefOf.RejectInput, false);

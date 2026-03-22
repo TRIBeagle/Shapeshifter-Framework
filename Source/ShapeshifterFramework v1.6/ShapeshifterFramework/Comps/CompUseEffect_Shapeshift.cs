@@ -5,7 +5,6 @@
 // 주의 : 이데올로기 금지 시 사용 차단, 이미 다른 폼 변신 중이면 사용 차단.
 
 using RimWorld;
-using ShapeshifterFramework.Hediffs;
 using ShapeshifterFramework.Utilities;
 using Verse;
 
@@ -16,40 +15,15 @@ namespace ShapeshifterFramework.Comps
     {
         public CompProperties_UseEffect_Shapeshift Props => (CompProperties_UseEffect_Shapeshift)props;
 
-        // 캐시: hediffDef → HediffCompProperties_ShapeshiftCore.formDef
-        private ShapeshiftFormDef _cachedFormDef;
-        private bool _formDefResolved;
-
-        /// <summary>hediffDef에 바인딩된 ShapeshiftFormDef 조회 (캐시).</summary>
-        private ShapeshiftFormDef ResolvedFormDef
-        {
-            get
-            {
-                if (!_formDefResolved)
-                {
-                    _cachedFormDef = null;
-                    if (Props.hediffDef != null)
-                    {
-                        var coreProps = Props.hediffDef.CompProps<HediffCompProperties_ShapeshiftCore>();
-                        _cachedFormDef = coreProps?.formDef;
-                    }
-                    _formDefResolved = true;
-                }
-                return _cachedFormDef;
-            }
-        }
-
         /// <summary>사용 가능 여부 판정. 이데올로기 금지 및 이미 다른 폼 변신 중이면 차단.</summary>
         public override bool CanBeUsedBy(Pawn pawn, out string failReason)
         {
-            // 이데올로기 차단 (바닐라 키 사용)
             if (ShapeshiftEligibility.IsIdeologyForbidden(pawn))
             {
                 failReason = "IdeoligionForbids".Translate();
                 return false;
             }
 
-            // 이미 다른 폼 변신 중 차단 (같은 폼은 갱신 허용)
             if (Props.hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, Props.hediffDef))
             {
                 failReason = "SSF_Message_AlreadyTransformed".Translate();

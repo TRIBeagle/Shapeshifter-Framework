@@ -247,7 +247,7 @@ namespace ShapeshifterFramework.Hediffs
 
             if (!ShapeshiftEligibility.CanTransformBasic(pawn, form))
             {
-                try { Messages.Message("SSF_Message_CannotTransform".Translate(form.LabelCap), MessageTypeDefOf.RejectInput, false); } catch { }
+                try { Messages.Message("SSF_Message_CannotTransform".Translate(form.LabelCap), MessageTypeDefOf.RejectInput, false); } catch (System.Exception ex) { Log.Warning("[SSF] ApplyForm 메시지 표시 실패: " + ex.Message); }
                 // 좀비 hediff 방지: 변신 실패 시 hediff 자체를 제거
                 if (parent != null) parent.Severity = 0f;
                 return;

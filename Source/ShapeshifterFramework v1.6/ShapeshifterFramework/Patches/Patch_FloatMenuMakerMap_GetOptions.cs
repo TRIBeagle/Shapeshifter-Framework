@@ -21,12 +21,8 @@ namespace ShapeshifterFramework.Patches
         {
             if (__result == null || __result.Count == 0) return;
 
-            // 대상 Pawn 확인
-            Pawn pawn = null;
-            if (context != null && context.FirstSelectedPawn != null) pawn = context.FirstSelectedPawn;
-            else if (selectedPawns != null && selectedPawns.Count > 0) pawn = selectedPawns[0];
+            var pawn = FloatMenuPatchHelper.GetHumanlikePawn(selectedPawns, context);
             if (pawn == null) return;
-            if (!pawn.RaceProps.Humanlike) return;
 
             // HediffComp_ShapeshiftCore 기반 조회
             if (!ShapeshiftRegistry.TryGet(pawn, out var core, out var form)) return;
@@ -43,15 +39,7 @@ namespace ShapeshifterFramework.Patches
                 if (opt == null) continue;
                 if (opt.Disabled) continue;
 
-                // 대상 Thing 추출
-                Thing target = opt.iconThing;
-                if (target == null)
-                {
-                    var ct = opt.revalidateClickTarget as Thing;
-                    if (ct != null) target = ct;
-                    // WorldObject 제외
-                }
-
+                Thing target = FloatMenuPatchHelper.GetTargetThing(opt);
                 if (target == null) continue;
 
                 bool isApparel = target is Apparel;
@@ -62,15 +50,7 @@ namespace ShapeshifterFramework.Patches
 
                 if ((isApparel && lockApparel) || (isWeaponThing && lockWeapon))
                 {
-                    // 비활성 메뉴 생성
-                    var disabled = new FloatMenuOption(opt.Label + blockedSuffix, null)
-                    {
-                        Disabled = true,
-                        iconThing = opt.iconThing,
-                        tutorTag = opt.tutorTag,
-                        autoTakeable = false
-                    };
-                    __result[i] = disabled;
+                    __result[i] = FloatMenuPatchHelper.MakeDisabled(opt, blockedSuffix);
                 }
             }
         }
