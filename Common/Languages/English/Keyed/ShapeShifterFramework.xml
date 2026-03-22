@@ -65,6 +65,9 @@
   <SSF_Gizmo_Tooltip_Timed>{0}: {1} remaining / {2} total</SSF_Gizmo_Tooltip_Timed>
   <SSF_Gizmo_VerbToggle_Tip>Show/hide auto-attack toggles</SSF_Gizmo_VerbToggle_Tip>
 
+  <SSF_Tooltip_FormName>Form</SSF_Tooltip_FormName>
+  <SSF_Tooltip_Duration>Duration</SSF_Tooltip_Duration>
+
   <SSF_Setting_DebugLog_Title>Enable Developer Debug Logs</SSF_Setting_DebugLog_Title>
   <SSF_Setting_DebugLog_Desc>Prints detailed internal framework operations to the RimWorld debug log. Only enable this for mod development or bug reporting.</SSF_Setting_DebugLog_Desc>
   
