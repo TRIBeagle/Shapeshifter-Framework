@@ -2,7 +2,7 @@
 // 목적 : Yayo's Combat 모드 감지 및 호환성 훅 포인트 제공.
 // 용도 : 변신 폼의 NativeVerb가 Yayo 탄약 시스템과 충돌하지 않는지 확인하기 위한 감지 전용 스텁.
 //        현재는 감지 로그만 출력하며, 실제 충돌 확인 시 Harmony prefix를 추가할 수 있는 구조.
-// 주의 : Yayo 어셈블리에 하드 참조 없음. 패키지 ID는 Mlie.YayosCombat3(Continued) 및 com.yayo.combat3(레거시) 양쪽 감지.
+// 주의 : Yayo 어셈블리에 하드 참조 없음. 패키지 ID는 Mlie.YayosCombat3(Continued)로 감지.
 //        Yayo 탄약 시스템은 3중 안전장치로 폼 verb를 면제:
 //        1) Def 패칭: IsRangedWeapon ThingDef에만 CompApparelReloadable 추가 — FormDef는 대상 아님
 //        2) 발사 시: EquipmentSource != null 체크 — 폼 verb는 null이므로 스킵
