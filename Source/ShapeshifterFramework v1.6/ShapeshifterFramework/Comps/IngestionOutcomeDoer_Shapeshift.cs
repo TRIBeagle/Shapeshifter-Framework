@@ -2,7 +2,7 @@
 // 목적 : 약물(Drug) 섭취 시 폰을 변신시키는 IngestionOutcomeDoer 확장.
 // 용도 : 바닐라의 IngestionOutcomeDoer를 상속하여, 약물 XML의 <outcomeDoers>에서 사용.
 //        섭취 완료 시 hediffDef 기반 GiveShiftHediff 호출.
-// 주의 : 이데올로기 금지 / 이미 다른 폼 변신 중이면 방어적으로 변신 무효화 (1차 차단은 FloatMenu 패치에서 담당).
+// 주의 : 이미 다른 폼 변신 중이면 방어적으로 변신 무효화. 이데올로기 차단은 FloatMenu 패치에서 담당 (수술 투여 허용을 위해 여기서는 미체크).
 // XML 사용 예:
 //   <outcomeDoers>
 //     <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_Shapeshift">
@@ -31,9 +31,10 @@ namespace ShapeshifterFramework.Comps
                 return;
             }
 
-            // 방어적 이데올로기 차단 (드래그&드롭 등 FloatMenu 우회 방어)
-            if (ShapeshiftEligibility.IsIdeologyForbidden(pawn)) return;
-
+            // 이미 다른 폼 변신 중이면 차단 (같은 폼은 hediff 갱신 허용)
+            // 이데올로기 차단은 여기서 하지 않음 — 수술(Recipe_AdministerIngestible) 투여 시
+            // pawn이 환자(수신자)이므로, 타인에 의한 강제 변신까지 차단하게 됨.
+            // 자가 섭취 차단은 FloatMenu 패치(Patch_IngestIdeologyBlock)에서 담당.
             if (ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, hediffDef))
             {
                 Messages.Message("SSF_Message_AlreadyTransformed".Translate(), pawn, MessageTypeDefOf.RejectInput, false);
