@@ -13,9 +13,9 @@ namespace ShapeshifterFramework.Patches
     public static class Patch_PawnRenderer_BaseHeadOffsetAt
     {
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
-        static void Postfix(PawnRenderer __instance, Rot4 rotation, ref Vector3 __result)
+        static void Postfix(PawnRenderer __instance, Pawn ___pawn, Rot4 rotation, ref Vector3 __result)
         {
-            Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
+            Pawn pawn = ___pawn;
             if (pawn == null) return;
 
             // 비변신 폰 즉시 스킵 — 렌더 핫패스에서 SizeFactorResolver/리플렉션 방지

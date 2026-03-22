@@ -1,6 +1,6 @@
 ﻿// ShapeshifterFramework | Utilities | ShapeshiftReflectionCache.cs
 // 목적 : 바닐라 및 타 모드의 비공개 멤버(Field, Property, Method)에 접근하는 리플렉션 연산 비용과 충돌 위험을 최소화하는 중앙 집중식 캐시 매니저.
-// 용도 : ConcurrentDictionary와 AccessTools.FieldRef를 혼용해 읽기/쓰기 속도를 극대화하며, 외부 모드가 없거나 버전이 달라 멤버 탐색에 실패할 경우 예외(Exception)를 삼키고 null/false를 반환해 게임 크래시를 완벽히 방어함.
+// 용도 : ConcurrentDictionary와 AccessTools를 활용해 타입/필드/속성/메서드를 캐싱하며, 외부 모드가 없거나 버전이 달라 멤버 탐색에 실패할 경우 예외(Exception)를 삼키고 null/false를 반환해 게임 크래시를 완벽히 방어함.
 
 using HarmonyLib;
 using System;
@@ -8,103 +8,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using Verse;
-using Verse.AI;
 
 namespace ShapeshifterFramework.Utilities
 {
     /// <summary>리플렉션 접근/캐시 유틸리티. FieldRef 우선, FieldInfo 폴백. 예외 삼킴.</summary>
     internal static class ShapeshiftReflectionCache
     {
-        #region PawnRenderer.pawn
-
-        private static readonly AccessTools.FieldRef<PawnRenderer, Pawn> RendererPawnRef =
-            AccessTools.FieldRefAccess<PawnRenderer, Pawn>("pawn");
-        private static readonly FieldInfo RendererPawnFI =
-            AccessTools.Field(typeof(PawnRenderer), "pawn");
-
-        /// <summary>PawnRenderer의 Pawn 반환. FieldRef 우선, FieldInfo 폴백.</summary>
-        internal static Pawn GetPawn(PawnRenderer renderer)
-        {
-            if (renderer == null) return null;
-            try { return RendererPawnRef(renderer); } catch { /* FieldRef 실패 시 FieldInfo 폴백 */ }
-            return RendererPawnFI != null ? (Pawn)RendererPawnFI.GetValue(renderer) : null;
-        }
-
-        #endregion
-
-        #region Pawn_PathFollower.pawn
-
-        private static readonly AccessTools.FieldRef<Pawn_PathFollower, Pawn> PathFollowerPawnRef =
-            AccessTools.FieldRefAccess<Pawn_PathFollower, Pawn>("pawn");
-        private static readonly FieldInfo PathFollowerPawnFI =
-            AccessTools.Field(typeof(Pawn_PathFollower), "pawn");
-
-        /// <summary>Pawn_PathFollower의 Pawn 반환. FieldRef 우선, FieldInfo 폴백.</summary>
-        internal static Pawn GetPawn(Pawn_PathFollower pf)
-        {
-            if (pf == null) return null;
-            try { return PathFollowerPawnRef(pf); } catch { /* FieldRef 실패 시 FieldInfo 폴백 */ }
-            return PathFollowerPawnFI != null ? (Pawn)PathFollowerPawnFI.GetValue(pf) : null;
-        }
-
-        #endregion
-
-        #region PawnRenderer.results → PreRenderResults.parms
-
-        // results는 struct이므로 boxing 후 SetValue로 재반영 필요
-        private static readonly FieldInfo RendererResultsFI =
-            AccessTools.Field(typeof(PawnRenderer), "results");
-
-        private static readonly ConcurrentDictionary<Type, FieldInfo> PreRenderParmsFieldByResultsType =
-            new ConcurrentDictionary<Type, FieldInfo>();
-
-        /// <summary>PawnRenderer.results에서 PawnDrawParms를 안전하게 추출.</summary>
-        internal static bool TryGetPreRenderParms(PawnRenderer renderer, out object boxedResults, out FieldInfo parmsFi, out PawnDrawParms parms)
-        {
-            boxedResults = null;
-            parmsFi = null;
-            parms = default(PawnDrawParms);
-
-            if (renderer == null || RendererResultsFI == null) return false;
-
-            try { boxedResults = RendererResultsFI.GetValue(renderer); } catch { boxedResults = null; /* 리플렉션 실패 방어 */ }
-            if (boxedResults == null) return false;
-
-            var t = boxedResults.GetType(); // PawnRenderer+PreRenderResults
-            if (t == null) return false;
-
-            if (!PreRenderParmsFieldByResultsType.TryGetValue(t, out parmsFi) || parmsFi == null)
-            {
-                parmsFi = t.GetField("parms", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                PreRenderParmsFieldByResultsType[t] = parmsFi;
-            }
-            if (parmsFi == null) return false;
-
-            try
-            {
-                parms = (PawnDrawParms)parmsFi.GetValue(boxedResults);
-                return true;
-            }
-            catch { return false; /* struct 캐스트 실패 방어 */ }
-        }
-
-        /// <summary>변경된 parms를 renderer.results에 반영.</summary>
-        internal static bool TrySetPreRenderParms(PawnRenderer renderer, object boxedResults, FieldInfo parmsFi, PawnDrawParms parms)
-        {
-            if (renderer == null || RendererResultsFI == null) return false;
-            if (boxedResults == null || parmsFi == null) return false;
-
-            try
-            {
-                parmsFi.SetValue(boxedResults, parms);
-                RendererResultsFI.SetValue(renderer, boxedResults);
-                return true;
-            }
-            catch { return false; /* 리플렉션 SetValue 실패 방어 */ }
-        }
-
-        #endregion
-
         #region eq.ParentHolder 체인 → pawn
 
         private static readonly ConcurrentDictionary<Type, FieldInfo> HolderPawnField =

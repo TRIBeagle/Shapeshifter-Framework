@@ -53,7 +53,6 @@ namespace ShapeshifterFramework.Patches
         // 수집용 재사용 리스트 (스레드 안전: RimWorld는 단일 스레드)
         private static readonly List<VerbEntry> _collected = new List<VerbEntry>(16);
 
-        [HarmonyPostfix]
         static void Postfix(VerbTracker __instance, ref List<Verb> ___verbs, IVerbOwner ___directOwner)
         {
             try

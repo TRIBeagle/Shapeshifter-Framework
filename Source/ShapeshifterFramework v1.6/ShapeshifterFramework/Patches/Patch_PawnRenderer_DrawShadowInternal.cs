@@ -47,9 +47,9 @@ namespace ShapeshifterFramework.Patches
         /// <summary>맵 전환/게임 로드 시 그림자 캐시 정리.</summary>
         public static void ClearCache() { FormShadowGraphicByKey.Clear(); }
 
-        static bool Prefix(PawnRenderer __instance, Vector3 drawLoc)
+        static bool Prefix(PawnRenderer __instance, Pawn ___pawn, Vector3 drawLoc)
         {
-            Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
+            Pawn pawn = ___pawn;
             if (pawn == null) return true;
 
             // 비행 시 바닐라 처리

@@ -12,25 +12,20 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(Pawn_PathFollower), "TryEnterNextPathCell")]
     internal static class Patch_Pawn_PathFollower_TryEnterNextPathCell
     {
-        private static readonly AccessTools.FieldRef<Pawn_PathFollower, Pawn> PawnRef =
-            AccessTools.FieldRefAccess<Pawn_PathFollower, Pawn>("pawn");
-
-        static void Prefix(Pawn_PathFollower __instance, out bool __state)
+        static void Prefix(Pawn ___pawn, out bool __state)
         {
             __state = false;
 
-            Pawn pawn = null;
-            try { pawn = PawnRef(__instance); } catch (System.Exception ex) { Log.Warning($"[SSF] PathFollower PawnRef failed: {ex.Message}"); pawn = null; }
+            Pawn pawn = ___pawn;
             if (pawn == null || !pawn.Spawned || pawn.Map == null) return;
 
             var terr = pawn.Position.GetTerrain(pawn.Map);
             __state = terr != null && terr.IsWater;
         }
 
-        static void Postfix(Pawn_PathFollower __instance, bool __state)
+        static void Postfix(Pawn ___pawn, bool __state)
         {
-            Pawn pawn = null;
-            try { pawn = PawnRef(__instance); } catch (System.Exception ex) { Log.Warning($"[SSF] PathFollower PawnRef failed: {ex.Message}"); pawn = null; }
+            Pawn pawn = ___pawn;
             if (pawn == null || !pawn.Spawned || pawn.Map == null) return;
 
             ShapeshiftFormDef form;

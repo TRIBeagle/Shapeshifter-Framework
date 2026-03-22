@@ -30,7 +30,7 @@ namespace ShapeshifterFramework.Patches
         private static object[] InvokeArgs => _invokeArgs ?? (_invokeArgs = new object[4]);
 
         [HarmonyPrefix]
-        static bool Prefix(PawnRenderer __instance, Vector3 drawLoc, Rot4? rotOverride, bool neverAimWeapon)
+        static bool Prefix(PawnRenderer __instance, Pawn ___pawn, Vector3 drawLoc, Rot4? rotOverride, bool neverAimWeapon)
         {
             // Reflection 대상이 없으면 바닐라 실행 (바닐라 버전 불일치 방어)
             if (_getPreRenderResults == null || _resultsField == null) return true;
@@ -38,7 +38,7 @@ namespace ShapeshifterFramework.Patches
             // 줌아웃 상태가 아니면 캐시가 사용되지 않으므로 개입 불필요
             if (Find.CameraDriver.ZoomRootSize <= 18f) return true;
 
-            Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
+            Pawn pawn = ___pawn;
             if (pawn == null) return true;
             if (!ShapeshiftRegistry.TryGet(pawn, out _, out var form)) return true;
 

@@ -14,12 +14,11 @@ namespace ShapeshifterFramework.Patches
     {
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void Postfix(
-            PawnRenderer __instance,
+            PawnRenderer __instance, Pawn ___pawn,
             Vector3 rootLoc, float angle, Rot4 bodyFacing, RotDrawMode bodyDrawType, PawnRenderFlags flags,
             ref PawnDrawParms __result)
         {
-            // 폰 가져오기
-            Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
+            Pawn pawn = ___pawn;
             if (pawn == null) return;
 
             // 변신 컴프/폼 조회
