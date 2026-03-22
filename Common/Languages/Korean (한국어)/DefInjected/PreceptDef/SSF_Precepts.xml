@@ -9,11 +9,7 @@
   <SSF_Shapeshifting_Disapproved.label>못마땅함</SSF_Shapeshifting_Disapproved.label>
   <SSF_Shapeshifting_Disapproved.description>타고난 몸을 바꾸는 것은 역겹고 부자연스러운 행위다.</SSF_Shapeshifting_Disapproved.description>
 
-  <!-- 단계 2: 관심 없음 -->
-  <SSF_Shapeshifting_Neutral.label>관심 없음</SSF_Shapeshifting_Neutral.label>
-  <SSF_Shapeshifting_Neutral.description>변신은 특별히 좋지도 나쁘지도 않다.</SSF_Shapeshifting_Neutral.description>
-
-  <!-- 단계 3: 중시함 -->
+  <!-- 단계 2: 중시함 -->
   <SSF_Shapeshifting_Respected.label>중시함</SSF_Shapeshifting_Respected.label>
   <SSF_Shapeshifting_Respected.description>몸을 바꿀 수 있는 힘은 존경받을 만한 재능이다.</SSF_Shapeshifting_Respected.description>
 

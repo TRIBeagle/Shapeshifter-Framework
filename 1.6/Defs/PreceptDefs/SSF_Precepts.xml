@@ -4,7 +4,7 @@
   <!-- ======================================================
        Shapeshifting Precepts — Ideology DLC only
        MayRequire ensures auto-skip when DLC is not installed
-       5 levels: Abhorrent / Disapproved / Neutral / Respected / Sublime
+       4 levels: Abhorrent / Disapproved / Respected / Sublime
        ====================================================== -->
 
   <!-- History event for shapeshifting (PreceptComp_SelfTookMemoryThought linkage) -->
@@ -79,18 +79,7 @@
     </comps>
   </PreceptDef>
 
-  <!-- ── Level 2: Neutral ── -->
-  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
-    <defName>SSF_Shapeshifting_Neutral</defName>
-    <issue>SSF_Shapeshifting</issue>
-    <label>neutral</label>
-    <description>Shapeshifting is neither particularly good nor bad.</description>
-    <impact>Low</impact>
-    <displayOrderInIssue>20</displayOrderInIssue>
-    <defaultSelectionWeight>1</defaultSelectionWeight>
-  </PreceptDef>
-
-  <!-- ── Level 3: Respected ── -->
+  <!-- ── Level 2: Respected ── -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifting_Respected</defName>
     <issue>SSF_Shapeshifting</issue>
@@ -114,7 +103,7 @@
     </comps>
   </PreceptDef>
 
-  <!-- ── Level 4: Sublime ── -->
+  <!-- ── Level 3: Sublime ── -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifting_Sublime</defName>
     <issue>SSF_Shapeshifting</issue>
