@@ -90,25 +90,10 @@ namespace ShapeshifterFramework.Comps
                 return false;
 
             // 이미 다른 폼으로 변신 중이면 차단 — 단, allowedFromForms로 허용된 전환은 예외
-            if (Props.hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, Props.hediffDef))
+            if (Props.hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, Props.hediffDef, out var core))
             {
-                // allowedFromForms 체크: 대상의 현재 폼이 허용 목록에 있으면 전환 허용
-                if (Props.allowedFromForms != null && Props.allowedFromForms.Count > 0
-                    && ShapeshiftCoreUtility.TryGetCore(pawn, out var core)
-                    && core.isTransformed && core.currentForm != null)
-                {
-                    bool allowed = false;
-                    for (int i = 0; i < Props.allowedFromForms.Count; i++)
-                    {
-                        if (string.Equals(Props.allowedFromForms[i], core.currentForm.defName, System.StringComparison.Ordinal))
-                        { allowed = true; break; }
-                    }
-                    if (!allowed) return false;
-                }
-                else
-                {
+                if (!IsCurrentFormInAllowedList(core))
                     return false;
-                }
             }
 
             return true;
@@ -190,7 +175,7 @@ namespace ShapeshifterFramework.Comps
             }
 
             // HediffComp_ShapeshiftCore 기반 조회
-            if (!ShapeshiftCoreUtility.TryGetCore(caster, out var core) || !core.isTransformed || core.currentForm == null)
+            if (!ShapeshiftCoreUtility.TryGetCore(caster, out var core) || !core.isTransformed)
             {
                 reason = null;
                 return false;
@@ -198,18 +183,10 @@ namespace ShapeshifterFramework.Comps
 
             // 같은 폼은 ShouldHideGizmo에서 이미 숨겨져 여기 도달하지 않음.
             // 다른 폼일 때만 allowedFromForms 체크.
-
-            // allowedFromForms 체크
-            if (Active(Props.allowedFromForms))
+            if (IsCurrentFormInAllowedList(core))
             {
-                for (int i = 0; i < Props.allowedFromForms.Count; i++)
-                {
-                    if (string.Equals(Props.allowedFromForms[i], core.currentForm.defName, System.StringComparison.Ordinal))
-                    {
-                        reason = null;
-                        return false;
-                    }
-                }
+                reason = null;
+                return false;
             }
 
             // 변신 중이고 허용되지 않은 폼 → 비활성
@@ -218,6 +195,20 @@ namespace ShapeshifterFramework.Comps
         }
 
         #region 유틸리티 (조건 판정)
+
+        /// <summary>대상의 현재 폼이 Props.allowedFromForms 목록에 포함되어 있는지 판정.</summary>
+        private bool IsCurrentFormInAllowedList(HediffComp_ShapeshiftCore core)
+        {
+            if (!Active(Props.allowedFromForms) || core?.currentForm == null)
+                return false;
+
+            for (int i = 0; i < Props.allowedFromForms.Count; i++)
+            {
+                if (string.Equals(Props.allowedFromForms[i], core.currentForm.defName, System.StringComparison.Ordinal))
+                    return true;
+            }
+            return false;
+        }
 
         private static bool Active<T>(List<T> list) => list != null && list.Count > 0;
 

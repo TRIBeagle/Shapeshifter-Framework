@@ -94,9 +94,16 @@ namespace ShapeshifterFramework.Utilities
         /// 같은 폼이면 false (갱신 허용), 다른 폼이면 true (차단 필요).</summary>
         public static bool IsTransformedIntoDifferentForm(Pawn pawn, HediffDef hediffDef)
         {
+            return IsTransformedIntoDifferentForm(pawn, hediffDef, out _);
+        }
+
+        /// <summary>오버로드: 판정 결과와 함께 현재 ShapeshiftCore를 반환. 이중 조회 방지용.</summary>
+        public static bool IsTransformedIntoDifferentForm(Pawn pawn, HediffDef hediffDef, out HediffComp_ShapeshiftCore core)
+        {
+            core = null;
             if (pawn == null || hediffDef == null) return false;
-            if (!ShapeshiftRegistry.TryGet(pawn, out var core, out _)) return false;
-            if (!core.isTransformed || core.currentForm == null) return false;
+            if (!ShapeshiftRegistry.TryGet(pawn, out core, out _)) return false;
+            if (!core.isTransformed) return false;
 
             var coreProps = hediffDef.CompProps<HediffCompProperties_ShapeshiftCore>();
             var formDef = coreProps?.formDef;
