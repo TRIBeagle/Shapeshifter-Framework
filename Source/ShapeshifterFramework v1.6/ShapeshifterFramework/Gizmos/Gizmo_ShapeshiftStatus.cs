@@ -32,6 +32,21 @@ namespace ShapeshifterFramework.Gizmos
         // 헤더 버튼 크기
         private const float HeaderBtnSize = 24f;
 
+        // 캐시: 원거리 verb 유무 (폼 변경 시 갱신)
+        private ShapeshiftFormDef _cachedForm;
+        private bool _cachedHasRanged;
+
+        // 캐시: 시간 문자열 (틱 변경 시에만 갱신)
+        private int _cachedRemainTicks = -1;
+        private string _cachedTimeLabel;
+
+        // 캐시: 폼 이름 폰트 측정 (폼 변경 시 갱신)
+        private string _cachedFormLabel;
+        private float _cachedFormLabelSmallWidth;
+
+        // 캐시: 바 라벨 폰트 측정 (시간 문자열 변경 시 갱신)
+        private float _cachedBarLabelSmallWidth;
+
         public Gizmo_ShapeshiftStatus()
         {
             Order = -99f;
@@ -117,9 +132,13 @@ namespace ShapeshifterFramework.Gizmos
 
             // 폼 이름 — 공간 부족 시 폰트 축소, 그래도 넘치면 말줄임 + 호버 전체 표시
             string formLabel = form.LabelCap.NullOrEmpty() ? form.defName : form.LabelCap.Resolve();
-            Text.Font = GameFont.Small;
-            if (Text.CalcSize(formLabel).x > headerRect.width)
-                Text.Font = GameFont.Tiny;
+            if (formLabel != _cachedFormLabel)
+            {
+                _cachedFormLabel = formLabel;
+                Text.Font = GameFont.Small;
+                _cachedFormLabelSmallWidth = Text.CalcSize(formLabel).x;
+            }
+            Text.Font = _cachedFormLabelSmallWidth > headerRect.width ? GameFont.Tiny : GameFont.Small;
             string truncated = formLabel.Truncate(headerRect.width);
             Widgets.Label(headerRect, truncated);
             if (truncated != formLabel && Mouse.IsOver(headerRect))
@@ -145,17 +164,22 @@ namespace ShapeshifterFramework.Gizmos
                 int remain = core.RemainingShapeshiftTicks;
                 int total = resolvedDuration.Value;
                 fillPct = Mathf.Clamp01((float)remain / Mathf.Max(1f, total));
-                barLabel = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: false);
+                // 시간 문자열은 틱 변경 시에만 갱신
+                if (remain != _cachedRemainTicks)
+                {
+                    _cachedRemainTicks = remain;
+                    _cachedTimeLabel = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: false);
+                    Text.Font = GameFont.Small;
+                    _cachedBarLabelSmallWidth = Text.CalcSize(_cachedTimeLabel).x;
+                }
+                barLabel = _cachedTimeLabel;
             }
 
             Texture2D fillTex = isPermanent ? BarFilledPermanentTex : BarFilledTex;
             Widgets.FillableBar(barRect, fillPct, fillTex, BarEmptyTex, doBorder: true);
 
-            // 바 라벨이 바 너비보다 길면 폰트 축소
-            Text.Font = GameFont.Small;
-            float barLabelWidth = Text.CalcSize(barLabel).x;
-            if (barLabelWidth > barRect.width - 4f)
-                Text.Font = GameFont.Tiny;
+            // 바 라벨이 바 너비보다 길면 폰트 축소 (시간 문자열 변경 시에만 재측정)
+            Text.Font = _cachedBarLabelSmallWidth > barRect.width - 4f ? GameFont.Tiny : GameFont.Small;
 
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(barRect, barLabel);
@@ -172,18 +196,28 @@ namespace ShapeshifterFramework.Gizmos
             return new GizmoResult(GizmoState.Clear);
         }
 
-        /// <summary>폼에 원거리 verb가 있는지 확인.</summary>
+        /// <summary>폼에 원거리 verb가 있는지 확인 (폼 변경 시에만 재계산).</summary>
         private bool HasRangedVerbs()
         {
+            if (_cachedForm == core.currentForm)
+                return _cachedHasRanged;
+
+            _cachedForm = core.currentForm;
+            _cachedHasRanged = false;
             var vt = core.ShapeshiftVerbTracker;
-            if (vt == null) return false;
-            var verbs = vt.AllVerbs;
-            for (int i = 0; i < verbs.Count; i++)
+            if (vt != null)
             {
-                if (verbs[i]?.verbProps != null && verbs[i].verbProps.Ranged)
-                    return true;
+                var verbs = vt.AllVerbs;
+                for (int i = 0; i < verbs.Count; i++)
+                {
+                    if (verbs[i]?.verbProps != null && verbs[i].verbProps.Ranged)
+                    {
+                        _cachedHasRanged = true;
+                        break;
+                    }
+                }
             }
-            return false;
+            return _cachedHasRanged;
         }
 
         /// <summary>툴팁 텍스트 생성.</summary>
