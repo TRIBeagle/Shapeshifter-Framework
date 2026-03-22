@@ -41,7 +41,8 @@ namespace ShapeshifterFramework.Comps
             }
         }
 
-        /// <summary>캐스터 조건 미충족 시 기즈모 숨김.</summary>
+        /// <summary>캐스터 조건 미충족 시 기즈모 숨김.
+        /// 자기 전용(!targetRequired) 어빌리티는 변신 중 숨김 (allowedFromForms 예외).</summary>
         public override bool ShouldHideGizmo
         {
             get
@@ -65,6 +66,13 @@ namespace ShapeshifterFramework.Comps
                         if (!PassMutantFilter(caster, Props.allowedMutants, Props.disallowedMutants))
                             return true;
                     }
+                }
+
+                // 자기 전용 어빌리티: 변신 중이면 숨김 (allowedFromForms 허용 시 제외)
+                if (!parent.def.targetRequired && ShapeshiftEligibility.IsAlreadyTransformed(caster, out var core))
+                {
+                    if (!IsCurrentFormInAllowedList(core))
+                        return true;
                 }
 
                 return false;
@@ -153,8 +161,8 @@ namespace ShapeshifterFramework.Comps
             return null;
         }
 
-        /// <summary>변신 중 어빌리티 비활성화 (동일 폼 포함). allowedFromForms 허용 시 제외.
-        /// targetRequired 어빌리티는 기즈모 활성 유지 — 대상별 차단은 CanApplyOn에서 처리.</summary>
+        /// <summary>이데올로기/종족 조건에 의한 기즈모 비활성화.
+        /// 변신 중 자기 전용 어빌리티 숨김은 ShouldHideGizmo에서 처리.</summary>
         public override bool GizmoDisabled(out string reason)
         {
             var caster = parent?.pawn;
@@ -175,31 +183,8 @@ namespace ShapeshifterFramework.Comps
                 return true;
             }
 
-            // 변신 중인지 확인
-            if (!ShapeshiftEligibility.IsAlreadyTransformed(caster, out var core))
-            {
-                reason = null;
-                return false;
-            }
-
-            // 타겟 지정 어빌리티(타인 대상)는 기즈모를 막지 않음.
-            // 대상별 유효성은 CanApplyOn에서 처리.
-            if (parent.def.targetRequired)
-            {
-                reason = null;
-                return false;
-            }
-
-            // allowedFromForms에 현재 폼이 있으면 허용
-            if (IsCurrentFormInAllowedList(core))
-            {
-                reason = null;
-                return false;
-            }
-
-            // 자기 대상 어빌리티: 변신 중 → 비활성
-            reason = "SSF_GizmoDisabled_AlreadyTransformed".Translate(core.currentForm.label ?? core.currentForm.defName);
-            return true;
+            reason = null;
+            return false;
         }
 
         #region 유틸리티 (조건 판정)
