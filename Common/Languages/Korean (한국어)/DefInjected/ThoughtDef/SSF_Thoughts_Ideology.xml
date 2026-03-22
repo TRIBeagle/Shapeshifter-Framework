@@ -6,7 +6,7 @@
   <SSF_Thought_Shapeshifted_Abhorrent.stages.0.description>이 몸은 내가 아니다. 역겹고 끔찍하다.</SSF_Thought_Shapeshifted_Abhorrent.stages.0.description>
 
   <!-- 절대적으로 혐오함 — 사회 감정 -->
-  <SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.label>변신자</SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.label>변신</SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.label>
   <SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.description>몸을 바꾸다니, 보기만 해도 소름이 돋는다.</SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.description>
 
   <!-- 금기 위반 기억 -->
@@ -18,7 +18,7 @@
   <SSF_Thought_Shapeshifted_Disapproved.stages.0.description>이 모습이 영 불편하다.</SSF_Thought_Shapeshifted_Disapproved.stages.0.description>
 
   <!-- 못마땅함 — 사회 감정 -->
-  <SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.label>변신자</SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.label>변신</SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.label>
   <SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.description>변신을 하다니, 눈살이 찌푸려진다.</SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.description>
 
   <!-- 못마땅함 위반 기억 -->
@@ -30,7 +30,7 @@
   <SSF_Thought_Shapeshifted_Respected.stages.0.description>이 모습도 나쁘지 않군. 꽤 괜찮다.</SSF_Thought_Shapeshifted_Respected.stages.0.description>
 
   <!-- 존중함 — 사회 감정 -->
-  <SSF_Thought_Shapeshifted_Respected_Social.stages.0.label>변신자</SSF_Thought_Shapeshifted_Respected_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Respected_Social.stages.0.label>변신</SSF_Thought_Shapeshifted_Respected_Social.stages.0.label>
   <SSF_Thought_Shapeshifted_Respected_Social.stages.0.description>변신하는 모습이 꽤 인상적이다.</SSF_Thought_Shapeshifted_Respected_Social.stages.0.description>
 
   <!-- 숭고함 — 개인 감정 -->
@@ -38,7 +38,7 @@
   <SSF_Thought_Shapeshifted_Sublime.stages.0.description>내 안의 힘이 깨어난 느낌이다. 기분이 좋다.</SSF_Thought_Shapeshifted_Sublime.stages.0.description>
 
   <!-- 숭고함 — 사회 감정 -->
-  <SSF_Thought_Shapeshifted_Sublime_Social.stages.0.label>변신자</SSF_Thought_Shapeshifted_Sublime_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Sublime_Social.stages.0.label>변신</SSF_Thought_Shapeshifted_Sublime_Social.stages.0.label>
   <SSF_Thought_Shapeshifted_Sublime_Social.stages.0.description>축복받은 변신의 힘을 지니다니, 경이롭다.</SSF_Thought_Shapeshifted_Sublime_Social.stages.0.description>
 
   <!-- 변신 목격 — 절대적으로 혐오함 -->
