@@ -23,20 +23,18 @@
 ## 1. BearForm (곰) — Animal 완전 변신
 
 ### [A] Auto-Verify
-- [ ] 변신 진입 시 body 텍스처가 `SSFTest/Pawn/Bear`로 교체
+- [ ] 변신 진입 시 body 텍스처가 `Things/Pawn/Animal/Bear/Bear`로 교체
 - [ ] head, hair, beard, tattoo가 Hidden
-- [ ] 의류/무기가 인벤토리로 이동
-- [ ] 도구 `fangs` (Bite 18), `claws` (Scratch 12) 활성
+- [ ] 의류/무기가 드랍 (apparelOnTransform=Drop, weaponsOnTransform=Drop)
+- [ ] 도구 `teeth` (Bite 12) 활성
 - [ ] `replaceNativeTools=true` — 바닐라 도구 비활성
 - [ ] addHediffs: `SSFTest_BeastArm` 부여 확인
 - [ ] 해제 시 addHediffs 제거, 이전 장비 복귀
-- [ ] revertDrops: `WoolMuffalo 10` 드랍
+- [ ] revertDrops: `WoodLog 2` 드랍
 
 ### [M] 수동 확인
-- [ ] 수영 시 텍스처가 `SSFTest/Pawn/Bear_Swimming`으로 전환
-- [ ] shadowVolume `(0.5, 0, 0.6)` 적용 (그림자 크기 확인)
-- [ ] 남성/여성 텍스처 분기 (male/female 텍스처 경로 확인)
-- [ ] transformEnterFleck 재생 (FleckStatic_PsychicPulse × 3, 스케일 1.5)
+- [ ] 수영 시 텍스처가 `Things/Pawn/Animal/Bear/SwimmingBear`로 전환
+- [ ] transformEnterFleck 재생 (PsycastSkipFlashEntry × 1, 스케일 1.8)
 - [ ] bloodDef, bloodSmearDef 오버라이드 확인 (피격 시 혈흔 확인)
 - [ ] 기즈모 아이콘 표시 (Enter/Revert)
 - [ ] 해제 드랍 아이템이 폰 위치에 생성
@@ -52,8 +50,9 @@
 - [ ] 스탯 오프셋 적용 확인
 
 ### [M] 수동 확인
-- [ ] transformEnterSound 재생
-- [ ] transformEnterEffecter 재생
+- [ ] transformEnterEffecter (Vaporize_Heatwave) 재생
+- [ ] transformExitEffecter (ImpactSmallDustCloud) 재생
+- [ ] soundAngry, soundMelee* 사운드 오버라이드 확인
 - [ ] 커스텀 기즈모 아이콘 (gizmoIconPathEnter/Revert)
 - [ ] 의류 장착 시도 시 차단 메시지 표시
 - [ ] 무기는 자유롭게 교체 가능
@@ -79,7 +78,7 @@
 ## 4. DarkKnightForm (암흑기사) — Armored, 스폰 장비
 
 ### [A] Auto-Verify
-- [ ] spawnApparel: PlateArmor (Steel) 생성 및 착용
+- [ ] spawnApparel: PlateArmor (Plasteel) 생성 및 착용
 - [ ] spawnWeapon: LongSword (Plasteel) 생성 및 장비
 - [ ] 충돌 기존 장비 → 인벤토리 이동 (conflictingGearHandling)
 - [ ] equipLock: 의류=Locked, 무기=Locked
@@ -109,7 +108,7 @@
 - [ ] 렌더 노드(귀, 꼬리) 4방향 회전 확인
 - [ ] 버브별 자동공격 토글 기즈모
 - [ ] 보이스 오버라이드 (call, wounded, death, angry)
-- [ ] 작업 제한 (disabledWorkTypesOnTransform) 확인
+- [ ] 작업 태그 제한 (disabledWorkTagsOnTransform: Crafting, Cooking) 확인
 - [ ] Overhead 레이어만 숨겨지는지 확인
 
 ---
@@ -256,7 +255,6 @@
 - [ ] 이데올로기 노출 감정 억제 (`suppressIdeologyUncoveredThoughts`)
 - [ ] 변신 규율: 섭리에 대한 모독 → **변신 금지** (기즈모 비활성, CanTransformBasic false), 강제 변신 시 기분 -10, 의견 -20, 기억 감정 -10 (5일), **목격 기억 감정 -8 (5일)**
 - [ ] 변신 규율: 부자연스러운 힘 → 변신 시 기분 -5, 의견 -10, 기억 감정 -5 (3일), **목격 기억 감정 -4 (3일)**
-- [ ] 변신 규율: 관심 없음 → 변신 시 감정 없음
 - [ ] 변신 규율: 특별한 재능 → 변신 시 기분 +5, 의견 +10, **목격 기억 감정 +4 (3일)**
 - [ ] 변신 규율: 신이 내린 축복 → 변신 시 기분 +10, 의견 +20, **목격 기억 감정 +8 (5일)**
 - [ ] 성스러운 동물 폼 (`linkedSacredAnimalDef`) → 숭배 동물 일치 시 기분 +5
