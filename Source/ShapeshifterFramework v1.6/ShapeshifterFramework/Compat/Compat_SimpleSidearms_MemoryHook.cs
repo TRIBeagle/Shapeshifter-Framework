@@ -191,7 +191,7 @@ namespace ShapeshifterFramework.Compat
                     if (fields[i] != null)
                     {
                         try { backup.prefValues[i] = fields[i].GetValue(comp); }
-                        catch (Exception) { /* 접근 실패 — 무시 */ }
+                        catch (Exception ex) { CompatManager.SS.Failed("BackupMemory:PrefField:" + _prefFieldNames[i], ex.Message); }
                     }
                 }
             }
@@ -229,7 +229,7 @@ namespace ShapeshifterFramework.Compat
                         else
                             fields[i].SetValue(comp, null);
                     }
-                    catch (Exception) { /* 접근 실패 — 무시 */ }
+                    catch (Exception ex) { CompatManager.SS.Failed("ClearMemory:PrefField:" + _prefFieldNames[i], ex.Message); }
                 }
             }
         }
@@ -252,10 +252,7 @@ namespace ShapeshifterFramework.Compat
                     for (int i = 0; i < backup.entries.Count; i++)
                     {
                         try { list.Add(backup.entries[i]); }
-                        catch (Exception)
-                        {
-                            // 타입 불일치 등 — 무시하고 계속
-                        }
+                        catch (Exception ex) { CompatManager.SS.Failed("RestoreMemory:ListAdd", ex.Message); }
                     }
                 }
             }
@@ -269,7 +266,7 @@ namespace ShapeshifterFramework.Compat
                 {
                     if (fields[i] == null) continue;
                     try { fields[i].SetValue(comp, backup.prefValues[i]); }
-                    catch (Exception) { /* 타입 불일치 — 무시 */ }
+                    catch (Exception ex) { CompatManager.SS.Failed("RestoreMemory:PrefField:" + _prefFieldNames[i], ex.Message); }
                 }
             }
         }
