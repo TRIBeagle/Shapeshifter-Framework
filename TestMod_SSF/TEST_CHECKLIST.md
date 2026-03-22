@@ -23,6 +23,14 @@
 
 ## 1. BearForm (곰) — Animal 완전 변신
 
+### 폼 획득 방법
+| 경로 | 방법 |
+|------|------|
+| 약물 | 개발자 콘솔 → `SSFTest_BearElixir` 스폰 → 폰에게 복용 지시 |
+| 스크롤(자기) | 개발자 콘솔 → `SSFTest_ShiftScroll_Self` 스폰 → 폰이 사용 |
+| 스크롤(대상) | 개발자 콘솔 → `SSFTest_ShiftScroll_Target` 스폰 → 대상 폰 선택 사용 |
+| 아군 어빌리티 | BearWarrior 어빌리티(`SSFTest_Ability_BuffAlly`)와 다름 — BearForm 직접 어빌리티 없음, 위 아이템 경로로만 진입 |
+
 ### [A] Auto-Verify
 - [ ] `1-A01` 변신 진입 시 body 텍스처가 `Things/Pawn/Animal/Bear/Bear`로 교체
 - [ ] `1-A02` head, hair, beard, tattoo가 Hidden
@@ -44,6 +52,13 @@
 
 ## 2. BearWarriorForm (곰전사) — Armored
 
+### 폼 획득 방법
+| 경로 | 방법 |
+|------|------|
+| 아군 어빌리티 | 개발자 콘솔 → 시전자에게 `SSFTest_Ability_BuffAlly` 부여 → 아군 폰 대상 시전 |
+| 헤디프 경유 | 개발자 콘솔 → 폰에게 `SSFTest_Hediff_ShiftBlessing` 부여 → 자동으로 BuffAlly 어빌리티 획득 → 아군 시전 |
+| AutoShift(전투) | 개발자 콘솔 → 폰에게 `SSFTest_Hediff_CombatAutoShift` 부여 → 징집 + 적 근접 시 자동 변신 (1회성) |
+
 ### [A] Auto-Verify
 - [ ] `2-A01` body/head/hair 유지 (Default)
 - [ ] `2-A02` 기존 장비 유지 (Keep)
@@ -62,6 +77,13 @@
 
 ## 3. SheepForm (양) — Animal, 강제 변신
 
+### 폼 획득 방법
+| 경로 | 방법 |
+|------|------|
+| 적 어빌리티 | 개발자 콘솔 → 시전자에게 `SSFTest_Ability_DebuffEnemy` 부여 → 적대 폰 대상 시전 |
+| AoE 어빌리티 | 개발자 콘솔 → 시전자에게 `SSFTest_Ability_MassPolymorph` 부여 → 적대 폰 근처 지점 시전 (반경 5) |
+| 투사체(저주 활) | 개발자 콘솔 → `SSFTest_Weapon_CursedBow` 스폰 → 폰 장비 → 적 사격, 명중 시 변신 |
+
 ### [A] Auto-Verify
 - [ ] `3-A01` `canRevertVoluntarily=false` — 해제 기즈모 없음
 - [ ] `3-A02` 작업 태그 비활성: `disabledWorkTagsOnTransform` 적용
@@ -77,6 +99,12 @@
 ---
 
 ## 4. DarkKnightForm (암흑기사) — Armored, 스폰 장비
+
+### 폼 획득 방법
+| 경로 | 방법 |
+|------|------|
+| 자기 어빌리티 | 개발자 콘솔 → 폰에게 `SSFTest_Ability_DarkKnight` 부여 → 자기 시전 |
+| 무기 부여 | 개발자 콘솔 → `SSFTest_Weapon_DarkBlade` 스폰 → 폰 장비 → 자동으로 어빌리티 획득 → 시전 |
 
 ### [A] Auto-Verify
 - [ ] `4-A01` spawnApparel: PlateArmor (Plasteel) 생성 및 착용
@@ -95,6 +123,12 @@
 ---
 
 ## 5. BeastkinForm (수인) — Humanoid, 렌더 노드
+
+### 폼 획득 방법
+| 경로 | 방법 |
+|------|------|
+| 자기 어빌리티 | 개발자 콘솔 → 폰에게 `SSFTest_Ability_Beastkin` 부여 → 자기 시전 |
+| 유전자 (Biotech) | 개발자 콘솔 → 폰에게 `SSFTest_Gene_BeastkinShift` 유전자 추가 → 자동으로 어빌리티 획득 → 시전 |
 
 ### [A] Auto-Verify
 - [ ] `5-A01` body/head/hair 유지
@@ -116,6 +150,12 @@
 
 ## 6. FullBeastForm (완전수) — Animal, 2단계 체인
 
+### 폼 획득 방법
+| 경로 | 방법 |
+|------|------|
+| 2단계 어빌리티 | **먼저 BeastkinForm 진입 필수** → BeastkinForm의 `addAbilities`로 `SSFTest_Ability_FullBeast` 자동 부여 → 시전 |
+| 전제 조건 | BeastkinForm 상태가 아니면 기즈모 비활성 (`allowedFromForms: BeastkinForm`) |
+
 ### [A] Auto-Verify
 - [ ] `6-A01` allowedFromForms: BeastkinForm에서만 시전 가능
 - [ ] `6-A02` 미변신 상태에서 기즈모 비활성 (disabled, not hidden)
@@ -130,6 +170,12 @@
 ---
 
 ## 7. GuardianForm (수호자) — Humanoid, 유지 조건
+
+### 폼 획득 방법
+| 경로 | 방법 |
+|------|------|
+| 자기 어빌리티 | 개발자 콘솔 → 폰에게 `SSFTest_Ability_Guardian` 부여 → 자기 시전 |
+| 유지 조건 준비 | 변신 유지를 테스트하려면 사전에 `SSFTest_Hediff_GuardianMark` 헤디프 부여 필요 (sustainHediffs 조건) |
 
 ### [A] Auto-Verify
 - [ ] `7-A01` portraitDrawScale 적용 확인
@@ -148,6 +194,13 @@
 
 ## 8. PhantomForm (환영) — Humanoid, 셰이더
 
+### 폼 획득 방법
+| 경로 | 방법 |
+|------|------|
+| 자기 어빌리티 | 개발자 콘솔 → 폰에게 `SSFTest_Ability_Phantom` 부여 → 자기 시전 |
+| 의류 부여 | 개발자 콘솔 → `SSFTest_Apparel_PhantomCloak` 스폰 → 폰 착용 → 자동으로 어빌리티 획득 → 시전 |
+| 유전자 (Biotech) | 개발자 콘솔 → 폰에게 `SSFTest_Gene_PhantomShift` 유전자 추가 → 자동으로 어빌리티 획득 → 시전 |
+
 ### [A] Auto-Verify
 - [ ] `8-A01` head: mode=Replace + shaderTypeDefName=Transparent
 - [ ] `8-A02` bodyType=Thin 적용
@@ -164,6 +217,13 @@
 ---
 
 ## 9. RaceLockedForm (종족 제한) — Armored
+
+### 폼 획득 방법
+| 경로 | 방법 |
+|------|------|
+| 자기 어빌리티 | 개발자 콘솔 → 인간 폰에게 `SSFTest_Ability_RaceLocked` 부여 → 자기 시전 |
+| 헤디프 경유 | 개발자 콘솔 → 폰에게 `SSFTest_Hediff_RacialAwakening` 부여 → 자동으로 어빌리티 획득 → 시전 |
+| 종족 제한 테스트 | 비인간 폰에게 동일하게 부여 → 기즈모 숨김 확인 |
 
 ### [A] Auto-Verify
 - [ ] `9-A01` formAllowedRaces: Human만 사용 가능
@@ -198,6 +258,12 @@
 ---
 
 ## 11. AutoShift 테스트
+
+### 폼 획득 방법
+| 경로 | 방법 |
+|------|------|
+| 야간/체력 자동변신 | 개발자 콘솔 → 폰에게 `SSFTest_Hediff_AutoShiftCurse` 부여 → 밤(SunGlow<0.5) 또는 HP 30% 미만 시 자동 곰 변신 |
+| 전투 자동변신 (1회) | 개발자 콘솔 → 폰에게 `SSFTest_Hediff_CombatAutoShift` 부여 → 징집 + 적 근접 시 곰전사 자동 변신, 1회 발동 후 헤디프 제거 |
 
 ### [A] Auto-Verify
 - [ ] `11-A01` healthThreshold: HP 30% 미만에서 자동 변신
