@@ -410,6 +410,10 @@
     <defName>SSFTest_FullBeastForm</defName>
     <label>full beast form</label>
     <description>Full beast form. Can only transform from beastkin state (ability granted via beastkin form's addAbilities).</description>
+    <body>
+      <mode>Replace</mode>
+      <replacementTexPath>Things/Pawn/Animal/Wolf_Timber/Wolf_Timber</replacementTexPath>
+    </body>
     <bodyDrawScale>1.0</bodyDrawScale>
     <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
