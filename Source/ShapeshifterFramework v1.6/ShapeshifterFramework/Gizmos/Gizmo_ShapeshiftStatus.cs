@@ -4,10 +4,12 @@
 //        시간제 변신: 남은 시간 프로그레스 바 표시. 영구 변신: 바 꽉 참 + "무제한" 텍스트.
 //        우측 상단에 변신 해제 버튼 배치.
 
+using RimWorld;
 using ShapeshifterFramework.Hediffs;
 using ShapeshifterFramework.Utilities;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace ShapeshifterFramework.Gizmos
 {
@@ -27,8 +29,8 @@ namespace ShapeshifterFramework.Gizmos
         private static readonly Texture2D BarEmptyTex =
             SolidColorMaterials.NewSolidColorTexture(new Color(0.03f, 0.035f, 0.05f));
 
-        // 해제 아이콘 크기
-        private const float RevertBtnSize = 24f;
+        // 헤더 버튼 크기
+        private const float HeaderBtnSize = 24f;
 
         public Gizmo_ShapeshiftStatus()
         {
@@ -55,14 +57,15 @@ namespace ShapeshifterFramework.Gizmos
             Rect headerRect = innerRect;
             headerRect.height = Text.LineHeightOf(GameFont.Small);
 
-            // 해제 버튼 (우측)
+            float headerBtnX = headerRect.xMax;
+            bool mouseOverHeaderBtn = false;
+
+            // 해제 버튼 (우측 끝)
             bool showRevert = core.ResolvedCanRevertVoluntarily;
             if (showRevert)
             {
-                Rect revertBtnRect = new Rect(
-                    headerRect.xMax - RevertBtnSize,
-                    headerRect.y,
-                    RevertBtnSize, RevertBtnSize);
+                headerBtnX -= HeaderBtnSize;
+                Rect revertBtnRect = new Rect(headerBtnX, headerRect.y, HeaderBtnSize, HeaderBtnSize);
 
                 var revertIcon = ShapeshiftTextureUtility.GetRevertIcon(form);
                 if (revertIcon != null)
@@ -75,10 +78,42 @@ namespace ShapeshifterFramework.Gizmos
                 {
                     Widgets.DrawHighlight(revertBtnRect);
                     TooltipHandler.TipRegion(revertBtnRect, "SSF_Command_RevertDesc".Translate());
+                    mouseOverHeaderBtn = true;
+                }
+            }
+
+            // 자동사격 토글 표시 버튼 (해제 버튼 왼쪽)
+            var settings = ShapeshifterFrameworkMod.Settings;
+            if (settings != null && HasRangedVerbs())
+            {
+                headerBtnX -= HeaderBtnSize;
+                Rect toggleBtnRect = new Rect(headerBtnX, headerRect.y, HeaderBtnSize, HeaderBtnSize);
+
+                // 체크박스 스타일 아이콘
+                GUI.DrawTexture(toggleBtnRect, TexCommand.Attack);
+                Rect checkRect = new Rect(toggleBtnRect.center.x, toggleBtnRect.y,
+                    toggleBtnRect.width / 2f, toggleBtnRect.height / 2f);
+                GUI.DrawTexture(checkRect, settings.showVerbAutoToggle
+                    ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex);
+
+                if (Widgets.ButtonInvisible(toggleBtnRect))
+                {
+                    settings.showVerbAutoToggle = !settings.showVerbAutoToggle;
+                    if (settings.showVerbAutoToggle)
+                        SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                    else
+                        SoundDefOf.Tick_Low.PlayOneShotOnCamera();
                 }
 
-                headerRect.xMax -= RevertBtnSize + 2f;
+                if (Mouse.IsOver(toggleBtnRect))
+                {
+                    Widgets.DrawHighlight(toggleBtnRect);
+                    TooltipHandler.TipRegion(toggleBtnRect, "SSF_Gizmo_VerbToggle_Tip".Translate());
+                    mouseOverHeaderBtn = true;
+                }
             }
+
+            headerRect.xMax = headerBtnX - 2f;
 
             // 폼 이름
             Text.Font = GameFont.Small;
@@ -117,7 +152,7 @@ namespace ShapeshifterFramework.Gizmos
             Text.Anchor = TextAnchor.UpperLeft;
 
             // ── 툴팁 ──
-            if (Mouse.IsOver(outerRect))
+            if (Mouse.IsOver(outerRect) && !mouseOverHeaderBtn)
             {
                 Widgets.DrawHighlight(outerRect);
                 string tip = GetTooltipText(form, isPermanent, resolvedDuration);
@@ -125,6 +160,20 @@ namespace ShapeshifterFramework.Gizmos
             }
 
             return new GizmoResult(GizmoState.Clear);
+        }
+
+        /// <summary>폼에 원거리 verb가 있는지 확인.</summary>
+        private bool HasRangedVerbs()
+        {
+            var vt = core.ShapeshiftVerbTracker;
+            if (vt == null) return false;
+            var verbs = vt.AllVerbs;
+            for (int i = 0; i < verbs.Count; i++)
+            {
+                if (verbs[i]?.verbProps != null && verbs[i].verbProps.Ranged)
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>툴팁 텍스트 생성.</summary>

@@ -63,6 +63,7 @@
   <SSF_Inspect_Permanent_Short>Permanent</SSF_Inspect_Permanent_Short>
   <SSF_Gizmo_Tooltip_Permanent>{0}: Permanent transformation</SSF_Gizmo_Tooltip_Permanent>
   <SSF_Gizmo_Tooltip_Timed>{0}: {1} remaining / {2} total</SSF_Gizmo_Tooltip_Timed>
+  <SSF_Gizmo_VerbToggle_Tip>Show/hide auto-attack toggles</SSF_Gizmo_VerbToggle_Tip>
 
   <SSF_Setting_DebugLog_Title>Enable Developer Debug Logs</SSF_Setting_DebugLog_Title>
   <SSF_Setting_DebugLog_Desc>Prints detailed internal framework operations to the RimWorld debug log. Only enable this for mod development or bug reporting.</SSF_Setting_DebugLog_Desc>
