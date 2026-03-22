@@ -225,12 +225,12 @@
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_SacredAnimalForm</workerClass>
     <stages>
       <li>
-        <label>sacred animal desecrated</label>
+        <label>sacred animal form</label>
         <description>I've taken the form of a sacred animal with this vile power. I feel like I've committed a terrible sacrilege.</description>
         <baseMoodEffect>-8</baseMoodEffect>
       </li>
       <li>
-        <label>sacred animal defiled</label>
+        <label>sacred animal form</label>
         <description>I'm wearing the form of a sacred animal through shapeshifting. It doesn't feel right.</description>
         <baseMoodEffect>-3</baseMoodEffect>
       </li>
@@ -245,7 +245,7 @@
         <baseMoodEffect>5</baseMoodEffect>
       </li>
       <li>
-        <label>sacred animal blessed</label>
+        <label>sacred animal form</label>
         <description>I embody the sacred animal itself! I can feel divine power flowing through me.</description>
         <baseMoodEffect>8</baseMoodEffect>
       </li>
@@ -264,12 +264,12 @@
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_SacredAnimalForm_Social</workerClass>
     <stages>
       <li>
-        <label>sacred animal desecrator</label>
+        <label>sacred animal form</label>
         <description>They dare to wear the form of a sacred animal with that vile power. It's an unforgivable sacrilege.</description>
         <baseOpinionOffset>-10</baseOpinionOffset>
       </li>
       <li>
-        <label>sacred animal defiler</label>
+        <label>sacred animal form</label>
         <description>They're wearing the form of a sacred animal through shapeshifting. It's uncomfortable to watch.</description>
         <baseOpinionOffset>-5</baseOpinionOffset>
       </li>
@@ -284,7 +284,7 @@
         <baseOpinionOffset>5</baseOpinionOffset>
       </li>
       <li>
-        <label>sacred animal incarnation</label>
+        <label>sacred animal form</label>
         <description>They embody the sacred animal itself! They are truly blessed.</description>
         <baseOpinionOffset>10</baseOpinionOffset>
       </li>
