@@ -212,17 +212,42 @@
     </stages>
   </ThoughtDef>
 
-  <!-- ══════════════ Common (precept-independent) ══════════════ -->
+  <!-- ══════════════ Common (precept-aware) ══════════════ -->
 
-  <!-- Sacred animal form +5 (situational, independent of precept) -->
+  <!-- Sacred animal form — mood varies by shapeshifting precept stage
+       Stage 0: Abhorrent  -8  (desecration)
+       Stage 1: Disapproved -3 (uncomfortable)
+       Stage 2: DontCare   +2  (mildly positive)
+       Stage 3: Respected   +5
+       Stage 4: Sublime     +8  (blessed) -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Thought_SacredAnimalForm</defName>
     <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_SacredAnimalForm</workerClass>
     <stages>
       <li>
+        <label>sacred animal desecrated</label>
+        <description>A shapeshifter dares to wear the form of a sacred animal. This is an unforgivable sacrilege.</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+      <li>
+        <label>sacred animal defiled</label>
+        <description>Taking the form of a sacred animal through shapeshifting... it feels wrong.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>I've taken the form of a sacred animal. Interesting.</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+      <li>
         <label>sacred animal form</label>
         <description>I've taken the form of a sacred animal. It feels reverent.</description>
         <baseMoodEffect>5</baseMoodEffect>
+      </li>
+      <li>
+        <label>sacred animal blessed</label>
+        <description>I've been blessed to embody a sacred animal. I feel divine power flowing through me.</description>
+        <baseMoodEffect>8</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>
