@@ -181,6 +181,14 @@ namespace ShapeshifterFramework.Comps
                 return false;
             }
 
+            // 타겟 지정 어빌리티(타인 대상)는 캐스터 변신 상태로 기즈모를 막지 않음.
+            // 대상별 유효성은 CanApplyOn에서 처리.
+            if (parent.def.targetRequired)
+            {
+                reason = null;
+                return false;
+            }
+
             // 같은 폼은 ShouldHideGizmo에서 이미 숨겨져 여기 도달하지 않음.
             // 다른 폼일 때만 allowedFromForms 체크.
             if (IsCurrentFormInAllowedList(core))
@@ -189,7 +197,7 @@ namespace ShapeshifterFramework.Comps
                 return false;
             }
 
-            // 변신 중이고 허용되지 않은 폼 → 비활성
+            // 자기 대상 어빌리티: 변신 중이고 허용되지 않은 폼 → 비활성
             reason = "SSF_GizmoDisabled_AlreadyTransformed".Translate(core.currentForm.label ?? core.currentForm.defName);
             return true;
         }
