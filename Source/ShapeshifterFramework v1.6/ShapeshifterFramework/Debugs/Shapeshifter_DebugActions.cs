@@ -752,84 +752,88 @@ namespace ShapeshifterFramework.Debugs
         #region 체크리스트 매핑 (TEST_CHECKLIST.md 항목 번호 연동)
 
         // key = "formDefName|checkCategory" 또는 "formDefName|checkCategory|subKey"
-        // value = 체크리스트 항목 번호 (예: "#009~#014")
+        // value = 체크리스트 항목 번호 (TEST_CHECKLIST.md 넘버링 연동)
+        // 형식: {섹션}-A{번호} = Auto-Verify | {섹션}-M{번호} = Manual
         private static readonly Dictionary<string, string> CMap = new Dictionary<string, string>
         {
             // ── §1 BearForm ──
-            {"SSFTest_BearForm|statHediff",       "1-AV1"},
-            {"SSFTest_BearForm|addHediff|FibrousMechanites", "1-AV2"},
-            {"SSFTest_BearForm|addHediff|SSFTest_BeastArm",  "1-AV2"},
-            {"SSFTest_BearForm|addAbility|Berserk",          "1-AV3"},
-            {"SSFTest_BearForm|gearApparel",      "1-AV4"},
-            {"SSFTest_BearForm|gearWeapon",       "1-AV4"},
-            {"SSFTest_BearForm|verbTracker",      "1-AV5"},
-            {"SSFTest_BearForm|bloodCache",       "1-AV6"},
-            {"SSFTest_BearForm|timer",            "1-AV7"},
-            {"SSFTest_BearForm|R.statHediff",     "1-AV8"},
-            {"SSFTest_BearForm|R.addAbility|Berserk", "1-AV8"},
-            {"SSFTest_BearForm|R.bodyType",       "1-AV8"},
-            {"SSFTest_BearForm|R.addHediff|FibrousMechanites", "1-AV8"},
+            {"SSFTest_BearForm|statHediff",       "1-A01"},
+            {"SSFTest_BearForm|addHediff|FibrousMechanites", "1-A06"},
+            {"SSFTest_BearForm|addHediff|SSFTest_BeastArm",  "1-A06"},
+            {"SSFTest_BearForm|addAbility|Berserk",          "1-A06"},
+            {"SSFTest_BearForm|gearApparel",      "1-A03"},
+            {"SSFTest_BearForm|gearWeapon",       "1-A03"},
+            {"SSFTest_BearForm|verbTracker",      "1-A04"},
+            {"SSFTest_BearForm|bloodCache",       "1-M03"},
+            {"SSFTest_BearForm|timer",            "1-A08"},
+            {"SSFTest_BearForm|R.statHediff",     "1-A07"},
+            {"SSFTest_BearForm|R.addAbility|Berserk", "1-A07"},
+            {"SSFTest_BearForm|R.bodyType",       "1-A07"},
+            {"SSFTest_BearForm|R.addHediff|FibrousMechanites", "1-A07"},
 
             // ── §2 BearWarriorForm ──
-            {"SSFTest_BearWarriorForm|statHediff",  "2-AV1"},
-            {"SSFTest_BearWarriorForm|soundCache",  "2-AV2"},
-            {"SSFTest_BearWarriorForm|timer",       "2-AV3"},
+            {"SSFTest_BearWarriorForm|statHediff",        "2-A01"},
+            {"SSFTest_BearWarriorForm|soundCache",        "2-M03"},
+            {"SSFTest_BearWarriorForm|equipLockApparel",  "2-A03"},
+            {"SSFTest_BearWarriorForm|equipLockWeapon",   "2-A03"},
+            {"SSFTest_BearWarriorForm|timer",             "2-A04"},
 
             // ── §3 SheepForm ──
-            {"SSFTest_SheepForm|statHediff",      "3-AV1"},
-            {"SSFTest_SheepForm|workTags",        "3-AV2"},
-            {"SSFTest_SheepForm|timer",           "3-AV3"},
+            {"SSFTest_SheepForm|statHediff",      "3-A01"},
+            {"SSFTest_SheepForm|workTags",        "3-A02"},
+            {"SSFTest_SheepForm|timer",           "3-M04"},
 
             // ── §4 DarkKnightForm ──
-            {"SSFTest_DarkKnightForm|statHediff",       "4-AV1"},
-            {"SSFTest_DarkKnightForm|gearApparel",      "4-AV2"},
-            {"SSFTest_DarkKnightForm|gearWeapon",       "4-AV2"},
-            {"SSFTest_DarkKnightForm|spawnApparel",     "4-AV3"},
-            {"SSFTest_DarkKnightForm|spawnWeapon",      "4-AV3"},
-            {"SSFTest_DarkKnightForm|stuffApparel",     "4-AV4"},
-            {"SSFTest_DarkKnightForm|stuffWeapon",      "4-AV4"},
-            {"SSFTest_DarkKnightForm|equipLockApparel", "4-AV5"},
-            {"SSFTest_DarkKnightForm|equipLockWeapon",  "4-AV5"},
-            {"SSFTest_DarkKnightForm|timer",            "4-AV6"},
-            {"SSFTest_DarkKnightForm|R.spawnApparel",   "4-AV7"},
-            {"SSFTest_DarkKnightForm|R.spawnWeapon",    "4-AV7"},
-            {"SSFTest_DarkKnightForm|R.equipLock",      "4-AV7"},
+            {"SSFTest_DarkKnightForm|statHediff",       "4-A01"},
+            {"SSFTest_DarkKnightForm|gearApparel",      "4-A03"},
+            {"SSFTest_DarkKnightForm|gearWeapon",       "4-A03"},
+            {"SSFTest_DarkKnightForm|spawnApparel",     "4-A01"},
+            {"SSFTest_DarkKnightForm|spawnWeapon",      "4-A02"},
+            {"SSFTest_DarkKnightForm|stuffApparel",     "4-M03"},
+            {"SSFTest_DarkKnightForm|stuffWeapon",      "4-M03"},
+            {"SSFTest_DarkKnightForm|equipLockApparel", "4-A04"},
+            {"SSFTest_DarkKnightForm|equipLockWeapon",  "4-A04"},
+            {"SSFTest_DarkKnightForm|timer",            "4-A05"},
+            {"SSFTest_DarkKnightForm|R.spawnApparel",   "4-A05"},
+            {"SSFTest_DarkKnightForm|R.spawnWeapon",    "4-A05"},
+            {"SSFTest_DarkKnightForm|R.equipLock",      "4-A05"},
 
             // ── §5 BeastkinForm ──
-            {"SSFTest_BeastkinForm|hairColor",    "5-AV1"},
-            {"SSFTest_BeastkinForm|verbTracker",  "5-AV2"},
-            {"SSFTest_BeastkinForm|gearApparel",  "5-AV3"},
-            {"SSFTest_BeastkinForm|addHediff|FibrousMechanites", "5-AV4"},
-            {"SSFTest_BeastkinForm|addAbility|Waterskip", "5-AV5"},
-            {"SSFTest_BeastkinForm|workTags",     "5-AV6"},
-            {"SSFTest_BeastkinForm|R.hairColor",  "5-AV7"},
-            {"SSFTest_BeastkinForm|R.addAbility|Waterskip", "5-AV7"},
+            {"SSFTest_BeastkinForm|hairColor",    "5-A05"},
+            {"SSFTest_BeastkinForm|verbTracker",  "5-A03"},
+            {"SSFTest_BeastkinForm|gearApparel",  "5-A01"},
+            {"SSFTest_BeastkinForm|addHediff|FibrousMechanites", "5-A06"},
+            {"SSFTest_BeastkinForm|addAbility|Waterskip",       "5-A06"},
+            {"SSFTest_BeastkinForm|addAbility|SSFTest_Ability_FullBeast", "5-A06"},
+            {"SSFTest_BeastkinForm|workTags",     "5-M05"},
+            {"SSFTest_BeastkinForm|R.hairColor",  "5-A05"},
+            {"SSFTest_BeastkinForm|R.addAbility|Waterskip", "5-A06"},
 
             // ── §6 FullBeastForm ──
-            {"SSFTest_FullBeastForm|statHediff",  "6-AV1"},
-            {"SSFTest_FullBeastForm|verbTracker", "6-AV2"},
-            {"SSFTest_FullBeastForm|timer",       "6-AV3"},
+            {"SSFTest_FullBeastForm|statHediff",  "6-A01"},
+            {"SSFTest_FullBeastForm|verbTracker", "6-A03"},
+            {"SSFTest_FullBeastForm|timer",       "6-A04"},
 
             // ── §7 GuardianForm ──
-            {"SSFTest_GuardianForm|statHediff",   "7-AV1"},
-            {"SSFTest_GuardianForm|timer",        "7-AV2"},
+            {"SSFTest_GuardianForm|statHediff",   "7-A01"},
+            {"SSFTest_GuardianForm|timer",        "7-A04"},
 
             // ── §8 PhantomForm ──
-            {"SSFTest_PhantomForm|bodyType",      "8-AV1"},
-            {"SSFTest_PhantomForm|skinColor",     "8-AV2"},
-            {"SSFTest_PhantomForm|workTypes",     "8-AV3"},
-            {"SSFTest_PhantomForm|timer",         "8-AV4"},
-            {"SSFTest_PhantomForm|R.bodyType",    "8-AV5"},
-            {"SSFTest_PhantomForm|R.skinColor",   "8-AV5"},
-            {"SSFTest_PhantomForm|R.headType",    "8-AV5"},
+            {"SSFTest_PhantomForm|bodyType",      "8-A02"},
+            {"SSFTest_PhantomForm|skinColor",     "8-A03"},
+            {"SSFTest_PhantomForm|workTypes",     "8-A04"},
+            {"SSFTest_PhantomForm|timer",         "8-A04"},
+            {"SSFTest_PhantomForm|R.bodyType",    "8-A02"},
+            {"SSFTest_PhantomForm|R.skinColor",   "8-A03"},
+            {"SSFTest_PhantomForm|R.headType",    "8-A01"},
 
             // ── §9 RaceLockedForm ──
-            {"SSFTest_RaceLockedForm|raceFilter",        "9-AV1"},
-            {"SSFTest_RaceLockedForm|headType",          "9-AV2"},
-            {"SSFTest_RaceLockedForm|equipLockApparel",  "9-AV3"},
-            {"SSFTest_RaceLockedForm|equipLockWeapon",   "9-AV3"},
-            {"SSFTest_RaceLockedForm|statHediff",        "9-AV4"},
-            {"SSFTest_RaceLockedForm|timer",             "9-AV5"},
+            {"SSFTest_RaceLockedForm|raceFilter",        "9-A01"},
+            {"SSFTest_RaceLockedForm|headType",          "9-A04"},
+            {"SSFTest_RaceLockedForm|equipLockApparel",  "9-A03"},
+            {"SSFTest_RaceLockedForm|equipLockWeapon",   "9-A03"},
+            {"SSFTest_RaceLockedForm|statHediff",        "9-A01"},
+            {"SSFTest_RaceLockedForm|timer",             "9-A03"},
         };
 
         /// <summary>체크리스트 참조 문자열 반환. 매핑 없으면 빈 문자열.</summary>
