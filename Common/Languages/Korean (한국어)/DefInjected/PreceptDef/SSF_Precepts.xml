@@ -13,8 +13,8 @@
   <SSF_Shapeshifting_Neutral.label>관심 없음</SSF_Shapeshifting_Neutral.label>
   <SSF_Shapeshifting_Neutral.description>변신은 특별히 좋지도 나쁘지도 않다.</SSF_Shapeshifting_Neutral.description>
 
-  <!-- 단계 3: 존중함 -->
-  <SSF_Shapeshifting_Respected.label>존중함</SSF_Shapeshifting_Respected.label>
+  <!-- 단계 3: 중시함 -->
+  <SSF_Shapeshifting_Respected.label>중시함</SSF_Shapeshifting_Respected.label>
   <SSF_Shapeshifting_Respected.description>몸을 바꿀 수 있는 힘은 존경받을 만한 재능이다.</SSF_Shapeshifting_Respected.description>
 
   <!-- 단계 4: 숭고함 -->
