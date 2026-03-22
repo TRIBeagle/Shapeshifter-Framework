@@ -36,9 +36,13 @@ namespace ShapeshifterFramework.Gizmos
         private ShapeshiftFormDef _cachedForm;
         private bool _cachedHasRanged;
 
-        // 캐시: 시간 문자열 (틱 변경 시에만 갱신)
-        private int _cachedRemainTicks = -1;
+        // 캐시: 시간 문자열 (표시 단위 변경 시에만 갱신)
+        private int _cachedRemainQuantized = -1;
         private string _cachedTimeLabel;
+
+        // 1시간 = 2500틱. 표시 단위에 맞춰 양자화 간격 결정.
+        private const int TicksPerHour = 2500;
+        private const int TicksPerDay = TicksPerHour * 24;  // 60000
 
         // 캐시: 폼 이름 폰트 측정 (폼 변경 시 갱신)
         private string _cachedFormLabel;
@@ -164,10 +168,13 @@ namespace ShapeshifterFramework.Gizmos
                 int remain = core.RemainingShapeshiftTicks;
                 int total = resolvedDuration.Value;
                 fillPct = Mathf.Clamp01((float)remain / Mathf.Max(1f, total));
-                // 시간 문자열은 틱 변경 시에만 갱신
-                if (remain != _cachedRemainTicks)
+                // 표시 단위에 맞춰 양자화 — 단위 변경 시에만 문자열 재생성
+                // 1일 이상: 시간 단위(2500틱)마다, 1일 미만: 0.1시간 단위(250틱)마다
+                int quantum = remain >= TicksPerDay ? TicksPerHour : TicksPerHour / 10;
+                int quantized = remain / Mathf.Max(1, quantum);
+                if (quantized != _cachedRemainQuantized)
                 {
-                    _cachedRemainTicks = remain;
+                    _cachedRemainQuantized = quantized;
                     _cachedTimeLabel = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: false);
                     Text.Font = GameFont.Small;
                     _cachedBarLabelSmallWidth = Text.CalcSize(_cachedTimeLabel).x;
