@@ -149,8 +149,9 @@ namespace ShapeshifterFramework.Patches
                         vma.maneuver = entry.maneuver;
                     }
 
-                    // 바닐라 규칙에 맞는 loadID 부여
-                    verb.loadID = Verb.CalculateUniqueLoadID(owner, ___verbs.Count);
+                    // 바닐라 InitVerbs와 동일한 tool+maneuver 기반 loadID 부여
+                    // (index 기반 오버로드를 쓰면 ResolvingCrossRefs 시 ID 불일치로 "Replaced verb" 경고 발생)
+                    verb.loadID = Verb.CalculateUniqueLoadID(owner, entry.tool, entry.maneuver);
                     ___verbs.Add(verb);
                     addedCount++;
                 }
