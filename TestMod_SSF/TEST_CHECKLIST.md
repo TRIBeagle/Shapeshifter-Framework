@@ -260,12 +260,10 @@
 - [ ] `14-M07` 변신 규율: 특별한 재능 → 변신 시 기분 +5, 의견 +10, **목격 기억 감정 +4 (3일)**
 - [ ] `14-M08` 변신 규율: 신이 내린 축복 → 변신 시 기분 +10, 의견 +20, **목격 기억 감정 +8 (5일)**
 - [ ] `14-M09` 성스러운 동물 폼 (`linkedSacredAnimalDef`) → 규율 단계별 기분: 혐오(-8) / 못마땅(-3) / 무관심(+2) / 존중(+5) / 숭고(+8)
-- [ ] `14-M10` CE 감지 로그: CE 활성 시 `[SSF/CE] Detected` 메시지 출력 확인
-- [ ] `14-M11` CE 환경에서 BearForm teeth 공격 → ToolCE 관통값(sharp=4, blunt=8) 적용 확인
-- [ ] `14-M12` CE 환경에서 BeastkinForm claws 공격 → ToolCE 관통값(sharp=3, blunt=6) 적용 확인
-- [ ] `14-M13` CE 환경에서 BeastkinForm AssaultRifle verb → VerbPropertiesCE(Verb_ShootCE) 동작 확인
-- [ ] `14-M14` CE 없이 로드 시 → CE 패치 미적용, 바닐라 Tool/VerbProperties 정상 동작 확인
-- [ ] `14-M15` Yayo's Combat 감지 로그: Yayo 활성 시 `[SSF/Yayo] Detected` 메시지 출력 확인
+- [ ] `14-M10` CE 환경에서 BearForm teeth 공격 → ToolCE 관통값(sharp=4, blunt=8) 적용 확인 (MayRequire XML 패치)
+- [ ] `14-M11` CE 환경에서 BeastkinForm claws 공격 → ToolCE 관통값(sharp=3, blunt=6) 적용 확인 (MayRequire XML 패치)
+- [ ] `14-M12` CE 환경에서 BeastkinForm AssaultRifle verb → VerbPropertiesCE(Verb_ShootCE) 동작 확인 (MayRequire XML 패치)
+- [ ] `14-M13` CE 없이 로드 시 → CE 패치 미적용, 바닐라 Tool/VerbProperties 정상 동작 확인
 
 ---
 

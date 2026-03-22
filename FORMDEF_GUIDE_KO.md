@@ -879,7 +879,7 @@ SSF 폼의 verb는 **NativeVerb** (`EquipmentSource=null`)이므로 CE 탄약 �
 - `ToolCE`는 `Tool`을 상속 → SSF의 `List<Tool>`이 그대로 수용
 - `VerbPropertiesCE`는 `VerbProperties`를 상속 → 동일 원리
 - CE 어셈블리에 하드 참조 없음 — CE 활성 시에만 패치 적용
-- SSF는 시작 시 CE를 감지하고 `[SSF/CE] Detected` 로그 출력
+- SSF는 CE에 대한 코드 패치를 수행하지 않음 — 모더가 MayRequire XML 패치로 처리
 
 ### Tool 패치 예제
 

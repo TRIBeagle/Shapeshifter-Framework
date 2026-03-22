@@ -883,7 +883,7 @@ Use **XPath patches** with `MayRequire="CETeam.CombatExtended"` to replace vanil
 - `ToolCE` extends `Tool` → SSF's `List<Tool>` accepts it without code changes
 - `VerbPropertiesCE` extends `VerbProperties` → same principle
 - No hard dependency on CE assembly — patches only load when CE is active
-- SSF detects CE at startup and logs `[SSF/CE] Detected`
+- SSF does not apply any code patches for CE — modders handle it via MayRequire XML patches
 
 ### Tool Patch Example
 
