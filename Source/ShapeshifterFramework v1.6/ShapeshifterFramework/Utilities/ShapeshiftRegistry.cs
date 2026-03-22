@@ -105,9 +105,6 @@ namespace ShapeshifterFramework.Utilities
             return _active.Count > 0;
         }
 
-        /// <summary>활성 딕셔너리 직접 참조 (HediffComp_ShapeshiftCore). 순회 중 수정이 없는 경우만 사용.</summary>
-        internal static Dictionary<Pawn, HediffComp_ShapeshiftCore> ActiveDict => _active;
-
         // 순회 중 수정이 발생할 수 있는 경우를 위한 스냅샷 리스트
         // _snapshotInUse 플래그로 중첩 호출 시 새 리스트 할당
         private static readonly List<KeyValuePair<Pawn, HediffComp_ShapeshiftCore>> _snapshot

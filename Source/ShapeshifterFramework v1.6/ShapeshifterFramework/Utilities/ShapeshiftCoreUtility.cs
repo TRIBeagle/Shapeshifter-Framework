@@ -78,23 +78,6 @@ namespace ShapeshifterFramework.Utilities
             }
         }
 
-        /// <summary>대상 Pawn의 변신 해제.</summary>
-        public static void RemoveForm(Verse.Pawn pawn)
-        {
-            if (pawn == null) return;
-
-            if (TryGetCore(pawn, out var core))
-            {
-                core.RemoveForm();
-                // hediff 자체도 제거
-                if (core.parent != null && pawn.health?.hediffSet != null
-                    && pawn.health.hediffSet.hediffs.Contains(core.parent))
-                {
-                    pawn.health.RemoveHediff(core.parent);
-                }
-            }
-        }
-
         #endregion
 
         #region 조회 헬퍼
@@ -120,18 +103,6 @@ namespace ShapeshifterFramework.Utilities
                 }
             }
 
-            return false;
-        }
-
-        /// <summary>Pawn에서 HediffComp_ShapeshiftCore + FormDef 동시 조회.</summary>
-        public static bool TryGetCore(Verse.Pawn pawn, out HediffComp_ShapeshiftCore core, out ShapeshiftFormDef form)
-        {
-            form = null;
-            if (TryGetCore(pawn, out core))
-            {
-                form = core.currentForm;
-                return form != null;
-            }
             return false;
         }
 

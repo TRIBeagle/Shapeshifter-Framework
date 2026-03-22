@@ -230,40 +230,6 @@ namespace ShapeshifterFramework.Hediffs
 
         // 매 틱 처리(CompPostTick), sustain 조건, 인스펙터 문자열 → HediffComp_ShapeshiftCore.Tick.cs
 
-        #region 변신 가능 판정
-
-        /// <summary>기본 변신 가능 여부 판정.</summary>
-        public bool CanTransform(ShapeshiftFormDef form)
-        {
-            var pawn = Pawn;
-            if (pawn == null || form == null) return false;
-            string prev = (isTransformed && currentForm != null) ? currentForm.defName : null;
-            return ShapeshiftEligibility.CanTransformBasic(pawn, form, prev);
-        }
-
-        #endregion
-
-        #region 런타임 FormDef 설정
-
-        /// <summary>런타임 동적 formDef 설정 (디버그/SSF_GenericShapeshiftForm용).</summary>
-        public void SetFormDef(ShapeshiftFormDef form)
-        {
-            if (form == null) return;
-            // needsInit가 true인 상태에서 호출되면 해당 formDef를 사용
-            // needsInit가 false이고 아직 미변신이면 즉시 ApplyForm
-            if (needsInit)
-            {
-                // currentForm에 임시 저장 — 다음 Tick의 needsInit 처리에서 사용
-                currentForm = form;
-            }
-            else if (!isTransformed)
-            {
-                ApplyForm(form);
-            }
-        }
-
-        #endregion
-
         #region 변신 적용/해제
 
         /// <summary>폼 적용.</summary>

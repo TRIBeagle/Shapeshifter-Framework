@@ -29,7 +29,7 @@ namespace ShapeshifterFramework.Utilities
         }
 
         /// <summary>폼의 formAllowedMutants/formDisallowedMutants에 대상 뮤턴트가 부합하는지 판정. 둘 다 null/빈 목록이면 제한 없음.</summary>
-        public static bool IsMutantAllowed(Pawn pawn, ShapeshiftFormDef form)
+        private static bool IsMutantAllowed(Pawn pawn, ShapeshiftFormDef form)
         {
             if (pawn == null || form == null) return false;
 

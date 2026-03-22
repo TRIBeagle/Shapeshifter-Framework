@@ -415,9 +415,7 @@ namespace ShapeshifterFramework.Compat
     /// <summary>Pawn별 FA 백업 저장소. 딥세이브/로드 지원.</summary>
     internal sealed class FAStateStore : GameComponent
     {
-        public FAStateStore(Game game) { Inst = this; }
-
-        public static FAStateStore Inst { get; private set; }
+        public FAStateStore(Game game) { }
 
         private Dictionary<Pawn, FacialAnimationCompat.Backup> map =
             new Dictionary<Pawn, FacialAnimationCompat.Backup>();

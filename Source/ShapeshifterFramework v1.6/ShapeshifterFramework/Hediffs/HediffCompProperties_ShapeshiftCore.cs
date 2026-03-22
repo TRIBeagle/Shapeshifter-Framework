@@ -14,7 +14,7 @@ namespace ShapeshifterFramework.Hediffs
     public class HediffCompProperties_ShapeshiftCore : HediffCompProperties
     {
         // ── 핵심 연결: HediffDef → FormDef ──
-        /// <summary>이 HediffDef가 적용할 변신 폼. null이면 런타임에 SetFormDef()로 지정 (디버그/범용).</summary>
+        /// <summary>이 HediffDef가 적용할 변신 폼. null이면 런타임에 ApplyForm()으로 지정 (디버그/범용).</summary>
         public ShapeshiftFormDef formDef;
 
         // ── 행동 오버라이드 (null = FormDef 기본값 사용) ──

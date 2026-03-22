@@ -37,7 +37,7 @@ namespace ShapeshifterFramework.Hediffs
                 }
                 else
                 {
-                    ShapeshiftDiagnostics.Info("HediffComp_ShapeshiftCore: needsInit but no formDef. Use SetFormDef() for dynamic forms.");
+                    ShapeshiftDiagnostics.Info("HediffComp_ShapeshiftCore: needsInit but no formDef. Use ApplyForm() for dynamic forms.");
                 }
                 return;
             }

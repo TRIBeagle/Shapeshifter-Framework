@@ -153,11 +153,6 @@ namespace ShapeshifterFramework.Compat
                 }
             }
 
-            internal void Clear()
-            {
-                entries.Clear();
-                prefValues = null;
-            }
         }
 
         /// <summary>현재 SS 메모리를 백업 (rememberedWeapons + 선호 무기 필드).</summary>
@@ -280,9 +275,7 @@ namespace ShapeshifterFramework.Compat
     /// <summary>Pawn별 SS 메모리 백업 저장소. 딥세이브/로드 지원.</summary>
     internal sealed class SSMemoryStore : GameComponent
     {
-        public SSMemoryStore(Game game) { Inst = this; }
-
-        public static SSMemoryStore Inst { get; private set; }
+        public SSMemoryStore(Game game) { }
 
         // SS 백업은 object 리스트(value type)라 IExposable 직렬화가 어려우므로
         // 런타임 전용. 세이브/로드 시에는 SS가 자체적으로 메모리를 관리함.

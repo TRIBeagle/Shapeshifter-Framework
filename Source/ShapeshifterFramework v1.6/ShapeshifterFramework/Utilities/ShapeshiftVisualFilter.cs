@@ -28,8 +28,6 @@ namespace ShapeshifterFramework.Utilities
         private readonly HashSet<string> _exact;   // 와일드카드 없는 정확 매칭 (OrdinalIgnoreCase)
         private readonly CompiledFilter[] _wild;   // 와일드카드 패턴들
 
-        public bool IsEmpty => !hasAll && _exact == null && _wild == null;
-
         private CompiledFilterSet(bool hasAll, HashSet<string> exact, CompiledFilter[] wild)
         {
             this.hasAll = hasAll;

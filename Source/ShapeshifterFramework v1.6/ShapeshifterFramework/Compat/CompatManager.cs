@@ -16,8 +16,6 @@ namespace ShapeshifterFramework.Compat
 
         private readonly HashSet<string> ok = new HashSet<string>();
         private readonly Dictionary<string, string> fail = new Dictionary<string, string>();
-        private readonly Dictionary<string, Dictionary<string, long>> metrics =
-            new Dictionary<string, Dictionary<string, long>>();
 
         private bool reported;
 
@@ -45,37 +43,11 @@ namespace ShapeshifterFramework.Compat
 
         internal bool HasFailed(string id) => fail.ContainsKey(id);
 
-        /// <summary>메트릭 값 설정.</summary>
-        internal void MetricSet(string scope, string key, long value)
-        {
-            if (!metrics.TryGetValue(scope, out var bag))
-                metrics[scope] = bag = new Dictionary<string, long>();
-            bag[key] = value;
-        }
-
-        /// <summary>메트릭 값 누적.</summary>
-        internal void MetricAdd(string scope, string key, long delta = 1)
-        {
-            if (!metrics.TryGetValue(scope, out var bag))
-                metrics[scope] = bag = new Dictionary<string, long>();
-            bag.TryGetValue(key, out var cur);
-            bag[key] = cur + delta;
-        }
-
         /// <summary>모드별 요약을 1회만 출력.</summary>
         internal void ReportOnce()
         {
             if (reported || !IsActive) return;
             reported = true;
-
-            // AddComp 요약
-            if (metrics.TryGetValue("AddComp", out var bag))
-            {
-                long added = 0, deduped = 0;
-                bag.TryGetValue("added", out added);
-                bag.TryGetValue("deduped", out deduped);
-                Log.Message($"{LogPrefix} AddComp summary: added={added}, deduped={deduped}");
-            }
 
             // 패치 카운트
             if (FailCount == 0)

@@ -226,7 +226,7 @@ namespace ShapeshifterFramework.Utilities
             return null;
         }
 
-        public static List<BodyPartRecord> ResolveTargetParts(Pawn pawn, HediffAddEntry opt)
+        private static List<BodyPartRecord> ResolveTargetParts(Pawn pawn, HediffAddEntry opt)
         {
             if (opt.targetPart != null)
             {
