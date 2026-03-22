@@ -21,6 +21,8 @@
       <swimmingColor>(255,255,255)</swimmingColor>
     </body>
     <bodyDrawScale>2.5</bodyDrawScale>
+    <!-- Sacred animal link: ideology sacred animal test (Bear_Grizzly) -->
+    <linkedSacredAnimalDef>Bear_Grizzly</linkedSacredAnimalDef>
     <durationTicks>15000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
     <!-- Grant hediffs -->

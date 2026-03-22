@@ -9,7 +9,7 @@
 
 | # | FormDef | 부모 | 트리거 | 핵심 테스트 |
 |---|---------|------|--------|------------|
-| 1 | SSFTest_BearForm | Animal | 아군 어빌리티, 약물 | 전체 텍스처 교체, 수영, 도구, 헤디프, 해제 드랍, FX |
+| 1 | SSFTest_BearForm | Animal | 아군 어빌리티, 약물 | 전체 텍스처 교체, 수영, 도구, 헤디프, 해제 드랍, FX, 성스러운 동물(Bear_Grizzly) |
 | 2 | SSFTest_BearWarriorForm | Armored | 적 어빌리티 | 사운드, 이펙터, 아이콘, 장비 유지 |
 | 3 | SSFTest_SheepForm | Animal | AoE, 투사체 | 성별 텍스처, 작업 태그 비활성, 강제 변신(해제 불가) |
 | 4 | SSFTest_DarkKnightForm | Armored | 자기 어빌리티 (무기 부여) | 스폰 장비, 장비 잠금, 해제 헤디프 |
@@ -326,6 +326,8 @@
 - [ ] `14-M07` 변신 규율: 특별한 재능 → 변신 시 기분 +5, 의견 +10, **목격 기억 감정 +4 (3일)**
 - [ ] `14-M08` 변신 규율: 신이 내린 축복 → 변신 시 기분 +10, 의견 +20, **목격 기억 감정 +8 (5일)**
 - [ ] `14-M09` 성스러운 동물 폼 (`linkedSacredAnimalDef`) → 규율 단계별 기분: 혐오(-8) / 못마땅(-3) / 무관심(+2) / 존중(+5) / 숭고(+8)
+  - 테스트 대상: `SSFTest_BearForm` (linkedSacredAnimalDef=`Bear_Grizzly`)
+  - 방법: 이데올로기에서 성스러운 동물을 회색곰(Bear_Grizzly)으로 설정 → 변신 규율 단계 변경 → BearForm 변신 시 감정 확인
 - [ ] `14-M10` CE 환경에서 BearForm teeth 공격 → ToolCE 관통값(sharp=4, blunt=8) 적용 확인 (MayRequire XML 패치)
 - [ ] `14-M11` CE 환경에서 BeastkinForm claws 공격 → ToolCE 관통값(sharp=3, blunt=6) 적용 확인 (MayRequire XML 패치)
 - [ ] `14-M12` CE 환경에서 BeastkinForm AssaultRifle verb → VerbPropertiesCE(Verb_ShootCE) 동작 확인 (MayRequire XML 패치)
