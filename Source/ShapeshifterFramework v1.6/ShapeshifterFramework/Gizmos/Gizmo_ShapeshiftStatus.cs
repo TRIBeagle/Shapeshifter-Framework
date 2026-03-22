@@ -169,8 +169,8 @@ namespace ShapeshifterFramework.Gizmos
                 int total = resolvedDuration.Value;
                 fillPct = Mathf.Clamp01((float)remain / Mathf.Max(1f, total));
                 // 표시 단위에 맞춰 양자화 — 단위 변경 시에만 문자열 재생성
-                // 1일 이상: 시간 단위(2500틱)마다, 1일 미만: 0.1시간 단위(250틱)마다
-                int quantum = remain >= TicksPerDay ? TicksPerHour : TicksPerHour / 10;
+                // 1일 이상: 시간 단위(2500틱)마다, 1시간 미만: 0.1시간 단위(250틱)마다
+                int quantum = remain >= TicksPerHour ? TicksPerHour : TicksPerHour / 10;
                 int quantized = remain / Mathf.Max(1, quantum);
                 if (quantized != _cachedRemainQuantized)
                 {
