@@ -85,7 +85,7 @@
     <issue>SSF_Shapeshifting</issue>
     <label>don't care</label>
     <description>Shapeshifting is neither praised nor condemned. It simply is.</description>
-    <impact>None</impact>
+    <impact>Low</impact>
     <displayOrderInIssue>20</displayOrderInIssue>
     <displayOrderInImpact>1000</displayOrderInImpact>
     <defaultSelectionWeight>2</defaultSelectionWeight>
