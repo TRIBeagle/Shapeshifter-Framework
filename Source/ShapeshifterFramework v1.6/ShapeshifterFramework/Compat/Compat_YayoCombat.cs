@@ -26,7 +26,7 @@ namespace ShapeshifterFramework.Compat
             // 폼 verb는 NativeVerb 소유(EquipmentSource == null)이므로
             // Yayo 탄약 시스템의 3중 안전장치(Def 패칭/발사 체크/재장전 순회)에 의해 자연 면제.
             CompatManager.Yayo.Patched("Detect");
-            Log.Message($"{CompatManager.LOG_Yayo} 감지 완료. 폼 verb는 NativeVerb(EquipmentSource=null)로 탄약 시스템 면제.");
+            Log.Message($"{CompatManager.LOG_Yayo} Detected. Form verbs use NativeVerb (EquipmentSource=null), exempt from ammo system.");
         }
     }
 }
