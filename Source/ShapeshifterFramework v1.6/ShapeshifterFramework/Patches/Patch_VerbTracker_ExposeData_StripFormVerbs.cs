@@ -28,16 +28,29 @@ namespace ShapeshifterFramework.Patches
             if (___verbs == null || ___verbs.Count == 0) return;
 
             Pawn pawn = ___directOwner as Pawn;
-            if (pawn == null) return;
+            if (pawn == null)
+            {
+                ShapeshiftDiagnostics.Info("[StripFormVerbs] directOwner is not Pawn, skipping");
+                return;
+            }
 
-            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form))
+            {
+                ShapeshiftDiagnostics.Info($"[StripFormVerbs] pawn={pawn.LabelShort} not in registry, skipping");
+                return;
+            }
 
             var tools = form.tools;
-            if (tools == null || tools.Count == 0) return;
+            if (tools == null || tools.Count == 0)
+            {
+                ShapeshiftDiagnostics.Info($"[StripFormVerbs] pawn={pawn.LabelShort} form={form.defName} has no tools, skipping");
+                return;
+            }
 
             _strippedVerbs.Clear();
 
-            // 폼 tool 참조와 일치하는 verb를 제거하여 세이브에서 배제
+            // 폼 tool과 일치하는 verb를 제거하여 세이브에서 배제
+            // ReferenceEquals 우선, 실패 시 tool.label 비교로 폴백
             for (int i = ___verbs.Count - 1; i >= 0; i--)
             {
                 var v = ___verbs[i];
@@ -46,16 +59,28 @@ namespace ShapeshifterFramework.Patches
                 var vma = v as Verb_MeleeAttack;
                 if (vma == null || vma.tool == null) continue;
 
+                bool matched = false;
                 for (int j = 0; j < tools.Count; j++)
                 {
-                    if (ReferenceEquals(vma.tool, tools[j]))
+                    if (tools[j] == null) continue;
+
+                    if (ReferenceEquals(vma.tool, tools[j])
+                        || vma.tool.label == tools[j].label)
                     {
-                        _strippedVerbs.Add(v);
-                        ___verbs.RemoveAt(i);
+                        matched = true;
                         break;
                     }
                 }
+
+                if (matched)
+                {
+                    ShapeshiftDiagnostics.Info($"[StripFormVerbs] stripping verb: {v.loadID} tool={vma.tool.label}");
+                    _strippedVerbs.Add(v);
+                    ___verbs.RemoveAt(i);
+                }
             }
+
+            ShapeshiftDiagnostics.Info($"[StripFormVerbs] pawn={pawn.LabelShort} form={form.defName}, stripped={_strippedVerbs.Count}, remaining={___verbs.Count}");
         }
 
         /// <summary>Finalizer로 예외 발생 시에도 제거된 verb를 반드시 복원.</summary>
