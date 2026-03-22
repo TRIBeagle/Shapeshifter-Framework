@@ -41,13 +41,6 @@ namespace ShapeshifterFramework.Compat
                     _compMemoryTypeResolved = true;
                     _compMemoryType = ShapeshiftReflectionCache.TryType(
                         "SimpleSidearms.rimworld.CompSidearmMemory");
-                    // 구버전 경로 폴백
-                    if (_compMemoryType == null)
-                        _compMemoryType = ShapeshiftReflectionCache.TryType(
-                            "PeteTimesSix.SimpleSidearms.CompSidearmMemory");
-                    if (_compMemoryType == null)
-                        _compMemoryType = ShapeshiftReflectionCache.TryType(
-                            "SimpleSidearms.CompSidearmMemory");
                 }
                 return _compMemoryType;
             }
