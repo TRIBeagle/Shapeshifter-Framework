@@ -26,7 +26,7 @@
     <issue>SSF_Shapeshifting</issue>
     <label>absolute abhorrence</label>
     <description>Altering one's natural body is an utterly unforgivable desecration of nature.</description>
-    <impact>High</impact>
+    <impact>Medium</impact>
     <displayOrderInIssue>0</displayOrderInIssue>
     <defaultSelectionWeight>0.5</defaultSelectionWeight>
     <comps>
