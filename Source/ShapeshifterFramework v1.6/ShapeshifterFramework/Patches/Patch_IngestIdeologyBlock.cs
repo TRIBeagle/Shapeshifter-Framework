@@ -47,7 +47,7 @@ namespace ShapeshifterFramework.Patches
                 {
                     blockReason = "IdeoligionForbids".Translate();
                 }
-                else if (isTransformed && hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, hediffDef))
+                else if (isTransformed)
                 {
                     blockReason = "SSF_Message_AlreadyTransformed".Translate();
                 }

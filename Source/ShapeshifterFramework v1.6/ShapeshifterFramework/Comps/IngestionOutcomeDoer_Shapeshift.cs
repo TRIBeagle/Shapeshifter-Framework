@@ -31,11 +31,11 @@ namespace ShapeshifterFramework.Comps
                 return;
             }
 
-            // 이미 다른 폼 변신 중이면 차단 (같은 폼은 hediff 갱신 허용)
+            // 이미 변신 중이면 차단 (동일 폼 포함)
             // 이데올로기 차단은 여기서 하지 않음 — 수술(Recipe_AdministerIngestible) 투여 시
             // pawn이 환자(수신자)이므로, 타인에 의한 강제 변신까지 차단하게 됨.
             // 자가 섭취 차단은 FloatMenu 패치(Patch_IngestIdeologyBlock)에서 담당.
-            if (ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, hediffDef))
+            if (ShapeshiftEligibility.IsAlreadyTransformed(pawn))
             {
                 Messages.Message("SSF_Message_AlreadyTransformed".Translate(), pawn, MessageTypeDefOf.RejectInput, false);
                 return;

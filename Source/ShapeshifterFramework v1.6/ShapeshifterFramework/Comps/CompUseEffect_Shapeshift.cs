@@ -21,7 +21,7 @@ namespace ShapeshifterFramework.Comps
             if (ShapeshiftEligibility.IsIdeologyForbidden(pawn))
                 return "IdeoligionForbids".Translate();
 
-            if (Props.hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, Props.hediffDef))
+            if (ShapeshiftEligibility.IsAlreadyTransformed(pawn))
                 return "SSF_Message_AlreadyTransformed".Translate();
 
             return base.CanBeUsedBy(pawn);

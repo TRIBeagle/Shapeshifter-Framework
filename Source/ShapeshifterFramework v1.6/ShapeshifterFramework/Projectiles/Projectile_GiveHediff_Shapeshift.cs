@@ -62,10 +62,10 @@ namespace ShapeshifterFramework.Projectiles
             base.Impact(hitThing, blockedByShield);
         }
 
-        /// <summary>확장 설정에 따라 대상에게 hediff 부여. 이미 다른 폼 변신 중이면 스킵.</summary>
+        /// <summary>확장 설정에 따라 대상에게 hediff 부여. 이미 변신 중이면 스킵.</summary>
         private static void ApplyHediffToTarget(Pawn target, GiveHediffProjectileExtension_Shapeshift ext)
         {
-            if (ShapeshiftEligibility.IsTransformedIntoDifferentForm(target, ext.hediffDef))
+            if (ShapeshiftEligibility.IsAlreadyTransformed(target))
                 return;
 
             ShapeshiftCoreUtility.GiveShiftHediff(target, ext.hediffDef);

@@ -89,8 +89,8 @@ namespace ShapeshifterFramework.Comps
             if (formDef != null && !ShapeshiftEligibility.IsRaceAllowed(pawn, formDef))
                 return false;
 
-            // 이미 다른 폼으로 변신 중이면 차단 — 단, allowedFromForms로 허용된 전환은 예외
-            if (Props.hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, Props.hediffDef, out var core))
+            // 이미 변신 중이면 차단 (동일 폼 포함) — allowedFromForms로 허용된 전환만 예외
+            if (ShapeshiftEligibility.IsAlreadyTransformed(pawn, out var core))
             {
                 if (!IsCurrentFormInAllowedList(core))
                     return false;
@@ -153,7 +153,8 @@ namespace ShapeshifterFramework.Comps
             return null;
         }
 
-        /// <summary>변신 중 다른 폼 어빌리티 비활성화 (allowedFromForms 허용 시 제외).</summary>
+        /// <summary>변신 중 어빌리티 비활성화 (동일 폼 포함). allowedFromForms 허용 시 제외.
+        /// targetRequired 어빌리티는 기즈모 활성 유지 — 대상별 차단은 CanApplyOn에서 처리.</summary>
         public override bool GizmoDisabled(out string reason)
         {
             var caster = parent?.pawn;
@@ -174,14 +175,14 @@ namespace ShapeshifterFramework.Comps
                 return true;
             }
 
-            // HediffComp_ShapeshiftCore 기반 조회
-            if (!ShapeshiftCoreUtility.TryGetCore(caster, out var core) || !core.isTransformed)
+            // 변신 중인지 확인
+            if (!ShapeshiftEligibility.IsAlreadyTransformed(caster, out var core))
             {
                 reason = null;
                 return false;
             }
 
-            // 타겟 지정 어빌리티(타인 대상)는 캐스터 변신 상태로 기즈모를 막지 않음.
+            // 타겟 지정 어빌리티(타인 대상)는 기즈모를 막지 않음.
             // 대상별 유효성은 CanApplyOn에서 처리.
             if (parent.def.targetRequired)
             {
@@ -189,15 +190,14 @@ namespace ShapeshifterFramework.Comps
                 return false;
             }
 
-            // 같은 폼은 ShouldHideGizmo에서 이미 숨겨져 여기 도달하지 않음.
-            // 다른 폼일 때만 allowedFromForms 체크.
+            // allowedFromForms에 현재 폼이 있으면 허용
             if (IsCurrentFormInAllowedList(core))
             {
                 reason = null;
                 return false;
             }
 
-            // 자기 대상 어빌리티: 변신 중이고 허용되지 않은 폼 → 비활성
+            // 자기 대상 어빌리티: 변신 중 → 비활성
             reason = "SSF_GizmoDisabled_AlreadyTransformed".Translate(core.currentForm.label ?? core.currentForm.defName);
             return true;
         }

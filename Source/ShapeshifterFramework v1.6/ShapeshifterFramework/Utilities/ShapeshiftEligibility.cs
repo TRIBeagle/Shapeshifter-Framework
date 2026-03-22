@@ -90,26 +90,19 @@ namespace ShapeshifterFramework.Utilities
             return false;
         }
 
-        /// <summary>Pawn이 이미 다른 폼으로 변신 중인지 판정. hediffDef에 바인딩된 formDef와 현재 폼을 비교.
-        /// 같은 폼이면 false (갱신 허용), 다른 폼이면 true (차단 필요).</summary>
-        public static bool IsTransformedIntoDifferentForm(Pawn pawn, HediffDef hediffDef)
+        /// <summary>Pawn이 이미 변신 중인지 판정. 동일 폼 포함 모든 변신 상태에서 true 반환.</summary>
+        public static bool IsAlreadyTransformed(Pawn pawn)
         {
-            return IsTransformedIntoDifferentForm(pawn, hediffDef, out _);
+            return IsAlreadyTransformed(pawn, out _);
         }
 
         /// <summary>오버로드: 판정 결과와 함께 현재 ShapeshiftCore를 반환. 이중 조회 방지용.</summary>
-        public static bool IsTransformedIntoDifferentForm(Pawn pawn, HediffDef hediffDef, out HediffComp_ShapeshiftCore core)
+        public static bool IsAlreadyTransformed(Pawn pawn, out HediffComp_ShapeshiftCore core)
         {
             core = null;
-            if (pawn == null || hediffDef == null) return false;
+            if (pawn == null) return false;
             if (!ShapeshiftRegistry.TryGet(pawn, out core, out _)) return false;
-            if (!core.isTransformed) return false;
-
-            var coreProps = hediffDef.CompProps<HediffCompProperties_ShapeshiftCore>();
-            var formDef = coreProps?.formDef;
-            if (formDef == null) return false;
-
-            return core.currentForm != formDef;
+            return core.isTransformed;
         }
 
         /// <summary>기본 변신 가능 여부 판정. 종족/뮤턴트 필터, 사망 체크.
