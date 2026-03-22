@@ -113,6 +113,16 @@ namespace ShapeshifterFramework.Hediffs
             get { return Props.durationTicks ?? currentForm?.durationTicks; }
         }
 
+        /// <summary>변신 남은 시간을 틱 단위로 연장(양수) 또는 단축(음수).
+        /// 단축 시 0 이하가 되면 다음 틱에 자동 해제됨.</summary>
+        public void ExtendDuration(int ticks)
+        {
+            if (!isTransformed) return;
+            var resolved = ResolvedDurationTicks;
+            if (!resolved.HasValue || resolved.Value <= 0) return; // 영구 변신은 무시
+            transformTimer = UnityEngine.Mathf.Max(1, transformTimer + ticks);
+        }
+
         /// <summary>해석된 자발적 해제 가능 여부.</summary>
         public bool ResolvedCanRevertVoluntarily
         {

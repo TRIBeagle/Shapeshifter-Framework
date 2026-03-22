@@ -146,7 +146,12 @@ namespace ShapeshifterFramework.Gizmos
             Texture2D fillTex = isPermanent ? BarFilledPermanentTex : BarFilledTex;
             Widgets.FillableBar(barRect, fillPct, fillTex, BarEmptyTex, doBorder: true);
 
+            // 바 라벨이 바 너비보다 길면 폰트 축소
             Text.Font = GameFont.Small;
+            float barLabelWidth = Text.CalcSize(barLabel).x;
+            if (barLabelWidth > barRect.width - 4f)
+                Text.Font = GameFont.Tiny;
+
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(barRect, barLabel);
             Text.Anchor = TextAnchor.UpperLeft;
