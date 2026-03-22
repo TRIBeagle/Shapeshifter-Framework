@@ -57,6 +57,13 @@
   <SSF_Setting_VerbToggle_Title>자동 공격 토글 표시</SSF_Setting_VerbToggle_Title>
   <SSF_Setting_VerbToggle_Desc>공격 명령에 자동 공격 토글을 표시합니다.</SSF_Setting_VerbToggle_Desc>
   
+  <SSF_Setting_ShapeshiftBar_Title>변신 상태 바 표시</SSF_Setting_ShapeshiftBar_Title>
+  <SSF_Setting_ShapeshiftBar_Desc>변신 중 하단 기즈모 영역에 남은 시간 프로그레스 바와 해제 버튼을 표시합니다. 끄면 기존 해제 버튼만 표시됩니다.</SSF_Setting_ShapeshiftBar_Desc>
+
+  <SSF_Inspect_Permanent_Short>무제한</SSF_Inspect_Permanent_Short>
+  <SSF_Gizmo_Tooltip_Permanent>{0}: 무제한 변신</SSF_Gizmo_Tooltip_Permanent>
+  <SSF_Gizmo_Tooltip_Timed>{0}: 남은 시간 {1} / 전체 {2}</SSF_Gizmo_Tooltip_Timed>
+
   <SSF_Setting_DebugLog_Title>개발자 디버그 로그 출력</SSF_Setting_DebugLog_Title>
   <SSF_Setting_DebugLog_Desc>변신 프레임워크의 상세한 내부 연산을 출력합니다. 개발 중이거나 버그 추적 시에만 켜주세요.</SSF_Setting_DebugLog_Desc>
   

@@ -17,6 +17,7 @@ namespace ShapeshifterFramework
 
         public bool forbidDroppedItemsOnTransform = true;
         public bool showVerbAutoToggle = true;
+        public bool showShapeshiftBar = true;
 
         public bool enableDebugLog = false;
 
@@ -31,6 +32,7 @@ namespace ShapeshifterFramework
 
             Scribe_Values.Look(ref forbidDroppedItemsOnTransform, "forbidDroppedItemsOnTransform", true);
             Scribe_Values.Look(ref showVerbAutoToggle, "showVerbAutoToggle", true);
+            Scribe_Values.Look(ref showShapeshiftBar, "showShapeshiftBar", true);
 
             Scribe_Values.Look(ref enableDebugLog, "enableDebugLog", false);
 
@@ -71,6 +73,10 @@ namespace ShapeshifterFramework
             list.CheckboxLabeled("SSF_Setting_VerbToggle_Title".Translate(), ref tmpShowToggle, "SSF_Setting_VerbToggle_Desc".Translate());
             showVerbAutoToggle = tmpShowToggle;
 
+            bool tmpShowBar = showShapeshiftBar;
+            list.CheckboxLabeled("SSF_Setting_ShapeshiftBar_Title".Translate(), ref tmpShowBar, "SSF_Setting_ShapeshiftBar_Desc".Translate());
+            showShapeshiftBar = tmpShowBar;
+
             list.Gap(10f);
 
             bool tmpDebug = enableDebugLog;
@@ -87,6 +93,7 @@ namespace ShapeshifterFramework
                 autoReequipFromGround = true;
                 forbidDroppedItemsOnTransform = true;
                 showVerbAutoToggle = true;
+                showShapeshiftBar = true;
                 enableDebugLog = false;
             }
 

@@ -75,6 +75,7 @@
     <Compile Include="Comps\CompUseEffect_Shapeshift.cs" />
     <Compile Include="Comps\CompProperties_UseEffect_Shapeshift.cs" />
     <Compile Include="Debugs\Shapeshifter_DebugActions.cs" />
+    <Compile Include="Gizmos\Gizmo_ShapeshiftStatus.cs" />
     <Compile Include="Hediffs\Hediff_ShapeshiftForm.cs" />
     <Compile Include="Hediffs\HediffComp_AutoShift.cs" />
     <Compile Include="Hediffs\HediffCompProperties_AutoShift.cs" />

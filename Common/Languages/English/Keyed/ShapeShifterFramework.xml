@@ -57,6 +57,13 @@
   <SSF_Setting_VerbToggle_Title>Show auto-attack toggle</SSF_Setting_VerbToggle_Title>
   <SSF_Setting_VerbToggle_Desc>Displays an auto-attack toggle directly on the attack command gizmo.</SSF_Setting_VerbToggle_Desc>
   
+  <SSF_Setting_ShapeshiftBar_Title>Show shapeshift status bar</SSF_Setting_ShapeshiftBar_Title>
+  <SSF_Setting_ShapeshiftBar_Desc>Displays a progress bar with remaining time and a revert button in the gizmo area while transformed. If disabled, only the revert button is shown.</SSF_Setting_ShapeshiftBar_Desc>
+
+  <SSF_Inspect_Permanent_Short>Permanent</SSF_Inspect_Permanent_Short>
+  <SSF_Gizmo_Tooltip_Permanent>{0}: Permanent transformation</SSF_Gizmo_Tooltip_Permanent>
+  <SSF_Gizmo_Tooltip_Timed>{0}: {1} remaining / {2} total</SSF_Gizmo_Tooltip_Timed>
+
   <SSF_Setting_DebugLog_Title>Enable Developer Debug Logs</SSF_Setting_DebugLog_Title>
   <SSF_Setting_DebugLog_Desc>Prints detailed internal framework operations to the RimWorld debug log. Only enable this for mod development or bug reporting.</SSF_Setting_DebugLog_Desc>
   

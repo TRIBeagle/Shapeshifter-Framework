@@ -1,8 +1,9 @@
 // ShapeshifterFramework | Hediffs | HediffComp_ShapeshiftCore.Gizmos.cs
 // 목적 : 변신 해제 명령 및 폼 verb 기즈모 생성.
-// 용도 : hediff의 GetGizmos()에서 호출되어 해제 버튼과 ranged verb 명령/자동공격 토글을 UI에 표시.
+// 용도 : hediff의 GetGizmos()에서 호출되어 상태 바/해제 버튼과 ranged verb 명령/자동공격 토글을 UI에 표시.
 
 using RimWorld;
+using ShapeshifterFramework.Gizmos;
 using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using Verse;
@@ -22,8 +23,16 @@ namespace ShapeshifterFramework.Hediffs
 
             if (isTransformed && currentForm != null)
             {
-                if (ResolvedCanRevertVoluntarily)
+                bool showBar = ShapeshifterFrameworkMod.Settings?.showShapeshiftBar ?? true;
+
+                if (showBar)
                 {
+                    // 프로그레스 바 기즈모 (해제 버튼 내장)
+                    yield return new Gizmo_ShapeshiftStatus { core = this };
+                }
+                else if (ResolvedCanRevertVoluntarily)
+                {
+                    // 바 비활성 시 기존 해제 버튼만 표시
                     yield return new Command_Action
                     {
                         defaultLabel = "SSF_Command_RevertLabel".Translate(),
