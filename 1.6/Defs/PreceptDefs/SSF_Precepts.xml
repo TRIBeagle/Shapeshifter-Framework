@@ -85,7 +85,7 @@
     <issue>SSF_Shapeshifting</issue>
     <label>respected</label>
     <description>The power to change one's body is a talent worthy of respect.</description>
-    <impact>Low</impact>
+    <impact>Medium</impact>
     <displayOrderInIssue>10</displayOrderInIssue>
     <displayOrderInImpact>1000</displayOrderInImpact>
     <defaultSelectionWeight>1</defaultSelectionWeight>
