@@ -115,10 +115,15 @@ namespace ShapeshifterFramework.Gizmos
 
             headerRect.xMax = headerBtnX - 2f;
 
-            // 폼 이름
-            Text.Font = GameFont.Small;
+            // 폼 이름 — 공간 부족 시 폰트 축소, 그래도 넘치면 말줄임 + 호버 전체 표시
             string formLabel = form.LabelCap.NullOrEmpty() ? form.defName : form.LabelCap.Resolve();
-            Widgets.Label(headerRect, formLabel.Truncate(headerRect.width));
+            Text.Font = GameFont.Small;
+            if (Text.CalcSize(formLabel).x > headerRect.width)
+                Text.Font = GameFont.Tiny;
+            string truncated = formLabel.Truncate(headerRect.width);
+            Widgets.Label(headerRect, truncated);
+            if (truncated != formLabel && Mouse.IsOver(headerRect))
+                TooltipHandler.TipRegion(headerRect, formLabel);
 
             // ── 하단: 프로그레스 바 ──
             Rect barRect = innerRect;
