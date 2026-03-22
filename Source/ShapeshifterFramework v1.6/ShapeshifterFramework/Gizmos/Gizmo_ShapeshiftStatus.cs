@@ -117,7 +117,7 @@ namespace ShapeshifterFramework.Gizmos
 
             // 폼 이름
             Text.Font = GameFont.Small;
-            string formLabel = form.LabelCap ?? form.defName;
+            string formLabel = form.LabelCap.NullOrEmpty() ? form.defName : form.LabelCap.Resolve();
             Widgets.Label(headerRect, formLabel.Truncate(headerRect.width));
 
             // ── 하단: 프로그레스 바 ──
@@ -179,7 +179,7 @@ namespace ShapeshifterFramework.Gizmos
         /// <summary>툴팁 텍스트 생성.</summary>
         private string GetTooltipText(ShapeshiftFormDef form, bool isPermanent, int? resolvedDuration)
         {
-            string formName = form.LabelCap ?? form.defName;
+            string formName = form.LabelCap.NullOrEmpty() ? form.defName : form.LabelCap.Resolve();
             if (isPermanent)
                 return "SSF_Gizmo_Tooltip_Permanent".Translate(formName);
 
