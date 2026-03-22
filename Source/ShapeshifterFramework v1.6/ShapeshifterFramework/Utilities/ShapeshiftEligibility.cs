@@ -4,7 +4,6 @@
 //        어빌리티 시전자 조건(Comp.allowedRaces/allowedMutants)은 CompAbilityEffect_GiveHediff_Shapeshift에서 별도 처리.
 
 using RimWorld;
-using System.Collections.Generic;
 using Verse;
 
 namespace ShapeshifterFramework.Utilities
