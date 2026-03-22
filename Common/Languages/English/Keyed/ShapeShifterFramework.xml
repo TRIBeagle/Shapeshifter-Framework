@@ -34,6 +34,7 @@
   <SSF_Message_CannotDropGeneratedWeapon>Cannot drop form-specific weapons while transformed.</SSF_Message_CannotDropGeneratedWeapon>
   <SSF_Message_RevertDueToItemLost>{0}'s shapeshift reverted: {1} lost.</SSF_Message_RevertDueToItemLost>
   <SSF_Message_RevertDueToConditionLost>{0}'s shapeshift reverted: Body condition lost.</SSF_Message_RevertDueToConditionLost>
+  <SSF_Message_AlreadyTransformed>Already transformed into another form.</SSF_Message_AlreadyTransformed>
   
   <SSF_Setting_MaxGizmo_Title>Max shapeshift buttons (inline)</SSF_Setting_MaxGizmo_Title>
   <SSF_Setting_MaxGizmo_Desc>If the number of forms exceeds this value, they will be collapsed into a dropdown menu.</SSF_Setting_MaxGizmo_Desc>

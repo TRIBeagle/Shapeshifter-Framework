@@ -114,6 +114,7 @@
     <Compile Include="Ideology\ThoughtWorker_SacredAnimalForm_Social.cs" />
     <Compile Include="Patches\Patch_ThoughtWorker_Precept_GroinUncovered.cs" />
     <Compile Include="Patches\Patch_FloatMenuMakerMap_GetOptions.cs" />
+    <Compile Include="Patches\Patch_IngestIdeologyBlock.cs" />
     <Compile Include="Patches\Patch_Pawn_GetDisabledWorkTypes.cs" />
     <Compile Include="Patches\Patch_Pawn_EquipmentTracker_AddEquipment.cs" />
     <Compile Include="Patches\Patch_Pawn_ApparelTracker_Wear.cs" />

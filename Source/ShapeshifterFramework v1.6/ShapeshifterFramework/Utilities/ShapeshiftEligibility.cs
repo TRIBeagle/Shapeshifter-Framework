@@ -1,9 +1,11 @@
 // ShapeshifterFramework | Utilities | ShapeshiftEligibility.cs
-// 목적 : 기본적인 변신 가능 여부 판정 (종족/뮤턴트 필터, 같은 폼 재변신 방지, 사망 체크, 이데올로기 금지).
+// 목적 : 기본적인 변신 가능 여부 판정 (종족/뮤턴트 필터, 사망 체크) + 이데올로기/폼 전환 차단 헬퍼.
 // 용도 : 모든 변신 경로(어빌리티/약물/스크롤/투사체)에서 공통으로 사용하는 FormDef 수준 필터.
 //        어빌리티 시전자 조건(Comp.allowedRaces/allowedMutants)은 CompAbilityEffect_GiveHediff_Shapeshift에서 별도 처리.
+//        이데올로기 차단은 각 UI 진입점에서 IsIdeologyForbidden()을 직접 호출.
 
 using RimWorld;
+using ShapeshifterFramework.Hediffs;
 using Verse;
 
 namespace ShapeshifterFramework.Utilities
@@ -59,7 +61,8 @@ namespace ShapeshifterFramework.Utilities
             return true;
         }
 
-        /// <summary>이데올로기 규율에 의해 변신이 금지되는지 판정. SSF_Shapeshifting_Abhorrent 규율 시 금지.</summary>
+        /// <summary>이데올로기 규율에 의해 변신이 금지되는지 판정. SSF_Shapeshifting_Abhorrent 규율 시 금지.
+        /// UI 진입점(기즈모/FloatMenu/CanBeUsedBy)에서 직접 호출해 사전 차단용.</summary>
         public static bool IsIdeologyForbidden(Pawn pawn)
         {
             if (!ModsConfig.IdeologyActive) return false;
@@ -78,24 +81,33 @@ namespace ShapeshifterFramework.Utilities
             return false;
         }
 
-        /// <summary>기본 변신 가능 여부 판정. 종족/뮤턴트 필터, 같은 폼 재변신 방지, 사망 체크, 이데올로기 금지.</summary>
-        public static bool CanTransformBasic(Pawn pawn, ShapeshiftFormDef form, string currentFormDefName)
+        /// <summary>Pawn이 이미 다른 폼으로 변신 중인지 판정. hediffDef에 바인딩된 formDef와 현재 폼을 비교.
+        /// 같은 폼이면 false (갱신 허용), 다른 폼이면 true (차단 필요).</summary>
+        public static bool IsTransformedIntoDifferentForm(Pawn pawn, HediffDef hediffDef)
+        {
+            if (pawn == null || hediffDef == null) return false;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var core, out _)) return false;
+            if (!core.isTransformed || core.currentForm == null) return false;
+
+            var coreProps = hediffDef.CompProps<HediffCompProperties_ShapeshiftCore>();
+            var formDef = coreProps?.formDef;
+            if (formDef == null) return false;
+
+            return core.currentForm != formDef;
+        }
+
+        /// <summary>기본 변신 가능 여부 판정. 종족/뮤턴트 필터, 사망 체크.
+        /// 이데올로기 차단과 폼 전환 차단은 각 진입점에서 별도 처리.</summary>
+        public static bool CanTransformBasic(Pawn pawn, ShapeshiftFormDef form)
         {
             if (pawn == null || form == null) return false;
             if (pawn.Dead) return false;
-
-            // 이데올로기 금지
-            if (IsIdeologyForbidden(pawn)) return false;
 
             // 종족 필터
             if (!IsRaceAllowed(pawn, form)) return false;
 
             // 뮤턴트 필터
             if (!IsMutantAllowed(pawn, form)) return false;
-
-            // 같은 폼 재변신 방지
-            if (currentFormDefName != null && string.Equals(currentFormDefName, form.defName, System.StringComparison.Ordinal))
-                return false;
 
             return true;
         }

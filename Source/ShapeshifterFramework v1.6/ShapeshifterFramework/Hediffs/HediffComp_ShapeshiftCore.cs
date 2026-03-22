@@ -233,10 +233,10 @@ namespace ShapeshifterFramework.Hediffs
         #region 변신 적용/해제
 
         /// <summary>폼 적용.</summary>
-        public void ApplyForm(ShapeshiftFormDef form) { ApplyForm(form, null, null); }
+        public void ApplyForm(ShapeshiftFormDef form) { ApplyForm(form, null); }
 
-        /// <summary>폼 적용. prevOverride 지정 시 해제 후 전환.</summary>
-        public void ApplyForm(ShapeshiftFormDef form, string prevOverride, List<Thing> sources = null)
+        /// <summary>폼 적용. sources 지정 시 변신 유발 아이템 추적.</summary>
+        public void ApplyForm(ShapeshiftFormDef form, List<Thing> sources)
         {
             var pawn = Pawn;
             if (pawn == null || form == null) return;
@@ -245,11 +245,11 @@ namespace ShapeshifterFramework.Hediffs
             try
             {
 
-            string prev = prevOverride ?? ((isTransformed && currentForm != null) ? currentForm.defName : null);
-
-            if (!ShapeshiftEligibility.CanTransformBasic(pawn, form, prev))
+            if (!ShapeshiftEligibility.CanTransformBasic(pawn, form))
             {
                 try { Messages.Message("SSF_Message_CannotTransform".Translate(form.LabelCap), MessageTypeDefOf.RejectInput, false); } catch { }
+                // 좀비 hediff 방지: 변신 실패 시 hediff 자체를 제거
+                if (parent != null) parent.Severity = 0f;
                 return;
             }
 

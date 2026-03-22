@@ -239,7 +239,7 @@ namespace ShapeshifterFramework.Debugs
                 // 변신 시도
                 try
                 {
-                    comp.ApplyForm(form, "None");
+                    comp.ApplyForm(form);
                 }
                 catch (Exception ex)
                 {

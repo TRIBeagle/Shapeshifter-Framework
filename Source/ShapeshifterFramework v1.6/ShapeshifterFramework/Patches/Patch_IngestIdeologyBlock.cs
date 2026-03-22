@@ -1,0 +1,97 @@
+// ShapeshifterFramework | Patches | Patch_IngestIdeologyBlock.cs
+// 목적 : 이데올로기(Abhorrent) 금지 폰 또는 이미 다른 폼으로 변신 중인 폰이 변신 약물을 우클릭으로 섭취하지 못하도록 FloatMenu 옵션 비활성화.
+// 용도 : FloatMenuMakerMap.GetOptions Postfix로 개입하여, IngestionOutcomeDoer_Shapeshift가 포함된 약물의 메뉴 항목을 비활성화(Disabled)하고 차단 사유를 표시.
+
+using HarmonyLib;
+using RimWorld;
+using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Hediffs;
+using ShapeshifterFramework.Utilities;
+using System.Collections.Generic;
+using UnityEngine;
+using Verse;
+
+namespace ShapeshifterFramework.Patches
+{
+    [HarmonyPatch(typeof(FloatMenuMakerMap), nameof(FloatMenuMakerMap.GetOptions))]
+    [HarmonyPriority(Priority.Last - 1)]
+    public static class Patch_IngestIdeologyBlock
+    {
+        static void Postfix(List<Pawn> selectedPawns, Vector3 clickPos, ref FloatMenuContext context, ref List<FloatMenuOption> __result)
+        {
+            if (__result == null || __result.Count == 0) return;
+
+            // 대상 Pawn 확인
+            Pawn pawn = null;
+            if (context != null && context.FirstSelectedPawn != null) pawn = context.FirstSelectedPawn;
+            else if (selectedPawns != null && selectedPawns.Count > 0) pawn = selectedPawns[0];
+            if (pawn == null) return;
+            if (!pawn.RaceProps.Humanlike) return;
+
+            bool ideologyForbidden = ShapeshiftEligibility.IsIdeologyForbidden(pawn);
+
+            // 이데올로기 금지도 아니고, 변신 중도 아니면 스킵
+            bool isTransformed = ShapeshiftRegistry.IsActive(pawn);
+            if (!ideologyForbidden && !isTransformed) return;
+
+            for (int i = 0; i < __result.Count; i++)
+            {
+                var opt = __result[i];
+                if (opt == null || opt.Disabled) continue;
+
+                // 대상 Thing 추출
+                Thing target = opt.iconThing;
+                if (target == null)
+                {
+                    var ct = opt.revalidateClickTarget as Thing;
+                    if (ct != null) target = ct;
+                }
+                if (target == null) continue;
+
+                // 변신 약물 여부 확인: IngestionOutcomeDoer_Shapeshift가 포함된 약물인지 체크
+                if (!HasShapeshiftOutcomeDoer(target.def, out HediffDef hediffDef)) continue;
+
+                // 차단 사유 결정
+                string blockReason = null;
+
+                if (ideologyForbidden)
+                {
+                    blockReason = "IdeoligionForbids".Translate();
+                }
+                else if (isTransformed && hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, hediffDef))
+                {
+                    blockReason = "SSF_Message_AlreadyTransformed".Translate();
+                }
+
+                if (blockReason == null) continue;
+
+                // 비활성 메뉴 생성
+                var disabled = new FloatMenuOption(opt.Label + " (" + blockReason + ")", null)
+                {
+                    Disabled = true,
+                    iconThing = opt.iconThing,
+                    tutorTag = opt.tutorTag,
+                    autoTakeable = false
+                };
+                __result[i] = disabled;
+            }
+        }
+
+        /// <summary>ThingDef의 ingestible.outcomeDoers에 IngestionOutcomeDoer_Shapeshift가 포함되어 있는지 확인.</summary>
+        private static bool HasShapeshiftOutcomeDoer(ThingDef def, out HediffDef hediffDef)
+        {
+            hediffDef = null;
+            if (def?.ingestible?.outcomeDoers == null) return false;
+
+            for (int i = 0; i < def.ingestible.outcomeDoers.Count; i++)
+            {
+                if (def.ingestible.outcomeDoers[i] is IngestionOutcomeDoer_Shapeshift ssDoer)
+                {
+                    hediffDef = ssDoer.hediffDef;
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+}

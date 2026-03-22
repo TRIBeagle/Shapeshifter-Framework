@@ -67,16 +67,6 @@ namespace ShapeshifterFramework.Comps
                     }
                 }
 
-                // 같은 폼 재시전 숨김 — HediffComp_ShapeshiftCore 기반 조회
-                if (ShapeshiftCoreUtility.TryGetCore(caster, out var core))
-                {
-                    if (core.isTransformed && core.currentForm != null)
-                    {
-                        if (core.currentForm == ResolvedFormDef)
-                            return true;
-                    }
-                }
-
                 return false;
             }
         }
@@ -99,11 +89,11 @@ namespace ShapeshifterFramework.Comps
             if (formDef != null && !ShapeshiftEligibility.IsRaceAllowed(pawn, formDef))
                 return false;
 
-            // 이미 같은 폼으로 변신 중이면 차단 — HediffComp_ShapeshiftCore 기반 조회
+            // 이미 다른 폼으로 변신 중이면 차단 (같은 폼은 갱신 허용)
             if (ShapeshiftCoreUtility.TryGetCore(pawn, out var core))
             {
                 if (core.isTransformed && core.currentForm != null
-                    && core.currentForm == ResolvedFormDef)
+                    && ResolvedFormDef != null && core.currentForm != ResolvedFormDef)
                 {
                     return false;
                 }
@@ -172,10 +162,10 @@ namespace ShapeshifterFramework.Comps
             var caster = parent?.pawn;
             if (caster == null) { reason = null; return false; }
 
-            // 이데올로기 금지 체크
+            // 이데올로기 금지 체크 (바닐라 키 사용)
             if (ShapeshiftEligibility.IsIdeologyForbidden(caster))
             {
-                reason = "SSF_GizmoDisabled_IdeologyForbidden".Translate();
+                reason = "IdeoligionForbids".Translate();
                 return true;
             }
 

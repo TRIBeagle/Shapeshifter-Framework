@@ -2,6 +2,7 @@
 // 목적 : 물약, 아티팩트 등 아이템(Use/Ingest) 사용 시 대상 폰을 변신시키는 실행 로직.
 // 용도 : 같은 ThingDef에 CompTargetable(예: CompTargetable_SinglePawn)이 함께 정의되어 있으면
 //        플레이어가 클릭으로 선택한 대상 Pawn을 변신시키고, CompTargetable이 없으면 사용자 자신을 변신시킴.
+// 주의 : 이데올로기 금지 시 사용 차단, 이미 다른 폼 변신 중이면 사용 차단.
 
 using RimWorld;
 using ShapeshifterFramework.Hediffs;
@@ -14,6 +15,49 @@ namespace ShapeshifterFramework.Comps
     public class CompUseEffect_Shapeshift : CompUseEffect
     {
         public CompProperties_UseEffect_Shapeshift Props => (CompProperties_UseEffect_Shapeshift)props;
+
+        // 캐시: hediffDef → HediffCompProperties_ShapeshiftCore.formDef
+        private ShapeshiftFormDef _cachedFormDef;
+        private bool _formDefResolved;
+
+        /// <summary>hediffDef에 바인딩된 ShapeshiftFormDef 조회 (캐시).</summary>
+        private ShapeshiftFormDef ResolvedFormDef
+        {
+            get
+            {
+                if (!_formDefResolved)
+                {
+                    _cachedFormDef = null;
+                    if (Props.hediffDef != null)
+                    {
+                        var coreProps = Props.hediffDef.CompProps<HediffCompProperties_ShapeshiftCore>();
+                        _cachedFormDef = coreProps?.formDef;
+                    }
+                    _formDefResolved = true;
+                }
+                return _cachedFormDef;
+            }
+        }
+
+        /// <summary>사용 가능 여부 판정. 이데올로기 금지 및 이미 다른 폼 변신 중이면 차단.</summary>
+        public override bool CanBeUsedBy(Pawn pawn, out string failReason)
+        {
+            // 이데올로기 차단 (바닐라 키 사용)
+            if (ShapeshiftEligibility.IsIdeologyForbidden(pawn))
+            {
+                failReason = "IdeoligionForbids".Translate();
+                return false;
+            }
+
+            // 이미 다른 폼 변신 중 차단 (같은 폼은 갱신 허용)
+            if (Props.hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, Props.hediffDef))
+            {
+                failReason = "SSF_Message_AlreadyTransformed".Translate();
+                return false;
+            }
+
+            return base.CanBeUsedBy(pawn, out failReason);
+        }
 
         /// <summary>아이템 사용 시 변신 효과 실행.</summary>
         /// <param name="user">사용 Pawn</param>
