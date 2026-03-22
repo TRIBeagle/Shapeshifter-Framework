@@ -181,9 +181,6 @@ namespace ShapeshifterFramework.Hediffs
                 }
             }
 
-            // verbAutoToggle 키 마이그레이션: 기존 3-part 키(formDef#index#verbName) → 새 포맷(formDef#verbName)
-            MigrateVerbAutoToggleKeys();
-
             needsGearResolve = true;
 
             var pawn = Pawn;
@@ -201,54 +198,6 @@ namespace ShapeshifterFramework.Hediffs
                     || generatedApparel.Count > 0 || generatedWeapons.Count > 0))
             {
                 CleanupOrphanedTransformData(pawn);
-            }
-        }
-
-        /// <summary>기존 3-part 키(formDef#index#verbName)를 새 포맷(formDef#verbName)으로 마이그레이션.</summary>
-        private void MigrateVerbAutoToggleKeys()
-        {
-            if (verbAutoToggle == null || verbAutoToggle.Count == 0) return;
-
-            List<KeyValuePair<string, bool>> toMigrate = null;
-            foreach (var kv in verbAutoToggle)
-            {
-                // 3-part 키: "formDef#index#verbName" (# 2개 = 3 파트)
-                string key = kv.Key;
-                int firstHash = key.IndexOf('#');
-                if (firstHash < 0) continue;
-                int secondHash = key.IndexOf('#', firstHash + 1);
-                if (secondHash < 0) continue;
-                // 기존 포맷: "formDef#index#verbName" — index 부분이 숫자인지 확인
-                string middlePart = key.Substring(firstHash + 1, secondHash - firstHash - 1);
-                int dummy;
-                if (int.TryParse(middlePart, out dummy))
-                {
-                    // 기존 3-part 키 → 새 2-part 키 (formDef#verbName)
-                    string formPart = key.Substring(0, firstHash);
-                    string verbPart = key.Substring(secondHash + 1);
-                    string newKey = formPart + "#" + verbPart;
-
-                    if (toMigrate == null) toMigrate = new List<KeyValuePair<string, bool>>();
-                    toMigrate.Add(new KeyValuePair<string, bool>(key, kv.Value));
-                }
-            }
-
-            if (toMigrate != null)
-            {
-                for (int i = 0; i < toMigrate.Count; i++)
-                {
-                    var old = toMigrate[i];
-                    verbAutoToggle.Remove(old.Key);
-
-                    // 새 키 생성
-                    int firstHash = old.Key.IndexOf('#');
-                    int secondHash = old.Key.IndexOf('#', firstHash + 1);
-                    string newKey = old.Key.Substring(0, firstHash) + "#" + old.Key.Substring(secondHash + 1);
-
-                    // 새 키가 아직 없으면 마이그레이션
-                    if (!verbAutoToggle.ContainsKey(newKey))
-                        verbAutoToggle[newKey] = old.Value;
-                }
             }
         }
 
