@@ -14,6 +14,7 @@
 5. [Trigger System](#5-trigger-system)
 6. [Events & External Integration](#6-events--external-integration)
 7. [Complete Example](#7-complete-example)
+8. [Combat Extended Compatibility](#8-combat-extended-compatibility)
 
 ---
 
@@ -865,3 +866,79 @@ A wolf form with full features:
   <disabledWorkTagsOnTransform>Intellectual</disabledWorkTagsOnTransform>
 </ShapeshifterFramework.ShapeshiftFormDef>
 ```
+
+---
+
+## 8. Combat Extended Compatibility
+
+SSF form verbs are **NativeVerbs** (`EquipmentSource=null`), so they are naturally exempt from CE's ammo system (`CompAmmoUser`). Forms work out of the box with CE — no code changes needed.
+
+However, CE adds extra fields to melee tools (`armorPenetrationSharp`, `armorPenetrationBlunt`) and ranged verbs (`recoilAmount`, etc.). These default to `0` if not specified, meaning form attacks will have no armor penetration in CE unless patched.
+
+### How to Add CE Support
+
+Use **XPath patches** with `MayRequire="CETeam.CombatExtended"` to replace vanilla `Tool` with `CombatExtended.ToolCE` and vanilla `VerbProperties` with `CombatExtended.VerbPropertiesCE`.
+
+**Key points:**
+- `ToolCE` extends `Tool` → SSF's `List<Tool>` accepts it without code changes
+- `VerbPropertiesCE` extends `VerbProperties` → same principle
+- No hard dependency on CE assembly — patches only load when CE is active
+- SSF detects CE at startup and logs `[SSF/CE] Detected`
+
+### Tool Patch Example
+
+```xml
+<Operation Class="PatchOperationReplace" MayRequire="CETeam.CombatExtended">
+  <xpath>Defs/ShapeshifterFramework.ShapeshiftFormDef[defName="MyMod_WolfForm"]/tools</xpath>
+  <value>
+    <tools>
+      <li Class="CombatExtended.ToolCE">
+        <label>fangs</label>
+        <capacities><li>Bite</li></capacities>
+        <power>18</power>
+        <cooldownTime>2.0</cooldownTime>
+        <armorPenetrationSharp>5</armorPenetrationSharp>
+        <armorPenetrationBlunt>10</armorPenetrationBlunt>
+      </li>
+    </tools>
+  </value>
+</Operation>
+```
+
+### Verb Patch Example
+
+```xml
+<Operation Class="PatchOperationReplace" MayRequire="CETeam.CombatExtended">
+  <xpath>Defs/ShapeshifterFramework.ShapeshiftFormDef[defName="MyMod_BeastForm"]/verbs/li[label="AssaultRifle"]</xpath>
+  <value>
+    <li Class="CombatExtended.VerbPropertiesCE">
+      <label>AssaultRifle</label>
+      <verbClass>CombatExtended.Verb_ShootCE</verbClass>
+      <hasStandardCommand>true</hasStandardCommand>
+      <defaultProjectile>Bullet_AssaultRifle</defaultProjectile>
+      <warmupTime>1.0</warmupTime>
+      <range>28</range>
+      <burstShotCount>3</burstShotCount>
+      <ticksBetweenBurstShots>10</ticksBetweenBurstShots>
+      <recoilAmount>1.2</recoilAmount>
+    </li>
+  </value>
+</Operation>
+```
+
+> **Note:** In a real CE environment, projectiles should also be CE-specific ammo defs. The example above uses vanilla projectiles for demonstration.
+
+### Patch File Location
+
+Place CE patches in a folder that only loads when CE is active:
+```
+MyMod/
+  CombatExtended/
+    Patches/
+      MyMod_Forms_CE.xml
+  LoadFolders.xml   ← add CombatExtended folder with MayRequire
+```
+
+Or use `MayRequire` on each `<Operation>` element if placing patches alongside other patch files.
+
+See `TestMod_SSF/CombatExtended/Patches/SSF_TestForms_CE.xml` for a working example.

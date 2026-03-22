@@ -14,6 +14,7 @@
 5. [트리거 시스템](#5-트리거-시스템)
 6. [이벤트 및 외부 연동](#6-이벤트-및-외부-연동)
 7. [전체 예시](#7-전체-예시)
+8. [Combat Extended 호환성](#8-combat-extended-호환성)
 
 ---
 
@@ -861,3 +862,79 @@ if (ShapeshiftCoreUtility.TryGetCore(pawn, out var core))
   <disabledWorkTagsOnTransform>Intellectual</disabledWorkTagsOnTransform>
 </ShapeshifterFramework.ShapeshiftFormDef>
 ```
+
+---
+
+## 8. Combat Extended 호환성
+
+SSF 폼의 verb는 **NativeVerb** (`EquipmentSource=null`)이므로 CE 탄약 시스템(`CompAmmoUser`)에서 자연 면제됩니다. CE 환경에서 별도 코드 수정 없이 동작합니다.
+
+다만 CE가 추가하는 melee 필드(`armorPenetrationSharp`, `armorPenetrationBlunt`)와 ranged 필드(`recoilAmount` 등)는 미지정 시 기본값(0)이 되어, CE 환경에서 관통력이 없는 공격이 됩니다.
+
+### CE 지원 방법
+
+`MayRequire="CETeam.CombatExtended"` XPath 패치로 바닐라 `Tool`을 `CombatExtended.ToolCE`로, `VerbProperties`를 `CombatExtended.VerbPropertiesCE`로 교체합니다.
+
+**핵심:**
+- `ToolCE`는 `Tool`을 상속 → SSF의 `List<Tool>`이 그대로 수용
+- `VerbPropertiesCE`는 `VerbProperties`를 상속 → 동일 원리
+- CE 어셈블리에 하드 참조 없음 — CE 활성 시에만 패치 적용
+- SSF는 시작 시 CE를 감지하고 `[SSF/CE] Detected` 로그 출력
+
+### Tool 패치 예제
+
+```xml
+<Operation Class="PatchOperationReplace" MayRequire="CETeam.CombatExtended">
+  <xpath>Defs/ShapeshifterFramework.ShapeshiftFormDef[defName="MyMod_WolfForm"]/tools</xpath>
+  <value>
+    <tools>
+      <li Class="CombatExtended.ToolCE">
+        <label>fangs</label>
+        <capacities><li>Bite</li></capacities>
+        <power>18</power>
+        <cooldownTime>2.0</cooldownTime>
+        <armorPenetrationSharp>5</armorPenetrationSharp>
+        <armorPenetrationBlunt>10</armorPenetrationBlunt>
+      </li>
+    </tools>
+  </value>
+</Operation>
+```
+
+### Verb 패치 예제
+
+```xml
+<Operation Class="PatchOperationReplace" MayRequire="CETeam.CombatExtended">
+  <xpath>Defs/ShapeshifterFramework.ShapeshiftFormDef[defName="MyMod_BeastForm"]/verbs/li[label="AssaultRifle"]</xpath>
+  <value>
+    <li Class="CombatExtended.VerbPropertiesCE">
+      <label>AssaultRifle</label>
+      <verbClass>CombatExtended.Verb_ShootCE</verbClass>
+      <hasStandardCommand>true</hasStandardCommand>
+      <defaultProjectile>Bullet_AssaultRifle</defaultProjectile>
+      <warmupTime>1.0</warmupTime>
+      <range>28</range>
+      <burstShotCount>3</burstShotCount>
+      <ticksBetweenBurstShots>10</ticksBetweenBurstShots>
+      <recoilAmount>1.2</recoilAmount>
+    </li>
+  </value>
+</Operation>
+```
+
+> **참고:** 실제 CE 환경에서는 projectile도 CE 전용 탄약 Def로 교체해야 합니다. 위 예제는 구조 시연용으로 바닐라 projectile을 사용합니다.
+
+### 패치 파일 위치
+
+CE 활성 시에만 로드되는 폴더에 배치:
+```
+MyMod/
+  CombatExtended/
+    Patches/
+      MyMod_Forms_CE.xml
+  LoadFolders.xml   ← MayRequire로 CombatExtended 폴더 추가
+```
+
+또는 다른 패치 파일과 같은 위치에 두고 각 `<Operation>` 요소에 `MayRequire`를 사용할 수 있습니다.
+
+실제 동작 예제는 `TestMod_SSF/CombatExtended/Patches/SSF_TestForms_CE.xml`을 참고하세요.
