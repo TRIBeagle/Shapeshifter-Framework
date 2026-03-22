@@ -16,21 +16,15 @@ namespace ShapeshifterFramework.Comps
         public CompProperties_UseEffect_Shapeshift Props => (CompProperties_UseEffect_Shapeshift)props;
 
         /// <summary>사용 가능 여부 판정. 이데올로기 금지 및 이미 다른 폼 변신 중이면 차단.</summary>
-        public override bool CanBeUsedBy(Pawn pawn, out string failReason)
+        public override AcceptanceReport CanBeUsedBy(Pawn pawn)
         {
             if (ShapeshiftEligibility.IsIdeologyForbidden(pawn))
-            {
-                failReason = "IdeoligionForbids".Translate();
-                return false;
-            }
+                return "IdeoligionForbids".Translate();
 
             if (Props.hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, Props.hediffDef))
-            {
-                failReason = "SSF_Message_AlreadyTransformed".Translate();
-                return false;
-            }
+                return "SSF_Message_AlreadyTransformed".Translate();
 
-            return base.CanBeUsedBy(pawn, out failReason);
+            return base.CanBeUsedBy(pawn);
         }
 
         /// <summary>아이템 사용 시 변신 효과 실행.</summary>

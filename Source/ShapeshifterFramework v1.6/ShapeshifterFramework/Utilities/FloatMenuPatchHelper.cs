@@ -2,6 +2,7 @@
 // 목적 : FloatMenuMakerMap.GetOptions Postfix 패치들이 공통으로 사용하는 헬퍼.
 // 용도 : Pawn 추출, 비활성 FloatMenuOption 생성, Thing 추출 등 중복 로직을 한곳에 모음.
 
+using RimWorld;
 using System.Collections.Generic;
 using Verse;
 
