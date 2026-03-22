@@ -401,12 +401,13 @@ Form auto-reverts when conditions are no longer met. `sustainMode` controls whet
 | `suppressIdeologyUncoveredThoughts` | `bool` | `true` | Suppress "uncovered" thoughts from Ideology |
 | `linkedSacredAnimalDef` | `ThingDef` | `null` | Animal race this form represents. Grants +5 mood if it matches the pawn's ideology venerated animal |
 
-**Shapeshifting Precept (4 stages):**
+**Shapeshifting Precept (5 stages):**
 
 | Stage | Label | Mood | Opinion | Memory | Special |
 |-------|-------|------|---------|--------|---------|
 | 0 | Blasphemy against nature | -10 | -20 | -10 (5d) | **Forbidden** |
 | 1 | Unnatural power | -5 | -10 | -5 (3d) | - |
+| - | Don't care | - | - | - | No effects |
 | 2 | Special talent | +5 | +10 | - | - |
 | 3 | Divine blessing | +10 | +20 | - | - |
 

@@ -79,6 +79,18 @@
     </comps>
   </PreceptDef>
 
+  <!-- ── Level: Don't care (neutral, no effects) ── -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting_DontCare</defName>
+    <issue>SSF_Shapeshifting</issue>
+    <label>don't care</label>
+    <description>Shapeshifting is neither praised nor condemned. It simply is.</description>
+    <impact>None</impact>
+    <displayOrderInIssue>20</displayOrderInIssue>
+    <displayOrderInImpact>1000</displayOrderInImpact>
+    <defaultSelectionWeight>2</defaultSelectionWeight>
+  </PreceptDef>
+
   <!-- ── Level 2: Respected ── -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSF_Shapeshifting_Respected</defName>

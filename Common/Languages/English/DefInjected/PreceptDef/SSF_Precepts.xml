@@ -9,6 +9,10 @@
   <SSF_Shapeshifting_Disapproved.label>disapproved</SSF_Shapeshifting_Disapproved.label>
   <SSF_Shapeshifting_Disapproved.description>Altering one's natural body is a disgusting and unnatural act.</SSF_Shapeshifting_Disapproved.description>
 
+  <!-- 단계: 신경쓰지 않음 -->
+  <SSF_Shapeshifting_DontCare.label>don't care</SSF_Shapeshifting_DontCare.label>
+  <SSF_Shapeshifting_DontCare.description>Shapeshifting is neither praised nor condemned. It simply is.</SSF_Shapeshifting_DontCare.description>
+
   <!-- 단계 2: respected -->
   <SSF_Shapeshifting_Respected.label>respected</SSF_Shapeshifting_Respected.label>
   <SSF_Shapeshifting_Respected.description>The power to change one's body is a talent worthy of respect.</SSF_Shapeshifting_Respected.description>
