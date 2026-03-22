@@ -120,7 +120,8 @@ namespace ShapeshifterFramework.Hediffs
             if (!isTransformed) return;
             var resolved = ResolvedDurationTicks;
             if (!resolved.HasValue || resolved.Value <= 0) return; // 영구 변신은 무시
-            transformTimer = UnityEngine.Mathf.Max(1, transformTimer + ticks);
+            int newVal = transformTimer + ticks;
+            transformTimer = newVal > 0 ? newVal : 0;
         }
 
         /// <summary>해석된 자발적 해제 가능 여부.</summary>

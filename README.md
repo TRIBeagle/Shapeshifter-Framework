@@ -69,7 +69,7 @@ HediffDef (진입점 — 스탯/severity)
 
 ### Integration
 - **Events**: `ShapeshiftCoreUtility.OnFormApplied` / `OnFormRemoved` callbacks
-- **API**: `GiveShiftHediff()`, `RemoveForm()`, `TryGetCore()` for external mod access
+- **API**: `GiveShiftHediff()`, `RemoveForm()`, `TryGetCore()`, `ExtendDuration()` for external mod access
 
 ## Documentation
 

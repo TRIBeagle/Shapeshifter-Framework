@@ -26,7 +26,7 @@ namespace ShapeshifterFramework.Patches
             bool ideologyForbidden = ShapeshiftEligibility.IsIdeologyForbidden(pawn);
 
             // 이데올로기 금지도 아니고, 변신 중도 아니면 스킵
-            bool isTransformed = ShapeshiftRegistry.IsActive(pawn);
+            bool isTransformed = ShapeshiftEligibility.IsAlreadyTransformed(pawn);
             if (!ideologyForbidden && !isTransformed) return;
 
             for (int i = 0; i < __result.Count; i++)

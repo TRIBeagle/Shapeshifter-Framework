@@ -597,6 +597,12 @@ Multiple HediffDefs can share one FormDef with different stats:
 | `affectHostileOnly` | `bool` | Only affect hostile targets (AoE) |
 | `allowedFromForms` | `List<string>` | FormDef defNames that can cast while transformed |
 
+> **Transformation blocking:** While transformed, **all** additional transformations (including the same form) are blocked unless the current form's `defName` is listed in `allowedFromForms`. This applies consistently across all trigger types (ability, drug, item, projectile).
+>
+> **Self-cast gizmo auto-hide:** Self-only abilities (`targetRequired = false`) are automatically hidden from the gizmo bar while transformed (unless the current form is in `allowedFromForms`). Target-required abilities remain visible.
+>
+> **Ability tooltip:** The ability hover tooltip automatically displays the target form name and duration (or "Permanent") — no extra configuration required.
+
 ### 5.2 Drug (Ingestible)
 ```xml
 <ThingDef ParentName="MakeableDrugBase">
@@ -797,6 +803,10 @@ if (ShapeshiftCoreUtility.TryGetCore(pawn, out var core))
     bool isShifted = core.isTransformed;
     ShapeshiftFormDef form = core.currentForm;
 }
+
+// Extend or reduce remaining duration (timed forms only; ignored for permanent)
+core.ExtendDuration(2500);   // +1 hour
+core.ExtendDuration(-1250);  // -0.5 hours (reaches 0 → auto-revert next tick)
 ```
 
 ---

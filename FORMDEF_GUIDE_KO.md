@@ -593,6 +593,12 @@
 | `affectHostileOnly` | `bool` | 적대 대상만 영향 (AoE) |
 | `allowedFromForms` | `List<string>` | 변신 중 시전 허용 폼 defName 목록 |
 
+> **변신 차단:** 변신 중에는 동일 폼 포함 **모든** 추가 변신이 차단됩니다. 현재 폼의 `defName`이 `allowedFromForms`에 있을 때만 예외적으로 시전 가능합니다. 이 규칙은 어빌리티, 약물, 아이템, 투사체 등 모든 트리거에 일관 적용됩니다.
+>
+> **자기 시전 기즈모 자동 숨김:** 자기 전용 어빌리티(`targetRequired = false`)는 변신 중 기즈모 바에서 자동으로 숨겨집니다 (현재 폼이 `allowedFromForms`에 있으면 예외). 대상 지정 어빌리티는 계속 표시됩니다.
+>
+> **어빌리티 툴팁:** 어빌리티 호버 툴팁에 대상 폼 이름과 지속시간(또는 "무제한")이 자동으로 표시됩니다 — 추가 설정 불필요.
+
 ### 5.2 약물 (섭취)
 ```xml
 <ThingDef ParentName="MakeableDrugBase">
@@ -793,6 +799,10 @@ if (ShapeshiftCoreUtility.TryGetCore(pawn, out var core))
     bool isShifted = core.isTransformed;
     ShapeshiftFormDef form = core.currentForm;
 }
+
+// 남은 시간 연장/단축 (시간제 변신만. 영구 변신은 무시)
+core.ExtendDuration(2500);   // +1시간
+core.ExtendDuration(-1250);  // -0.5시간 (0 이하 → 다음 틱에 자동 해제)
 ```
 
 ---
