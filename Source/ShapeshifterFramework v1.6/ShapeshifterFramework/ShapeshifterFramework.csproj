@@ -154,6 +154,7 @@
     <Compile Include="Patches\Patch_PawnRenderUtility_DrawEquipmentAiming_Hide.cs" />
     <Compile Include="Patches\Patch_PawnRenderNode_GraphicFor_Parts.cs" />
     <Compile Include="Patches\Patch_PawnRenderUtility_DrawEquipmentAiming_Scale.cs" />
+    <Compile Include="Compat\Compat_PocketSand_GizmoFilter.cs" />
     <Compile Include="Compat\Compat_SimpleSidearms_MemoryHook.cs" />
     <Compile Include="Compat\Compat_YayoCombat.cs" />
     <Compile Include="Compat\CompatManager.cs" />

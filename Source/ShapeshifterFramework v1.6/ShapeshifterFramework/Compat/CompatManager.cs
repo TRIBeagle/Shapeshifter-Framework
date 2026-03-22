@@ -99,11 +99,13 @@ namespace ShapeshifterFramework.Compat
         internal const string Pkg_FA = "Nals.FacialAnimation";
         internal const string Pkg_SS = "PeteTimesSix.SimpleSidearms";
         internal const string Pkg_Yayo = "Mlie.YayosCombat3";
+        internal const string Pkg_PS = "usagirei.pocketsand";
 
         internal const string LOG_HAR = "[SSF/HAR]";
         internal const string LOG_FA = "[SSF/FA]";
         internal const string LOG_SS = "[SSF/SS]";
         internal const string LOG_Yayo = "[SSF/Yayo]";
+        internal const string LOG_PS = "[SSF/PS]";
 
         /// <summary>모드 활성 확인.</summary>
         internal static bool IsActive(string packageId, bool ignorePostfix = false)
@@ -113,6 +115,7 @@ namespace ShapeshifterFramework.Compat
         internal static readonly CompatMod FA = new CompatMod(Pkg_FA, LOG_FA);
         internal static readonly CompatMod SS = new CompatMod(Pkg_SS, LOG_SS);
         internal static readonly CompatMod Yayo = new CompatMod(Pkg_Yayo, LOG_Yayo);
+        internal static readonly CompatMod PS = new CompatMod(Pkg_PS, LOG_PS);
 
         /// <summary>Report 전 준비.</summary>
         private static void RegisterBeforeReport()
@@ -143,6 +146,7 @@ namespace ShapeshifterFramework.Compat
             if (FA.IsActive) { anyActive = true; FA.ReportOnce(); allOk &= (FA.FailCount == 0); }
             if (SS.IsActive) { anyActive = true; SS.ReportOnce(); allOk &= (SS.FailCount == 0); }
             if (Yayo.IsActive) { anyActive = true; Yayo.ReportOnce(); allOk &= (Yayo.FailCount == 0); }
+            if (PS.IsActive) { anyActive = true; PS.ReportOnce(); allOk &= (PS.FailCount == 0); }
 
             if (anyActive && allOk)
             {
@@ -151,6 +155,7 @@ namespace ShapeshifterFramework.Compat
                 if (FA.IsActive) mods.Add("FA");
                 if (SS.IsActive) mods.Add("SS");
                 if (Yayo.IsActive) mods.Add("Yayo");
+                if (PS.IsActive) mods.Add("PS");
                 Log.Message($"[SSF] all compatibility patches active ({string.Join(", ", mods)}).");
             }
         }
