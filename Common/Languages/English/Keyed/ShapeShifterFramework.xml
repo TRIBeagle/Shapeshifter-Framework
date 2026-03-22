@@ -13,7 +13,7 @@
   <SSF_Menu_ChooseDesc>Select a form to shapeshift into.</SSF_Menu_ChooseDesc>
   <SSF_Menu_SwitchLabel>Shapeshift: Switch form</SSF_Menu_SwitchLabel>
   <SSF_Menu_SwitchDesc>Switch to another form.</SSF_Menu_SwitchDesc>
-  <SSF_Menu_Blocked>Blocked</SSF_Menu_Blocked>
+  <SSF_Menu_Blocked>shapeshifting forbids</SSF_Menu_Blocked>
 
   <SSF_Hediff_FormLabel>Shapeshift: {0}</SSF_Hediff_FormLabel>
   <SSF_Hediff_FormDesc>Stat changes from {0} transformation.</SSF_Hediff_FormDesc>

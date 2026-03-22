@@ -13,7 +13,7 @@
   <SSF_Menu_ChooseDesc>변신할 폼을 선택합니다.</SSF_Menu_ChooseDesc>
   <SSF_Menu_SwitchLabel>변신: 폼 전환</SSF_Menu_SwitchLabel>
   <SSF_Menu_SwitchDesc>다른 폼으로 전환합니다.</SSF_Menu_SwitchDesc>
-  <SSF_Menu_Blocked>차단됨</SSF_Menu_Blocked>
+  <SSF_Menu_Blocked>변신이 금지함</SSF_Menu_Blocked>
 
   <SSF_Hediff_FormLabel>변신 효과: {0}</SSF_Hediff_FormLabel>
   <SSF_Hediff_FormDesc>{0} 변신으로 인한 능력치 변동.</SSF_Hediff_FormDesc>
