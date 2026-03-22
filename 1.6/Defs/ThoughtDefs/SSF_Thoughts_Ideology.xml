@@ -226,17 +226,17 @@
     <stages>
       <li>
         <label>sacred animal desecrated</label>
-        <description>A shapeshifter dares to wear the form of a sacred animal. This is an unforgivable sacrilege.</description>
+        <description>I've taken the form of a sacred animal with this vile power. I feel like I've committed a terrible sacrilege.</description>
         <baseMoodEffect>-8</baseMoodEffect>
       </li>
       <li>
         <label>sacred animal defiled</label>
-        <description>Taking the form of a sacred animal through shapeshifting... it feels wrong.</description>
+        <description>I'm wearing the form of a sacred animal through shapeshifting. It doesn't feel right.</description>
         <baseMoodEffect>-3</baseMoodEffect>
       </li>
       <li>
         <label>sacred animal form</label>
-        <description>I've taken the form of a sacred animal. Interesting.</description>
+        <description>I've taken the form of a sacred animal. Huh, interesting.</description>
         <baseMoodEffect>2</baseMoodEffect>
       </li>
       <li>
@@ -246,8 +246,47 @@
       </li>
       <li>
         <label>sacred animal blessed</label>
-        <description>I've been blessed to embody a sacred animal. I feel divine power flowing through me.</description>
+        <description>I embody the sacred animal itself! I can feel divine power flowing through me.</description>
         <baseMoodEffect>8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Sacred animal form — social opinion varies by shapeshifting precept stage
+       Stage 0: Abhorrent  -10
+       Stage 1: Disapproved -5
+       Stage 2: DontCare   +1
+       Stage 3: Respected   +5
+       Stage 4: Sublime     +10 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_SacredAnimalForm_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_SacredAnimalForm_Social</workerClass>
+    <stages>
+      <li>
+        <label>sacred animal desecrator</label>
+        <description>They dare to wear the form of a sacred animal with that vile power. It's an unforgivable sacrilege.</description>
+        <baseOpinionOffset>-10</baseOpinionOffset>
+      </li>
+      <li>
+        <label>sacred animal defiler</label>
+        <description>They're wearing the form of a sacred animal through shapeshifting. It's uncomfortable to watch.</description>
+        <baseOpinionOffset>-5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>They've taken the form of a sacred animal. It's kind of neat.</description>
+        <baseOpinionOffset>1</baseOpinionOffset>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>They embody a sacred animal. It's quite impressive.</description>
+        <baseOpinionOffset>5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>sacred animal incarnation</label>
+        <description>They embody the sacred animal itself! They are truly blessed.</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>

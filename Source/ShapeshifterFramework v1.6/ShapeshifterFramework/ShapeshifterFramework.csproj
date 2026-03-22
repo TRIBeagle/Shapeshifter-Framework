@@ -109,7 +109,9 @@
     <Compile Include="Ideology\Patch_ShapeshiftIdeologyTaboo.cs" />
     <Compile Include="Ideology\ThoughtWorker_Precept_Shapeshifted.cs" />
     <Compile Include="Ideology\ThoughtWorker_Precept_Shapeshifted_Social.cs" />
+    <Compile Include="Ideology\SacredAnimalFormUtility.cs" />
     <Compile Include="Ideology\ThoughtWorker_SacredAnimalForm.cs" />
+    <Compile Include="Ideology\ThoughtWorker_SacredAnimalForm_Social.cs" />
     <Compile Include="Patches\Patch_ThoughtWorker_Precept_GroinUncovered.cs" />
     <Compile Include="Patches\Patch_FloatMenuMakerMap_GetOptions.cs" />
     <Compile Include="Patches\Patch_Pawn_GetDisabledWorkTypes.cs" />

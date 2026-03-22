@@ -57,16 +57,28 @@
   <SSF_Thought_WitnessedShapeshift_Sublime.stages.0.label>누군가 변신함</SSF_Thought_WitnessedShapeshift_Sublime.stages.0.label>
   <SSF_Thought_WitnessedShapeshift_Sublime.stages.0.description>신성한 변신을 눈앞에서 목격했다. 경이로운 순간이었다.</SSF_Thought_WitnessedShapeshift_Sublime.stages.0.description>
 
-  <!-- 성스러운 동물 폼 — 규율 단계별 (0:혐오 1:못마땅 2:무관심 3:존중 4:숭고) -->
+  <!-- 성스러운 동물 폼 — 자기 감정 — 규율 단계별 (0:혐오 1:못마땅 2:무관심 3:존중 4:숭고) -->
   <SSF_Thought_SacredAnimalForm.stages.0.label>성스러운 동물 모독</SSF_Thought_SacredAnimalForm.stages.0.label>
-  <SSF_Thought_SacredAnimalForm.stages.0.description>변신자가 감히 성스러운 동물의 형상을 하고 있다. 용서할 수 없는 신성모독이다.</SSF_Thought_SacredAnimalForm.stages.0.description>
+  <SSF_Thought_SacredAnimalForm.stages.0.description>이 역겨운 힘으로 성스러운 동물의 모습을 하고 있어. 끔찍한 신성모독을 저지른 기분이야.</SSF_Thought_SacredAnimalForm.stages.0.description>
   <SSF_Thought_SacredAnimalForm.stages.1.label>성스러운 동물 더럽힘</SSF_Thought_SacredAnimalForm.stages.1.label>
-  <SSF_Thought_SacredAnimalForm.stages.1.description>변신으로 성스러운 동물의 모습을 하다니... 뭔가 잘못된 느낌이다.</SSF_Thought_SacredAnimalForm.stages.1.description>
+  <SSF_Thought_SacredAnimalForm.stages.1.description>변신으로 성스러운 동물의 모습을 하고 있어. 뭔가 잘못된 느낌이야.</SSF_Thought_SacredAnimalForm.stages.1.description>
   <SSF_Thought_SacredAnimalForm.stages.2.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm.stages.2.label>
-  <SSF_Thought_SacredAnimalForm.stages.2.description>성스러운 동물의 모습을 하고 있다. 신기하다.</SSF_Thought_SacredAnimalForm.stages.2.description>
+  <SSF_Thought_SacredAnimalForm.stages.2.description>성스러운 동물의 모습을 하고 있어. 오, 신기하네.</SSF_Thought_SacredAnimalForm.stages.2.description>
   <SSF_Thought_SacredAnimalForm.stages.3.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm.stages.3.label>
-  <SSF_Thought_SacredAnimalForm.stages.3.description>성스러운 동물의 모습을 하고 있다. 경건한 기분이 든다.</SSF_Thought_SacredAnimalForm.stages.3.description>
+  <SSF_Thought_SacredAnimalForm.stages.3.description>성스러운 동물의 모습을 하고 있어. 경건한 기분이 들어.</SSF_Thought_SacredAnimalForm.stages.3.description>
   <SSF_Thought_SacredAnimalForm.stages.4.label>성스러운 동물의 축복</SSF_Thought_SacredAnimalForm.stages.4.label>
-  <SSF_Thought_SacredAnimalForm.stages.4.description>성스러운 동물의 형상을 받들게 되었다. 신성한 힘이 온몸에 흐르는 느낌이다.</SSF_Thought_SacredAnimalForm.stages.4.description>
+  <SSF_Thought_SacredAnimalForm.stages.4.description>성스러운 동물 그 자체가 되었어! 신성한 힘이 온몸에 흐르는 느낌이야.</SSF_Thought_SacredAnimalForm.stages.4.description>
+
+  <!-- 성스러운 동물 폼 — 사회 감정 — 규율 단계별 (0:혐오 1:못마땅 2:무관심 3:존중 4:숭고) -->
+  <SSF_Thought_SacredAnimalForm_Social.stages.0.label>성스러운 동물 모독자</SSF_Thought_SacredAnimalForm_Social.stages.0.label>
+  <SSF_Thought_SacredAnimalForm_Social.stages.0.description>감히 그 역겨운 힘으로 성스러운 동물의 모습을 하다니. 용서할 수 없는 신성모독이야.</SSF_Thought_SacredAnimalForm_Social.stages.0.description>
+  <SSF_Thought_SacredAnimalForm_Social.stages.1.label>성스러운 동물 더럽힘</SSF_Thought_SacredAnimalForm_Social.stages.1.label>
+  <SSF_Thought_SacredAnimalForm_Social.stages.1.description>변신으로 성스러운 동물의 모습을 하고 있어. 보기 불편해.</SSF_Thought_SacredAnimalForm_Social.stages.1.description>
+  <SSF_Thought_SacredAnimalForm_Social.stages.2.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm_Social.stages.2.label>
+  <SSF_Thought_SacredAnimalForm_Social.stages.2.description>성스러운 동물의 모습을 하고 있네. 좀 신기해.</SSF_Thought_SacredAnimalForm_Social.stages.2.description>
+  <SSF_Thought_SacredAnimalForm_Social.stages.3.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm_Social.stages.3.label>
+  <SSF_Thought_SacredAnimalForm_Social.stages.3.description>성스러운 동물의 모습을 하고 있어. 꽤 인상적이야.</SSF_Thought_SacredAnimalForm_Social.stages.3.description>
+  <SSF_Thought_SacredAnimalForm_Social.stages.4.label>성스러운 동물의 화신</SSF_Thought_SacredAnimalForm_Social.stages.4.label>
+  <SSF_Thought_SacredAnimalForm_Social.stages.4.description>성스러운 동물 그 자체가 되다니! 정말로 축복받은 존재야.</SSF_Thought_SacredAnimalForm_Social.stages.4.description>
 
 </LanguageData>
