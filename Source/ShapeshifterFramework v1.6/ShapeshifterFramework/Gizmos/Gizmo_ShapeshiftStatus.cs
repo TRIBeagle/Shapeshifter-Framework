@@ -39,7 +39,7 @@ namespace ShapeshifterFramework.Gizmos
 
         public override float GetWidth(float maxWidth)
         {
-            return 180f;
+            return 140f;
         }
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
@@ -140,7 +140,7 @@ namespace ShapeshifterFramework.Gizmos
                 int remain = core.RemainingShapeshiftTicks;
                 int total = resolvedDuration.Value;
                 fillPct = Mathf.Clamp01((float)remain / Mathf.Max(1f, total));
-                barLabel = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: true);
+                barLabel = GenDate.ToStringTicksToPeriod(remain, allowSeconds: false, shortForm: false);
             }
 
             Texture2D fillTex = isPermanent ? BarFilledPermanentTex : BarFilledTex;
