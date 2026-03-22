@@ -159,8 +159,6 @@
     <Compile Include="Patches\Patch_PawnRenderUtility_DrawEquipmentAiming_Scale.cs" />
     <Compile Include="Compat\Compat_PocketSand_GizmoFilter.cs" />
     <Compile Include="Compat\Compat_SimpleSidearms_MemoryHook.cs" />
-    <Compile Include="Compat\Compat_CombatExtended.cs" />
-    <Compile Include="Compat\Compat_YayoCombat.cs" />
     <Compile Include="Compat\CompatManager.cs" />
     <Compile Include="Utilities\ShapeshiftEligibility.cs" />
     <Compile Include="Utilities\ShapeshiftReflectionCache.cs" />
