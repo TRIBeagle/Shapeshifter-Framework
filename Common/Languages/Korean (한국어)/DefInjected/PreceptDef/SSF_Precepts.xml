@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
-  <!-- 단계 0: 혐오함 -->
-  <SSF_Shapeshifting_Abhorrent.label>혐오함</SSF_Shapeshifting_Abhorrent.label>
+  <!-- 단계 0: 절대적으로 혐오함 -->
+  <SSF_Shapeshifting_Abhorrent.label>절대적으로 혐오함</SSF_Shapeshifting_Abhorrent.label>
   <SSF_Shapeshifting_Abhorrent.description>타고난 몸을 바꾸는 것은 자연에 대한 극악무도한 모독이다.</SSF_Shapeshifting_Abhorrent.description>
 
   <!-- 단계 1: 못마땅함 -->
