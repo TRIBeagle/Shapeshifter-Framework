@@ -1,9 +1,9 @@
 // ShapeshifterFramework | Comps | CompAbilityEffect_GiveHediff_Shapeshift.cs
 // 목적 : 바닐라 CompAbilityEffect_GiveHediff를 확장하여 SSF 전용 캐스트 조건 + sourceItem 추적을 추가.
-// 용도 : - ShouldHideGizmo: 캐스터의 종족/뮤턴트 조건 + 같은 폼 재시전 차단
-//        - CanApplyOn: 대상 유효성 판별
+// 용도 : - ShouldHideGizmo: 캐스터의 종족/뮤턴트 조건으로 기즈모 숨김
+//        - CanApplyOn: 대상 유효성 판별 (다른 폼 변신 중 차단, allowedFromForms 예외)
 //        - Apply: 바닐라 hediff 부여 위임 + sourceItem 후처리
-//        - GizmoDisabled: allowedFromForms 체크
+//        - GizmoDisabled: 이데올로기 금지 + 변신 중 차단 (allowedFromForms 허용)
 
 using RimWorld;
 using ShapeshifterFramework.Hediffs;
@@ -89,8 +89,27 @@ namespace ShapeshifterFramework.Comps
             if (formDef != null && !ShapeshiftEligibility.IsRaceAllowed(pawn, formDef))
                 return false;
 
+            // 이미 다른 폼으로 변신 중이면 차단 — 단, allowedFromForms로 허용된 전환은 예외
             if (Props.hediffDef != null && ShapeshiftEligibility.IsTransformedIntoDifferentForm(pawn, Props.hediffDef))
-                return false;
+            {
+                // allowedFromForms 체크: 대상의 현재 폼이 허용 목록에 있으면 전환 허용
+                if (Props.allowedFromForms != null && Props.allowedFromForms.Count > 0
+                    && ShapeshiftCoreUtility.TryGetCore(pawn, out var core)
+                    && core.isTransformed && core.currentForm != null)
+                {
+                    bool allowed = false;
+                    for (int i = 0; i < Props.allowedFromForms.Count; i++)
+                    {
+                        if (string.Equals(Props.allowedFromForms[i], core.currentForm.defName, System.StringComparison.Ordinal))
+                        { allowed = true; break; }
+                    }
+                    if (!allowed) return false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
