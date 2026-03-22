@@ -3,6 +3,8 @@
 // 용도 : CompPostTick에서 변신 상태 유지 조건을 주기적으로 검사하고,
 //        조건 미충족 시 자동 해제. 인스펙터 UI 문자열도 담당.
 
+using RimWorld;
+using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
