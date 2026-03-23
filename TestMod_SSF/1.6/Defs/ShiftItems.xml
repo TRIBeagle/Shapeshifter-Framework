@@ -130,4 +130,42 @@
     </comps>
   </ThingDef>
 
+  <!-- ======================================================
+       2c) Item shapeshift — self with allowedFromForms
+       Tests 13-A04b: item allowedFromForms permits use during matching form
+       Tests 13-A04c: items WITHOUT allowedFromForms are still blocked (ShiftScroll_Self above)
+       ====================================================== -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>SSFTest_ShiftScroll_BearRefresh</defName>
+    <label>shift scroll (bear refresh)</label>
+    <description>A scroll that refreshes the bear form. Can only be used while already in bear form (allowedFromForms test).</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>130</MarketValue>
+      <Mass>0.1</Mass>
+    </statBases>
+    <stackLimit>5</stackLimit>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>use bear refresh scroll</useLabel>
+      </li>
+      <li Class="CompProperties_UseEffectDestroySelf" />
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_Shapeshift">
+        <hediffDef>SSFTest_BearFormHediff</hediffDef>
+        <!-- allowedFromForms: BearForm에서만 사용 허용 -->
+        <allowedFromForms>
+          <li>SSFTest_BearForm</li>
+        </allowedFromForms>
+      </li>
+    </comps>
+  </ThingDef>
+
 </Defs>

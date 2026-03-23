@@ -48,4 +48,56 @@
     </comps>
   </ThingDef>
 
+  <!-- ======================================================
+       2) Drug with allowedFromForms — usable while in bear form
+       Tests 13-A04a: drug allowedFromForms permits ingestion during matching form
+       Tests 13-A04c: drugs WITHOUT allowedFromForms are still blocked (BearElixir above)
+       ====================================================== -->
+  <ThingDef ParentName="MakeableDrugBase">
+    <defName>SSFTest_BearRefreshElixir</defName>
+    <label>bear refresh elixir</label>
+    <description>An elixir that refreshes the bear form. Can only be consumed while already in bear form (allowedFromForms test).</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <socialPropernessMatters>false</socialPropernessMatters>
+    <rotatable>false</rotatable>
+    <stackLimit>10</stackLimit>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>100</MarketValue>
+      <Mass>0.1</Mass>
+      <WorkToMake>600</WorkToMake>
+    </statBases>
+    <techLevel>Medieval</techLevel>
+    <ingestible>
+      <foodType>Processed</foodType>
+      <drugCategory>Medical</drugCategory>
+      <baseIngestTicks>120</baseIngestTicks>
+      <outcomeDoers>
+        <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_Shapeshift">
+          <hediffDef>SSFTest_BearFormHediff</hediffDef>
+          <!-- allowedFromForms: BearForm에서만 섭취 허용 -->
+          <allowedFromForms>
+            <li>SSFTest_BearForm</li>
+          </allowedFromForms>
+        </li>
+      </outcomeDoers>
+    </ingestible>
+    <recipeMaker>
+      <recipeUsers>
+        <li>DrugLab</li>
+      </recipeUsers>
+    </recipeMaker>
+    <costList>
+      <MedicineHerbal>1</MedicineHerbal>
+    </costList>
+    <comps>
+      <li Class="CompProperties_Drug">
+        <listOrder>1011</listOrder>
+      </li>
+    </comps>
+  </ThingDef>
+
 </Defs>

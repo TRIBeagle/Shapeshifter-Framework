@@ -9,7 +9,7 @@
 
 | # | FormDef | 부모 | 트리거 | 핵심 테스트 |
 |---|---------|------|--------|------------|
-| 1 | SSFTest_BearForm | Animal | 아군 어빌리티, 약물 | 전체 텍스처 교체, 수영, 도구, 헤디프, 해제 드랍, FX, 성스러운 동물(Bear_Grizzly) |
+| 1 | SSFTest_BearForm | Animal | 약물, 스크롤, 리프레시 약물/스크롤 | 전체 텍스처 교체, 수영, 도구, 헤디프, 해제 드랍, FX, 성스러운 동물, **allowedFromForms 약물/아이템** |
 | 2 | SSFTest_BearWarriorForm | Armored | 적 어빌리티 | 사운드, 이펙터, 아이콘, 장비 유지 |
 | 3 | SSFTest_SheepForm | Animal | AoE, 투사체 | 성별 텍스처, 작업 태그 비활성, 강제 변신(해제 불가) |
 | 4 | SSFTest_DarkKnightForm | Armored | 자기 어빌리티 (무기 부여) | 스폰 장비, 장비 잠금, 해제 헤디프 |
@@ -29,6 +29,8 @@
 | 약물 | 개발자 콘솔 → `SSFTest_BearElixir` 스폰 → 폰에게 복용 지시 |
 | 스크롤(자기) | 개발자 콘솔 → `SSFTest_ShiftScroll_Self` 스폰 → 폰이 사용 |
 | 스크롤(대상) | 개발자 콘솔 → `SSFTest_ShiftScroll_Target` 스폰 → 대상 폰 선택 사용 |
+| 리프레시 약물 | 개발자 콘솔 → `SSFTest_BearRefreshElixir` 스폰 → **곰 변신 중** 폰이 복용 (allowedFromForms 테스트) |
+| 리프레시 스크롤 | 개발자 콘솔 → `SSFTest_ShiftScroll_BearRefresh` 스폰 → **곰 변신 중** 폰이 사용 (allowedFromForms 테스트) |
 | 아군 어빌리티 | BearWarrior 어빌리티(`SSFTest_Ability_BuffAlly`)와 다름 — BearForm 직접 어빌리티 없음, 위 아이템 경로로만 진입 |
 
 ### [A] Auto-Verify
@@ -250,6 +252,9 @@
 - [ ] `10-A06a` 스크롤(대상): **사용자가 변신 중**이어도 타인 대상 스크롤 사용 가능
 - [ ] `10-A06b` 스크롤(대상): 타인 대상 스크롤을 **이미 변신 중인 대상**에게 사용 시 차단
 - [ ] `10-A07` 투사체(CursedArrow): 명중 시 변신
+- [ ] `10-A08` 약물(BearRefreshElixir, allowedFromForms): 곰 변신 중 복용 → 변신 갱신 허용
+- [ ] `10-A09` 스크롤(ShiftScroll_BearRefresh, allowedFromForms): 곰 변신 중 사용 → 변신 갱신 허용
+- [ ] `10-A10` 약물(BearRefreshElixir): **비곰 폼** 변신 중 복용 시도 → 차단
 
 ### [M] 수동 확인
 - [ ] `10-M01` 장비 부여(Weapon_DarkBlade): 장비 시 어빌리티 → 해제 시 제거
@@ -303,9 +308,12 @@
 - [ ] `13-A02` 사망 Pawn에 변신 시도 → 실패
 - [ ] `13-A03` 쓰러진 Pawn + revertOnDowned=true → 자동 해제
 - [ ] `13-A04` 다른 변신 중 새 변신 → 차단 (allowedFromForms 설정 시에만 전환 허용)
-- [ ] `13-A04a` 약물에 allowedFromForms 설정 시 해당 폼에서 섭취 허용
-- [ ] `13-A04b` 자기변신 아이템에 allowedFromForms 설정 시 해당 폼에서 사용 허용
-- [ ] `13-A04c` 약물/아이템의 allowedFromForms 미설정 시 변신 중 차단 (기본 동작 유지)
+- [ ] `13-A04a` 약물 allowedFromForms: `SSFTest_BearRefreshElixir`(allowedFromForms=BearForm) → 곰 변신 중 섭취 허용, 다른 폼 변신 중 섭취 차단
+- [ ] `13-A04b` 아이템 allowedFromForms: `SSFTest_ShiftScroll_BearRefresh`(allowedFromForms=BearForm) → 곰 변신 중 사용 허용, 다른 폼 변신 중 사용 차단
+- [ ] `13-A04c` allowedFromForms 미설정: `SSFTest_BearElixir`/`SSFTest_ShiftScroll_Self`는 변신 중 차단 (기본 동작 유지)
+- [ ] `13-A04d` 약물 allowedFromForms: 곰 변신 중 `SSFTest_BearRefreshElixir` 우클릭 FloatMenu → 활성 옵션 확인 (Patch_IngestIdeologyBlock 경로)
+- [ ] `13-A04e` 약물 allowedFromForms: 곰 변신 중 인벤토리 `SSFTest_BearRefreshElixir` 기즈모 → 노출 확인 (Patch_FoodUtility 경로)
+- [ ] `13-A04f` 약물 allowedFromForms: 곰 변신 중 `SSFTest_BearRefreshElixir` 실제 섭취 → 차단 없이 변신 갱신 (Patch_Thing_Ingested 경로)
 - [ ] `13-A05` 파괴된(Destroyed) 폰에 FX 재생 시도 → 크래시 없이 스킵
 
 ### [M] 수동 확인
@@ -357,6 +365,8 @@
 - [ ] `14-2-M03` 변신 중 같은 폼 재변신 → 차단 (동일 폼 포함 모든 변신 차단, allowedFromForms 예외)
 - [ ] `14-2-M04` 변신 중 타인 어빌리티/투사체로 다른 폼 강제 → 차단 (변신 유지)
 - [ ] `14-2-M05` allowedFromForms 설정된 어빌리티 → 기존대로 전환 허용
+- [ ] `14-2-M05a` allowedFromForms 설정된 약물(`SSFTest_BearRefreshElixir`) → 해당 폼에서 섭취 허용, 다른 폼에서 차단
+- [ ] `14-2-M05b` allowedFromForms 설정된 아이템(`SSFTest_ShiftScroll_BearRefresh`) → 해당 폼에서 사용 허용, 다른 폼에서 차단
 - [ ] `14-2-M06` 종족 불일치 등 변신 실패 → 메시지 + hediff 자동 제거 (좀비 hediff 방지)
 - [ ] `14-2-M07` Abhorrent 폰에게 수술(Recipe_AdministerIngestible)로 변신 약물 투여 → 변신 성공 (자기 주도가 아니므로 허용)
 
