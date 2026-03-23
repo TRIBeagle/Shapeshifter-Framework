@@ -148,6 +148,49 @@ namespace ShapeshifterFramework.Utilities
             return null;
         }
 
+        /// <summary>ThingDef의 ingestible.outcomeDoers에 IngestionOutcomeDoer_ExtendShapeshift가 포함되어 있는지 확인.</summary>
+        public static bool HasExtendShapeshiftOutcomeDoer(ThingDef def)
+        {
+            if (def?.ingestible?.outcomeDoers == null) return false;
+            for (int i = 0; i < def.ingestible.outcomeDoers.Count; i++)
+            {
+                if (def.ingestible.outcomeDoers[i] is IngestionOutcomeDoer_ExtendShapeshift)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>연장 약물(ThingDef)의 IngestionOutcomeDoer_ExtendShapeshift에서 targetFormDef를 가져옴.
+        /// 약물 패치에서 폼 일치 여부를 판정할 때 사용.</summary>
+        public static string GetExtendTargetFormDef(ThingDef def)
+        {
+            if (def?.ingestible?.outcomeDoers == null) return null;
+            for (int i = 0; i < def.ingestible.outcomeDoers.Count; i++)
+            {
+                if (def.ingestible.outcomeDoers[i] is IngestionOutcomeDoer_ExtendShapeshift doer)
+                    return doer.targetFormDef;
+            }
+            return null;
+        }
+
+        /// <summary>연장 약물의 사용 가능 여부를 판정하고 차단 사유를 반환.
+        /// null이면 사용 가능, 문자열이면 차단 사유(번역 키 결과).</summary>
+        public static string GetExtendDrugBlockReason(Pawn pawn, ThingDef drugDef)
+        {
+            if (!HasExtendShapeshiftOutcomeDoer(drugDef)) return null;
+
+            // 변신 중이 아니면 차단
+            if (!IsAlreadyTransformed(pawn, out var core))
+                return "SSF_Message_NotTransformed".Translate(pawn.LabelShort);
+
+            // targetFormDef 지정 시 현재 폼과 불일치하면 차단
+            string targetForm = GetExtendTargetFormDef(drugDef);
+            if (!targetForm.NullOrEmpty() && core.currentForm?.defName != targetForm)
+                return "SSF_Message_WrongFormForExtend".Translate(pawn.LabelShort);
+
+            return null;
+        }
+
         /// <summary>기본 변신 가능 여부 판정. 종족/뮤턴트 필터, 사망 체크.
         /// 이데올로기 차단과 폼 전환 차단은 각 진입점에서 별도 처리.</summary>
         public static bool CanTransformBasic(Pawn pawn, ShapeshiftFormDef form)

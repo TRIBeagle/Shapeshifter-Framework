@@ -311,10 +311,10 @@
 - [ ] `13-A02` 사망 Pawn에 변신 시도 → 실패
 - [ ] `13-A03` 쓰러진 Pawn + revertOnDowned=true → 자동 해제
 - [ ] `13-A04` 다른 변신 중 새 변신 → 차단 (allowedFromForms 설정 시에만 전환 허용)
-- [ ] `13-A04a` 약물 ExtendShapeshift: `SSFTest_BearRefreshElixir`(targetFormDef=BearForm) → 곰 변신 중 섭취 시 시간 연장, 비변신 시 "변신 중이 아닙니다" 메시지
+- [ ] `13-A04a` 약물 ExtendShapeshift: `SSFTest_BearRefreshElixir`(targetFormDef=BearForm) → 곰 변신 중 섭취 시 시간 연장, 비변신 시 FloatMenu 비활성 + 약물 소모 없음
 - [ ] `13-A04b` 아이템 ExtendShapeshift: `SSFTest_ShiftScroll_BearRefresh`(targetFormDef=BearForm) → 곰 변신 중 사용 시 시간 연장, 비변신 시 사용 불가
 - [ ] `13-A04c` allowedFromForms 미설정: `SSFTest_BearElixir`/`SSFTest_ShiftScroll_Self`는 변신 중 차단 (기본 동작 유지)
-- [ ] `13-A04d` ExtendShapeshift 약물: 다른 폼(늑대 등) 변신 중 `SSFTest_BearRefreshElixir` 섭취 → "필요한 폼이 아닙니다" 메시지
+- [ ] `13-A04d` ExtendShapeshift 약물: 다른 폼(늑대 등) 변신 중 `SSFTest_BearRefreshElixir` 섭취 → FloatMenu 비활성 ("필요한 폼이 아닙니다") + 약물 소모 없음
 - [ ] `13-A04e` ExtendShapeshift: allowExtendBeyondMax=false → 연장 후 남은 시간이 원래 최대 시간을 초과하지 않음 (`SSFTest_ShiftScroll_BearRefresh`)
 - [ ] `13-A04f` ExtendShapeshift: allowExtendBeyondMax=true → 연장 후 남은 시간이 원래 최대 시간 초과 가능 (`SSFTest_ShiftScroll_UniversalRefresh`)
 - [ ] `13-A04g` ExtendShapeshift: targetFormDef 미설정(범용) → 곰/양/다크나이트 등 어떤 폼에서든 연장 성공 (`SSFTest_ShiftScroll_UniversalRefresh`)
@@ -330,14 +330,16 @@
 - [ ] `13-M07` ExtendDuration 양수 → 시간제 변신의 남은 시간 증가 확인 (allowBeyondMax=true)
 - [ ] `13-M08` ExtendDuration 음수(남은 시간 초과) → 타이머 0 도달, 다음 틱 자동 해제
 - [ ] `13-M09` ExtendDuration on 영구 변신 → 무시 (변화 없음)
-- [ ] `13-M14` ExtendDuration allowBeyondMax=false → 원래 최대 시간 이내로 제한 확인
-- [ ] `13-M15` `SSFTest_BearRefreshElixir` 곰 변신 중 복용 → 남은 시간 30000틱 증가 확인 (인스펙터 확인)
-- [ ] `13-M16` `SSFTest_ShiftScroll_BearRefresh` 곰 변신 중 사용 → 남은 시간 30000틱 증가 확인
-- [ ] `13-M17` `SSFTest_ShiftScroll_UniversalRefresh` 아무 폼 변신 중 사용 → 남은 시간 20000틱 증가 확인 (최대 시간 초과 허용)
-- [ ] `13-M10` 변신 중 자기 전용 어빌리티(`targetRequired=false`) → 기즈모에서 숨겨짐
-- [ ] `13-M11` 변신 중 타인 대상 어빌리티(`targetRequired=true`) → 기즈모 표시 유지
-- [ ] `13-M12` 어빌리티 호버 툴팁 → 폼 이름/지속시간(또는 "Permanent") 표시 확인
-- [ ] `13-M13` 기즈모 바 — 긴 폼 이름 → Tiny 폰트 축소 + 말줄임 + 호버 전체 이름
+- [ ] `13-M10` ExtendDuration allowBeyondMax=false → 원래 최대 시간 이내로 제한 확인
+- [ ] `13-M11` `SSFTest_BearRefreshElixir` 곰 변신 중 복용 → 남은 시간 30000틱 증가 확인 (인스펙터 확인)
+- [ ] `13-M12` `SSFTest_ShiftScroll_BearRefresh` 곰 변신 중 사용 → 남은 시간 30000틱 증가 확인
+- [ ] `13-M13` `SSFTest_ShiftScroll_UniversalRefresh` 아무 폼 변신 중 사용 → 남은 시간 20000틱 증가 확인 (최대 시간 초과 허용)
+- [ ] `13-M14` 연장 약물(`BearRefreshElixir`) 비변신 시 우클릭 → FloatMenu 비활성 + 약물 소모 없음
+- [ ] `13-M15` 연장 약물(`BearRefreshElixir`) 비곰 폼 변신 중 우클릭 → FloatMenu 비활성 ("필요한 폼이 아닙니다")
+- [ ] `13-M16` 변신 중 자기 전용 어빌리티(`targetRequired=false`) → 기즈모에서 숨겨짐
+- [ ] `13-M17` 변신 중 타인 대상 어빌리티(`targetRequired=true`) → 기즈모 표시 유지
+- [ ] `13-M18` 어빌리티 호버 툴팁 → 폼 이름/지속시간(또는 "Permanent") 표시 확인
+- [ ] `13-M19` 기즈모 바 — 긴 폼 이름 → Tiny 폰트 축소 + 말줄임 + 호버 전체 이름
 
 ---
 
