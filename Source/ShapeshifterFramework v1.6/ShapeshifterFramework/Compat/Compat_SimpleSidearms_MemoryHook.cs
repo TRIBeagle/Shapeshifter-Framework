@@ -341,8 +341,7 @@ namespace ShapeshifterFramework.Compat
 
         /// <summary>ApplyForm Prefix: SS 메모리 백업 후 클리어.</summary>
         [HarmonyPatch(typeof(HediffComp_ShapeshiftCore), "ApplyForm",
-            new Type[] { typeof(ShapeshiftFormDef), typeof(string),
-                typeof(List<Thing>) })]
+            new Type[] { typeof(ShapeshiftFormDef), typeof(List<Thing>) })]
         static class Patch_ApplyForm
         {
             static bool Prepare()
@@ -350,7 +349,7 @@ namespace ShapeshifterFramework.Compat
                 if (!CompatManager.SS.IsActive) return false;
                 // 대상 메서드 존재 여부 확인 — 시그니처 변경 시 silent fail 방지
                 var target = AccessTools.Method(typeof(HediffComp_ShapeshiftCore), "ApplyForm",
-                    new Type[] { typeof(ShapeshiftFormDef), typeof(string), typeof(List<Thing>) });
+                    new Type[] { typeof(ShapeshiftFormDef), typeof(List<Thing>) });
                 if (target == null)
                 {
                     CompatManager.SS.Failed("MemoryHook:Prepare", "ApplyForm signature not found");
