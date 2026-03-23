@@ -4,6 +4,7 @@
 //        Thing.Ingested Prefix로 개입하여, IngestionOutcomeDoer_Shapeshift 포함 약물이면 섭취 자체를 차단.
 
 using HarmonyLib;
+using RimWorld;
 using ShapeshifterFramework.Utilities;
 using Verse;
 
