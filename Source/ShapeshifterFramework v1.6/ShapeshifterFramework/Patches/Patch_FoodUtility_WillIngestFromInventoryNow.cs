@@ -14,12 +14,12 @@ namespace ShapeshifterFramework.Patches
     internal static class Patch_FoodUtility_WillIngestFromInventoryNow
     {
         /// <summary>변신 금기이거나 이미 변신 중이면 변신 약물의 기즈모 노출을 차단.</summary>
-        static void Postfix(Pawn pawn, Thing thing, ref bool __result)
+        static void Postfix(Pawn pawn, Thing inv, ref bool __result)
         {
             if (!__result) return;
-            if (pawn == null || thing == null) return;
+            if (pawn == null || inv == null) return;
 
-            if (!ShapeshiftEligibility.HasShapeshiftOutcomeDoer(thing.def)) return;
+            if (!ShapeshiftEligibility.HasShapeshiftOutcomeDoer(inv.def)) return;
 
             // 이데올로기 변신 금기
             if (ShapeshiftEligibility.IsIdeologyForbidden(pawn))
