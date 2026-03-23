@@ -523,13 +523,21 @@ namespace ShapeshifterFramework.Compat
         private static bool counted;
 
         /// <summary>ApplyForm Postfix.</summary>
-        [HarmonyPatch(typeof(HediffComp_ShapeshiftCore), "ApplyForm", new System.Type[] { typeof(ShapeshiftFormDef), typeof(string), typeof(System.Collections.Generic.List<Verse.Thing>) })]
+        [HarmonyPatch(typeof(HediffComp_ShapeshiftCore), "ApplyForm", new System.Type[] { typeof(ShapeshiftFormDef), typeof(System.Collections.Generic.List<Verse.Thing>) })]
         static class Patch_ApplyForm2
         {
-            /// <summary>FA 비활성 시 패치 비적용.</summary>
+            /// <summary>FA 비활성 또는 대상 시그니처 미존재 시 패치 비적용.</summary>
             static bool Prepare()
             {
                 if (!CompatManager.FA.IsActive) return false;
+                // 대상 메서드 존재 여부 확인 — 시그니처 변경 시 silent fail 방지
+                var target = AccessTools.Method(typeof(HediffComp_ShapeshiftCore), "ApplyForm",
+                    new System.Type[] { typeof(ShapeshiftFormDef), typeof(System.Collections.Generic.List<Verse.Thing>) });
+                if (target == null)
+                {
+                    CompatManager.FA.Failed("OverridesHook:Prepare", "ApplyForm(ShapeshiftFormDef, List<Thing>) signature not found");
+                    return false;
+                }
                 if (!counted) { counted = true; CompatManager.FA.Patched("OverridesHook"); }
                 return true;
             }

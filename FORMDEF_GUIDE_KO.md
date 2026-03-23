@@ -855,6 +855,20 @@ ShapeshiftCoreUtility.OnFormApplied += (pawn, form) => { /* ... */ };
 ShapeshiftCoreUtility.OnFormRemoved += (pawn, form) => { /* ... */ };
 ```
 
+> **주의:** 이벤트 핸들러는 게임 로드 시(`GameComponent.FinalizeInit`) 매번 초기화됩니다.
+> `[StaticConstructorOnStartup]`에서 등록하면 로드 후 핸들러가 유실됩니다.
+> 반드시 자체 `GameComponent.FinalizeInit()` 오버라이드에서 등록하세요:
+> ```csharp
+> public class MyModGameComponent : GameComponent
+> {
+>     public MyModGameComponent(Game game) : base(game) { }
+>     public override void FinalizeInit()
+>     {
+>         ShapeshiftCoreUtility.OnFormApplied += MyHandler;
+>     }
+> }
+> ```
+
 ### C# API
 ```csharp
 // 변신 적용

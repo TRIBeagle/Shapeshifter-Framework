@@ -859,6 +859,20 @@ ShapeshiftCoreUtility.OnFormApplied += (pawn, form) => { /* ... */ };
 ShapeshiftCoreUtility.OnFormRemoved += (pawn, form) => { /* ... */ };
 ```
 
+> **Important:** Event handlers are cleared on every game load (`GameComponent.FinalizeInit`).
+> Do **not** register handlers in `[StaticConstructorOnStartup]` — they will be lost after the first load.
+> Instead, register them in your own `GameComponent.FinalizeInit()` override to ensure they survive save/load cycles:
+> ```csharp
+> public class MyModGameComponent : GameComponent
+> {
+>     public MyModGameComponent(Game game) : base(game) { }
+>     public override void FinalizeInit()
+>     {
+>         ShapeshiftCoreUtility.OnFormApplied += MyHandler;
+>     }
+> }
+> ```
+
 ### C# API
 ```csharp
 // Apply a shapeshift
