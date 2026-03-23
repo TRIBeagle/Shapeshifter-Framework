@@ -11,7 +11,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     /// <summary>Verb.TryCastShot 성공 시 변신 시간 차감.</summary>
-    [HarmonyPatch(typeof(Verb), nameof(Verb.TryCastShot))]
+    [HarmonyPatch(typeof(Verb), "TryCastShot")]
     public static class Patch_Verb_TryCastShot_DurationCost
     {
         [HarmonyPostfix]
