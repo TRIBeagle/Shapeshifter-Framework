@@ -15,6 +15,20 @@
   <SSFTest_ShiftScroll_Target.description>대상을 선택하여 늑대로 변신시키는 주문서. 대상을 클릭하면 걸어가서 사용한다.</SSFTest_ShiftScroll_Target.description>
   <SSFTest_ShiftScroll_Target.comps.CompUsable.useLabel>변신 주문서 사용...</SSFTest_ShiftScroll_Target.comps.CompUsable.useLabel>
 
+  <!-- 약물: 곰 리프레시 (allowedFromForms) -->
+  <SSFTest_BearRefreshElixir.label>곰 갱신 영약</SSFTest_BearRefreshElixir.label>
+  <SSFTest_BearRefreshElixir.description>곰 형태를 갱신하는 영약. 이미 곰으로 변신한 상태에서만 복용할 수 있다 (allowedFromForms 테스트).</SSFTest_BearRefreshElixir.description>
+
+  <!-- 아이템: 곰 리프레시 주문서 (allowedFromForms) -->
+  <SSFTest_ShiftScroll_BearRefresh.label>변신 주문서 (곰 갱신)</SSFTest_ShiftScroll_BearRefresh.label>
+  <SSFTest_ShiftScroll_BearRefresh.description>곰 형태를 갱신하는 주문서. 이미 곰으로 변신한 상태에서만 사용할 수 있다 (allowedFromForms 테스트).</SSFTest_ShiftScroll_BearRefresh.description>
+
+  <!-- 파편수류탄 (안전) -->
+  <SSFTest_Proj_FragGrenade_Safe.label>파편수류탄 (SSF 안전)</SSFTest_Proj_FragGrenade_Safe.label>
+
+  <!-- 피 흔적 -->
+  <SSFTest_Filth_BloodInsectSmear.label>피 흔적</SSFTest_Filth_BloodInsectSmear.label>
+
   <!-- 투사체 -->
   <SSFTest_Projectile_CursedArrow.label>저주받은 화살</SSFTest_Projectile_CursedArrow.label>
 
