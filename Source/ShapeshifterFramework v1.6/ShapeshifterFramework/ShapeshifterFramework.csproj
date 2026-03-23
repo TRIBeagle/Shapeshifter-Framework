@@ -118,7 +118,6 @@
     <Compile Include="Patches\Patch_FoodUtility_WillIngestFromInventoryNow.cs" />
     <Compile Include="Patches\Patch_IngestIdeologyBlock.cs" />
     <Compile Include="Patches\Patch_Thing_Ingested.cs" />
-    <Compile Include="Patches\Patch_DrugPolicyTracker_AllowedToTakeScheduledEver.cs" />
     <Compile Include="Patches\Patch_Pawn_GetDisabledWorkTypes.cs" />
     <Compile Include="Patches\Patch_Pawn_EquipmentTracker_AddEquipment.cs" />
     <Compile Include="Patches\Patch_Pawn_ApparelTracker_Wear.cs" />

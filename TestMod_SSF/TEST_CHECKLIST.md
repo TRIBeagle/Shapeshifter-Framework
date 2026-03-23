@@ -378,7 +378,6 @@
 - [ ] `15-M01` 다수 폰 동시 변신 (5+) — 프레임 저하 없음
 - [ ] `15-M02` 장시간 변신 유지 — 메모리 누수 없음
 - [ ] `15-M03` 빈번한 변신/해제 반복 — 크래시 없음
-- [ ] `15-M04a` 변신 약물이 맵에 있을 때 우클릭 줍기(PickUp) FloatMenu → ArgumentException 없이 정상 표시 (DrugPolicy Finalizer 패치 검증)
 - [ ] `15-M04` 맵 전환 시 캐시 정리 (ClearAll) 확인
 - [ ] `15-M05` 대형 폼(bodyDrawScale > 1) 줌아웃 렌더링 — 스레드 안전 (ThreadStatic _invokeArgs)
 - [ ] `15-M06` 스냅샷 순회 중 Register/Unregister 안전성 확인 (ReleaseSnapshot)
