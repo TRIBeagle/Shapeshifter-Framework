@@ -7,12 +7,12 @@
 
   <!-- 아이템: 자기 자신 -->
   <SSFTest_ShiftScroll_Self.label>변신 주문서 (자신)</SSFTest_ShiftScroll_Self.label>
-  <SSFTest_ShiftScroll_Self.description>사용하면 자기 자신이 늑대로 변신하는 주문서.</SSFTest_ShiftScroll_Self.description>
+  <SSFTest_ShiftScroll_Self.description>사용하면 자기 자신이 곰으로 변신하는 주문서.</SSFTest_ShiftScroll_Self.description>
   <SSFTest_ShiftScroll_Self.comps.CompUsable.useLabel>변신 주문서 사용 (자신)</SSFTest_ShiftScroll_Self.comps.CompUsable.useLabel>
 
   <!-- 아이템: 대상 지정 -->
   <SSFTest_ShiftScroll_Target.label>변신 주문서 (대상)</SSFTest_ShiftScroll_Target.label>
-  <SSFTest_ShiftScroll_Target.description>대상을 선택하여 늑대로 변신시키는 주문서. 대상을 클릭하면 걸어가서 사용한다.</SSFTest_ShiftScroll_Target.description>
+  <SSFTest_ShiftScroll_Target.description>대상을 선택하여 곰으로 변신시키는 주문서. 대상을 클릭하면 걸어가서 사용한다.</SSFTest_ShiftScroll_Target.description>
   <SSFTest_ShiftScroll_Target.comps.CompUsable.useLabel>변신 주문서 사용...</SSFTest_ShiftScroll_Target.comps.CompUsable.useLabel>
 
   <!-- 약물: 곰 시간 연장 -->

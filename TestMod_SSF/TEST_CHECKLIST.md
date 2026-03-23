@@ -308,12 +308,12 @@
 - [ ] `13-A02` 사망 Pawn에 변신 시도 → 실패
 - [ ] `13-A03` 쓰러진 Pawn + revertOnDowned=true → 자동 해제
 - [ ] `13-A04` 다른 변신 중 새 변신 → 차단 (allowedFromForms 설정 시에만 전환 허용)
-- [ ] `13-A04a` 약물 allowedFromForms: `SSFTest_BearRefreshElixir`(allowedFromForms=BearForm) → 곰 변신 중 섭취 허용, 다른 폼 변신 중 섭취 차단
-- [ ] `13-A04b` 아이템 allowedFromForms: `SSFTest_ShiftScroll_BearRefresh`(allowedFromForms=BearForm) → 곰 변신 중 사용 허용, 다른 폼 변신 중 사용 차단
+- [ ] `13-A04a` 약물 ExtendShapeshift: `SSFTest_BearRefreshElixir`(targetFormDef=BearForm) → 곰 변신 중 섭취 시 시간 연장, 비변신 시 "변신 중이 아닙니다" 메시지
+- [ ] `13-A04b` 아이템 ExtendShapeshift: `SSFTest_ShiftScroll_BearRefresh`(targetFormDef=BearForm) → 곰 변신 중 사용 시 시간 연장, 비변신 시 사용 불가
 - [ ] `13-A04c` allowedFromForms 미설정: `SSFTest_BearElixir`/`SSFTest_ShiftScroll_Self`는 변신 중 차단 (기본 동작 유지)
-- [ ] `13-A04d` 약물 allowedFromForms: 곰 변신 중 `SSFTest_BearRefreshElixir` 우클릭 FloatMenu → 활성 옵션 확인 (Patch_IngestIdeologyBlock 경로)
-- [ ] `13-A04e` 약물 allowedFromForms: 곰 변신 중 인벤토리 `SSFTest_BearRefreshElixir` 기즈모 → 노출 확인 (Patch_FoodUtility 경로)
-- [ ] `13-A04f` 약물 allowedFromForms: 곰 변신 중 `SSFTest_BearRefreshElixir` 실제 섭취 → 차단 없이 변신 갱신 (Patch_Thing_Ingested 경로)
+- [ ] `13-A04d` ExtendShapeshift 약물: 다른 폼(늑대 등) 변신 중 `SSFTest_BearRefreshElixir` 섭취 → "필요한 폼이 아닙니다" 메시지
+- [ ] `13-A04e` ExtendShapeshift: allowExtendBeyondMax=false → 연장 후 남은 시간이 원래 최대 시간을 초과하지 않음
+- [ ] `13-A04f` ExtendShapeshift: allowExtendBeyondMax=true → 연장 후 남은 시간이 원래 최대 시간 초과 가능
 - [ ] `13-A05` 파괴된(Destroyed) 폰에 FX 재생 시도 → 크래시 없이 스킵
 
 ### [M] 수동 확인
@@ -323,9 +323,12 @@
 - [ ] `13-M04` 변신 중 사망 → 시체 원래 외형 복귀
 - [ ] `13-M05` 변신 중 체포/구속 → 장비 처리 확인
 - [ ] `13-M06` Part가 null인 hediff 정리 시 크래시 없음 (CleanupNullPartHediffs 2-패스)
-- [ ] `13-M07` ExtendDuration 양수 → 시간제 변신의 남은 시간 증가 확인
+- [ ] `13-M07` ExtendDuration 양수 → 시간제 변신의 남은 시간 증가 확인 (allowBeyondMax=true)
 - [ ] `13-M08` ExtendDuration 음수(남은 시간 초과) → 타이머 0 도달, 다음 틱 자동 해제
 - [ ] `13-M09` ExtendDuration on 영구 변신 → 무시 (변화 없음)
+- [ ] `13-M14` ExtendDuration allowBeyondMax=false → 원래 최대 시간 이내로 제한 확인
+- [ ] `13-M15` `SSFTest_BearRefreshElixir` 곰 변신 중 복용 → 남은 시간 30000틱 증가 확인 (인스펙터 확인)
+- [ ] `13-M16` `SSFTest_ShiftScroll_BearRefresh` 곰 변신 중 사용 → 남은 시간 30000틱 증가 확인
 - [ ] `13-M10` 변신 중 자기 전용 어빌리티(`targetRequired=false`) → 기즈모에서 숨겨짐
 - [ ] `13-M11` 변신 중 타인 대상 어빌리티(`targetRequired=true`) → 기즈모 표시 유지
 - [ ] `13-M12` 어빌리티 호버 툴팁 → 폼 이름/지속시간(또는 "Permanent") 표시 확인

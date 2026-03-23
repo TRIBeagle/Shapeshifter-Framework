@@ -667,6 +667,60 @@ Multiple HediffDefs can share one FormDef with different stats:
 
 > **Target-select items:** Items with `CompTargetable` (e.g., `CompProperties_TargetablePawn`) can always be used by a transformed pawn, since the effect targets another pawn. The target's transformation state is checked instead.
 
+### 5.3.1 Duration Extension — Drug
+
+Extends the remaining duration of an active shapeshift. Separate from `IngestionOutcomeDoer_Shapeshift` (which applies a new transformation).
+
+```xml
+<ThingDef ParentName="MakeableDrugBase">
+  <defName>MyMod_BearRefreshElixir</defName>
+  <label>bear refresh elixir</label>
+  <ingestible>
+    <outcomeDoers>
+      <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_ExtendShapeshift">
+        <extendTicks>30000</extendTicks>
+        <!-- Optional: only extend if in a specific form. Omit to extend any form. -->
+        <targetFormDef>MyMod_BearForm</targetFormDef>
+        <!-- Optional: allow extending beyond original max duration (default false) -->
+        <allowExtendBeyondMax>false</allowExtendBeyondMax>
+      </li>
+    </outcomeDoers>
+  </ingestible>
+</ThingDef>
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `extendTicks` | `int` | **required** — Ticks to extend (+) or reduce (−) |
+| `targetFormDef` | `string` | FormDef defName. If set, only extends when pawn is in that form. If omitted, extends any active form |
+| `allowExtendBeyondMax` | `bool` | If `true`, duration can exceed the form's original max. Default `false` |
+
+### 5.3.2 Duration Extension — Item
+
+```xml
+<ThingDef ParentName="ResourceBase">
+  <defName>MyMod_RefreshScroll</defName>
+  <label>refresh scroll</label>
+  <comps>
+    <li Class="CompProperties_Usable"><useJob>UseItem</useJob><useLabel>Use scroll</useLabel></li>
+    <li Class="CompProperties_UseEffectDestroySelf"/>
+    <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ExtendShapeshift">
+      <extendTicks>30000</extendTicks>
+      <targetFormDef>MyMod_BearForm</targetFormDef>
+      <allowExtendBeyondMax>false</allowExtendBeyondMax>
+    </li>
+  </comps>
+</ThingDef>
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `extendTicks` | `int` | **required** — Ticks to extend (+) or reduce (−) |
+| `targetFormDef` | `string` | FormDef defName. If set, only extends when pawn is in that form. If omitted, extends any active form |
+| `allowExtendBeyondMax` | `bool` | If `true`, duration can exceed the form's original max. Default `false` |
+
+> **Not transformed:** If the pawn is not currently transformed (or is in the wrong form when `targetFormDef` is set), the item/drug is consumed but has no effect — a reject message is shown.
+
 ### 5.4 Projectile
 ```xml
 <ThingDef ParentName="BaseProjectileNeolithic">
@@ -821,8 +875,10 @@ if (ShapeshiftCoreUtility.TryGetCore(pawn, out var core))
 }
 
 // Extend or reduce remaining duration (timed forms only; ignored for permanent)
-core.ExtendDuration(2500);   // +1 hour
-core.ExtendDuration(-1250);  // -0.5 hours (reaches 0 → auto-revert next tick)
+core.ExtendDuration(2500);                // +1 hour
+core.ExtendDuration(-1250);               // -0.5 hours (reaches 0 → auto-revert next tick)
+core.ExtendDuration(30000, false);        // +5 hours, capped at original max duration
+core.ExtendDuration(30000, true);         // +5 hours, can exceed original max
 ```
 
 ---

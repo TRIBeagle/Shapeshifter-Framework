@@ -663,6 +663,60 @@
 
 > **대상 지정 아이템:** `CompTargetable`(예: `CompProperties_TargetablePawn`)이 있는 아이템은 사용자가 변신 중이어도 항상 사용 가능합니다. 효과가 대상에게 적용되므로, 대상의 변신 상태만 체크합니다.
 
+### 5.3.1 지속 시간 연장 — 약물
+
+현재 변신의 남은 시간을 연장합니다. `IngestionOutcomeDoer_Shapeshift`(새 변신 적용)와 분리된 전용 클래스입니다.
+
+```xml
+<ThingDef ParentName="MakeableDrugBase">
+  <defName>MyMod_BearRefreshElixir</defName>
+  <label>곰 연장 영약</label>
+  <ingestible>
+    <outcomeDoers>
+      <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_ExtendShapeshift">
+        <extendTicks>30000</extendTicks>
+        <!-- 선택: 특정 폼에서만 연장. 생략하면 어떤 폼이든 연장 -->
+        <targetFormDef>MyMod_BearForm</targetFormDef>
+        <!-- 선택: 원래 최대 시간을 초과하여 연장 허용 (기본 false) -->
+        <allowExtendBeyondMax>false</allowExtendBeyondMax>
+      </li>
+    </outcomeDoers>
+  </ingestible>
+</ThingDef>
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `extendTicks` | `int` | **필수** — 연장(+) 또는 단축(−) 틱 수 |
+| `targetFormDef` | `string` | 폼 defName. 지정 시 해당 폼에서만 연장. 생략 시 현재 폼 종류 무관 |
+| `allowExtendBeyondMax` | `bool` | `true`면 원래 최대 시간을 초과하여 연장 가능. 기본 `false` |
+
+### 5.3.2 지속 시간 연장 — 아이템
+
+```xml
+<ThingDef ParentName="ResourceBase">
+  <defName>MyMod_RefreshScroll</defName>
+  <label>연장 스크롤</label>
+  <comps>
+    <li Class="CompProperties_Usable"><useJob>UseItem</useJob><useLabel>스크롤 사용</useLabel></li>
+    <li Class="CompProperties_UseEffectDestroySelf"/>
+    <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ExtendShapeshift">
+      <extendTicks>30000</extendTicks>
+      <targetFormDef>MyMod_BearForm</targetFormDef>
+      <allowExtendBeyondMax>false</allowExtendBeyondMax>
+    </li>
+  </comps>
+</ThingDef>
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `extendTicks` | `int` | **필수** — 연장(+) 또는 단축(−) 틱 수 |
+| `targetFormDef` | `string` | 폼 defName. 지정 시 해당 폼에서만 연장. 생략 시 현재 폼 종류 무관 |
+| `allowExtendBeyondMax` | `bool` | `true`면 원래 최대 시간을 초과하여 연장 가능. 기본 `false` |
+
+> **변신 중이 아닐 때:** 변신 중이 아니거나 `targetFormDef`와 다른 폼이면 아이템/약물은 소비되지만 효과 없음 — 거부 메시지가 표시됩니다.
+
 ### 5.4 투사체
 ```xml
 <ThingDef ParentName="BaseProjectileNeolithic">
@@ -817,8 +871,10 @@ if (ShapeshiftCoreUtility.TryGetCore(pawn, out var core))
 }
 
 // 남은 시간 연장/단축 (시간제 변신만. 영구 변신은 무시)
-core.ExtendDuration(2500);   // +1시간
-core.ExtendDuration(-1250);  // -0.5시간 (0 이하 → 다음 틱에 자동 해제)
+core.ExtendDuration(2500);                // +1시간
+core.ExtendDuration(-1250);               // -0.5시간 (0 이하 → 다음 틱에 자동 해제)
+core.ExtendDuration(30000, false);        // +5시간, 원래 최대 시간 이내로 제한
+core.ExtendDuration(30000, true);         // +5시간, 원래 최대 시간 초과 허용
 ```
 
 ---
