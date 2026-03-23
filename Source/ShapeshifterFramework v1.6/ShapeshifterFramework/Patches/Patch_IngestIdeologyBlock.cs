@@ -4,7 +4,6 @@
 
 using HarmonyLib;
 using RimWorld;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,7 +37,7 @@ namespace ShapeshifterFramework.Patches
                 if (target == null) continue;
 
                 // 변신 약물 여부 확인: IngestionOutcomeDoer_Shapeshift가 포함된 약물인지 체크
-                if (!HasShapeshiftOutcomeDoer(target.def, out HediffDef hediffDef)) continue;
+                if (!ShapeshiftEligibility.HasShapeshiftOutcomeDoer(target.def)) continue;
 
                 // 차단 사유 결정
                 string blockReason = null;
@@ -56,23 +55,6 @@ namespace ShapeshifterFramework.Patches
 
                 __result[i] = FloatMenuPatchHelper.MakeDisabled(opt, " (" + blockReason + ")");
             }
-        }
-
-        /// <summary>ThingDef의 ingestible.outcomeDoers에 IngestionOutcomeDoer_Shapeshift가 포함되어 있는지 확인.</summary>
-        private static bool HasShapeshiftOutcomeDoer(ThingDef def, out HediffDef hediffDef)
-        {
-            hediffDef = null;
-            if (def?.ingestible?.outcomeDoers == null) return false;
-
-            for (int i = 0; i < def.ingestible.outcomeDoers.Count; i++)
-            {
-                if (def.ingestible.outcomeDoers[i] is IngestionOutcomeDoer_Shapeshift ssDoer)
-                {
-                    hediffDef = ssDoer.hediffDef;
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

@@ -5,7 +5,6 @@
 
 using HarmonyLib;
 using RimWorld;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using Verse;
 
@@ -20,7 +19,7 @@ namespace ShapeshifterFramework.Patches
             if (!__result) return;
             if (pawn == null || thing == null) return;
 
-            if (!HasShapeshiftOutcomeDoer(thing.def)) return;
+            if (!ShapeshiftEligibility.HasShapeshiftOutcomeDoer(thing.def)) return;
 
             // 이데올로기 변신 금기
             if (ShapeshiftEligibility.IsIdeologyForbidden(pawn))
@@ -34,18 +33,6 @@ namespace ShapeshifterFramework.Patches
             {
                 __result = false;
             }
-        }
-
-        /// <summary>ThingDef의 ingestible.outcomeDoers에 IngestionOutcomeDoer_Shapeshift가 포함되어 있는지 확인.</summary>
-        private static bool HasShapeshiftOutcomeDoer(ThingDef def)
-        {
-            if (def?.ingestible?.outcomeDoers == null) return false;
-            for (int i = 0; i < def.ingestible.outcomeDoers.Count; i++)
-            {
-                if (def.ingestible.outcomeDoers[i] is IngestionOutcomeDoer_Shapeshift)
-                    return true;
-            }
-            return false;
         }
     }
 }

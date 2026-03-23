@@ -5,6 +5,7 @@
 //        이데올로기 차단은 각 UI 진입점에서 IsIdeologyForbidden()을 직접 호출.
 
 using RimWorld;
+using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Hediffs;
 using Verse;
 
@@ -103,6 +104,18 @@ namespace ShapeshifterFramework.Utilities
             if (pawn == null) return false;
             if (!ShapeshiftRegistry.TryGet(pawn, out core, out _)) return false;
             return core.isTransformed;
+        }
+
+        /// <summary>ThingDef의 ingestible.outcomeDoers에 IngestionOutcomeDoer_Shapeshift가 포함되어 있는지 확인.</summary>
+        public static bool HasShapeshiftOutcomeDoer(ThingDef def)
+        {
+            if (def?.ingestible?.outcomeDoers == null) return false;
+            for (int i = 0; i < def.ingestible.outcomeDoers.Count; i++)
+            {
+                if (def.ingestible.outcomeDoers[i] is IngestionOutcomeDoer_Shapeshift)
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>기본 변신 가능 여부 판정. 종족/뮤턴트 필터, 사망 체크.
