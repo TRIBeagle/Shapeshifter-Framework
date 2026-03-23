@@ -60,6 +60,13 @@ namespace ShapeshifterFramework.Utilities
         {
             if (pawn == null || pawn.Dead || hediffDef == null) return;
 
+            // 동일 HediffDef가 이미 존재하면 중복 적용 불가 — 메시지만 표시
+            if (pawn.health?.hediffSet?.HasHediff(hediffDef) == true)
+            {
+                Messages.Message("SSF_Message_SameFormActive".Translate(), pawn, MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+
             Hediff newHediff = HediffMaker.MakeHediff(hediffDef, pawn);
             if (newHediff == null)
             {
