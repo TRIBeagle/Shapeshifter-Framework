@@ -4,6 +4,7 @@
 //        외부 모드 확장점: OnFormApplied / OnFormRemoved 이벤트.
 // 주의 : ClearEvents()는 GameComponent.FinalizeInit에서 호출 (HarmonyInit은 모드 로드 시 1회만).
 
+using RimWorld;
 using ShapeshifterFramework.Hediffs;
 using System;
 using System.Collections.Generic;
