@@ -31,7 +31,10 @@ namespace ShapeshifterFramework.Comps
             {
                 var jobTarget = pawn.CurJob?.targetB.Thing as Pawn;
                 if (jobTarget != null && ShapeshiftEligibility.IsAlreadyTransformed(jobTarget))
-                    return "SSF_Menu_Blocked".Translate();
+                {
+                    Messages.Message("SSF_Message_AlreadyTransformed".Translate(), jobTarget, MessageTypeDefOf.RejectInput, false);
+                    return "SSF_Message_AlreadyTransformed".Translate();
+                }
             }
 
             return base.CanBeUsedBy(pawn);

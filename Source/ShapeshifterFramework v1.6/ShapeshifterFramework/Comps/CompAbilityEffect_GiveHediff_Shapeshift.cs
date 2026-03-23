@@ -101,7 +101,10 @@ namespace ShapeshifterFramework.Comps
             if (ShapeshiftEligibility.IsAlreadyTransformed(pawn, out var core))
             {
                 if (!IsCurrentFormInAllowedList(core))
+                {
+                    Messages.Message("SSF_Message_AlreadyTransformed".Translate(), pawn, MessageTypeDefOf.RejectInput, false);
                     return false;
+                }
             }
 
             return true;
