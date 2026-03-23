@@ -151,8 +151,8 @@ namespace ShapeshifterFramework.Compat
         {
             if (node == null) return false;
 
-            // Verse.PawnRenderNode → Props(AlienPawnRenderNodeProperties_BodyAddon)
-            object props = ShapeshiftReflectionCache.TryGetPropsFromNode(node);
+            // Verse.PawnRenderNode → Props(AlienPawnRenderNodeProperties_BodyAddon) — public property 직접 접근
+            object props = node.Props;
             // props.addon (AlienPartGenerator.BodyAddon)
             object addon = props != null
                 ? (ShapeshiftReflectionCache.GetInstanceField<object>(props, "addon")

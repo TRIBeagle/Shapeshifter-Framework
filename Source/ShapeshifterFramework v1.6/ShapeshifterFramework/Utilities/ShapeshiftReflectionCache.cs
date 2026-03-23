@@ -62,44 +62,7 @@ namespace ShapeshifterFramework.Utilities
 
         #endregion
 
-        #region PawnRenderNode: Props
-
-        private static readonly PropertyInfo PI_Node_Props = AccessTools.Property(typeof(PawnRenderNode), "Props");
-        private static readonly FieldInfo FI_Node_props = AccessTools.Field(typeof(PawnRenderNode), "props");
-
-        static ShapeshiftReflectionCache()
-        {
-            // PawnRenderNode.Props 리플렉션 실패 시 시작 로그 — 바닐라 버전 불일치 감지용
-            if (PI_Node_Props == null && FI_Node_props == null)
-                Log.Warning("[SSF] Reflection failed: PawnRenderNode.Props/props not found. RenderNode props lookups will return null — vanilla version mismatch?");
-        }
-
-        /// <summary>PawnRenderNode.Props를 안전하게 가져온다(Prop→Field 폴백).</summary>
-        internal static object TryGetPropsFromNode(PawnRenderNode node)
-        {
-            if (node == null) return null;
-            object v = null;
-            if (PI_Node_Props != null) { try { v = PI_Node_Props.GetValue(node, null); } catch { /* Property 접근 실패 → Field 폴백 */ } }
-            if (v != null) return v;
-            if (FI_Node_props != null) { try { v = FI_Node_props.GetValue(node); } catch { /* Field 폴백도 실패 — 무시 */ } }
-            return v;
-        }
-
-        /// <summary>Props(out) 비제네릭 버전.</summary>
-        internal static bool TryGetPropsFromNode(PawnRenderNode node, out PawnRenderNodeProperties props)
-        {
-            props = TryGetPropsFromNode(node) as PawnRenderNodeProperties;
-            return props != null;
-        }
-
-        /// <summary>Props(out) 제네릭 버전.</summary>
-        internal static bool TryGetPropsFromNode<T>(PawnRenderNode node, out T props) where T : class
-        {
-            props = TryGetPropsFromNode(node) as T;
-            return props != null;
-        }
-
-        #endregion
+        // PawnRenderNode.Props — public property이므로 node.Props로 직접 접근. 리플렉션 불필요.
 
         #region 범용 캐시: 필드/프로퍼티
 

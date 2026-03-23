@@ -96,14 +96,12 @@ namespace ShapeshifterFramework.Patches
                     _tmpTagSet.Clear();
                     _tmpTags.Clear();
 
-                    object geneDef = ShapeshiftReflectionCache.GetInstanceProperty<object>(gene, "def");
-                    var tagsA = ShapeshiftReflectionCache.TryGetExclusionTags(geneDef);
+                    var tagsA = ShapeshiftReflectionCache.TryGetExclusionTags(gene.def);
                     if (tagsA != null)
                         for (int i = 0; i < tagsA.Count; i++)
                             if (_tmpTagSet.Add(tagsA[i])) _tmpTags.Add(tagsA[i]);
 
-                    object props = ShapeshiftReflectionCache.TryGetPropsFromNode(node);
-                    var tagsB = ShapeshiftReflectionCache.TryGetExclusionTags(props);
+                    var tagsB = ShapeshiftReflectionCache.TryGetExclusionTags(node.Props);
                     if (tagsB != null)
                         for (int i = 0; i < tagsB.Count; i++)
                             if (_tmpTagSet.Add(tagsB[i])) _tmpTags.Add(tagsB[i]);
