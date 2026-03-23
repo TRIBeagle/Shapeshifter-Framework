@@ -212,5 +212,48 @@
     </comps>
   </AbilityDef>
 
+  <!-- ======================================================
+       Ability: Primal Roar — beastkin-exclusive ability with duration cost
+       Granted via beastkin form's addAbilities, removed on revert.
+       Stuns nearby enemies. Costs 7500 ticks (~3 hours) of shift time.
+       Reference: vanilla Berserk (targeted, warmup, hostile)
+       ====================================================== -->
+  <AbilityDef>
+    <defName>SSFTest_Ability_PrimalRoar</defName>
+    <label>primal roar</label>
+    <description>Let out a terrifying primal roar that stuns a nearby enemy. Consumes shapeshift duration on use.</description>
+    <cooldownTicksRange>2500</cooldownTicksRange>
+    <hostile>true</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <displayGizmoWhileUndrafted>false</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>true</disableGizmoWhileUndrafted>
+    <displayOrder>512</displayOrder>
+    <iconPath>UI/Abilities/Berserk</iconPath>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
+      <range>10</range>
+      <warmupTime>1.0</warmupTime>
+      <targetParams>
+        <canTargetSelf>false</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetAnimals>true</canTargetAnimals>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <!-- 대상에게 스턴 부여 (바닐라 CompAbilityEffect_GiveHediff) -->
+      <li Class="CompProperties_AbilityGiveHediff">
+        <compClass>CompAbilityEffect_GiveHediff</compClass>
+        <hediffDef>Stunned</hediffDef>
+        <durationMultiplier>PsychicSensitivity</durationMultiplier>
+      </li>
+      <!-- 캐스터의 변신 시간 7500틱(~3시간) 차감 -->
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityEffect_ShapeshiftDurationCost">
+        <durationCostTicks>7500</durationCostTicks>
+        <requireTransformed>true</requireTransformed>
+      </li>
+    </comps>
+  </AbilityDef>
 
 </Defs>

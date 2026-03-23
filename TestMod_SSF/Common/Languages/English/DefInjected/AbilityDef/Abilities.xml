@@ -33,6 +33,10 @@
   <SSFTest_Ability_Phantom.label>phantom shift</SSFTest_Ability_Phantom.label>
   <SSFTest_Ability_Phantom.description>Transform into phantom form. Semi-transparent head, thin body type.</SSFTest_Ability_Phantom.description>
 
+  <!-- Primal roar (beastkin-exclusive, duration cost) -->
+  <SSFTest_Ability_PrimalRoar.label>primal roar</SSFTest_Ability_PrimalRoar.label>
+  <SSFTest_Ability_PrimalRoar.description>Let out a terrifying primal roar that stuns a nearby enemy. Consumes shapeshift duration on use.</SSFTest_Ability_PrimalRoar.description>
+
   <!-- Race-locked (human only) -->
   <SSFTest_Ability_RaceLocked.label>race-locked shift</SSFTest_Ability_RaceLocked.label>
   <SSFTest_Ability_RaceLocked.description>Human-only enhancement transformation. Non-human races cannot use this.</SSFTest_Ability_RaceLocked.description>

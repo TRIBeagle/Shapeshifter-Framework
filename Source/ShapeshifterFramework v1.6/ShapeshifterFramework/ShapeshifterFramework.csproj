@@ -71,7 +71,9 @@
     <Compile Include="Compat\Compat_FacialAnimation_HeadWorker_ScaleFor.cs" />
     <Compile Include="Compat\Compat_HAR_BodyAddon_ScaleFor.cs" />
     <Compile Include="Comps\CompAbilityEffect_GiveHediff_Shapeshift.cs" />
+    <Compile Include="Comps\CompAbilityEffect_ShapeshiftDurationCost.cs" />
     <Compile Include="Comps\CompProperties_AbilityGiveHediff_Shapeshift.cs" />
+    <Compile Include="Comps\CompProperties_AbilityEffect_ShapeshiftDurationCost.cs" />
     <Compile Include="Comps\CompUseEffect_Shapeshift.cs" />
     <Compile Include="Comps\CompUseEffect_ExtendShapeshift.cs" />
     <Compile Include="Comps\CompProperties_UseEffect_Shapeshift.cs" />

@@ -605,6 +605,30 @@ Multiple HediffDefs can share one FormDef with different stats:
 >
 > **Ability tooltip:** The ability hover tooltip automatically displays the target form name and duration (or "Permanent") — no extra configuration required.
 
+#### Duration Cost for Abilities
+
+Add `CompProperties_AbilityEffect_ShapeshiftDurationCost` as an additional comp to deduct shift time on ability use. Works with any ability — shift or non-shift.
+
+```xml
+<comps>
+  <!-- main ability effect (e.g. stun) -->
+  <li Class="CompProperties_AbilityGiveHediff">
+    <compClass>CompAbilityEffect_GiveHediff</compClass>
+    <hediffDef>Stunned</hediffDef>
+  </li>
+  <!-- shift duration cost -->
+  <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityEffect_ShapeshiftDurationCost">
+    <durationCostTicks>7500</durationCostTicks>        <!-- ~3 hours of shift time -->
+    <requireTransformed>true</requireTransformed>       <!-- block if not transformed (default true) -->
+  </li>
+</comps>
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `durationCostTicks` | `int` | Ticks deducted from shift timer on use |
+| `requireTransformed` | `bool` | If true (default), gizmo is disabled when not transformed |
+
 ### 5.2 Drug (Ingestible)
 ```xml
 <ThingDef ParentName="MakeableDrugBase">

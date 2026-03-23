@@ -264,7 +264,7 @@ namespace ShapeshifterFramework.Hediffs
             if (cost > 0)
             {
                 string costStr = GenDate.ToStringTicksToPeriod(cost, allowSeconds: false, shortForm: false);
-                desc += "\n\n" + "SSF_Verb_DurationCost".Translate(costStr);
+                desc += "\n\n" + "SSF_DurationCost".Translate(costStr);
             }
 
             return desc;

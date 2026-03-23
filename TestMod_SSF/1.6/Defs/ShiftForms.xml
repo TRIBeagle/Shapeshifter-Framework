@@ -183,6 +183,7 @@
     <addAbilities>
       <li MayRequire="Ludeon.Royalty">Waterskip</li>
       <li>SSFTest_Ability_FullBeast</li>
+      <li>SSFTest_Ability_PrimalRoar</li>
     </addAbilities>
     <!-- Graphic display exceptions -->
     <renderShowApparelDefNames>

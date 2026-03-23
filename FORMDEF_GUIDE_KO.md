@@ -601,6 +601,30 @@
 >
 > **어빌리티 툴팁:** 어빌리티 호버 툴팁에 대상 폼 이름과 지속시간(또는 "무제한")이 자동으로 표시됩니다 — 추가 설정 불필요.
 
+#### 어빌리티 변신 시간 차감
+
+`CompProperties_AbilityEffect_ShapeshiftDurationCost`를 추가 comp로 붙이면 어빌리티 사용 시 변신 시간을 차감합니다. 변신 어빌리티/비변신 어빌리티 모두 사용 가능.
+
+```xml
+<comps>
+  <!-- 메인 효과 (예: 기절 부여) -->
+  <li Class="CompProperties_AbilityGiveHediff">
+    <compClass>CompAbilityEffect_GiveHediff</compClass>
+    <hediffDef>Stunned</hediffDef>
+  </li>
+  <!-- 변신 시간 차감 -->
+  <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityEffect_ShapeshiftDurationCost">
+    <durationCostTicks>7500</durationCostTicks>        <!-- 변신 시간 ~3시간 차감 -->
+    <requireTransformed>true</requireTransformed>       <!-- true면 변신 중이 아닐 때 사용 차단 (기본 true) -->
+  </li>
+</comps>
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `durationCostTicks` | `int` | 사용 시 차감할 변신 잔여 틱 |
+| `requireTransformed` | `bool` | true(기본)면 변신 중이 아닐 때 기즈모 비활성화 |
+
 ### 5.2 약물 (섭취)
 ```xml
 <ThingDef ParentName="MakeableDrugBase">

@@ -150,6 +150,9 @@
 - [ ] `5-M06` Overhead 레이어만 숨겨지는지 확인
 - [ ] `5-M07` FragGrenade/ShootBeam 사용 시 변신 시간 차감 확인 (durationCostTicks)
 - [ ] `5-M08` 차감 verb 기즈모 설명에 "변신 시간 소모" 텍스트 표시 확인
+- [ ] `5-M09` PrimalRoar 어빌리티: 수인 변신 시에만 표시, 사용 시 변신 시간 7500틱 차감 확인
+- [ ] `5-M10` PrimalRoar 어빌리티: 변신 해제 시 어빌리티 제거 확인
+- [ ] `5-M11` PrimalRoar 어빌리티: 툴팁에 "변신 시간 소모" 표시 확인
 
 ---
 
