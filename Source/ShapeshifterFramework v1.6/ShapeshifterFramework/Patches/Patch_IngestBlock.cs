@@ -1,6 +1,5 @@
-// ShapeshifterFramework | Patches | Patch_IngestIdeologyBlock.cs
-// 목적 : 이데올로기(Abhorrent) 금지 폰 또는 이미 다른 폼으로 변신 중인 폰이 변신 약물을 우클릭으로 섭취하지 못하도록 FloatMenu 옵션 비활성화.
-//        연장 약물(IngestionOutcomeDoer_ExtendShapeshift) 역시 비변신/폼 불일치 시 비활성화.
+// ShapeshifterFramework | Patches | Patch_IngestBlock.cs
+// 목적 : 변신/연장 약물의 FloatMenu 옵션을 조건부 비활성화. 이데올로기 금지, 폼 불일치(allowedFromForms), 비변신 상태 등을 종합 판단.
 // 용도 : FloatMenuMakerMap.GetOptions Postfix로 개입하여, 변신/연장 약물의 메뉴 항목을 비활성화(Disabled)하고 차단 사유를 표시.
 
 using HarmonyLib;
@@ -14,7 +13,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(FloatMenuMakerMap), nameof(FloatMenuMakerMap.GetOptions))]
     [HarmonyPriority(Priority.Last - 1)]
-    public static class Patch_IngestIdeologyBlock
+    public static class Patch_IngestBlock
     {
         static void Postfix(List<Pawn> selectedPawns, Vector3 clickPos, ref FloatMenuContext context, ref List<FloatMenuOption> __result)
         {
