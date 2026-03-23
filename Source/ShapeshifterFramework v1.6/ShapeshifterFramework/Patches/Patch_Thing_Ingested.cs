@@ -14,12 +14,15 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(Thing), nameof(Thing.Ingested))]
     internal static class Patch_Thing_Ingested
     {
-        /// <summary>변신 중인 폰이 변신 약물을 섭취하면 차단.</summary>
+        /// <summary>변신 중이거나 이데올로기 금기인 폰이 변신 약물을 섭취하면 차단.</summary>
         static bool Prefix(Thing __instance, Pawn ingester, ref int __result)
         {
             if (ingester == null) return true;
-            if (!ShapeshiftEligibility.IsAlreadyTransformed(ingester)) return true;
             if (!HasShapeshiftOutcomeDoer(__instance.def)) return true;
+
+            bool blocked = ShapeshiftEligibility.IsAlreadyTransformed(ingester)
+                        || ShapeshiftEligibility.IsIdeologyForbidden(ingester);
+            if (!blocked) return true;
 
             // 섭취 차단: 약물 소모 없이 메시지만 표시
             Messages.Message("SSF_Menu_Blocked".Translate(), ingester, MessageTypeDefOf.RejectInput, false);
