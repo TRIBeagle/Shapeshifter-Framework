@@ -13,13 +13,13 @@
   <SSFTest_ShiftScroll_Target.label>shift scroll (target)</SSFTest_ShiftScroll_Target.label>
   <SSFTest_ShiftScroll_Target.description>A scroll that transforms the clicked target into a bear. Select a target to walk over and use.</SSFTest_ShiftScroll_Target.description>
 
-  <!-- Drug: Bear refresh (allowedFromForms) -->
+  <!-- Drug: Extend bear form duration -->
   <SSFTest_BearRefreshElixir.label>bear refresh elixir</SSFTest_BearRefreshElixir.label>
-  <SSFTest_BearRefreshElixir.description>An elixir that refreshes the bear form. Can only be consumed while already in bear form (allowedFromForms test).</SSFTest_BearRefreshElixir.description>
+  <SSFTest_BearRefreshElixir.description>An elixir that extends the bear form duration by 30,000 ticks. Can only be consumed while in bear form.</SSFTest_BearRefreshElixir.description>
 
-  <!-- Item: Self with allowedFromForms -->
+  <!-- Item: Extend bear form duration -->
   <SSFTest_ShiftScroll_BearRefresh.label>shift scroll (bear refresh)</SSFTest_ShiftScroll_BearRefresh.label>
-  <SSFTest_ShiftScroll_BearRefresh.description>A scroll that refreshes the bear form. Can only be used while already in bear form (allowedFromForms test).</SSFTest_ShiftScroll_BearRefresh.description>
+  <SSFTest_ShiftScroll_BearRefresh.description>A scroll that extends the bear form duration by 30,000 ticks. Can only be used while in bear form.</SSFTest_ShiftScroll_BearRefresh.description>
   <SSFTest_ShiftScroll_BearRefresh.comps.CompUsable.useLabel>use bear refresh scroll</SSFTest_ShiftScroll_BearRefresh.comps.CompUsable.useLabel>
 
   <!-- Frag grenade (safe) -->

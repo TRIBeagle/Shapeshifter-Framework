@@ -49,14 +49,14 @@
   </ThingDef>
 
   <!-- ======================================================
-       2) Drug with allowedFromForms — usable while in bear form
-       Tests 13-A04a: drug allowedFromForms permits ingestion during matching form
-       Tests 13-A04c: drugs WITHOUT allowedFromForms are still blocked (BearElixir above)
+       2) Drug: Extend bear form duration — IngestionOutcomeDoer_ExtendShapeshift
+       Tests: targetFormDef (bear only), allowExtendBeyondMax=false
+       Extends duration by 30000 ticks (~8.3 hours in-game)
        ====================================================== -->
   <ThingDef ParentName="MakeableDrugBase">
     <defName>SSFTest_BearRefreshElixir</defName>
     <label>bear refresh elixir</label>
-    <description>An elixir that refreshes the bear form. Can only be consumed while already in bear form (allowedFromForms test).</description>
+    <description>An elixir that extends the bear form duration by 30,000 ticks. Can only be consumed while in bear form.</description>
     <graphicData>
       <texPath>Things/Item/Drug/Penoxycyline</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -76,12 +76,10 @@
       <drugCategory>Medical</drugCategory>
       <baseIngestTicks>120</baseIngestTicks>
       <outcomeDoers>
-        <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_Shapeshift">
-          <hediffDef>SSFTest_BearFormHediff</hediffDef>
-          <!-- allowedFromForms: BearForm에서만 섭취 허용 -->
-          <allowedFromForms>
-            <li>SSFTest_BearForm</li>
-          </allowedFromForms>
+        <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_ExtendShapeshift">
+          <extendTicks>30000</extendTicks>
+          <targetFormDef>SSFTest_BearForm</targetFormDef>
+          <allowExtendBeyondMax>false</allowExtendBeyondMax>
         </li>
       </outcomeDoers>
     </ingestible>

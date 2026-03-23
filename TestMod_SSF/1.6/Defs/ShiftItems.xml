@@ -131,14 +131,14 @@
   </ThingDef>
 
   <!-- ======================================================
-       2c) Item shapeshift — self with allowedFromForms
-       Tests 13-A04b: item allowedFromForms permits use during matching form
-       Tests 13-A04c: items WITHOUT allowedFromForms are still blocked (ShiftScroll_Self above)
+       2c) Item: Extend bear form duration — CompUseEffect_ExtendShapeshift
+       Tests: targetFormDef (bear only), allowExtendBeyondMax=false
+       Extends duration by 30000 ticks (~8.3 hours in-game)
        ====================================================== -->
   <ThingDef ParentName="ResourceBase">
     <defName>SSFTest_ShiftScroll_BearRefresh</defName>
     <label>shift scroll (bear refresh)</label>
-    <description>A scroll that refreshes the bear form. Can only be used while already in bear form (allowedFromForms test).</description>
+    <description>A scroll that extends the bear form duration by 30,000 ticks. Can only be used while in bear form.</description>
     <graphicData>
       <texPath>Things/Item/Drug/Penoxycyline</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -158,12 +158,10 @@
         <useLabel>use bear refresh scroll</useLabel>
       </li>
       <li Class="CompProperties_UseEffectDestroySelf" />
-      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_Shapeshift">
-        <hediffDef>SSFTest_BearFormHediff</hediffDef>
-        <!-- allowedFromForms: BearForm에서만 사용 허용 -->
-        <allowedFromForms>
-          <li>SSFTest_BearForm</li>
-        </allowedFromForms>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ExtendShapeshift">
+        <extendTicks>30000</extendTicks>
+        <targetFormDef>SSFTest_BearForm</targetFormDef>
+        <allowExtendBeyondMax>false</allowExtendBeyondMax>
       </li>
     </comps>
   </ThingDef>

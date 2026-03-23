@@ -73,7 +73,9 @@
     <Compile Include="Comps\CompAbilityEffect_GiveHediff_Shapeshift.cs" />
     <Compile Include="Comps\CompProperties_AbilityGiveHediff_Shapeshift.cs" />
     <Compile Include="Comps\CompUseEffect_Shapeshift.cs" />
+    <Compile Include="Comps\CompUseEffect_ExtendShapeshift.cs" />
     <Compile Include="Comps\CompProperties_UseEffect_Shapeshift.cs" />
+    <Compile Include="Comps\CompProperties_UseEffect_ExtendShapeshift.cs" />
     <Compile Include="Debugs\Shapeshifter_DebugActions.cs" />
     <Compile Include="Gizmos\Gizmo_ShapeshiftStatus.cs" />
     <Compile Include="Hediffs\Hediff_ShapeshiftForm.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="ShapeshifterFrameworkMod.cs" />
     <Compile Include="ShapeshiftFormDef.cs" />
     <Compile Include="Comps\IngestionOutcomeDoer_Shapeshift.cs" />
+    <Compile Include="Comps\IngestionOutcomeDoer_ExtendShapeshift.cs" />
     <Compile Include="HarmonyInit.cs" />
     <Compile Include="Patches\Patch_PawnRenderer_GetDrawParms.cs" />
     <Compile Include="Patches\Patch_Thing_DrawSize.cs" />

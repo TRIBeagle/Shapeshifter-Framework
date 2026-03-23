@@ -15,13 +15,13 @@
   <SSFTest_ShiftScroll_Target.description>대상을 선택하여 늑대로 변신시키는 주문서. 대상을 클릭하면 걸어가서 사용한다.</SSFTest_ShiftScroll_Target.description>
   <SSFTest_ShiftScroll_Target.comps.CompUsable.useLabel>변신 주문서 사용...</SSFTest_ShiftScroll_Target.comps.CompUsable.useLabel>
 
-  <!-- 약물: 곰 리프레시 (allowedFromForms) -->
-  <SSFTest_BearRefreshElixir.label>곰 영약 (곰 전용)</SSFTest_BearRefreshElixir.label>
-  <SSFTest_BearRefreshElixir.description>곰 형태에서만 복용할 수 있는 영약. allowedFromForms 테스트용.</SSFTest_BearRefreshElixir.description>
+  <!-- 약물: 곰 시간 연장 -->
+  <SSFTest_BearRefreshElixir.label>곰 연장 영약</SSFTest_BearRefreshElixir.label>
+  <SSFTest_BearRefreshElixir.description>곰 변신 지속 시간을 30,000틱 연장하는 영약. 곰 형태에서만 복용할 수 있다.</SSFTest_BearRefreshElixir.description>
 
-  <!-- 아이템: 곰 리프레시 주문서 (allowedFromForms) -->
-  <SSFTest_ShiftScroll_BearRefresh.label>변신 주문서 (곰 전용)</SSFTest_ShiftScroll_BearRefresh.label>
-  <SSFTest_ShiftScroll_BearRefresh.description>곰 형태에서만 사용할 수 있는 주문서. allowedFromForms 테스트용.</SSFTest_ShiftScroll_BearRefresh.description>
+  <!-- 아이템: 곰 시간 연장 주문서 -->
+  <SSFTest_ShiftScroll_BearRefresh.label>변신 주문서 (곰 연장)</SSFTest_ShiftScroll_BearRefresh.label>
+  <SSFTest_ShiftScroll_BearRefresh.description>곰 변신 지속 시간을 30,000틱 연장하는 주문서. 곰 형태에서만 사용할 수 있다.</SSFTest_ShiftScroll_BearRefresh.description>
   <SSFTest_ShiftScroll_BearRefresh.comps.CompUsable.useLabel>곰 전용 주문서 사용</SSFTest_ShiftScroll_BearRefresh.comps.CompUsable.useLabel>
 
   <!-- 파편수류탄 (안전) -->
