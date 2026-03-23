@@ -16,8 +16,8 @@
   <SSFTest_ShiftScroll_Target.comps.CompUsable.useLabel>변신 주문서 사용...</SSFTest_ShiftScroll_Target.comps.CompUsable.useLabel>
 
   <!-- 약물: 곰 리프레시 (allowedFromForms) -->
-  <SSFTest_BearRefreshElixir.label>곰 갱신 영약</SSFTest_BearRefreshElixir.label>
-  <SSFTest_BearRefreshElixir.description>곰 형태를 갱신하는 영약. 이미 곰으로 변신한 상태에서만 복용할 수 있다 (allowedFromForms 테스트).</SSFTest_BearRefreshElixir.description>
+  <SSFTest_BearRefreshElixir.label>곰 영약 (갱신용)</SSFTest_BearRefreshElixir.label>
+  <SSFTest_BearRefreshElixir.description>곰 변신의 지속시간을 갱신하는 영약. 이미 곰으로 변신한 상태에서만 복용할 수 있다 (allowedFromForms 테스트).</SSFTest_BearRefreshElixir.description>
 
   <!-- 아이템: 곰 리프레시 주문서 (allowedFromForms) -->
   <SSFTest_ShiftScroll_BearRefresh.label>변신 주문서 (곰 갱신)</SSFTest_ShiftScroll_BearRefresh.label>
