@@ -52,6 +52,7 @@ namespace ShapeshifterFramework.Patches
             args[2] = neverAimWeapon;
             args[3] = true;
             object result = _getPreRenderResults.Invoke(__instance, args);
+            if (result == null) return true; // Invoke 실패 시 바닐라 폴백
             _resultsField.SetValue(__instance, result);
             return false;
         }

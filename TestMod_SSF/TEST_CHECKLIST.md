@@ -395,6 +395,9 @@
 - [ ] `16-M04` 맵 전환 시 캐시 정리 (ClearAll) 확인
 - [ ] `16-M05` 대형 폼(bodyDrawScale > 1) 줌아웃 렌더링 — 스레드 안전 (ThreadStatic _invokeArgs)
 - [ ] `16-M06` 스냅샷 순회 중 Register/Unregister 안전성 확인 (ReleaseSnapshot)
+- [ ] `16-M07` spawnApparelOnTransform 장비가 Wear 실패(슬롯 충돌 등) 시에도 해제 시 정상 정리 확인 (generatedApparel 선등록)
+- [ ] `16-M08` spawnWeaponOnTransform 장비가 AddEquipment 실패 시에도 해제 시 정상 정리 확인 (generatedWeapons 선등록)
+- [ ] `16-M09` 앰비언트 VFX 활성 중 변신 해제 → Effecter.Cleanup 예외 없이 정리 확인
 
 ---
 

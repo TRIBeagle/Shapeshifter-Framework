@@ -184,9 +184,9 @@ namespace ShapeshifterFramework.Hediffs
 
                         if (pawn.apparel != null)
                         {
+                            generatedApparel.Add(newApparel); // Wear 예외 시 고아 방지 — RemoveForm에서 반드시 파괴
                             pawn.apparel.Wear(newApparel, dropReplacedApparel: false);
                             pawn.apparel.Lock(newApparel);
-                            generatedApparel.Add(newApparel);
                         }
                     }
                 }
@@ -238,8 +238,8 @@ namespace ShapeshifterFramework.Hediffs
 
                         if (pawn.equipment != null)
                         {
+                            generatedWeapons.Add(newWeapon); // AddEquipment 예외 시 고아 방지 — RemoveForm에서 반드시 파괴
                             pawn.equipment.AddEquipment(newWeapon);
-                            generatedWeapons.Add(newWeapon);
                         }
                     }
                 }

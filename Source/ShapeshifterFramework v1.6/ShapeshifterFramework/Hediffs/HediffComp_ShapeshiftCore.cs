@@ -563,7 +563,8 @@ namespace ShapeshifterFramework.Hediffs
             // 앰비언트 VFX 정리
             if (ambientEffecterInstance != null)
             {
-                ambientEffecterInstance.Cleanup();
+                try { ambientEffecterInstance.Cleanup(); }
+                catch (Exception ex) { Log.Warning($"[SSF] Effecter.Cleanup failed: {ex}"); }
                 ambientEffecterInstance = null;
             }
 
