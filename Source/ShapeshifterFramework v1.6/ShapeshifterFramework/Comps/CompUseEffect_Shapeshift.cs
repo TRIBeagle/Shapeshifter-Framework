@@ -15,14 +15,24 @@ namespace ShapeshifterFramework.Comps
     {
         public CompProperties_UseEffect_Shapeshift Props => (CompProperties_UseEffect_Shapeshift)props;
 
-        /// <summary>사용 가능 여부 판정. 이데올로기 금지 및 이미 다른 폼 변신 중이면 차단.</summary>
+        /// <summary>사용 가능 여부 판정. 이데올로기 금지, 사용자/대상 변신 중이면 차단.</summary>
         public override AcceptanceReport CanBeUsedBy(Pawn pawn)
         {
             if (ShapeshiftEligibility.IsIdeologyForbidden(pawn))
                 return "IdeoligionForbids".Translate();
 
+            // 사용자 본인이 이미 변신 중이면 차단
             if (ShapeshiftEligibility.IsAlreadyTransformed(pawn))
-                return "SSF_Message_AlreadyTransformed".Translate();
+                return "SSF_Menu_Blocked".Translate();
+
+            // 타겟 대상이 이미 변신 중이면 차단 (Job 실행 시점에서만 유효)
+            var targetable = parent.GetComp<CompTargetable>();
+            if (targetable != null)
+            {
+                var jobTarget = pawn.CurJob?.targetB.Thing as Pawn;
+                if (jobTarget != null && ShapeshiftEligibility.IsAlreadyTransformed(jobTarget))
+                    return "SSF_Menu_Blocked".Translate();
+            }
 
             return base.CanBeUsedBy(pawn);
         }
@@ -64,6 +74,13 @@ namespace ShapeshifterFramework.Comps
             if (target == null)
             {
                 target = user;
+            }
+
+            // 대상이 이미 변신 중이면 차단 (CanBeUsedBy 우회 시 방어)
+            if (ShapeshiftEligibility.IsAlreadyTransformed(target))
+            {
+                Messages.Message("SSF_Message_AlreadyTransformed".Translate(), target, MessageTypeDefOf.RejectInput, false);
+                return;
             }
 
             // HediffDef 기반 변신 진입

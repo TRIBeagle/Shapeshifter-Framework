@@ -49,7 +49,7 @@ namespace ShapeshifterFramework.Patches
                 }
                 else if (isTransformed)
                 {
-                    blockReason = "SSF_Message_AlreadyTransformed".Translate();
+                    blockReason = "SSF_Menu_Blocked".Translate();
                 }
 
                 if (blockReason == null) continue;
