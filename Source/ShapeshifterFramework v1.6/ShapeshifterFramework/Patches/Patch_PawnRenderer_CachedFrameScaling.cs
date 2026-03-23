@@ -18,6 +18,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(PawnRenderer), "ParallelPreRenderPawnAt")]
     internal static class Patch_PawnRenderer_ParallelPreRenderPawnAt_DisableCache
     {
+        // private 메서드/필드이므로 리플렉션 필요 (1.6 DLL 대조 감사 완료)
         private static readonly MethodInfo _getPreRenderResults =
             AccessTools.Method(typeof(PawnRenderer), "ParallelGetPreRenderResults");
         private static readonly FieldInfo _resultsField =

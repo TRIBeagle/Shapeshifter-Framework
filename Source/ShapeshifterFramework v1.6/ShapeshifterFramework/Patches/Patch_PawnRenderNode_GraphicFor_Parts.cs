@@ -17,6 +17,7 @@ namespace ShapeshifterFramework.Patches
     internal static class Patch_GraphicFor_Parts
     {
         /// <summary>패치 대상: 각 PawnRenderNode 서브클래스의 GraphicFor(Pawn) 메서드.</summary>
+        // Harmony TargetMethods용 — public override이지만 MethodBase 반환이 필요 (1.6 DLL 대조 감사 완료)
         static IEnumerable<MethodBase> TargetMethods()
         {
             yield return AccessTools.Method(typeof(PawnRenderNode_Body), "GraphicFor");

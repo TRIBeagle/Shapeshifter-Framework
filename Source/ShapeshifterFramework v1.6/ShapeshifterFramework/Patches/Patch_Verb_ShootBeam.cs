@@ -13,6 +13,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch]
     internal static class Patch_Verb_ShootBeam
     {
+        // private 필드이므로 리플렉션 필요 (1.6 DLL 대조 감사 완료)
         private static readonly FieldInfo PathCellsFI;
         private static readonly AccessTools.FieldRef<Verb_ShootBeam, HashSet<IntVec3>> PathCellsRef;
 

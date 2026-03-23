@@ -48,6 +48,7 @@ namespace ShapeshifterFramework.Utilities
 
         #region AttachPointTracker.parent
 
+        // private 필드이므로 리플렉션 필요 (1.6 DLL 대조 감사 완료: RimWorld.AttachPointTracker.parent는 private)
         private static readonly Type AttachPointTrackerT = AccessTools.TypeByName("Verse.AttachPointTracker");
         private static readonly FieldInfo AptParentFI = AttachPointTrackerT != null
             ? AttachPointTrackerT.GetField("parent", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)

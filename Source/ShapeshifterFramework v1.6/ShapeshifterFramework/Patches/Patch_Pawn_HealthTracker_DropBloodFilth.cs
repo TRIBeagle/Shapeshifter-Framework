@@ -14,9 +14,22 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch]
     internal static class Patch_Pawn_HealthTracker_DropBloodFilth
     {
-        // pawn 필드 접근자
-        private static readonly AccessTools.FieldRef<Pawn_HealthTracker, Pawn> pawnFieldRef =
-            AccessTools.FieldRefAccess<Pawn_HealthTracker, Pawn>("pawn");
+        // pawn 필드 접근자 — private readonly 필드이므로 리플렉션 필요 (1.6 DLL 대조 감사 완료)
+        private static readonly AccessTools.FieldRef<Pawn_HealthTracker, Pawn> pawnFieldRef;
+
+        static Patch_Pawn_HealthTracker_DropBloodFilth()
+        {
+            try
+            {
+                pawnFieldRef = AccessTools.FieldRefAccess<Pawn_HealthTracker, Pawn>("pawn");
+            }
+            catch
+            {
+                pawnFieldRef = null;
+            }
+            if (pawnFieldRef == null)
+                Log.Warning("[SSF] Reflection failed: Pawn_HealthTracker.pawn not found. DropBloodFilth scope patch disabled — vanilla version mismatch?");
+        }
 
         /// <summary>DropBloodFilth, DropBloodSmear 두 메서드를 동시에 패치.</summary>
         static IEnumerable<MethodBase> TargetMethods()
@@ -31,6 +44,7 @@ namespace ShapeshifterFramework.Patches
 
         static void Prefix(Pawn_HealthTracker __instance)
         {
+            if (pawnFieldRef == null) return;
             Pawn pawn = pawnFieldRef(__instance);
             if (pawn != null)
                 ShapeshiftFilthScope.CurrentPawn = pawn;

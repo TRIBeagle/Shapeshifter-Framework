@@ -14,6 +14,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(Thing), nameof(Thing.TakeDamage))]
     internal static class Patch_Thing_TakeDamage
     {
+        // private 필드이므로 리플렉션 필요 (1.6 DLL 대조 감사 완료)
         private static readonly FieldInfo weaponIntField = AccessTools.Field(typeof(DamageInfo), "weaponInt");
 
         static Patch_Thing_TakeDamage()
