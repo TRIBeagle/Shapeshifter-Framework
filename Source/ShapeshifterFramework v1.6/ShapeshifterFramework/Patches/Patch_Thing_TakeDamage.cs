@@ -16,6 +16,12 @@ namespace ShapeshifterFramework.Patches
     {
         private static readonly FieldInfo weaponIntField = AccessTools.Field(typeof(DamageInfo), "weaponInt");
 
+        static Patch_Thing_TakeDamage()
+        {
+            if (weaponIntField == null)
+                Log.Warning("[SSF] Reflection failed: DamageInfo.weaponInt not found. TakeDamage wound-label patch disabled — vanilla version mismatch?");
+        }
+
         static void Prefix(ref DamageInfo dinfo)
         {
             if (weaponIntField == null) return;

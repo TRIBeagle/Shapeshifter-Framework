@@ -69,6 +69,15 @@ namespace ShapeshifterFramework.Utilities
         private static readonly PropertyInfo PI_Node_Props = AccessTools.Property(typeof(PawnRenderNode), "Props");
         private static readonly FieldInfo FI_Node_props = AccessTools.Field(typeof(PawnRenderNode), "props");
 
+        static ShapeshiftReflectionCache()
+        {
+            // PawnRenderNode 멤버 리플렉션 실패 시 시작 로그 — 바닐라 버전 불일치 감지용
+            if (PI_Node_Owner == null && FI_Node_owner == null)
+                Log.Warning("[SSF] Reflection failed: PawnRenderNode.Owner/owner not found. RenderNode owner lookups will return null — vanilla version mismatch?");
+            if (PI_Node_Props == null && FI_Node_props == null)
+                Log.Warning("[SSF] Reflection failed: PawnRenderNode.Props/props not found. RenderNode props lookups will return null — vanilla version mismatch?");
+        }
+
         /// <summary>PawnRenderNode.Owner를 안전하게 가져온다(Prop→Field 폴백).</summary>
         internal static object TryGetOwnerFromNode(PawnRenderNode node)
         {

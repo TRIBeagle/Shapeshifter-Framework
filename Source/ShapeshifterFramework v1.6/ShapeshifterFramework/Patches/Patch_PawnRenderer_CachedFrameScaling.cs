@@ -23,6 +23,14 @@ namespace ShapeshifterFramework.Patches
         private static readonly FieldInfo _resultsField =
             AccessTools.Field(typeof(PawnRenderer), "results");
 
+        static Patch_PawnRenderer_ParallelPreRenderPawnAt_DisableCache()
+        {
+            if (_getPreRenderResults == null)
+                Log.Warning("[SSF] Reflection failed: PawnRenderer.ParallelGetPreRenderResults not found. CachedFrameScaling patch disabled — vanilla version mismatch?");
+            if (_resultsField == null)
+                Log.Warning("[SSF] Reflection failed: PawnRenderer.results not found. CachedFrameScaling patch disabled — vanilla version mismatch?");
+        }
+
         // ParallelPreRenderPawnAt은 병렬 호출 가능 → ThreadStatic으로 스레드별 배열 사용
         [System.ThreadStatic]
         private static object[] _invokeArgs;
