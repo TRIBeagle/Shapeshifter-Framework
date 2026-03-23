@@ -7,6 +7,7 @@
 using RimWorld;
 using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Hediffs;
+using System.Collections.Generic;
 using Verse;
 
 namespace ShapeshifterFramework.Utilities
@@ -116,6 +117,35 @@ namespace ShapeshifterFramework.Utilities
                     return true;
             }
             return false;
+        }
+
+        /// <summary>Pawn의 현재 변신 폼이 allowedFromForms 목록에 포함되어 있는지 판정.
+        /// 이미 변신 중인 폰에 대해 특정 폼에서의 전환을 허용할 때 사용.</summary>
+        public static bool IsFormTransitionAllowed(Pawn pawn, List<string> allowedFromForms)
+        {
+            if (allowedFromForms == null || allowedFromForms.Count == 0) return false;
+            if (!IsAlreadyTransformed(pawn, out var core)) return false;
+            if (core.currentForm == null) return false;
+
+            for (int i = 0; i < allowedFromForms.Count; i++)
+            {
+                if (string.Equals(allowedFromForms[i], core.currentForm.defName, System.StringComparison.Ordinal))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>변신 약물(ThingDef)의 IngestionOutcomeDoer_Shapeshift에서 allowedFromForms 목록을 가져옴.
+        /// 약물 패치에서 폼 전환 허용 여부를 판정할 때 사용.</summary>
+        public static List<string> GetDrugAllowedFromForms(ThingDef def)
+        {
+            if (def?.ingestible?.outcomeDoers == null) return null;
+            for (int i = 0; i < def.ingestible.outcomeDoers.Count; i++)
+            {
+                if (def.ingestible.outcomeDoers[i] is IngestionOutcomeDoer_Shapeshift doer)
+                    return doer.allowedFromForms;
+            }
+            return null;
         }
 
         /// <summary>기본 변신 가능 여부 판정. 종족/뮤턴트 필터, 사망 체크.

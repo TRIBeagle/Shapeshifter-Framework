@@ -48,7 +48,10 @@ namespace ShapeshifterFramework.Patches
                 }
                 else if (isTransformed)
                 {
-                    blockReason = "SSF_Menu_Blocked".Translate();
+                    // 약물의 allowedFromForms에 현재 폼이 포함되어 있으면 허용
+                    var drugAllowed = ShapeshiftEligibility.GetDrugAllowedFromForms(target.def);
+                    if (!ShapeshiftEligibility.IsFormTransitionAllowed(pawn, drugAllowed))
+                        blockReason = "SSF_Menu_Blocked".Translate();
                 }
 
                 if (blockReason == null) continue;

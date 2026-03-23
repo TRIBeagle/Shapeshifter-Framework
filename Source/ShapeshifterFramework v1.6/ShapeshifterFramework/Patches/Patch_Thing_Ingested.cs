@@ -19,9 +19,14 @@ namespace ShapeshifterFramework.Patches
             if (ingester == null) return true;
             if (!ShapeshiftEligibility.HasShapeshiftOutcomeDoer(__instance.def)) return true;
 
-            bool blocked = ShapeshiftEligibility.IsAlreadyTransformed(ingester)
-                        || ShapeshiftEligibility.IsIdeologyForbidden(ingester);
-            if (!blocked) return true;
+            bool ideologyBlocked = ShapeshiftEligibility.IsIdeologyForbidden(ingester);
+            bool transformBlocked = false;
+            if (ShapeshiftEligibility.IsAlreadyTransformed(ingester))
+            {
+                var drugAllowed = ShapeshiftEligibility.GetDrugAllowedFromForms(__instance.def);
+                transformBlocked = !ShapeshiftEligibility.IsFormTransitionAllowed(ingester, drugAllowed);
+            }
+            if (!ideologyBlocked && !transformBlocked) return true;
 
             // 섭취 차단: 약물 소모 없이 메시지만 표시
             Messages.Message("SSF_Menu_Blocked".Translate(), ingester, MessageTypeDefOf.RejectInput, false);

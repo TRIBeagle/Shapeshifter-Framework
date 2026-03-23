@@ -28,10 +28,12 @@ namespace ShapeshifterFramework.Patches
                 return;
             }
 
-            // 이미 변신 중
+            // 이미 변신 중 (allowedFromForms 예외)
             if (ShapeshiftEligibility.IsAlreadyTransformed(pawn))
             {
-                __result = false;
+                var drugAllowed = ShapeshiftEligibility.GetDrugAllowedFromForms(inv.def);
+                if (!ShapeshiftEligibility.IsFormTransitionAllowed(pawn, drugAllowed))
+                    __result = false;
             }
         }
     }

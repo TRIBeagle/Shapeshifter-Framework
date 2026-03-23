@@ -15,18 +15,23 @@ namespace ShapeshifterFramework.Comps
     {
         public CompProperties_UseEffect_Shapeshift Props => (CompProperties_UseEffect_Shapeshift)props;
 
-        /// <summary>사용 가능 여부 판정. 이데올로기 금지, 사용자/대상 변신 중이면 차단.</summary>
+        /// <summary>사용 가능 여부 판정. 이데올로기 금지, 사용자/대상 변신 중이면 차단.
+        /// CompTargetable이 있는 타인변신 아이템은 사용자 변신 상태와 무관하게 사용 가능.</summary>
         public override AcceptanceReport CanBeUsedBy(Pawn pawn)
         {
             if (ShapeshiftEligibility.IsIdeologyForbidden(pawn))
                 return "IdeoligionForbids".Translate();
 
-            // 사용자 본인이 이미 변신 중이면 차단
-            if (ShapeshiftEligibility.IsAlreadyTransformed(pawn))
-                return "SSF_Menu_Blocked".Translate();
-
-            // 타겟 대상이 이미 변신 중이면 차단 (Job 실행 시점에서만 유효)
             var targetable = parent.GetComp<CompTargetable>();
+
+            // 자기변신 아이템(CompTargetable 없음): 사용자 본인이 변신 중이면 차단 (allowedFromForms 예외)
+            if (targetable == null && ShapeshiftEligibility.IsAlreadyTransformed(pawn))
+            {
+                if (!ShapeshiftEligibility.IsFormTransitionAllowed(pawn, Props.allowedFromForms))
+                    return "SSF_Menu_Blocked".Translate();
+            }
+
+            // 타인변신 아이템: 대상이 이미 변신 중이면 차단 (Job 실행 시점에서만 유효)
             if (targetable != null)
             {
                 var jobTarget = pawn.CurJob?.targetB.Thing as Pawn;
@@ -79,8 +84,9 @@ namespace ShapeshifterFramework.Comps
                 target = user;
             }
 
-            // 대상이 이미 변신 중이면 차단 (CanBeUsedBy 우회 시 방어)
-            if (ShapeshiftEligibility.IsAlreadyTransformed(target))
+            // 대상이 이미 변신 중이면 차단 (CanBeUsedBy 우회 시 방어, allowedFromForms 예외)
+            if (ShapeshiftEligibility.IsAlreadyTransformed(target)
+                && !ShapeshiftEligibility.IsFormTransitionAllowed(target, Props.allowedFromForms))
             {
                 Messages.Message("SSF_Message_AlreadyTransformed".Translate(), target, MessageTypeDefOf.RejectInput, false);
                 return;

@@ -612,11 +612,18 @@ Multiple HediffDefs can share one FormDef with different stats:
     <outcomeDoers>
       <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_Shapeshift">
         <hediffDef>MyMod_Hediff_WolfForm</hediffDef>
+        <!-- Optional: allow ingestion while in specific forms -->
+        <!-- <allowedFromForms><li>MyMod_BeastkinForm</li></allowedFromForms> -->
       </li>
     </outcomeDoers>
   </ingestible>
 </ThingDef>
 ```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `hediffDef` | `HediffDef` | **required** — HediffDef with `HediffComp_ShapeshiftCore` |
+| `allowedFromForms` | `List<string>` | FormDef defNames that allow ingestion while transformed |
 
 ### 5.3 Usable Item (Scroll / Artifact)
 ```xml
@@ -629,11 +636,13 @@ Multiple HediffDefs can share one FormDef with different stats:
     <li Class="CompProperties_UseEffectDestroySelf"/>
     <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_Shapeshift">
       <hediffDef>MyMod_Hediff_WolfForm</hediffDef>
+      <!-- Optional: allow use while in specific forms -->
+      <!-- <allowedFromForms><li>MyMod_BeastkinForm</li></allowedFromForms> -->
     </li>
   </comps>
 </ThingDef>
 
-<!-- Target-select scroll -->
+<!-- Target-select scroll (usable while the user is transformed) -->
 <ThingDef ParentName="ResourceBase">
   <defName>MyMod_WolfScroll_Target</defName>
   <label>scroll of bestow wolf form</label>
@@ -650,6 +659,13 @@ Multiple HediffDefs can share one FormDef with different stats:
   </comps>
 </ThingDef>
 ```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `hediffDef` | `HediffDef` | **required** — HediffDef with `HediffComp_ShapeshiftCore` |
+| `allowedFromForms` | `List<string>` | FormDef defNames that allow self-use while transformed |
+
+> **Target-select items:** Items with `CompTargetable` (e.g., `CompProperties_TargetablePawn`) can always be used by a transformed pawn, since the effect targets another pawn. The target's transformation state is checked instead.
 
 ### 5.4 Projectile
 ```xml

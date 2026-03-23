@@ -608,11 +608,18 @@
     <outcomeDoers>
       <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_Shapeshift">
         <hediffDef>MyMod_Hediff_WolfForm</hediffDef>
+        <!-- 선택: 특정 폼에서 변신 중일 때도 섭취 허용 -->
+        <!-- <allowedFromForms><li>MyMod_BeastkinForm</li></allowedFromForms> -->
       </li>
     </outcomeDoers>
   </ingestible>
 </ThingDef>
 ```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `hediffDef` | `HediffDef` | **필수** — `HediffComp_ShapeshiftCore` 포함 HediffDef |
+| `allowedFromForms` | `List<string>` | 변신 중 섭취를 허용할 소스 폼 defName 목록 |
 
 ### 5.3 소비 아이템 (스크롤 / 아티팩트)
 ```xml
@@ -625,11 +632,13 @@
     <li Class="CompProperties_UseEffectDestroySelf"/>
     <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_Shapeshift">
       <hediffDef>MyMod_Hediff_WolfForm</hediffDef>
+      <!-- 선택: 특정 폼에서 변신 중일 때도 사용 허용 -->
+      <!-- <allowedFromForms><li>MyMod_BeastkinForm</li></allowedFromForms> -->
     </li>
   </comps>
 </ThingDef>
 
-<!-- 대상 지정 스크롤 -->
+<!-- 대상 지정 스크롤 (사용자가 변신 중이어도 사용 가능) -->
 <ThingDef ParentName="ResourceBase">
   <defName>MyMod_WolfScroll_Target</defName>
   <label>늑대 폼 부여 스크롤</label>
@@ -646,6 +655,13 @@
   </comps>
 </ThingDef>
 ```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `hediffDef` | `HediffDef` | **필수** — `HediffComp_ShapeshiftCore` 포함 HediffDef |
+| `allowedFromForms` | `List<string>` | 변신 중 자기 사용을 허용할 소스 폼 defName 목록 |
+
+> **대상 지정 아이템:** `CompTargetable`(예: `CompProperties_TargetablePawn`)이 있는 아이템은 사용자가 변신 중이어도 항상 사용 가능합니다. 효과가 대상에게 적용되므로, 대상의 변신 상태만 체크합니다.
 
 ### 5.4 투사체
 ```xml

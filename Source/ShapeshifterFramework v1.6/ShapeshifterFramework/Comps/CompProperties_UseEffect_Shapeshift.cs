@@ -3,6 +3,7 @@
 // 용도 : 적용할 hediffDef를 보관하며, CompUseEffect_Shapeshift과 연결됨.
 
 using RimWorld;
+using System.Collections.Generic;
 
 namespace ShapeshifterFramework.Comps
 {
@@ -11,6 +12,10 @@ namespace ShapeshifterFramework.Comps
     {
         /// <summary>변신 적용에 사용할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</summary>
         public Verse.HediffDef hediffDef;
+
+        /// <summary>이미 변신 중이더라도 전환을 허용할 소스 폼 defName 목록.
+        /// null/빈 목록이면 변신 중 사용 불가 (기본 동작).</summary>
+        public List<string> allowedFromForms;
 
         public CompProperties_UseEffect_Shapeshift()
         {
