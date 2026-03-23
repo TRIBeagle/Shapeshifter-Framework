@@ -5,6 +5,7 @@
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
