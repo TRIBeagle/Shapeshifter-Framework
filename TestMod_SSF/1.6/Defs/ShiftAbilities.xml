@@ -242,12 +242,6 @@
       </targetParams>
     </verbProperties>
     <comps>
-      <!-- 대상에게 스턴 부여 (바닐라 CompAbilityEffect_GiveHediff) -->
-      <li Class="CompProperties_AbilityGiveHediff">
-        <compClass>CompAbilityEffect_GiveHediff</compClass>
-        <hediffDef>Stunned</hediffDef>
-        <durationMultiplier>PsychicSensitivity</durationMultiplier>
-      </li>
       <!-- 캐스터의 변신 시간 7500틱(~3시간) 차감 -->
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityEffect_ShapeshiftDurationCost">
         <durationCostTicks>7500</durationCostTicks>
