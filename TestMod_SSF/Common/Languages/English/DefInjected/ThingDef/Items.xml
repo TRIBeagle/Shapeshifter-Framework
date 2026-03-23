@@ -20,6 +20,7 @@
   <!-- Item: Self with allowedFromForms -->
   <SSFTest_ShiftScroll_BearRefresh.label>shift scroll (bear refresh)</SSFTest_ShiftScroll_BearRefresh.label>
   <SSFTest_ShiftScroll_BearRefresh.description>A scroll that refreshes the bear form. Can only be used while already in bear form (allowedFromForms test).</SSFTest_ShiftScroll_BearRefresh.description>
+  <SSFTest_ShiftScroll_BearRefresh.comps.CompUsable.useLabel>use bear refresh scroll</SSFTest_ShiftScroll_BearRefresh.comps.CompUsable.useLabel>
 
   <!-- Frag grenade (safe) -->
   <SSFTest_Proj_FragGrenade_Safe.label>frag grenade (SSF safe)</SSFTest_Proj_FragGrenade_Safe.label>
