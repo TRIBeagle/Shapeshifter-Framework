@@ -38,7 +38,7 @@ namespace ShapeshifterFramework.Patches
             return !Mathf.Approximately(targetHead, vanillaHead);
         }
 
-        // Head MeshSet
+        // 머리 MeshSet
         [HarmonyPatch(nameof(HumanlikeMeshPoolUtility.GetHumanlikeHeadSetForPawn))]
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void GetHumanlikeHeadSetForPawn_Postfix(Pawn pawn, float wFactor, float hFactor, ref GraphicMeshSet __result)
@@ -49,7 +49,7 @@ namespace ShapeshifterFramework.Patches
             __result = MeshPool.GetMeshSetForSize(num * wFactor, num * hFactor);
         }
 
-        // Hair MeshSet
+        // 헤어 MeshSet
         [HarmonyPatch(nameof(HumanlikeMeshPoolUtility.GetHumanlikeHairSetForPawn))]
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void GetHumanlikeHairSetForPawn_Postfix(Pawn pawn, float wFactor, float hFactor, ref GraphicMeshSet __result)
@@ -61,7 +61,7 @@ namespace ShapeshifterFramework.Patches
             __result = MeshPool.GetMeshSetForSize(final.x, final.y);
         }
 
-        // Beard MeshSet
+        // 수염 MeshSet
         [HarmonyPatch(nameof(HumanlikeMeshPoolUtility.GetHumanlikeBeardSetForPawn))]
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void GetHumanlikeBeardSetForPawn_Postfix(Pawn pawn, float wFactor, float hFactor, ref GraphicMeshSet __result)

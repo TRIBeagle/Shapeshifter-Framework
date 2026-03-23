@@ -367,54 +367,54 @@
 
 ---
 
-## 14-2. 폼 전환 차단 & 좀비 hediff 방지
+## 15. 폼 전환 차단 & 좀비 hediff 방지
 
 ### [M] 수동 확인
-- [ ] `14-2-M01` 변신 중 자기가 다른 폼 약물 섭취 → "이미 다른 형태로 변신 중" FloatMenu 비활성
-- [ ] `14-2-M02` 변신 중 자기가 다른 폼 주문서 사용 → "이미 다른 형태로 변신 중" 사용 불가
-- [ ] `14-2-M03` 변신 중 같은 폼 재변신 → 차단 (동일 폼 포함 모든 변신 차단, allowedFromForms 예외)
-- [ ] `14-2-M04` 변신 중 타인 어빌리티/투사체로 다른 폼 강제 → 차단 (변신 유지)
-- [ ] `14-2-M05` allowedFromForms 설정된 어빌리티 → 기존대로 전환 허용
-- [ ] `14-2-M05a` allowedFromForms 설정된 약물(`SSFTest_BearRefreshElixir`) → 해당 폼에서 섭취 허용, 다른 폼에서 차단
-- [ ] `14-2-M05b` allowedFromForms 설정된 아이템(`SSFTest_ShiftScroll_BearRefresh`) → 해당 폼에서 사용 허용, 다른 폼에서 차단
-- [ ] `14-2-M05c` targetFormDef 미설정 범용 아이템(`SSFTest_ShiftScroll_UniversalRefresh`) → 어떤 폼에서든 사용 허용
-- [ ] `14-2-M06` 종족 불일치 등 변신 실패 → 메시지 + hediff 자동 제거 (좀비 hediff 방지)
-- [ ] `14-2-M07` Abhorrent 폰에게 수술(Recipe_AdministerIngestible)로 변신 약물 투여 → 변신 성공 (자기 주도가 아니므로 허용)
+- [ ] `15-M01` 변신 중 자기가 다른 폼 약물 섭취 → "이미 다른 형태로 변신 중" FloatMenu 비활성
+- [ ] `15-M02` 변신 중 자기가 다른 폼 주문서 사용 → "이미 다른 형태로 변신 중" 사용 불가
+- [ ] `15-M03` 변신 중 같은 폼 재변신 → 차단 (동일 폼 포함 모든 변신 차단, allowedFromForms 예외)
+- [ ] `15-M04` 변신 중 타인 어빌리티/투사체로 다른 폼 강제 → 차단 (변신 유지)
+- [ ] `15-M05` allowedFromForms 설정된 어빌리티 → 기존대로 전환 허용
+- [ ] `15-M05a` allowedFromForms 설정된 약물(`SSFTest_BearRefreshElixir`) → 해당 폼에서 섭취 허용, 다른 폼에서 차단
+- [ ] `15-M05b` allowedFromForms 설정된 아이템(`SSFTest_ShiftScroll_BearRefresh`) → 해당 폼에서 사용 허용, 다른 폼에서 차단
+- [ ] `15-M05c` targetFormDef 미설정 범용 아이템(`SSFTest_ShiftScroll_UniversalRefresh`) → 어떤 폼에서든 사용 허용
+- [ ] `15-M06` 종족 불일치 등 변신 실패 → 메시지 + hediff 자동 제거 (좀비 hediff 방지)
+- [ ] `15-M07` Abhorrent 폰에게 수술(Recipe_AdministerIngestible)로 변신 약물 투여 → 변신 성공 (자기 주도가 아니므로 허용)
 
 ---
 
-## 15. 성능 & 안정성
+## 16. 성능 & 안정성
 
 ### [M] 수동 확인
-- [ ] `15-M01` 다수 폰 동시 변신 (5+) — 프레임 저하 없음
-- [ ] `15-M02` 장시간 변신 유지 — 메모리 누수 없음
-- [ ] `15-M03` 빈번한 변신/해제 반복 — 크래시 없음
-- [ ] `15-M04` 맵 전환 시 캐시 정리 (ClearAll) 확인
-- [ ] `15-M05` 대형 폼(bodyDrawScale > 1) 줌아웃 렌더링 — 스레드 안전 (ThreadStatic _invokeArgs)
-- [ ] `15-M06` 스냅샷 순회 중 Register/Unregister 안전성 확인 (ReleaseSnapshot)
+- [ ] `16-M01` 다수 폰 동시 변신 (5+) — 프레임 저하 없음
+- [ ] `16-M02` 장시간 변신 유지 — 메모리 누수 없음
+- [ ] `16-M03` 빈번한 변신/해제 반복 — 크래시 없음
+- [ ] `16-M04` 맵 전환 시 캐시 정리 (ClearAll) 확인
+- [ ] `16-M05` 대형 폼(bodyDrawScale > 1) 줌아웃 렌더링 — 스레드 안전 (ThreadStatic _invokeArgs)
+- [ ] `16-M06` 스냅샷 순회 중 Register/Unregister 안전성 확인 (ReleaseSnapshot)
 
 ---
 
-## 16. ConfigErrors 검증
+## 17. ConfigErrors 검증
 
 ### [A] Auto-Verify
-- [ ] `16-A01` sustainGenes에 존재하지 않는 GeneDef → ConfigError 출력
-- [ ] `16-A02` formAllowedRaces에 null ThingDef → ConfigError 출력
-- [ ] `16-A03` formDisallowedRaces에 null ThingDef → ConfigError 출력
-- [ ] `16-A04` formAllowedMutants에 null MutantDef → ConfigError 출력
-- [ ] `16-A05` formDisallowedMutants에 null MutantDef → ConfigError 출력
-- [ ] `16-A06` spawnApparelOnTransform에 비의류 ThingDef → ConfigError 출력
-- [ ] `16-A07` spawnWeaponOnTransform에 비무기 ThingDef → ConfigError 출력
+- [ ] `17-A01` sustainGenes에 존재하지 않는 GeneDef → ConfigError 출력
+- [ ] `17-A02` formAllowedRaces에 null ThingDef → ConfigError 출력
+- [ ] `17-A03` formDisallowedRaces에 null ThingDef → ConfigError 출력
+- [ ] `17-A04` formAllowedMutants에 null MutantDef → ConfigError 출력
+- [ ] `17-A05` formDisallowedMutants에 null MutantDef → ConfigError 출력
+- [ ] `17-A06` spawnApparelOnTransform에 비의류 ThingDef → ConfigError 출력
+- [ ] `17-A07` spawnWeaponOnTransform에 비무기 ThingDef → ConfigError 출력
 
 ---
 
-## 17. 장비 잠금 & 드랍 안전성
+## 18. 장비 잠금 & 드랍 안전성
 
 ### [M] 수동 확인
-- [ ] `17-M01` 변신 중 무기 장착 시도 → 거부 메시지 + 장착 차단
-- [ ] `17-M02` 변신 중 의류 착용 시도 → 거부 메시지 + 착용 차단
-- [ ] `17-M03` suppressEquipLock=true 상태에서 내부 장비 복구 → 정상 장착/착용 허용
-- [ ] `17-M04` 변신 해제 후 장비/의류 자동 복구 → suppressEquipLock 경유 정상 동작
-- [ ] `17-M05` 폼 전용 생성 무기 드랍 시도 → 거부 메시지 (살아있는 플레이어 폰)
-- [ ] `17-M06` 폼 전용 생성 무기 시스템 드랍 → "holdingOwner still set" 에러 없이 소멸
-- [ ] `17-M07` 변신 중 비활성 작업(disabledWorkTypes) → 변신 해제 후 원래 작업 목록 복원 (캐시 오염 없음)
+- [ ] `18-M01` 변신 중 무기 장착 시도 → 거부 메시지 + 장착 차단
+- [ ] `18-M02` 변신 중 의류 착용 시도 → 거부 메시지 + 착용 차단
+- [ ] `18-M03` suppressEquipLock=true 상태에서 내부 장비 복구 → 정상 장착/착용 허용
+- [ ] `18-M04` 변신 해제 후 장비/의류 자동 복구 → suppressEquipLock 경유 정상 동작
+- [ ] `18-M05` 폼 전용 생성 무기 드랍 시도 → 거부 메시지 (살아있는 플레이어 폰)
+- [ ] `18-M06` 폼 전용 생성 무기 시스템 드랍 → "holdingOwner still set" 에러 없이 소멸
+- [ ] `18-M07` 변신 중 비활성 작업(disabledWorkTypes) → 변신 해제 후 원래 작업 목록 복원 (캐시 오염 없음)

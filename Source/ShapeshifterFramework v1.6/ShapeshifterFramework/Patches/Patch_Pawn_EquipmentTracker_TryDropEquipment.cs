@@ -1,4 +1,4 @@
-﻿// ShapeshifterFramework | Patches | Patch_Pawn_EquipmentTracker.cs
+﻿// ShapeshifterFramework | Patches | Patch_Pawn_EquipmentTracker_TryDropEquipment.cs
 // 목적 : 폰이 무기를 바닥에 버리거나 다른 무기로 교체할 때 호출되는 바닐라 로직(TryDropEquipment)을 가로채어 통제.
 // 용도 : 프레임워크가 강제로 소환한 폼 전용 무기(generatedWeapons)를 유저가 꼼수로 해제하거나 폰 사망 시 드랍되어 아이템이 무한 복사되는 버그를 원천 차단.
 

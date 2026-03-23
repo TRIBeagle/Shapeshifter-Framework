@@ -16,7 +16,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPriority(Priority.Last)]
     public static class Patch_FloatMenuMakerMap_GetOptions_EquipLock
     {
-        // GetOptions Postfix
+        // GetOptions Postfix — 장비 잠금 대상 메뉴 항목 비활성화
         static void Postfix(List<Pawn> selectedPawns, Vector3 clickPos, ref FloatMenuContext context, ref List<FloatMenuOption> __result)
         {
             if (__result == null || __result.Count == 0) return;
