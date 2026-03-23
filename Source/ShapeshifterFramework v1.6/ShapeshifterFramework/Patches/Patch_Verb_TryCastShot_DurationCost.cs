@@ -15,14 +15,14 @@ namespace ShapeshifterFramework.Patches
     public static class Patch_Verb_TryCastShot_DurationCost
     {
         [HarmonyPostfix]
-        static void Postfix(Verb __instance, bool __result)
+        static void Postfix(Verb __instance, bool __result, int ___burstShotsLeft)
         {
             // 발사 실패 시 비용 없음
             if (!__result) return;
 
-            // 버스트 무기: 첫 발에만 차감 (burstShotsLeft == ShotsPerBurst일 때가 첫 발 직후)
+            // 버스트 무기: 첫 발에만 차감 (burstShotsLeft == ShotsPerBurst-1일 때가 첫 발 직후)
             int shotsPerBurst = __instance.verbProps?.burstShotCount ?? 1;
-            if (shotsPerBurst > 1 && __instance.burstShotsLeft != shotsPerBurst - 1)
+            if (shotsPerBurst > 1 && ___burstShotsLeft != shotsPerBurst - 1)
                 return;
 
             var pawn = __instance.CasterPawn;
