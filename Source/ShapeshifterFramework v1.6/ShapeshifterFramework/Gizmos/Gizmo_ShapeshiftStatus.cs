@@ -138,7 +138,7 @@ namespace ShapeshifterFramework.Gizmos
             string rawFormLabel = form.LabelCap.NullOrEmpty() ? form.defName : form.LabelCap.Resolve();
             bool multiSelected = Find.Selector != null && Find.Selector.NumSelected > 1;
             string formLabel = multiSelected && core.Pawn != null
-                ? rawFormLabel + "(" + core.Pawn.LabelShort + ")"
+                ? rawFormLabel + " (" + core.Pawn.LabelShort + ")"
                 : rawFormLabel;
             if (formLabel != _cachedFormLabel)
             {
