@@ -378,8 +378,7 @@
 - [ ] `15-M01` 다수 폰 동시 변신 (5+) — 프레임 저하 없음
 - [ ] `15-M02` 장시간 변신 유지 — 메모리 누수 없음
 - [ ] `15-M03` 빈번한 변신/해제 반복 — 크래시 없음
-- [ ] `15-M04a` 기존 세이브에 모드 추가 후 로드 → 로그에 "DrugPolicy 동기화 완료" 메시지 확인 (GameComponent_DrugPolicySync)
-- [ ] `15-M04b` 동기화 후 변신 약물이 맵에 있을 때 우클릭 줍기(PickUp) FloatMenu → ArgumentException 없이 정상 표시
+- [ ] `15-M04a` 변신 약물이 맵에 있을 때 우클릭 줍기(PickUp) FloatMenu → ArgumentException 없이 정상 표시 (DrugPolicy Finalizer 패치 검증)
 - [ ] `15-M04` 맵 전환 시 캐시 정리 (ClearAll) 확인
 - [ ] `15-M05` 대형 폼(bodyDrawScale > 1) 줌아웃 렌더링 — 스레드 안전 (ThreadStatic _invokeArgs)
 - [ ] `15-M06` 스냅샷 순회 중 Register/Unregister 안전성 확인 (ReleaseSnapshot)

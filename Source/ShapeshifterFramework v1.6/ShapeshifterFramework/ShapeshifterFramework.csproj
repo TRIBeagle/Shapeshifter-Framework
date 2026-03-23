@@ -65,7 +65,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameComponent_DrugPolicySync.cs" />
     <Compile Include="Compat\Compat_FacialAnimation_OverridesHook.cs" />
     <Compile Include="Compat\FAFormExtension.cs" />
     <Compile Include="Compat\HARFormExtension.cs" />
