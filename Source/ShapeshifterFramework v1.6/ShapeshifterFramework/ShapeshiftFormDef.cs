@@ -67,6 +67,9 @@ namespace ShapeshifterFramework
         public string toggleLabel;    // 토글 버튼 라벨(없으면 label 사용)
         public string toggleDesc;     // 토글 버튼 설명(없으면 기본)
         public string iconPath;       // 지정하면 v.UIIcon 대신 이 아이콘 사용(선택)
+
+        /// <summary>이 verb 사용 시 차감할 변신 잔여 틱. 0이면 비용 없음. 버스트 무기는 버스트당 1회 차감.</summary>
+        public int durationCostTicks;
     }
 
     // AddedPart 정책

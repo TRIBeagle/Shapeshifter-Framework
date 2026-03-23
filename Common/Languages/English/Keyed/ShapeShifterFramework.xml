@@ -25,6 +25,7 @@
   <SSF_Verb_Attack>Attack</SSF_Verb_Attack>
   <SSF_Verb_ToggleDesc>Toggle auto-attack.</SSF_Verb_ToggleDesc>
   <SSF_Verb_OrderDesc>Order to attack.</SSF_Verb_OrderDesc>
+  <SSF_Verb_DurationCost>Shift time cost: {0}</SSF_Verb_DurationCost>
 
   <SSF_Message_CannotTransform>Cannot transform to {0}.</SSF_Message_CannotTransform>
   <SSF_Message_WorkDisabled>Disabled by {0} transformation.</SSF_Message_WorkDisabled>

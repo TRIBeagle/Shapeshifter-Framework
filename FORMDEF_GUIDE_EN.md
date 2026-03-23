@@ -344,6 +344,7 @@ Form auto-reverts when conditions are no longer met. `sustainMode` controls whet
 | `toggleLabel` | `string` | Auto-attack toggle label |
 | `toggleDesc` | `string` | Auto-attack toggle description |
 | `iconPath` | `string` | Icon override |
+| `durationCostTicks` | `int` | Shift duration deducted per use (0 = free). Burst weapons deduct once per burst. |
 
 ```xml
 <verbs>
@@ -371,6 +372,7 @@ Form auto-reverts when conditions are no longer met. `sustainMode` controls whet
     <desc>Powerful jaw attack</desc>
     <toggleLabel>Auto-bite</toggleLabel>
     <toggleDesc>Toggle automatic bite attacks</toggleDesc>
+    <durationCostTicks>2500</durationCostTicks> <!-- costs ~1 hour of shift time per use -->
   </li>
 </verbGizmoOptions>
 ```

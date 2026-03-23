@@ -340,6 +340,7 @@
 | `toggleLabel` | `string` | 자동공격 토글 라벨 |
 | `toggleDesc` | `string` | 자동공격 토글 설명 |
 | `iconPath` | `string` | 아이콘 오버라이드 |
+| `durationCostTicks` | `int` | 사용 시 차감할 변신 잔여 틱 (0 = 무료). 버스트 무기는 버스트당 1회 차감. |
 
 ```xml
 <verbs>
@@ -367,6 +368,7 @@
     <desc>강력한 턱 공격</desc>
     <toggleLabel>자동 물기</toggleLabel>
     <toggleDesc>자동 물기 공격 토글</toggleDesc>
+    <durationCostTicks>2500</durationCostTicks> <!-- 사용 시 변신 시간 ~1시간 차감 -->
   </li>
 </verbGizmoOptions>
 ```

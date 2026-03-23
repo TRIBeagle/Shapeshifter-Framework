@@ -99,6 +99,7 @@
     <Compile Include="Patches\Patch_Pawn_PathFollower_TryEnterNextPathCell.cs" />
     <Compile Include="Patches\Patch_Toils_Ingest_ChewIngestible.cs" />
     <Compile Include="Patches\Patch_Verb_MeleeAttack_Sounds.cs" />
+    <Compile Include="Patches\Patch_Verb_TryCastShot_DurationCost.cs" />
     <Compile Include="Extensions\GiveHediffProjectileExtension_Shapeshift.cs" />
     <Compile Include="Projectiles\Projectile_GiveHediff_Shapeshift.cs" />
     <Compile Include="Patches\Patch_PawnWoundDrawer_WriteCache.cs" />

@@ -358,6 +358,8 @@
         <verbLabel>FragGrenade</verbLabel>
         <label>frag grenade</label>
         <iconPath>Things/Item/Equipment/WeaponRanged/Grenades</iconPath>
+        <!-- 수류탄 투척 시 변신 시간 5000틱(~1.4시간) 차감 -->
+        <durationCostTicks>5000</durationCostTicks>
       </li>
       <li>
         <verbLabel>ArcSprayProjectile</verbLabel>
@@ -373,6 +375,8 @@
         <verbLabel>ShootBeam</verbLabel>
         <label>beam shot</label>
         <iconPath>Things/Item/Equipment/WeaponRanged/ThumpCannon</iconPath>
+        <!-- 빔 발사 시 변신 시간 2500틱(~1시간) 차감 -->
+        <durationCostTicks>2500</durationCostTicks>
       </li>
     </verbGizmoOptions>
     <tools>

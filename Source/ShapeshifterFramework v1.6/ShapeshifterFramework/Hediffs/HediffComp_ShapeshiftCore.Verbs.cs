@@ -245,14 +245,49 @@ namespace ShapeshifterFramework.Hediffs
         public string GetVerbDesc(int index, Verb v, bool forToggle)
         {
             var o = FindGizmoOption(index, v);
+            string desc;
             if (o != null)
             {
                 string s = forToggle ? (o.toggleDesc ?? o.desc) : o.desc;
-                if (!string.IsNullOrEmpty(s)) return s.Translate();
+                desc = !string.IsNullOrEmpty(s) ? s.Translate() : null;
+            }
+            else
+            {
+                desc = null;
             }
 
-            if (forToggle) return "SSF_Verb_ToggleDesc".Translate();
-            return "SSF_Verb_OrderDesc".Translate();
+            if (desc == null)
+                desc = forToggle ? "SSF_Verb_ToggleDesc".Translate() : "SSF_Verb_OrderDesc".Translate();
+
+            // durationCostTicks 비용 표시
+            int cost = o != null ? o.durationCostTicks : 0;
+            if (cost > 0)
+            {
+                string costStr = GenDate.ToStringTicksToPeriod(cost, allowSeconds: false, shortForm: false);
+                desc += "\n\n" + "SSF_Verb_DurationCost".Translate(costStr);
+            }
+
+            return desc;
+        }
+
+        /// <summary>verb 사용 시 차감할 변신 잔여 틱 반환. 0이면 비용 없음.</summary>
+        public int GetVerbDurationCost(int index, Verb v)
+        {
+            var o = FindGizmoOption(index, v);
+            return o != null ? o.durationCostTicks : 0;
+        }
+
+        /// <summary>verb 인덱스를 빠르게 조회 (패치용).</summary>
+        public int FindVerbIndex(Verb v)
+        {
+            var vt = ShapeshiftVerbTracker;
+            if (vt == null) return -1;
+            var verbs = vt.AllVerbs;
+            for (int i = 0; i < verbs.Count; i++)
+            {
+                if (verbs[i] == v) return i;
+            }
+            return -1;
         }
 
         /// <summary>verbGizmoOptions의 iconPath에서 아이콘 로드.</summary>

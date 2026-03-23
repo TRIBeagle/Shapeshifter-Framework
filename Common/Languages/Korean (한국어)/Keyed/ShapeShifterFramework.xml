@@ -25,6 +25,7 @@
   <SSF_Verb_Attack>공격</SSF_Verb_Attack>
   <SSF_Verb_ToggleDesc>자동 공격 전환</SSF_Verb_ToggleDesc>
   <SSF_Verb_OrderDesc>공격 지시</SSF_Verb_OrderDesc>
+  <SSF_Verb_DurationCost>변신 시간 소모: {0}</SSF_Verb_DurationCost>
 
   <SSF_Message_CannotTransform>{0} 형태로 변신할 수 없습니다.</SSF_Message_CannotTransform>
   <SSF_Message_WorkDisabled>{0} 변신 때문에 비활성</SSF_Message_WorkDisabled>
