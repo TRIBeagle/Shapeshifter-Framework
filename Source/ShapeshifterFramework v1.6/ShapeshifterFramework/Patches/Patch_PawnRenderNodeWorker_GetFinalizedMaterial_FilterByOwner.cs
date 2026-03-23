@@ -1,11 +1,10 @@
 ﻿// ShapeshifterFramework | Patches | Patch_PawnRenderNodeWorker_GetFinalizedMaterial_FilterByOwner.cs
 // 목적 : 폼의 시각적 필터 규칙(renderShow/Hide)에 따라 옷, 유전자, 헤디프의 렌더링 텍스처(Material)를 강제로 투명하게(null) 만듦.
-// 용도 : 노드의 소유자(Owner)가 누군지 리플렉션 캐시를 이용해 안전하게 추적한 뒤, ShapeshiftVisualFilter의 차단 로직에 걸리면 결과값(__result)을 null로 반환해 렌더링을 완전히 스킵시킴.
+// 용도 : 노드의 소유자(gene/apparel/hediff)를 PawnRenderNode의 public 필드에서 직접 읽은 뒤, ShapeshiftVisualFilter의 차단 로직에 걸리면 결과값(__result)을 null로 반환해 렌더링을 완전히 스킵시킴.
 
 using HarmonyLib;
 using RimWorld;
 using ShapeshifterFramework.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -16,9 +15,6 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(PawnRenderNodeWorker), "GetFinalizedMaterial")]
     public static class Patch_PawnRenderNodeWorker_GetFinalizedMaterial_FilterByOwner
     {
-        // Gene 타입 캐시
-        static readonly Type T_Gene = AccessTools.TypeByName("RimWorld.Gene");
-
         // Gene exclusionTags 수집용 재사용 셋 — 렌더 핫패스 GC 할당 방지 및 O(1) 중복 검사
         // [ThreadStatic]: 병렬 렌더 패스(ParallelPreRenderPawnAt)에서 스레드 간 경합 방지
         [ThreadStatic] static HashSet<string> _tmpTagSet;
@@ -46,58 +42,29 @@ namespace ShapeshifterFramework.Patches
 
             entry = new NodeOwnerEntry();
 
-            // owner 탐색
-            object owner = ShapeshiftReflectionCache.TryGetOwnerFromNode(node);
-
-            // Gene 판별
-            bool isGene = owner != null && T_Gene != null && T_Gene.IsInstanceOfType(owner);
-            if (isGene)
+            // RimWorld 1.6: PawnRenderNode는 gene/apparel/hediff를 public 필드로 직접 노출
+            if (node.gene != null)
             {
                 entry.ownerKind = 1;
-                entry.owner = owner;
-                _nodeOwnerCache.Add(node, entry);
-                return entry;
+                entry.owner = node.gene;
             }
-
-            if (!isGene)
-            {
-                var gene = ShapeshiftReflectionCache.TryScanFieldsForType<Gene>(node, worker);
-                if (gene != null)
-                {
-                    entry.ownerKind = 1;
-                    entry.owner = gene;
-                    _nodeOwnerCache.Add(node, entry);
-                    return entry;
-                }
-            }
-
-            // Apparel 판별
-            Apparel apparel = owner as Apparel;
-            if (apparel == null)
-                apparel = ShapeshiftReflectionCache.TryScanFieldsForType<Apparel>(node, worker);
-            if (apparel != null)
+            else if (node.apparel != null)
             {
                 entry.ownerKind = 2;
-                entry.owner = apparel;
-                _nodeOwnerCache.Add(node, entry);
-                return entry;
+                entry.owner = node.apparel;
             }
-
-            // Hediff 판별
-            Hediff hediff = owner as Hediff;
-            if (hediff == null)
-                hediff = ShapeshiftReflectionCache.TryScanFieldsForType<Hediff>(node, worker);
-            if (hediff != null)
+            else if (node.hediff != null)
             {
                 entry.ownerKind = 3;
-                entry.owner = hediff;
-                _nodeOwnerCache.Add(node, entry);
-                return entry;
+                entry.owner = node.hediff;
+            }
+            else
+            {
+                // 소유자 없음
+                entry.ownerKind = 4;
+                entry.owner = null;
             }
 
-            // 소유자 없음
-            entry.ownerKind = 4;
-            entry.owner = null;
             _nodeOwnerCache.Add(node, entry);
             return entry;
         }
@@ -113,7 +80,7 @@ namespace ShapeshifterFramework.Patches
             // 비변신 폰은 즉시 스킵 — 렌더 핫패스에서 불필요한 리플렉션/할당 방지
             if (!ShapeshiftRegistry.IsActive(pawn)) return;
 
-            // 캐시에서 노드 소유자 조회 (최초 1회만 리플렉션 탐색)
+            // 캐시에서 노드 소유자 조회 (최초 1회만 탐색)
             var cached = GetOrResolveOwner(node, __instance);
 
             switch (cached.ownerKind)

@@ -62,31 +62,16 @@ namespace ShapeshifterFramework.Utilities
 
         #endregion
 
-        #region PawnRenderNode: Owner/Props
+        #region PawnRenderNode: Props
 
-        private static readonly PropertyInfo PI_Node_Owner = AccessTools.Property(typeof(PawnRenderNode), "Owner");
-        private static readonly FieldInfo FI_Node_owner = AccessTools.Field(typeof(PawnRenderNode), "owner");
         private static readonly PropertyInfo PI_Node_Props = AccessTools.Property(typeof(PawnRenderNode), "Props");
         private static readonly FieldInfo FI_Node_props = AccessTools.Field(typeof(PawnRenderNode), "props");
 
         static ShapeshiftReflectionCache()
         {
-            // PawnRenderNode 멤버 리플렉션 실패 시 시작 로그 — 바닐라 버전 불일치 감지용
-            if (PI_Node_Owner == null && FI_Node_owner == null)
-                Log.Warning("[SSF] Reflection failed: PawnRenderNode.Owner/owner not found. RenderNode owner lookups will return null — vanilla version mismatch?");
+            // PawnRenderNode.Props 리플렉션 실패 시 시작 로그 — 바닐라 버전 불일치 감지용
             if (PI_Node_Props == null && FI_Node_props == null)
                 Log.Warning("[SSF] Reflection failed: PawnRenderNode.Props/props not found. RenderNode props lookups will return null — vanilla version mismatch?");
-        }
-
-        /// <summary>PawnRenderNode.Owner를 안전하게 가져온다(Prop→Field 폴백).</summary>
-        internal static object TryGetOwnerFromNode(PawnRenderNode node)
-        {
-            if (node == null) return null;
-            object v = null;
-            if (PI_Node_Owner != null) { try { v = PI_Node_Owner.GetValue(node, null); } catch { /* Property 접근 실패 → Field 폴백 */ } }
-            if (v != null) return v;
-            if (FI_Node_owner != null) { try { v = FI_Node_owner.GetValue(node); } catch { /* Field 폴백도 실패 — 무시 */ } }
-            return v;
         }
 
         /// <summary>PawnRenderNode.Props를 안전하게 가져온다(Prop→Field 폴백).</summary>
