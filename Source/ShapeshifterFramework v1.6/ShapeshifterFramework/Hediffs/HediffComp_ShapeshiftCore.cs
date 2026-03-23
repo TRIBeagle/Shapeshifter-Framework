@@ -115,12 +115,16 @@ namespace ShapeshifterFramework.Hediffs
 
         /// <summary>변신 남은 시간을 틱 단위로 연장(양수) 또는 단축(음수).
         /// 단축 시 0 이하가 되면 다음 틱에 자동 해제됨.</summary>
-        public void ExtendDuration(int ticks)
+        /// <param name="ticks">연장(+) 또는 단축(-) 틱 수.</param>
+        /// <param name="allowBeyondMax">false면 원래 폼 최대 시간을 초과하지 않도록 제한.</param>
+        public void ExtendDuration(int ticks, bool allowBeyondMax = true)
         {
             if (!isTransformed) return;
             var resolved = ResolvedDurationTicks;
             if (!resolved.HasValue || resolved.Value <= 0) return; // 영구 변신은 무시
             int newVal = transformTimer + ticks;
+            if (!allowBeyondMax && newVal > resolved.Value)
+                newVal = resolved.Value;
             transformTimer = newVal > 0 ? newVal : 0;
         }
 
