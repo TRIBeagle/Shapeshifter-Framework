@@ -1,4 +1,4 @@
-// ShapeshifterFramework | Patches | Patch_FloatMenuMakerMap_GetOptions.cs
+// ShapeshifterFramework | Patches | Patch_FloatMenuMakerMap_GetOptions_EquipLock.cs
 // 목적 : 변신 중 장비 잠금(EquipLock) 설정이 켜져 있을 때, 유저가 우클릭으로 아이템을 착용/해제하려는 시도를 방지.
 // 용도 : 플로트 메뉴 생성(GetOptions) 직후 Postfix로 개입하여, 대상이 의복이나 무기일 경우 해당 메뉴 항목을 비활성화(Disabled)하고 라벨 끝에 '장착 불가' 안내 문구를 덧붙임.
 
@@ -14,7 +14,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(FloatMenuMakerMap), nameof(FloatMenuMakerMap.GetOptions))]
     [HarmonyPriority(Priority.Last)]
-    public static class Patch_FloatMenuMakerMap_GetOptions
+    public static class Patch_FloatMenuMakerMap_GetOptions_EquipLock
     {
         // GetOptions Postfix
         static void Postfix(List<Pawn> selectedPawns, Vector3 clickPos, ref FloatMenuContext context, ref List<FloatMenuOption> __result)

@@ -1,4 +1,4 @@
-// ShapeshifterFramework | Patches | Patch_IngestBlock.cs
+// ShapeshifterFramework | Patches | Patch_FloatMenuMakerMap_GetOptions_IngestBlock.cs
 // 목적 : 변신/연장 약물의 FloatMenu 옵션을 조건부 비활성화. 이데올로기 금지, 폼 불일치(allowedFromForms), 비변신 상태 등을 종합 판단.
 // 용도 : FloatMenuMakerMap.GetOptions Postfix로 개입하여, 변신/연장 약물의 메뉴 항목을 비활성화(Disabled)하고 차단 사유를 표시.
 
@@ -13,7 +13,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(FloatMenuMakerMap), nameof(FloatMenuMakerMap.GetOptions))]
     [HarmonyPriority(Priority.Last - 1)]
-    public static class Patch_IngestBlock
+    public static class Patch_FloatMenuMakerMap_GetOptions_IngestBlock
     {
         static void Postfix(List<Pawn> selectedPawns, Vector3 clickPos, ref FloatMenuContext context, ref List<FloatMenuOption> __result)
         {

@@ -39,7 +39,7 @@ namespace ShapeshifterFramework.Comps
             // 이미 변신 중이면 차단 (동일 폼 포함, allowedFromForms 예외)
             // 이데올로기 차단은 여기서 하지 않음 — 수술(Recipe_AdministerIngestible) 투여 시
             // pawn이 환자(수신자)이므로, 타인에 의한 강제 변신까지 차단하게 됨.
-            // 자가 섭취 차단은 FloatMenu 패치(Patch_IngestBlock)에서 담당.
+            // 자가 섭취 차단은 FloatMenu 패치(Patch_FloatMenuMakerMap_GetOptions_IngestBlock)에서 담당.
             if (ShapeshiftEligibility.IsAlreadyTransformed(pawn)
                 && !ShapeshiftEligibility.IsFormTransitionAllowed(pawn, allowedFromForms))
             {
