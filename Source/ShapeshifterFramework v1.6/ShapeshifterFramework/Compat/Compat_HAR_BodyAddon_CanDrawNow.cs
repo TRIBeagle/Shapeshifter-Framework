@@ -67,7 +67,7 @@ namespace ShapeshifterFramework.Compat
         /// <param name="__0">PawnRenderNode</param>
         /// <param name="__1">PawnDrawParms</param>
         /// <returns>원본 실행 여부</returns>
-        static bool Prefix(ref bool __result, object __0, PawnDrawParms __1)
+        static bool Prefix(ref bool __result, PawnRenderNode __0, PawnDrawParms __1)
         {
             try
             {
