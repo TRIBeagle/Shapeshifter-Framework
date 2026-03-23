@@ -9,7 +9,7 @@
 
 | # | FormDef | 부모 | 트리거 | 핵심 테스트 |
 |---|---------|------|--------|------------|
-| 1 | SSFTest_BearForm | Animal | 약물, 스크롤, 리프레시 약물/스크롤 | 전체 텍스처 교체, 수영, 도구, 헤디프, 해제 드랍, FX, 성스러운 동물, **allowedFromForms 약물/아이템** |
+| 1 | SSFTest_BearForm | Animal | 약물, 스크롤, 리프레시 약물/스크롤/범용스크롤 | 전체 텍스처 교체, 수영, 도구, 헤디프, 해제 드랍, FX, 성스러운 동물, **allowedFromForms 약물/아이템**, **범용 연장** |
 | 2 | SSFTest_BearWarriorForm | Armored | 적 어빌리티 | 사운드, 이펙터, 아이콘, 장비 유지 |
 | 3 | SSFTest_SheepForm | Animal | AoE, 투사체 | 성별 텍스처, 작업 태그 비활성, 강제 변신(해제 불가) |
 | 4 | SSFTest_DarkKnightForm | Armored | 자기 어빌리티 (무기 부여) | 스폰 장비, 장비 잠금, 해제 헤디프 |
@@ -31,6 +31,7 @@
 | 스크롤(대상) | 개발자 콘솔 → `SSFTest_ShiftScroll_Target` 스폰 → 대상 폰 선택 사용 |
 | 리프레시 약물 | 개발자 콘솔 → `SSFTest_BearRefreshElixir` 스폰 → **곰 변신 중** 폰이 복용 (allowedFromForms 테스트) |
 | 리프레시 스크롤 | 개발자 콘솔 → `SSFTest_ShiftScroll_BearRefresh` 스폰 → **곰 변신 중** 폰이 사용 (allowedFromForms 테스트) |
+| 범용 리프레시 스크롤 | 개발자 콘솔 → `SSFTest_ShiftScroll_UniversalRefresh` 스폰 → **아무 폼 변신 중** 폰이 사용 (범용 연장, allowExtendBeyondMax=true) |
 | 아군 어빌리티 | BearWarrior 어빌리티(`SSFTest_Ability_BuffAlly`)와 다름 — BearForm 직접 어빌리티 없음, 위 아이템 경로로만 진입 |
 
 ### [A] Auto-Verify
@@ -255,6 +256,8 @@
 - [ ] `10-A08` 약물(BearRefreshElixir, allowedFromForms): 곰 변신 중 복용 → 변신 갱신 허용
 - [ ] `10-A09` 스크롤(ShiftScroll_BearRefresh, allowedFromForms): 곰 변신 중 사용 → 변신 갱신 허용
 - [ ] `10-A10` 약물(BearRefreshElixir): **비곰 폼** 변신 중 복용 시도 → 차단
+- [ ] `10-A11` 스크롤(ShiftScroll_UniversalRefresh, targetFormDef 미설정): **아무 폼** 변신 중 사용 → 20000틱 연장 허용
+- [ ] `10-A12` 스크롤(ShiftScroll_UniversalRefresh): 비변신 상태 사용 시도 → 차단 ("변신 중이 아닙니다")
 
 ### [M] 수동 확인
 - [ ] `10-M01` 장비 부여(Weapon_DarkBlade): 장비 시 어빌리티 → 해제 시 제거
@@ -312,8 +315,9 @@
 - [ ] `13-A04b` 아이템 ExtendShapeshift: `SSFTest_ShiftScroll_BearRefresh`(targetFormDef=BearForm) → 곰 변신 중 사용 시 시간 연장, 비변신 시 사용 불가
 - [ ] `13-A04c` allowedFromForms 미설정: `SSFTest_BearElixir`/`SSFTest_ShiftScroll_Self`는 변신 중 차단 (기본 동작 유지)
 - [ ] `13-A04d` ExtendShapeshift 약물: 다른 폼(늑대 등) 변신 중 `SSFTest_BearRefreshElixir` 섭취 → "필요한 폼이 아닙니다" 메시지
-- [ ] `13-A04e` ExtendShapeshift: allowExtendBeyondMax=false → 연장 후 남은 시간이 원래 최대 시간을 초과하지 않음
-- [ ] `13-A04f` ExtendShapeshift: allowExtendBeyondMax=true → 연장 후 남은 시간이 원래 최대 시간 초과 가능
+- [ ] `13-A04e` ExtendShapeshift: allowExtendBeyondMax=false → 연장 후 남은 시간이 원래 최대 시간을 초과하지 않음 (`SSFTest_ShiftScroll_BearRefresh`)
+- [ ] `13-A04f` ExtendShapeshift: allowExtendBeyondMax=true → 연장 후 남은 시간이 원래 최대 시간 초과 가능 (`SSFTest_ShiftScroll_UniversalRefresh`)
+- [ ] `13-A04g` ExtendShapeshift: targetFormDef 미설정(범용) → 곰/양/다크나이트 등 어떤 폼에서든 연장 성공 (`SSFTest_ShiftScroll_UniversalRefresh`)
 - [ ] `13-A05` 파괴된(Destroyed) 폰에 FX 재생 시도 → 크래시 없이 스킵
 
 ### [M] 수동 확인
@@ -329,6 +333,7 @@
 - [ ] `13-M14` ExtendDuration allowBeyondMax=false → 원래 최대 시간 이내로 제한 확인
 - [ ] `13-M15` `SSFTest_BearRefreshElixir` 곰 변신 중 복용 → 남은 시간 30000틱 증가 확인 (인스펙터 확인)
 - [ ] `13-M16` `SSFTest_ShiftScroll_BearRefresh` 곰 변신 중 사용 → 남은 시간 30000틱 증가 확인
+- [ ] `13-M17` `SSFTest_ShiftScroll_UniversalRefresh` 아무 폼 변신 중 사용 → 남은 시간 20000틱 증가 확인 (최대 시간 초과 허용)
 - [ ] `13-M10` 변신 중 자기 전용 어빌리티(`targetRequired=false`) → 기즈모에서 숨겨짐
 - [ ] `13-M11` 변신 중 타인 대상 어빌리티(`targetRequired=true`) → 기즈모 표시 유지
 - [ ] `13-M12` 어빌리티 호버 툴팁 → 폼 이름/지속시간(또는 "Permanent") 표시 확인
@@ -370,6 +375,7 @@
 - [ ] `14-2-M05` allowedFromForms 설정된 어빌리티 → 기존대로 전환 허용
 - [ ] `14-2-M05a` allowedFromForms 설정된 약물(`SSFTest_BearRefreshElixir`) → 해당 폼에서 섭취 허용, 다른 폼에서 차단
 - [ ] `14-2-M05b` allowedFromForms 설정된 아이템(`SSFTest_ShiftScroll_BearRefresh`) → 해당 폼에서 사용 허용, 다른 폼에서 차단
+- [ ] `14-2-M05c` targetFormDef 미설정 범용 아이템(`SSFTest_ShiftScroll_UniversalRefresh`) → 어떤 폼에서든 사용 허용
 - [ ] `14-2-M06` 종족 불일치 등 변신 실패 → 메시지 + hediff 자동 제거 (좀비 hediff 방지)
 - [ ] `14-2-M07` Abhorrent 폰에게 수술(Recipe_AdministerIngestible)로 변신 약물 투여 → 변신 성공 (자기 주도가 아니므로 허용)
 

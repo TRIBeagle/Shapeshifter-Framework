@@ -166,4 +166,40 @@
     </comps>
   </ThingDef>
 
+  <!-- ======================================================
+       2d) Item: Universal duration extension — CompUseEffect_ExtendShapeshift
+       Tests: targetFormDef 미설정 (폼 무관 범용), allowExtendBeyondMax=true
+       Extends duration by 20000 ticks (~5.6 hours in-game)
+       ====================================================== -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>SSFTest_ShiftScroll_UniversalRefresh</defName>
+    <label>shift scroll (universal refresh)</label>
+    <description>A scroll that extends any shapeshift form's duration by 20,000 ticks. Works regardless of current form. Can exceed maximum duration.</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>150</MarketValue>
+      <Mass>0.1</Mass>
+    </statBases>
+    <stackLimit>5</stackLimit>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>use universal refresh scroll</useLabel>
+      </li>
+      <li Class="CompProperties_UseEffectDestroySelf" />
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ExtendShapeshift">
+        <extendTicks>20000</extendTicks>
+        <!-- targetFormDef 미설정: 어떤 폼이든 연장 가능 -->
+        <allowExtendBeyondMax>true</allowExtendBeyondMax>
+      </li>
+    </comps>
+  </ThingDef>
+
 </Defs>
