@@ -2,12 +2,13 @@
 // 목적 : 아이템 사용 시 변신 지속 시간을 연장하는 CompUseEffect의 속성 클래스.
 // 용도 : extendTicks, targetFormDef, allowExtendBeyondMax를 XML에서 정의.
 
+using RimWorld;
 using Verse;
 
 namespace ShapeshifterFramework.Comps
 {
     /// <summary>아이템 사용 변신 연장 효과 속성 정의.</summary>
-    public class CompProperties_UseEffect_ExtendShapeshift : CompProperties
+    public class CompProperties_UseEffect_ExtendShapeshift : CompProperties_UseEffect
     {
         /// <summary>연장할 틱 수 (양수: 연장, 음수: 단축).</summary>
         public int extendTicks;

@@ -134,8 +134,12 @@ namespace ShapeshifterFramework.Gizmos
 
             headerRect.xMax = headerBtnX - 2f;
 
-            // 폼 이름 — 공간 부족 시 폰트 축소, 그래도 넘치면 말줄임 + 호버 전체 표시
-            string formLabel = form.LabelCap.NullOrEmpty() ? form.defName : form.LabelCap.Resolve();
+            // 폼 이름 — 다중 선택 시 폰 이름 포함, 공간 부족 시 폰트 축소/말줄임 + 호버 전체 표시
+            string rawFormLabel = form.LabelCap.NullOrEmpty() ? form.defName : form.LabelCap.Resolve();
+            bool multiSelected = Find.Selector != null && Find.Selector.NumSelected > 1;
+            string formLabel = multiSelected && core.Pawn != null
+                ? rawFormLabel + "(" + core.Pawn.LabelShort + ")"
+                : rawFormLabel;
             if (formLabel != _cachedFormLabel)
             {
                 _cachedFormLabel = formLabel;

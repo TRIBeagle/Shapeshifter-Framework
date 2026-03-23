@@ -22,6 +22,11 @@
   <SSFTest_ShiftScroll_BearRefresh.description>A scroll that extends the bear form duration by 30,000 ticks. Can only be used while in bear form.</SSFTest_ShiftScroll_BearRefresh.description>
   <SSFTest_ShiftScroll_BearRefresh.comps.CompUsable.useLabel>use bear refresh scroll</SSFTest_ShiftScroll_BearRefresh.comps.CompUsable.useLabel>
 
+  <!-- Item: Universal duration extension -->
+  <SSFTest_ShiftScroll_UniversalRefresh.label>shift scroll (universal refresh)</SSFTest_ShiftScroll_UniversalRefresh.label>
+  <SSFTest_ShiftScroll_UniversalRefresh.description>A scroll that extends any shapeshift form's duration by 20,000 ticks. Works regardless of current form. Can exceed maximum duration.</SSFTest_ShiftScroll_UniversalRefresh.description>
+  <SSFTest_ShiftScroll_UniversalRefresh.comps.CompUsable.useLabel>use universal refresh scroll</SSFTest_ShiftScroll_UniversalRefresh.comps.CompUsable.useLabel>
+
   <!-- Frag grenade (safe) -->
   <SSFTest_Proj_FragGrenade_Safe.label>frag grenade (SSF safe)</SSFTest_Proj_FragGrenade_Safe.label>
 

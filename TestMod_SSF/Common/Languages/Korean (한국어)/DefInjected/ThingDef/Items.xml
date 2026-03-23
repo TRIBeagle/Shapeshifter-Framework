@@ -24,6 +24,11 @@
   <SSFTest_ShiftScroll_BearRefresh.description>곰 변신 지속 시간을 30,000틱 연장하는 주문서. 곰 형태에서만 사용할 수 있다.</SSFTest_ShiftScroll_BearRefresh.description>
   <SSFTest_ShiftScroll_BearRefresh.comps.CompUsable.useLabel>곰 전용 주문서 사용</SSFTest_ShiftScroll_BearRefresh.comps.CompUsable.useLabel>
 
+  <!-- 아이템: 범용 연장 주문서 -->
+  <SSFTest_ShiftScroll_UniversalRefresh.label>변신 주문서 (범용 연장)</SSFTest_ShiftScroll_UniversalRefresh.label>
+  <SSFTest_ShiftScroll_UniversalRefresh.description>어떤 변신 형태든 지속 시간을 20,000틱 연장하는 주문서. 현재 폼과 무관하게 사용 가능하며, 최대 시간을 초과할 수 있다.</SSFTest_ShiftScroll_UniversalRefresh.description>
+  <SSFTest_ShiftScroll_UniversalRefresh.comps.CompUsable.useLabel>범용 연장 주문서 사용</SSFTest_ShiftScroll_UniversalRefresh.comps.CompUsable.useLabel>
+
   <!-- 파편수류탄 (안전) -->
   <SSFTest_Proj_FragGrenade_Safe.label>파편수류탄 (SSF 안전)</SSFTest_Proj_FragGrenade_Safe.label>
 
