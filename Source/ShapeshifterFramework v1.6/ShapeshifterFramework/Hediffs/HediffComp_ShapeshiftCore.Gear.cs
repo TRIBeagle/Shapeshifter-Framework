@@ -223,6 +223,7 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>충돌 장비 처리 — Drop 모드면 바닥에, 아니면 인벤토리에 시도 후 실패 시 바닥에.</summary>
         static void HandleConflictingGear(Thing item, Pawn pawn, GearHandling handling)
         {
+            if (item == null || pawn == null) return;
             if (handling == GearHandling.Drop)
             {
                 TryDropThing(item, pawn.PositionHeld, pawn.MapHeld);

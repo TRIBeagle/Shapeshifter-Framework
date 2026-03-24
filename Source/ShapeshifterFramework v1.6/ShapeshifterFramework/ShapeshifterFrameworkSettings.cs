@@ -21,6 +21,19 @@ namespace ShapeshifterFramework
 
         public bool enableDebugLog = false;
 
+        /// <summary>모든 설정을 기본값으로 초기화.</summary>
+        public void ResetToDefaults()
+        {
+            scaleHeldWeapons = true;
+            enablePortraitScale = true;
+            autoReequipFromInventory = true;
+            autoReequipFromGround = true;
+            forbidDroppedItemsOnTransform = true;
+            showVerbAutoToggle = true;
+            showShapeshiftBar = true;
+            enableDebugLog = false;
+        }
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -87,14 +100,7 @@ namespace ShapeshifterFramework
 
             if (list.ButtonText("SSF_Setting_ResetAll_Title".Translate()))
             {
-                scaleHeldWeapons = true;
-                enablePortraitScale = true;
-                autoReequipFromInventory = true;
-                autoReequipFromGround = true;
-                forbidDroppedItemsOnTransform = true;
-                showVerbAutoToggle = true;
-                showShapeshiftBar = true;
-                enableDebugLog = false;
+                ResetToDefaults();
             }
 
             list.End();

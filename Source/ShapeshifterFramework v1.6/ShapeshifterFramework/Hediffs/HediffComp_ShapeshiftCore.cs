@@ -397,239 +397,55 @@ namespace ShapeshifterFramework.Hediffs
             if (pawn == null) return;
             if (_isApplyingOrRemoving) return; // 재진입 방지
             _isApplyingOrRemoving = true;
-            var __oldForm = currentForm;
+            var oldForm = currentForm;
             try
             {
+                DestroyGeneratedGear();
+                if (this.sourceItems != null) this.sourceItems.Clear();
 
-            // 전용 장비 파괴
-            using (new ShapeshiftEquipLockScope(this))
-            {
-                for (int i = generatedApparel.Count - 1; i >= 0; i--)
-                {
-                    if (generatedApparel[i] != null && !generatedApparel[i].Destroyed)
-                        generatedApparel[i].Destroy(DestroyMode.Vanish);
-                }
-                generatedApparel.Clear();
-
-                for (int i = generatedWeapons.Count - 1; i >= 0; i--)
-                {
-                    if (generatedWeapons[i] != null && !generatedWeapons[i].Destroyed)
-                        generatedWeapons[i].Destroy(DestroyMode.Vanish);
-                }
-                generatedWeapons.Clear();
-            }
-            if (this.sourceItems != null) this.sourceItems.Clear();
-
-            // 능력 회수
-            if (pawn.abilities != null && tempAddedAbilities.Count > 0)
-            {
-                for (int i = 0; i < tempAddedAbilities.Count; i++)
-                {
-                    AbilityDef ad = tempAddedAbilities[i];
-                    if (ad != null) pawn.abilities.RemoveAbility(ad);
-                }
-                tempAddedAbilities.Clear();
-            }
-
-            // 헤디프 회수 + 원상 복원
-            if (pawn.health != null)
-            {
-                for (int i = 0; i < tempAddedHediffs.Count; i++)
-                {
-                    Hediff h = tempAddedHediffs[i];
-                    if (h != null && pawn.health.hediffSet.hediffs.Contains(h))
-                    {
-                        pawn.health.RemoveHediff(h);
-                        if (h.def != null) tempAddedHediffsDefCache.Remove(h.def);
-                    }
-                }
-
-                // 2차: 참조 실패분 → def 기준 카운팅 제거 (동일 def 복수 부여 대응)
-                if (tempAddedHediffsDefCache != null && tempAddedHediffsDefCache.Count > 0)
-                {
-                    var remaining = new Dictionary<HediffDef, int>();
-                    for (int i = 0; i < tempAddedHediffsDefCache.Count; i++)
-                    {
-                        var d = tempAddedHediffsDefCache[i];
-                        if (d == null) continue;
-                        if (remaining.ContainsKey(d)) remaining[d]++;
-                        else remaining[d] = 1;
-                    }
-                    List<Hediff> list = pawn.health.hediffSet.hediffs;
-                    for (int j = list.Count - 1; j >= 0; j--)
-                    {
-                        if (remaining.Count == 0) break;
-                        if (list[j] == null) continue;
-                        var hd = list[j].def;
-                        if (hd == null) continue;
-                        if (remaining.TryGetValue(hd, out int cnt) && cnt > 0)
-                        {
-                            remaining[hd] = cnt - 1;
-                            if (cnt <= 1) remaining.Remove(hd);
-                            pawn.health.RemoveHediff(list[j]);
-                        }
-                    }
-                }
-
-                // 파츠 원상 복원 (죽은 폰은 건너뜀)
-                if (!pawn.Dead)
-                for (int i = 0; i < tempPartRestoreRecords.Count; i++)
-                {
-                    var rec = tempPartRestoreRecords[i];
-                    if (rec == null || rec.Part == null) continue;
-
-                    if (!rec.WasMissingBefore)
-                    {
-                        try { pawn.health.RestorePart(rec.Part); }
-                        catch (Exception ex) { Log.Warning($"[SSF] RestorePart failed for '{rec.Part.Label}': {ex}"); }
-                    }
-
-                    if (rec.PreExistingAdded != null && rec.PreExistingAdded.Count > 0
-                        && !pawn.health.hediffSet.PartIsMissing(rec.Part))
-                    {
-                        for (int k = 0; k < rec.PreExistingAdded.Count; k++)
-                        {
-                            var prev = rec.PreExistingAdded[k];
-                            if (prev?.Def == null) continue;
-
-                            BodyPartRecord targetPart = null;
-                            if (prev.PartDef == null || prev.PartDef == rec.Part.def)
-                            {
-                                targetPart = rec.Part;
-                            }
-                            else
-                            {
-                                if (pawn.RaceProps?.body == null) continue;
-                                var allParts = pawn.RaceProps.body.AllParts;
-                                for (int pIdx = 0; pIdx < allParts.Count; pIdx++)
-                                {
-                                    var x = allParts[pIdx];
-                                    if (x.def == prev.PartDef && !pawn.health.hediffSet.PartIsMissing(x) && IsPartChildOf(x, rec.Part))
-                                    {
-                                        targetPart = x;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (targetPart != null)
-                            {
-                                var reinst = pawn.health.AddHediff(prev.Def, targetPart, null);
-                                if (reinst != null && prev.Severity.HasValue)
-                                {
-                                    try { reinst.Severity = prev.Severity.Value; }
-                                    catch (Exception ex) { Log.Warning($"[SSF] Restore Severity failed for '{prev.Def.defName}': {ex}"); }
-                                }
-                            }
-                        }
-                    }
-                }
+                RemoveGrantedAbilities(pawn);
+                RemoveGrantedHediffs(pawn);
+                RestoreBodyParts(pawn);
 
                 ShapeshiftDiagnostics.Info($"Revert: restored {tempPartRestoreRecords.Count} part(s)");
-
                 tempAddedHediffs.Clear();
                 tempAddedHediffsDefCache.Clear();
                 tempPartRestoreRecords.Clear();
-            }
 
-            transformTimer = 0;
+                transformTimer = 0;
 
-            // 체형/머리형/컬러 원복
-            if (pawn.story != null)
-            {
-                if (originalBodyType != null) pawn.story.bodyType = originalBodyType;
-                if (originalHeadType != null) pawn.story.headType = originalHeadType;
-                if (hasSavedColors)
-                {
-                    if (originalHairColor.HasValue) pawn.story.HairColor = originalHairColor.Value;
-                    pawn.story.skinColorOverride = originalSkinColor;
-                    hasSavedColors = false;
-                }
-            }
+                RestoreAppearance(pawn);
 
-            // 자동 재착용
-            ShapeshifterFrameworkSettings st = ShapeshifterFrameworkMod.Settings;
-            if (st == null || st.autoReequipFromInventory || st.autoReequipFromGround)
-                TryReequipPreviousGear(pawn);
+                // 자동 재착용
+                ShapeshifterFrameworkSettings st = ShapeshifterFrameworkMod.Settings;
+                if (st == null || st.autoReequipFromInventory || st.autoReequipFromGround)
+                    TryReequipPreviousGear(pawn);
 
-            // VerbTracker 해제
-            shapeshiftVerbTracker = null;
-            _verbKeyCache = null;
-            verbAutoToggle.Clear();
+                // VerbTracker 해제
+                shapeshiftVerbTracker = null;
+                _verbKeyCache = null;
+                verbAutoToggle.Clear();
 
-            if (__oldForm != null)
-                ShapeshiftTransformFxUtility.PlayExitFx(pawn, __oldForm);
+                if (oldForm != null)
+                    ShapeshiftTransformFxUtility.PlayExitFx(pawn, oldForm);
 
-            // 앰비언트 VFX 정리
-            if (ambientEffecterInstance != null)
-            {
-                try { ambientEffecterInstance.Cleanup(); }
-                catch (Exception ex) { Log.Warning($"[SSF] Effecter.Cleanup failed: {ex}"); }
-                ambientEffecterInstance = null;
-            }
+                CleanupAmbientVfx();
+                SpawnRevertDrops(pawn);
+                ApplyRevertHediffs(pawn, oldForm);
 
-            // 해제 시 잔해 드랍
-            var drops = ResolvedRevertDrops;
-            if (drops != null && drops.Count > 0
-                && pawn.Spawned && pawn.MapHeld != null)
-            {
-                for (int i = 0; i < drops.Count; i++)
-                {
-                    var entry = drops[i];
-                    if (entry?.thingDef == null || entry.count <= 0) continue;
-                    Thing thing = ThingMaker.MakeThing(entry.thingDef);
-                    thing.stackCount = entry.count;
-                    GenPlace.TryPlaceThing(thing, pawn.PositionHeld, pawn.MapHeld, ThingPlaceMode.Near);
-                }
-            }
+                currentForm = null;
 
-            // 해제 시 hediff 부여 — Props 오버라이드 (HediffAddEntry) 우선, 없으면 FormDef 폴백 (List<HediffDef>)
-            var addHediffEntries = ResolvedRevertAddHediffs;
-            if (addHediffEntries != null && addHediffEntries.Count > 0
-                && pawn.health != null && !pawn.Dead)
-            {
-                for (int i = 0; i < addHediffEntries.Count; i++)
-                {
-                    var entry = addHediffEntries[i];
-                    if (entry?.hediff == null) continue;
-                    Hediff h = pawn.health.AddHediff(entry.hediff);
-                    if (h != null && entry.severity.HasValue)
-                    {
-                        try { h.Severity = entry.severity.Value; }
-                        catch (Exception ex) { Log.Warning($"[SSF] revertAddHediffs severity set failed: {ex}"); }
-                    }
-                }
-            }
-            else if (__oldForm != null && __oldForm.revertAddHediffs != null && __oldForm.revertAddHediffs.Count > 0
-                && pawn.health != null && !pawn.Dead)
-            {
-                // FormDef 폴백 — revertAddHediffs는 List<HediffAddEntry>
-                for (int i = 0; i < __oldForm.revertAddHediffs.Count; i++)
-                {
-                    var entry = __oldForm.revertAddHediffs[i];
-                    if (entry?.hediff == null) continue;
-                    Hediff h = pawn.health.AddHediff(entry.hediff);
-                    if (h != null && entry.severity.HasValue)
-                    {
-                        try { h.Severity = entry.severity.Value; }
-                        catch (Exception ex) { Log.Warning($"[SSF] revertAddHediffs (FormDef) severity set failed: {ex}"); }
-                    }
-                }
-            }
+                // 레지스트리 해제
+                ShapeshiftRegistry.Unregister(pawn);
 
-            currentForm = null;
+                // 캐시 정리
+                ShapeshiftRuntimeCaches.ClearFor(pawn);
 
-            // 레지스트리 해제
-            ShapeshiftRegistry.Unregister(pawn);
+                RefreshPawn(pawn, this);
 
-            // 캐시 정리
-            ShapeshiftRuntimeCaches.ClearFor(pawn);
-
-            RefreshPawn(pawn, this);
-
-            // 이벤트 발행
-            if (__oldForm != null)
-                ShapeshiftCoreUtility.FireFormRemoved(pawn, __oldForm);
+                // 이벤트 발행
+                if (oldForm != null)
+                    ShapeshiftCoreUtility.FireFormRemoved(pawn, oldForm);
             }
             catch (Exception ex)
             {
@@ -646,6 +462,208 @@ namespace ShapeshifterFramework.Hediffs
                 // severity를 0으로 설정 → 바닐라가 다음 틱에 hediff 자동 제거
                 if (parent != null)
                     parent.Severity = 0f;
+            }
+        }
+
+        /// <summary>폼 전용 소환 장비(apparel/weapon) 파괴.</summary>
+        private void DestroyGeneratedGear()
+        {
+            using (new ShapeshiftEquipLockScope(this))
+            {
+                for (int i = generatedApparel.Count - 1; i >= 0; i--)
+                {
+                    if (generatedApparel[i] != null && !generatedApparel[i].Destroyed)
+                        generatedApparel[i].Destroy(DestroyMode.Vanish);
+                }
+                generatedApparel.Clear();
+
+                for (int i = generatedWeapons.Count - 1; i >= 0; i--)
+                {
+                    if (generatedWeapons[i] != null && !generatedWeapons[i].Destroyed)
+                        generatedWeapons[i].Destroy(DestroyMode.Vanish);
+                }
+                generatedWeapons.Clear();
+            }
+        }
+
+        /// <summary>변신 시 부여한 능력(Ability)을 회수.</summary>
+        private void RemoveGrantedAbilities(Pawn pawn)
+        {
+            if (pawn.abilities == null || tempAddedAbilities.Count == 0) return;
+            for (int i = 0; i < tempAddedAbilities.Count; i++)
+            {
+                AbilityDef ad = tempAddedAbilities[i];
+                if (ad != null) pawn.abilities.RemoveAbility(ad);
+            }
+            tempAddedAbilities.Clear();
+        }
+
+        /// <summary>변신 시 부여한 hediff를 회수 — 1차 참조 제거 + 2차 def 기준 카운팅 제거.</summary>
+        private void RemoveGrantedHediffs(Pawn pawn)
+        {
+            if (pawn.health == null) return;
+
+            // 1차: 참조 기반 직접 제거
+            for (int i = 0; i < tempAddedHediffs.Count; i++)
+            {
+                Hediff h = tempAddedHediffs[i];
+                if (h != null && pawn.health.hediffSet.hediffs.Contains(h))
+                {
+                    pawn.health.RemoveHediff(h);
+                    if (h.def != null) tempAddedHediffsDefCache.Remove(h.def);
+                }
+            }
+
+            // 2차: 참조 실패분 → def 기준 카운팅 제거 (동일 def 복수 부여 대응)
+            if (tempAddedHediffsDefCache == null || tempAddedHediffsDefCache.Count == 0) return;
+
+            var remaining = new Dictionary<HediffDef, int>();
+            for (int i = 0; i < tempAddedHediffsDefCache.Count; i++)
+            {
+                var d = tempAddedHediffsDefCache[i];
+                if (d == null) continue;
+                if (remaining.ContainsKey(d)) remaining[d]++;
+                else remaining[d] = 1;
+            }
+            List<Hediff> list = pawn.health.hediffSet.hediffs;
+            for (int j = list.Count - 1; j >= 0; j--)
+            {
+                if (remaining.Count == 0) break;
+                if (list[j] == null) continue;
+                var hd = list[j].def;
+                if (hd == null) continue;
+                if (remaining.TryGetValue(hd, out int cnt) && cnt > 0)
+                {
+                    remaining[hd] = cnt - 1;
+                    if (cnt <= 1) remaining.Remove(hd);
+                    pawn.health.RemoveHediff(list[j]);
+                }
+            }
+        }
+
+        /// <summary>변신 전 원래 파츠 상태 복원 (죽은 폰은 건너뜀).</summary>
+        private void RestoreBodyParts(Pawn pawn)
+        {
+            if (pawn.health == null || pawn.Dead) return;
+
+            for (int i = 0; i < tempPartRestoreRecords.Count; i++)
+            {
+                var rec = tempPartRestoreRecords[i];
+                if (rec == null || rec.Part == null) continue;
+
+                if (!rec.WasMissingBefore)
+                {
+                    try { pawn.health.RestorePart(rec.Part); }
+                    catch (Exception ex) { Log.Warning($"[SSF] RestorePart failed for '{rec.Part.Label}': {ex}"); }
+                }
+
+                if (rec.PreExistingAdded == null || rec.PreExistingAdded.Count == 0
+                    || pawn.health.hediffSet.PartIsMissing(rec.Part))
+                    continue;
+
+                for (int k = 0; k < rec.PreExistingAdded.Count; k++)
+                {
+                    var prev = rec.PreExistingAdded[k];
+                    if (prev?.Def == null) continue;
+
+                    BodyPartRecord targetPart = null;
+                    if (prev.PartDef == null || prev.PartDef == rec.Part.def)
+                    {
+                        targetPart = rec.Part;
+                    }
+                    else
+                    {
+                        if (pawn.RaceProps?.body == null) continue;
+                        var allParts = pawn.RaceProps.body.AllParts;
+                        for (int pIdx = 0; pIdx < allParts.Count; pIdx++)
+                        {
+                            var x = allParts[pIdx];
+                            if (x.def == prev.PartDef && !pawn.health.hediffSet.PartIsMissing(x) && IsPartChildOf(x, rec.Part))
+                            {
+                                targetPart = x;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (targetPart != null)
+                    {
+                        var reinst = pawn.health.AddHediff(prev.Def, targetPart, null);
+                        if (reinst != null && prev.Severity.HasValue)
+                        {
+                            try { reinst.Severity = prev.Severity.Value; }
+                            catch (Exception ex) { Log.Warning($"[SSF] Restore Severity failed for '{prev.Def.defName}': {ex}"); }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>체형/머리형/컬러를 변신 전 상태로 복원.</summary>
+        private void RestoreAppearance(Pawn pawn)
+        {
+            if (pawn.story == null) return;
+            if (originalBodyType != null) pawn.story.bodyType = originalBodyType;
+            if (originalHeadType != null) pawn.story.headType = originalHeadType;
+            if (hasSavedColors)
+            {
+                if (originalHairColor.HasValue) pawn.story.HairColor = originalHairColor.Value;
+                pawn.story.skinColorOverride = originalSkinColor;
+                hasSavedColors = false;
+            }
+        }
+
+        /// <summary>앰비언트 VFX 인스턴스 정리.</summary>
+        private void CleanupAmbientVfx()
+        {
+            if (ambientEffecterInstance == null) return;
+            try { ambientEffecterInstance.Cleanup(); }
+            catch (Exception ex) { Log.Warning($"[SSF] Effecter.Cleanup failed: {ex}"); }
+            ambientEffecterInstance = null;
+        }
+
+        /// <summary>해제 시 잔해(Thing) 드랍.</summary>
+        private void SpawnRevertDrops(Pawn pawn)
+        {
+            var drops = ResolvedRevertDrops;
+            if (drops == null || drops.Count == 0 || !pawn.Spawned || pawn.MapHeld == null) return;
+
+            for (int i = 0; i < drops.Count; i++)
+            {
+                var entry = drops[i];
+                if (entry?.thingDef == null || entry.count <= 0) continue;
+                Thing thing = ThingMaker.MakeThing(entry.thingDef);
+                thing.stackCount = entry.count;
+                GenPlace.TryPlaceThing(thing, pawn.PositionHeld, pawn.MapHeld, ThingPlaceMode.Near);
+            }
+        }
+
+        /// <summary>해제 시 hediff 부여 — Props 오버라이드 우선, 없으면 FormDef 폴백.</summary>
+        private void ApplyRevertHediffs(Pawn pawn, ShapeshiftFormDef oldForm)
+        {
+            if (pawn.health == null || pawn.Dead) return;
+
+            // Props 오버라이드 (HediffAddEntry) 우선
+            var addHediffEntries = ResolvedRevertAddHediffs;
+            List<HediffAddEntry> entries = null;
+
+            if (addHediffEntries != null && addHediffEntries.Count > 0)
+                entries = addHediffEntries;
+            else if (oldForm?.revertAddHediffs != null && oldForm.revertAddHediffs.Count > 0)
+                entries = oldForm.revertAddHediffs;
+
+            if (entries == null) return;
+
+            for (int i = 0; i < entries.Count; i++)
+            {
+                var entry = entries[i];
+                if (entry?.hediff == null) continue;
+                Hediff h = pawn.health.AddHediff(entry.hediff);
+                if (h != null && entry.severity.HasValue)
+                {
+                    try { h.Severity = entry.severity.Value; }
+                    catch (Exception ex) { Log.Warning($"[SSF] revertAddHediffs severity set failed: {ex}"); }
+                }
             }
         }
 

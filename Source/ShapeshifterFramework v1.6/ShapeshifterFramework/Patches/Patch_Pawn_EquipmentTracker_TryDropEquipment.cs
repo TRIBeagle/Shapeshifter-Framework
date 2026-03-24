@@ -14,6 +14,7 @@ namespace ShapeshifterFramework.Patches
     {
         public static bool Prefix(Pawn_EquipmentTracker __instance, ThingWithComps eq, ref ThingWithComps resultingEq, ref bool __result)
         {
+            if (eq == null) return true;
             if (__instance.pawn != null)
             {
                 if (ShapeshiftRegistry.TryGet(__instance.pawn, out var comp, out var form) && !comp.suppressEquipLock)

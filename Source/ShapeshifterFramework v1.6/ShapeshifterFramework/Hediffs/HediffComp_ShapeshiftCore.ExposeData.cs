@@ -245,17 +245,7 @@ namespace ShapeshifterFramework.Hediffs
             generatedWeapons.Clear();
 
             // 체형 원복
-            if (pawn.story != null)
-            {
-                if (originalBodyType != null) pawn.story.bodyType = originalBodyType;
-                if (originalHeadType != null) pawn.story.headType = originalHeadType;
-                if (hasSavedColors)
-                {
-                    if (originalHairColor.HasValue) pawn.story.HairColor = originalHairColor.Value;
-                    pawn.story.skinColorOverride = originalSkinColor;
-                    hasSavedColors = false;
-                }
-            }
+            RestoreAppearance(pawn);
 
             tempPartRestoreRecords.Clear();
             shapeshiftVerbTracker = null;
