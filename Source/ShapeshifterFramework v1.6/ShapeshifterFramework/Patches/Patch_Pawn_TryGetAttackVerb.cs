@@ -2,6 +2,12 @@
 // 목적 : 유저가 강제 공격을 지시하거나 자동 사격(Auto-attack)이 발동할 때, 변신 폼의 무기가 의도대로 선택되도록 통제.
 // 용도 : 유저가 특정 Verb로 강제 공격 중일 때는 다른 Verb가 섞여 나가지 않도록 고정하며, 자동 사격 시에는 UI 지즈모에서 꺼둔(Toggle OFF) Verb가 발사되지 않도록 필터링함.
 //        근접 도구(tools)는 shapeshiftVerbTracker에서 관리하며, pawn.verbTracker에서 네이티브가 제거된 후 Postfix에서 보완.
+//
+// ── [Verb 선택 흐름 — 3개 패치 협력 구조] ──
+//   1. Patch_VerbTracker_InitVerbsFromZero  : 폼 교체 시 tools를 NativeVerb 풀에 주입/제거 (구성 시점)
+//   2. ★ 이 파일 (TryGetAttackVerb)        : 공격 시 원거리 우선 → 근접 폴백으로 최적 verb 선정 (선택 시점)
+//   3. Patch_Pawn_MeleeVerbs_TryGetMeleeVerb : 바닐라 근접 경로 안전망 + power 비교 (폴백 시점)
+//   공유 헬퍼: FindBestFormMelee() — 이 파일에 정의, TryGetMeleeVerb 패치에서 재사용
 
 using HarmonyLib;
 using RimWorld;

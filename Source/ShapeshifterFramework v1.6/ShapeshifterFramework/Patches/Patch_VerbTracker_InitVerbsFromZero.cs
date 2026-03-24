@@ -2,6 +2,12 @@
 // 목적 : 폼에 지정된 근접 공격(Tools) 데이터를 런타임에 폰의 기본 공격 목록(NativeVerb)에 동적으로 주입.
 // 용도 : 장비나 헤디프가 아닌 순수 폰(NativeVerb) 소유일 때만 작동하며, replaceNativeTools 옵션에 따라 기존 종족의 맨손 공격을 지우고 폼 전용 발톱/이빨 공격 등을 주입함 (근접 공격이 0개가 되는 상황을 철저히 방어).
 // 주의 : ManeuverDef를 requiredCapacity별로 정적 캐시하여 O(N) 전체 스캔을 O(1) 조회로 최적화. 기존 PredictAddCount 2패스 구조를 수집-후-주입 단일 패스로 통합.
+//
+// ── [Verb 선택 흐름 — 3개 패치 협력 구조] ──
+//   1. ★ 이 파일 (InitVerbsFromZero)       : 폼 교체 시 tools를 NativeVerb 풀에 주입/제거 (구성 시점)
+//   2. Patch_Pawn_TryGetAttackVerb           : 공격 시 원거리 우선 → 근접 폴백으로 최적 verb 선정 (선택 시점)
+//   3. Patch_Pawn_MeleeVerbs_TryGetMeleeVerb : 바닐라 근접 경로 안전망 + power 비교 (폴백 시점)
+//   공유 헬퍼: Patch_Pawn_TryGetAttackVerb.FindBestFormMelee()
 
 using HarmonyLib;
 using RimWorld;

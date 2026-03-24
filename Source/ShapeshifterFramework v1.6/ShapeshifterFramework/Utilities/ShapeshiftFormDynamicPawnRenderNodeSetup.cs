@@ -86,6 +86,8 @@ namespace ShapeshifterFramework.Utilities
             return outList;
         }
 
+        // vanilla-private: PawnRenderNode.props, PawnRenderNode.graph (RimWorld 1.6) — 바닐라 버전 변경 시 확인 필요
+        // 동적 생성자 호출이므로 정적 캐싱 불가 (nodeClass가 폼마다 다름)
         static PawnRenderNode TryMakeNode(PawnRenderNodeProperties props, Pawn pawn, PawnRenderTree tree)
         {
             try

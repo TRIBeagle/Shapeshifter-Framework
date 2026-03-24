@@ -96,6 +96,8 @@ namespace ShapeshifterFramework
         // ── linkedHediff 삭제됨: HediffDef → FormDef 매핑은 HediffCompProperties_ShapeshiftCore.formDef로 단방향 설정.
         //    FormDef는 순수 데이터 시트이며, 어떤 HediffDef와 연결될지는 HediffDef 쪽에서 결정.
 
+        #region 적용 대상 제한 (종족/뮤턴트)
+
         /// <summary>이 폼을 적용받을 수 있는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
         public List<ThingDef> formAllowedRaces;
 
@@ -109,6 +111,10 @@ namespace ShapeshifterFramework
         /// <summary>이 폼을 적용받을 수 없는 뮤턴트(MutantDef) 목록. null/빈 목록이면 제한 없음.</summary>
         [MayRequire("Ludeon.RimWorld.Anomaly")]
         public List<MutantDef> formDisallowedMutants;
+
+        #endregion
+
+        #region 렌더링 — 스케일/오프셋/파츠
 
         // 스케일/오프셋(렌더 보정용)
         public float? bodyDrawScale;   // 몸 전체 스케일 배수 (예: 5.0이면 5배) 비우면 1
@@ -126,6 +132,21 @@ namespace ShapeshifterFramework
         public PartOverrideOption beard = new PartOverrideOption();
         public PartOverrideOption tattooBody = new PartOverrideOption();
         public PartOverrideOption tattooHead = new PartOverrideOption();
+
+        // 폼 전용 렌더 노드(해당 폼 활성 시에만 추가)
+        public List<PawnRenderNodeProperties> renderNodeProperties;
+
+        // 타입 오버라이드(선택)
+        public BodyTypeDef bodyType;
+        public HeadTypeDef headType;
+
+        // 기본 컬러 오버라이드(선택, 텍스처 Replace 시 무시됨)
+        public Color? hairColor;
+        public Color? skinColor;
+
+        #endregion
+
+        #region 렌더링 — 숨김/표시 필터 (의상/무기/유전자/헤디프)
 
         // 의상 숨김: layer/defName (특수값: "All")
         public List<string> renderHideApparelLayers;
@@ -149,6 +170,10 @@ namespace ShapeshifterFramework
         public List<string> renderHideHediffDefNames;
         public List<string> renderShowHediffDefNames;
 
+        #endregion
+
+        #region 장비 처리 (의복/무기 관리, 소환, 잠금)
+
         // 변신 시 기존 장비 처리(폼별): 의복/무기 각각
         public GearHandling apparelOnTransform = GearHandling.Keep;
         public GearHandling weaponsOnTransform = GearHandling.Keep;
@@ -170,19 +195,10 @@ namespace ShapeshifterFramework
         // 소환된 전용 의류/무기와 부위가 겹쳐서 강제로 벗어야 하는 의복 처리
         public GearHandling conflictingGearHandling = GearHandling.Inventory;
 
+        #endregion
 
-        // 폼 전용 렌더 노드(해당 폼 활성 시에만 추가)
-        public List<PawnRenderNodeProperties> renderNodeProperties;
+        #region 유지 조건 (sustain) — 조건 깨지면 자동 해제
 
-        // 타입 오버라이드(선택)
-        public BodyTypeDef bodyType;
-        public HeadTypeDef headType;
-
-        // 기본 컬러 오버라이드(선택, 텍스처 Replace 시 무시됨)
-        public Color? hairColor;
-        public Color? skinColor;
-
-        // ── 변신 유지 조건 (sustain): 변신 중 이 조건이 깨지면 자동 해제
         public List<ThingDef> sustainApparels;   // 이 의류를 착용 유지해야 함
         public List<ThingDef> sustainWeapons;    // 이 무기를 장비 유지해야 함
         public List<HediffDef> sustainHediffs;   // 이 헤디프가 유지되어야 함
@@ -190,15 +206,27 @@ namespace ShapeshifterFramework
         public List<GeneDef> sustainGenes;       // 이 유전자가 유지되어야 함 (Biotech)
         public SustainMode? sustainMode;         // 기본 All: 모두 충족 / Any: 하나라도 충족
 
-        // 변신 중 부여
+        #endregion
+
+        #region 변신 중 부여 (Hediff/능력)
+
         public List<HediffAddEntry> addHediffs;
         public List<AbilityDef> addAbilities;
 
-        // ── 추가 Verb/Tool 정의 및 대체 플래그 ──
+        #endregion
+
+        #region 전투 — Verb/Tool/데미지소스
+
         // verbs : 변신 폼에서 사용할 VerbProperties 목록(원거리/근접 모두 가능)
         // tools : 변신 폼에서 사용할 Tool 목록(근접툴)
         // replaceNativeVerbs : true면 원래 Pawn의 Verb들을 무시하고 이 폼의 verbs만 사용
         // replaceNativeTools : true면 Pawn의 ThingDef.tools를 임시 교체(해제 시 원복)
+        //
+        // [Verb 선택 흐름] — 아래 3개 Harmony 패치가 협력:
+        //   1. Patch_VerbTracker_InitVerbsFromZero  : 폼 교체 시 tools를 NativeVerb 풀에 주입/제거 (구성 시점)
+        //   2. Patch_Pawn_TryGetAttackVerb           : 공격 시 원거리 우선 → 근접 폴백으로 최적 verb 선정 (선택 시점)
+        //   3. Patch_Pawn_MeleeVerbs_TryGetMeleeVerb : 바닐라 근접 경로 안전망 + power 비교 (폴백 시점)
+        //   공유 헬퍼: Patch_Pawn_TryGetAttackVerb.FindBestFormMelee()
         public List<VerbProperties> verbs;
         public List<Tool> tools;
         public bool? replaceNativeVerbs;
@@ -206,24 +234,33 @@ namespace ShapeshifterFramework
 
         public List<VerbGizmoOption> verbGizmoOptions; // verbs 순서에 맞춰 매칭
 
-        // ── 근접 공격 시 상처 라벨에 표시할 종족 ThingDef (예: Warg → "Warg teeth")
+        // 근접 공격 시 상처 라벨에 표시할 종족 ThingDef (예: Warg → "Warg teeth")
         // null이면 바닐라 기본(CasterPawn.def = "인간 teeth") 사용
         public ThingDef damageSourceDef;
 
-        // ── 변신 시 특정 작업 불가(폼별)
+        #endregion
+
+        #region 작업 제한
+
         public List<WorkTypeDef> disabledWorkTypesOnTransform;
 
         // WorkTags 기반 일괄 차단(예: Violent, Caring 등) — XML에서 콤마로 OR 결합: <disabledWorkTagsOnTransform>Violent, Crafting</disabledWorkTagsOnTransform>
         public WorkTags disabledWorkTagsOnTransform = WorkTags.None;
 
-        // ── 이념 관련(폼별)
+        #endregion
+
+        #region 이념 연동
+
         public bool suppressIdeologyUncoveredThoughts = true; // 기본 on: 하의/상의/머리/얼굴 노출 사상 비활성
 
         /// <summary>이 폼이 대표하는 동물 종족. 이데올로기 숭배(성스러운) 동물과 매칭하여 기분 보너스 부여.</summary>
         [MayRequire("Ludeon.RimWorld.Ideology")]
         public ThingDef linkedSacredAnimalDef;
 
-        // ── [VFX/SFX: 변신 시작/해제] 폼별 이펙트·사운드 (원샷 중심)
+        #endregion
+
+        #region VFX/SFX — 변신 시작/해제 (원샷)
+
         public SoundDef transformEnterSound;     // 변신 시작
         public SoundDef transformExitSound;      // 변신 해제
         public EffecterDef transformEnterEffecter;
@@ -243,7 +280,10 @@ namespace ShapeshifterFramework
         public int transformExitFxDelayTicks = 0;   // Exit  FX 재생 지연
         public int transformFxCooldownTicks = 30;   // 동일 단계 쿨다운(틱)
 
-        // ── [VFX: 앰비언트] 변신 중 지속 재생 이펙트 ──
+        #endregion
+
+        #region VFX — 앰비언트 (변신 중 지속)
+
         /// <summary>변신 중 매 틱 EffectTick으로 유지되는 지속형 Effecter (오라, 연기 등).</summary>
         public EffecterDef ambientEffecter;
         /// <summary>변신 중 주기적으로 스폰되는 일회성 Fleck (스파크, 불꽃 등).</summary>
@@ -253,18 +293,28 @@ namespace ShapeshifterFramework
         /// <summary>ambientFleck 스케일. 기본 1.0.</summary>
         public float ambientFleckScale = 1f;
 
-        // ── [변신 해제 시 부산물] ──
+        #endregion
+
+        #region 변신 해제 시 부산물
+
         /// <summary>변신 해제 시 드랍할 아이템 목록 (허물, 결정 등).</summary>
         public List<ThingDefCountClass> revertDrops;
         /// <summary>변신 해제 시 부여할 hediff 목록. HediffAddEntry로 부위/severity/정책 지정 가능. 프레임워크가 추적/제거하지 않음 (바닐라 수명).</summary>
         public List<HediffAddEntry> revertAddHediffs;
 
-        // 버튼/기타
+        #endregion
+
+        #region UI/기즈모/지속시간
+
         public string gizmoIconPathEnter;   // 변신 버튼 아이콘
         public string gizmoIconPathRevert;  // 해제 버튼 아이콘
         public int? durationTicks = null;      // 지속 틱(null=무제한)
         public bool canRevertVoluntarily = true; // false면 유저가 기즈모로 해제 불가(강제 변신용)
         public bool revertOnDowned = false;      // true면 의식 상실(Downed) 시 변신 자동 해제
+
+        #endregion
+
+        #region 사운드 — 보이스/근접 전투
 
         // 보이스
         public SoundDef soundCall;
@@ -278,12 +328,17 @@ namespace ShapeshifterFramework
         public SoundDef soundMeleeHitBuilding;
         public SoundDef soundMeleeMiss;
 
-        // 혈흔/스미어
+        #endregion
+
+        #region 혈흔/살점
+
         public ThingDef bloodDef;
         public ThingDef bloodSmearDef;
         public FleshTypeDef fleshType;
 
-        // ── 사전 컴파일된 렌더 필터 (ResolveReferences에서 빌드, 세이브 제외) ──
+        #endregion
+
+        #region 내부 — 사전 컴파일 렌더 필터 (ResolveReferences에서 빌드, 세이브 제외)
         [Unsaved] internal CompiledFilterSet _hideApparelLayers;
         [Unsaved] internal CompiledFilterSet _hideApparelDefNames;
         [Unsaved] internal CompiledFilterSet _showApparelLayers;
@@ -298,6 +353,10 @@ namespace ShapeshifterFramework
         [Unsaved] internal CompiledFilterSet _showGeneDefNames;
         [Unsaved] internal CompiledFilterSet _hideHediffDefNames;
         [Unsaved] internal CompiledFilterSet _showHediffDefNames;
+
+        #endregion
+
+        #region ResolveReferences / ConfigErrors
 
         public override void ResolveReferences()
         {
@@ -410,5 +469,7 @@ namespace ShapeshifterFramework
                     if (entry.hediff == null) yield return $"revertAddHediffs[{i}]: null HediffDef reference";
                 }
         }
+
+        #endregion
     }
 }

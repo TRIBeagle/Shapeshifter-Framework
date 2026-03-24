@@ -3,6 +3,12 @@
 // 용도 : pawn.verbTracker에서 네이티브 근접이 제거된 상태이므로, 바닐라 ChooseMeleeVerb가
 //        빈 리스트를 받아 에러를 출력하기 전에 Prefix에서 폼 verb를 직접 반환.
 //        replaceNativeTools=false일 때는 바닐라 실행 후 Postfix에서 power 비교.
+//
+// ── [Verb 선택 흐름 — 3개 패치 협력 구조] ──
+//   1. Patch_VerbTracker_InitVerbsFromZero  : 폼 교체 시 tools를 NativeVerb 풀에 주입/제거 (구성 시점)
+//   2. Patch_Pawn_TryGetAttackVerb           : 공격 시 원거리 우선 → 근접 폴백으로 최적 verb 선정 (선택 시점)
+//   3. ★ 이 파일 (TryGetMeleeVerb)          : 바닐라 근접 경로 안전망 + power 비교 (폴백 시점)
+//   공유 헬퍼: Patch_Pawn_TryGetAttackVerb.FindBestFormMelee()
 
 using HarmonyLib;
 using RimWorld;
