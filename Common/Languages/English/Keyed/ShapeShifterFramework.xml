@@ -1,22 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  
-  <SSF_Command_TransformLabel>Shapeshift: {0}</SSF_Command_TransformLabel>
-  <SSF_Command_TransformDesc>Form: {0}</SSF_Command_TransformDesc>
+
   <SSF_Command_RevertLabel>Revert</SSF_Command_RevertLabel>
   <SSF_Command_RevertDesc>Revert shapeshift.</SSF_Command_RevertDesc>
-  <SSF_Command_RevertTime>{0}s remaining</SSF_Command_RevertTime>
-  <SSF_Command_SwitchLabel>Switch: {0}</SSF_Command_SwitchLabel>
-  <SSF_Command_SwitchDesc>Switch form: {0}</SSF_Command_SwitchDesc>
 
-  <SSF_Menu_ChooseLabel>Shapeshift: Choose form</SSF_Menu_ChooseLabel>
-  <SSF_Menu_ChooseDesc>Select a form to shapeshift into.</SSF_Menu_ChooseDesc>
-  <SSF_Menu_SwitchLabel>Shapeshift: Switch form</SSF_Menu_SwitchLabel>
-  <SSF_Menu_SwitchDesc>Switch to another form.</SSF_Menu_SwitchDesc>
   <SSF_Menu_Blocked>shapeshifting forbids</SSF_Menu_Blocked>
-
-  <SSF_Hediff_FormLabel>Shapeshift: {0}</SSF_Hediff_FormLabel>
-  <SSF_Hediff_FormDesc>Stat changes from {0} transformation.</SSF_Hediff_FormDesc>
 
   <SSF_Inspect_Permanent>Shapeshift: Unlimited</SSF_Inspect_Permanent>
   <SSF_Inspect_Remaining>Shapeshift: {0} remaining</SSF_Inspect_Remaining>
@@ -37,28 +25,25 @@
   <SSF_Message_RevertDueToConditionLost>{0}'s shapeshift reverted: Body condition lost.</SSF_Message_RevertDueToConditionLost>
   <SSF_Message_AlreadyTransformed>Already transformed into another form.</SSF_Message_AlreadyTransformed>
   <SSF_Message_SameFormActive>Already in this form.</SSF_Message_SameFormActive>
-  
-  <SSF_Setting_MaxGizmo_Title>Max shapeshift buttons (inline)</SSF_Setting_MaxGizmo_Title>
-  <SSF_Setting_MaxGizmo_Desc>If the number of forms exceeds this value, they will be collapsed into a dropdown menu.</SSF_Setting_MaxGizmo_Desc>
-  
+
   <SSF_Setting_PortraitScale_Title>Enable portrait scaling</SSF_Setting_PortraitScale_Title>
   <SSF_Setting_PortraitScale_Desc>Applies each form's portraitDrawScale to the info-card portrait. Turn this OFF if it conflicts with UI mods that alter portraits.</SSF_Setting_PortraitScale_Desc>
-  
+
   <SSF_Setting_WeaponScale_Title>Scale held weapons with body</SSF_Setting_WeaponScale_Title>
   <SSF_Setting_WeaponScale_Desc>Scales held weapons uniformly based on the shapeshift body draw scale. Turn this OFF if another mod already scales weapons.</SSF_Setting_WeaponScale_Desc>
-  
+
   <SSF_Setting_ReequipInventory_Title>Auto-reequip from inventory</SSF_Setting_ReequipInventory_Title>
   <SSF_Setting_ReequipInventory_Desc>After reverting, the pawn will automatically reequip weapons and tools stored in their inventory.</SSF_Setting_ReequipInventory_Desc>
-  
+
   <SSF_Setting_ReequipGround_Title>Auto-reequip from ground</SSF_Setting_ReequipGround_Title>
   <SSF_Setting_ReequipGround_Desc>After reverting, the pawn will automatically pick up and reequip previously dropped gear nearby.</SSF_Setting_ReequipGround_Desc>
-  
+
   <SSF_Setting_ForbidItems_Title>Forbid dropped items on transform</SSF_Setting_ForbidItems_Title>
   <SSF_Setting_ForbidItems_Desc>Temporarily marks items dropped during the transformation process as forbidden.</SSF_Setting_ForbidItems_Desc>
-  
+
   <SSF_Setting_VerbToggle_Title>Show auto-attack toggle</SSF_Setting_VerbToggle_Title>
   <SSF_Setting_VerbToggle_Desc>Displays an auto-attack toggle directly on the attack command gizmo.</SSF_Setting_VerbToggle_Desc>
-  
+
   <SSF_Setting_ShapeshiftBar_Title>Show shapeshift status bar</SSF_Setting_ShapeshiftBar_Title>
   <SSF_Setting_ShapeshiftBar_Desc>Displays a progress bar with remaining time and a revert button in the gizmo area while transformed. If disabled, only the revert button is shown.</SSF_Setting_ShapeshiftBar_Desc>
 
@@ -72,20 +57,12 @@
 
   <SSF_Setting_DebugLog_Title>Enable Developer Debug Logs</SSF_Setting_DebugLog_Title>
   <SSF_Setting_DebugLog_Desc>Prints detailed internal framework operations to the RimWorld debug log. Only enable this for mod development or bug reporting.</SSF_Setting_DebugLog_Desc>
-  
-  <SSF_Setting_ResetAll_Title>Reset to defaults</SSF_Setting_ResetAll_Title>
 
-  <SSF_ShiftTarget_NoComp>Cannot affect {0}.</SSF_ShiftTarget_NoComp>
-  <SSF_ShiftTarget_MissingForm>Unknown form: {0}.</SSF_ShiftTarget_MissingForm>
-  <SSF_ShiftTarget_Resisted>{0} resisted the shapeshift.</SSF_ShiftTarget_Resisted>
+  <SSF_Setting_ResetAll_Title>Reset to defaults</SSF_Setting_ResetAll_Title>
 
   <SSF_Fallback_Transform>Shapeshift</SSF_Fallback_Transform>
 
-  <SSF_GizmoDisabled_AlreadyTransformed>Already transformed into {0}. Cannot shift to another form.</SSF_GizmoDisabled_AlreadyTransformed>
-
   <SSF_GizmoDisabled_RaceNotAllowed>This form is not available for {0}.</SSF_GizmoDisabled_RaceNotAllowed>
-
-  <SSF_GizmoDisabled_IdeologyForbidden>Ideology forbids shapeshifting.</SSF_GizmoDisabled_IdeologyForbidden>
 
   <SSF_Message_DurationExtended>{0}'s shapeshift duration has been extended.</SSF_Message_DurationExtended>
   <SSF_Message_NotTransformed>{0} is not currently transformed.</SSF_Message_NotTransformed>
