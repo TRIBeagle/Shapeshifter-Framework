@@ -25,8 +25,18 @@ namespace ShapeshifterFramework.Gizmos
         private static readonly Texture2D BarFilledPermanentTex =
             SolidColorMaterials.NewSolidColorTexture(new Color(0.35f, 0.55f, 0.40f));
 
+        private static readonly Texture2D BarFilledWarningTex =
+            SolidColorMaterials.NewSolidColorTexture(new Color(0.70f, 0.35f, 0.15f));
+
+        private static readonly Texture2D BarFilledCriticalTex =
+            SolidColorMaterials.NewSolidColorTexture(new Color(0.75f, 0.20f, 0.15f));
+
         private static readonly Texture2D BarEmptyTex =
             SolidColorMaterials.NewSolidColorTexture(new Color(0.03f, 0.035f, 0.05f));
+
+        // 경고 임계값
+        private const float WarningThreshold = 0.3f;
+        private const float CriticalThreshold = 0.1f;
 
         // 헤더 버튼 크기
         private const float HeaderBtnSize = 24f;
@@ -163,7 +173,15 @@ namespace ShapeshifterFramework.Gizmos
                 barLabel = _cachedTimeLabel;
             }
 
-            Texture2D fillTex = isPermanent ? BarFilledPermanentTex : BarFilledTex;
+            Texture2D fillTex;
+            if (isPermanent)
+                fillTex = BarFilledPermanentTex;
+            else if (fillPct <= CriticalThreshold)
+                fillTex = BarFilledCriticalTex;
+            else if (fillPct <= WarningThreshold)
+                fillTex = BarFilledWarningTex;
+            else
+                fillTex = BarFilledTex;
             Widgets.FillableBar(barRect, fillPct, fillTex, BarEmptyTex, doBorder: true);
 
             // 바 라벨이 바 너비보다 길면 폰트 축소 (시간 문자열 변경 시에만 재측정)
