@@ -21,7 +21,7 @@ namespace ShapeshifterFramework.Ideology
         /// <summary>상대(otherPawn)가 변신 중이면 활성.</summary>
         protected override ThoughtState CurrentSocialStateInternal(Pawn p, Pawn otherPawn)
         {
-            if (p.Ideo == null) return ThoughtState.Inactive;
+            if (p.Ideo == null || otherPawn == null) return ThoughtState.Inactive;
             if (ShapeshiftRegistry.IsActive(otherPawn))
                 return ThoughtState.ActiveAtStage(0);
             return ThoughtState.Inactive;
