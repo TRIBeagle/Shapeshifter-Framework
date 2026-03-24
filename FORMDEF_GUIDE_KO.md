@@ -135,6 +135,15 @@
 ### 3.3 파츠 오버라이드
 각 파츠(`body`, `head`, `hair`, `beard`, `tattooBody`, `tattooHead`)는 `PartOverrideOption`을 받습니다:
 
+**PartControlMode 동작:**
+| 모드 | 효과 |
+|------|------|
+| `Default` | 바닐라 규칙대로 정상 렌더링. 커스텀 텍스처/색상/셰이더 미적용. |
+| `Hidden` | 파츠가 완전히 보이지 않음 (그래픽 null). 동물 폼에서 인간 머리/헤어 등을 숨길 때 사용. |
+| `Replace` | `replacementTexPath`의 커스텀 텍스처로 교체. 색상 틴트와 셰이더 오버라이드 가능. 수영 중이고 `swimmingReplacementTexPath`가 설정되면 수영 텍스처 사용. |
+
+**성별 오버라이드 우선순위:** `male` 또는 `female` 하위 옵션이 설정되면 해당 성별에서 공통 필드보다 우선. 미설정 시 공통 옵션으로 폴백.
+
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | `mode` | `PartControlMode` | `Default` / `Hidden` / `Replace` |
@@ -203,9 +212,21 @@
 | `weaponEquipLock` | `EquipLockMode` | `Auto` | 동일 |
 | `conflictingGearHandling` | `GearHandling` | `Inventory` | 스폰 장비 충돌 시 기존 장비 처리 |
 
-**EquipLockMode.Auto** 로직:
-- 장비가 Inventory/Drop → 해당 슬롯 잠금 (변신 중 장착 불가)
-- 장비가 Keep → 해당 슬롯 해제
+**GearHandling 동작 (변신 시):**
+| 모드 | 효과 |
+|------|------|
+| `Keep` | 기존 의류/무기를 착용/장비한 상태로 유지. 아무 조치 없음. |
+| `Inventory` | 의류/무기를 벗겨서 폰의 인벤토리로 이동. 인벤토리가 가득 차면 바닥에 드랍. |
+| `Drop` | 의류/무기를 폰 위치의 바닥에 드랍. |
+
+변신 해제 시 프레임워크가 이전에 캡처한 장비를 자동으로 재장착 시도합니다.
+
+**EquipLockMode 동작 (변신 중):**
+| 모드 | 효과 |
+|------|------|
+| `Locked` | 변신 중 해당 슬롯의 장착/해제 불가. UI 메뉴 차단. |
+| `Unlocked` | 변신 중 자유롭게 장착/해제 가능. |
+| `Auto` (기본값) | GearHandling에 따라 결정: **Keep → Unlocked**, **Inventory 또는 Drop → Locked**. |
 
 ```xml
 <apparelOnTransform>Inventory</apparelOnTransform>
@@ -273,7 +294,13 @@
 ```
 
 ### 3.9 유지 조건
-조건 미충족 시 자동 해제. `sustainMode`로 **All** (전부 충족) 또는 **Any** (하나만 충족) 설정.
+조건 미충족 시 자동 해제 (60틱/1초마다 검사).
+
+**SustainMode 동작:**
+| 모드 | 효과 |
+|------|------|
+| `All` (기본값) | 요구사항이 있는 **모든** 카테고리가 동시에 충족되어야 함. 하나라도 실패하면 해제. |
+| `Any` | 요구사항이 있는 카테고리 중 **하나만** 충족되면 유지. 전부 실패해야 해제. |
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
@@ -303,7 +330,14 @@
 | `targetPart` | `BodyPartDef` | null | 특정 신체 부위 |
 | `targetGroups` | `List<BodyPartGroupDef>` | null | 신체 부위 그룹 |
 | `severity` | `float?` | null | 초기 심각도 |
-| `addedPartPolicy` | `AddedPartPolicy` | `ForceAdd` | `ForceAdd` / `StrictFleshOnly` / `RegrowFleshOnly` |
+| `addedPartPolicy` | `AddedPartPolicy` | `ForceAdd` | 인공 장기/의수 헤디프 적용 정책 (아래 참고) |
+
+**AddedPartPolicy 동작** (`addedPartProps`가 있는 인공 장기/의수 헤디프에만 적용):
+| 정책 | 결손 부위 | 기존 인공 장기 | 효과 |
+|------|----------|--------------|------|
+| `ForceAdd` | 부위 복원 후 부착 | 기존 인공 장기 제거 후 부착 | 가장 공격적 — 무조건 강제 부착. |
+| `StrictFleshOnly` | **스킵** (헤디프 미부여) | **스킵** (헤디프 미부여) | 가장 제한적 — 자연 살점만 허용. |
+| `RegrowFleshOnly` | 부위 복원 후 부착 | **스킵** (헤디프 미부여) | 중간 — 결손은 재생하지만 기존 인공 장기는 존중. |
 
 ```xml
 <addHediffs>
@@ -397,7 +431,7 @@
 ### 3.14 이데올로기
 | 필드 | 타입 | 기본값 | 설명 |
 |------|------|--------|------|
-| `suppressIdeologyUncoveredThoughts` | `bool` | `true` | 이데올로기 "노출" 감정 억제 |
+| `suppressIdeologyUncoveredThoughts` | `bool` | `true` | 변신 중 이데올로기 노출 관련 감정 페널티(하의/상의/머리/얼굴 노출) 전부 억제. 동물/몬스터 폼에서 "미개한 벌거벗음" 디버프 방지. |
 | `linkedSacredAnimalDef` | `ThingDef` | `null` | 이 폼이 대표하는 동물 종족. 숭배 동물 일치 시 규율 단계별 기분 (-8 / -3 / +2 / +5 / +8) |
 
 **변신 규율 (5단계):**
@@ -490,7 +524,7 @@
 |------|------|--------|------|
 | `durationTicks` | `int?` | null (영구) | 폼 지속 시간. null = 타이머 없음. |
 | `canRevertVoluntarily` | `bool` | `true` | 해제 기즈모 표시 |
-| `revertOnDowned` | `bool` | `false` | 쓰러짐 시 자동 해제 |
+| `revertOnDowned` | `bool` | `false` | 쓰러짐(의식 상실/무력화) 시 즉시 자동 해제. 매 틱 검사. |
 | `gizmoIconPathEnter` | `string` | null | 변신 기즈모 아이콘 |
 | `gizmoIconPathRevert` | `string` | null | 해제 기즈모 아이콘 |
 

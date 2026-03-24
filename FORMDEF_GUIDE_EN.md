@@ -135,6 +135,15 @@ Power suit / armor transformation. Keeps human appearance and existing gear. Con
 ### 3.3 Part Overrides
 Each part (`body`, `head`, `hair`, `beard`, `tattooBody`, `tattooHead`) accepts a `PartOverrideOption`:
 
+**PartControlMode behavior:**
+| Mode | Effect |
+|------|--------|
+| `Default` | Part renders normally using vanilla rules. No custom texture/color/shader applied. |
+| `Hidden` | Part is completely invisible (graphic set to null). Use for animal forms that hide the human head, hair, etc. |
+| `Replace` | Part uses the custom texture from `replacementTexPath` with optional color tint and shader override. If the pawn is swimming and `swimmingReplacementTexPath` is set, the swimming texture is used instead. |
+
+**Gender override priority:** If `male` or `female` sub-option is set, it takes priority over the common fields for that gender. Unset gender fields fall back to the common option.
+
 | Field | Type | Description |
 |-------|------|-------------|
 | `mode` | `PartControlMode` | `Default` / `Hidden` / `Replace` |
@@ -207,9 +216,21 @@ Control which apparel, weapons, genes, and hediffs are rendered during transform
 | `weaponEquipLock` | `EquipLockMode` | `Auto` | Same options |
 | `conflictingGearHandling` | `GearHandling` | `Inventory` | Where spawned gear conflicts go |
 
-**EquipLockMode.Auto** logic:
-- If gear goes to Inventory/Drop → lock that slot (prevent equipping during transform)
-- If gear is Kept → unlock that slot
+**GearHandling behavior (on transform):**
+| Mode | Effect |
+|------|--------|
+| `Keep` | Existing apparel/weapons stay worn/equipped. No action taken. |
+| `Inventory` | Items are removed from body and moved to pawn's inventory. If inventory is full, items are dropped to ground instead. |
+| `Drop` | Items are dropped on the ground at the pawn's position. |
+
+On revert, the framework attempts to re-equip all previously captured gear.
+
+**EquipLockMode behavior (during transform):**
+| Mode | Effect |
+|------|--------|
+| `Locked` | Pawn cannot equip or remove items in that slot during transformation. UI float menus are blocked. |
+| `Unlocked` | Pawn can freely equip/remove items during transformation. |
+| `Auto` (default) | Resolves based on GearHandling: **Keep → Unlocked**, **Inventory or Drop → Locked**. |
 
 ```xml
 <apparelOnTransform>Inventory</apparelOnTransform>
@@ -277,7 +298,13 @@ Add extra render layers (ears, tails, wings, etc.) using vanilla `PawnRenderNode
 ```
 
 ### 3.9 Sustain Conditions
-Form auto-reverts when conditions are no longer met. `sustainMode` controls whether **All** or **Any** condition must be satisfied.
+Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 second).
+
+**SustainMode behavior:**
+| Mode | Effect |
+|------|--------|
+| `All` (default) | **Every** category with requirements must be satisfied simultaneously. If any one fails, form reverts. |
+| `Any` | **At least one** category with requirements must be satisfied. Form reverts only if all fail. |
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -307,7 +334,14 @@ Form auto-reverts when conditions are no longer met. `sustainMode` controls whet
 | `targetPart` | `BodyPartDef` | null | Specific body part |
 | `targetGroups` | `List<BodyPartGroupDef>` | null | Body part groups to match |
 | `severity` | `float?` | null | Initial severity |
-| `addedPartPolicy` | `AddedPartPolicy` | `ForceAdd` | `ForceAdd` / `StrictFleshOnly` / `RegrowFleshOnly` |
+| `addedPartPolicy` | `AddedPartPolicy` | `ForceAdd` | Policy for prosthetic/artificial part hediffs (see below) |
+
+**AddedPartPolicy behavior** (only applies to hediffs with `addedPartProps`, e.g., prosthetic limbs):
+| Policy | Missing part | Artificial part exists | Effect |
+|--------|-------------|----------------------|--------|
+| `ForceAdd` | Restores part, then attaches | Removes existing artificial, then attaches | Most aggressive — always forces the part on. |
+| `StrictFleshOnly` | **Skips** (no hediff added) | **Skips** (no hediff added) | Most restrictive — only natural flesh allowed. |
+| `RegrowFleshOnly` | Restores part, then attaches | **Skips** (no hediff added) | Middle ground — regrows missing flesh but respects existing prosthetics. |
 
 ```xml
 <addHediffs>
@@ -401,7 +435,7 @@ Form auto-reverts when conditions are no longer met. `sustainMode` controls whet
 ### 3.14 Ideology
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `suppressIdeologyUncoveredThoughts` | `bool` | `true` | Suppress "uncovered" thoughts from Ideology |
+| `suppressIdeologyUncoveredThoughts` | `bool` | `true` | Suppress all Ideology nudity/exposure thought penalties (groin, chest, hair, face uncovered) while transformed. Prevents animal/monster forms from triggering "naked savage" debuffs. |
 | `linkedSacredAnimalDef` | `ThingDef` | `null` | Animal race this form represents. Mood varies by precept stage when matching venerated animal (-8 / -3 / +2 / +5 / +8) |
 
 **Shapeshifting Precept (5 stages):**
@@ -494,7 +528,7 @@ Persistent effects during the transformation.
 |-------|------|---------|-------------|
 | `durationTicks` | `int?` | null (permanent) | Form duration. null = no timer. |
 | `canRevertVoluntarily` | `bool` | `true` | Show revert gizmo |
-| `revertOnDowned` | `bool` | `false` | Auto-revert when downed |
+| `revertOnDowned` | `bool` | `false` | Auto-revert immediately when pawn becomes downed (unconscious/incapacitated). Checked every tick. |
 | `gizmoIconPathEnter` | `string` | null | Custom enter gizmo icon |
 | `gizmoIconPathRevert` | `string` | null | Custom revert gizmo icon |
 
