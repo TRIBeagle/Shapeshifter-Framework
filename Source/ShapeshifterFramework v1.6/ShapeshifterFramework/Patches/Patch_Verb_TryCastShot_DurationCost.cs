@@ -52,7 +52,7 @@ namespace ShapeshifterFramework.Patches
             if (ShapeshifterFrameworkMod.Settings?.enableDebugLog == true)
             {
                 string verbName = __instance.verbProps?.label ?? __instance.GetType().Name;
-                Log.Message($"[SSF] Verb '{verbName}' 사용 — 변신 시간 {cost}틱 차감 (남은: {core.RemainingShapeshiftTicks}틱)");
+                Log.Message($"[SSF] Verb '{verbName}' used — deducted {cost} ticks (remaining: {core.RemainingShapeshiftTicks} ticks)");
             }
         }
     }

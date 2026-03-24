@@ -36,7 +36,7 @@ namespace ShapeshifterFramework.Comps
 
             if (extendTicks == 0)
             {
-                Log.Error("[SSF] IngestionOutcomeDoer_ExtendShapeshift: extendTicks가 0입니다.");
+                Log.Error("[SSF] IngestionOutcomeDoer_ExtendShapeshift: extendTicks is 0.");
                 return;
             }
 

@@ -35,7 +35,7 @@ namespace ShapeshifterFramework.Comps
 
             if (Props.extendTicks == 0)
             {
-                Log.Error("[SSF] CompUseEffect_ExtendShapeshift: extendTicks가 0입니다.");
+                Log.Error("[SSF] CompUseEffect_ExtendShapeshift: extendTicks is 0.");
                 return;
             }
 
