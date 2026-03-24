@@ -77,11 +77,7 @@ namespace ShapeshifterFramework.Hediffs
                             TryDropThing(ap, pos, map);
                             dropped = ap;
                         }
-
-                        if (st != null && st.forbidDroppedItemsOnTransform && dropped != null && dropped.Spawned)
-                        {
-                            dropped.SetForbidden(true);
-                        }
+                        TryForbidDropped(dropped);
                     }
                 }
             }
@@ -116,11 +112,7 @@ namespace ShapeshifterFramework.Hediffs
                             TryDropThing(eq, pos, map);
                             dropped = eq;
                         }
-
-                        if (st != null && st.forbidDroppedItemsOnTransform && dropped != null && dropped.Spawned)
-                        {
-                            dropped.SetForbidden(true);
-                        }
+                        TryForbidDropped(dropped);
                     }
                 }
             }
@@ -150,20 +142,7 @@ namespace ShapeshifterFramework.Hediffs
                                 if (pawn.RaceProps?.body != null && !ApparelUtility.CanWearTogether(apparelDef, existingAp.def, pawn.RaceProps.body))
                                 {
                                     pawn.apparel.Remove(existingAp);
-                                    if (form.conflictingGearHandling == GearHandling.Drop)
-                                    {
-                                        TryDropThing(existingAp, pawn.PositionHeld, pawn.MapHeld);
-                                    }
-                                    else
-                                    {
-                                        if (pawn.inventory?.innerContainer != null && pawn.inventory.innerContainer.TryAdd(existingAp, false)) { }
-                                        else TryDropThing(existingAp, pawn.PositionHeld, pawn.MapHeld);
-                                    }
-
-                                    if (existingAp.Spawned && ShapeshifterFrameworkMod.Settings != null && ShapeshifterFrameworkMod.Settings.forbidDroppedItemsOnTransform)
-                                    {
-                                        existingAp.SetForbidden(true);
-                                    }
+                                    HandleConflictingGear(existingAp, pawn, form.conflictingGearHandling);
 
                                     if (!prevApparels.Contains(existingAp)) prevApparels.Add(existingAp);
                                 }
@@ -199,21 +178,7 @@ namespace ShapeshifterFramework.Hediffs
                         if ((sourceItems == null || !sourceItems.Contains(existingWep)) && !generatedWeapons.Contains(existingWep))
                         {
                             pawn.equipment.Remove(existingWep);
-
-                            if (form.conflictingGearHandling == GearHandling.Drop)
-                            {
-                                TryDropThing(existingWep, pawn.PositionHeld, pawn.MapHeld);
-                            }
-                            else
-                            {
-                                if (pawn.inventory?.innerContainer != null && pawn.inventory.innerContainer.TryAdd(existingWep, false)) { }
-                                else TryDropThing(existingWep, pawn.PositionHeld, pawn.MapHeld);
-                            }
-
-                            if (existingWep.Spawned && ShapeshifterFrameworkMod.Settings != null && ShapeshifterFrameworkMod.Settings.forbidDroppedItemsOnTransform)
-                            {
-                                existingWep.SetForbidden(true);
-                            }
+                            HandleConflictingGear(existingWep, pawn, form.conflictingGearHandling);
 
                             if (!prevWeapons.Contains(existingWep)) prevWeapons.Add(existingWep);
                         }
@@ -244,6 +209,30 @@ namespace ShapeshifterFramework.Hediffs
                     }
                 }
             }
+        }
+
+        /// <summary>설정에 따라 드랍된 아이템을 금지(Forbid) 처리.</summary>
+        static void TryForbidDropped(Thing dropped)
+        {
+            if (dropped == null || !dropped.Spawned) return;
+            var st = ShapeshifterFrameworkMod.Settings;
+            if (st != null && st.forbidDroppedItemsOnTransform)
+                dropped.SetForbidden(true);
+        }
+
+        /// <summary>충돌 장비 처리 — Drop 모드면 바닥에, 아니면 인벤토리에 시도 후 실패 시 바닥에.</summary>
+        static void HandleConflictingGear(Thing item, Pawn pawn, GearHandling handling)
+        {
+            if (handling == GearHandling.Drop)
+            {
+                TryDropThing(item, pawn.PositionHeld, pawn.MapHeld);
+            }
+            else
+            {
+                if (pawn.inventory?.innerContainer == null || !pawn.inventory.innerContainer.TryAdd(item, false))
+                    TryDropThing(item, pawn.PositionHeld, pawn.MapHeld);
+            }
+            TryForbidDropped(item);
         }
 
         static void TryDropThing(Thing t, IntVec3 pos, Map map)

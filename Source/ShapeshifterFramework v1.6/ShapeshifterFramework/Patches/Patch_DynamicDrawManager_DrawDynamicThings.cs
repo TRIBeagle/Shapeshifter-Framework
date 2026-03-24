@@ -16,6 +16,13 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPriority(Priority.Last)]
     public static class Patch_DynamicDrawManager_DrawDynamicThings
     {
+        /// <summary>추가 드로우가 필요한 최소 bodyDrawScale (이하는 바닐라 1셀 확장으로 충분).</summary>
+        private const float ExtraDrawMinScale = 1.5f;
+        /// <summary>확대 마진 최솟값.</summary>
+        private const int ExtraMarginMin = 2;
+        /// <summary>확대 마진 최댓값.</summary>
+        private const int ExtraMarginMax = 5;
+
         [HarmonyPostfix]
         static void Postfix(Map ___map)
         {
@@ -43,7 +50,7 @@ namespace ShapeshifterFramework.Patches
                     if (form == null) continue;
 
                     float sBody = form.bodyDrawScale.HasValue ? Mathf.Max(0.01f, form.bodyDrawScale.Value) : 1f;
-                    if (sBody <= 1.5f) continue; // 1.5배 이하는 1셀 확장으로 충분
+                    if (sBody <= ExtraDrawMinScale) continue;
 
                     IntVec3 pos = pawn.Position;
 
@@ -51,7 +58,7 @@ namespace ShapeshifterFramework.Patches
                     if (normalRect.Contains(pos)) continue;
 
                     // 확대된 범위 계산: bodyDrawScale에 비례 (최소 2, 최대 5)
-                    int extraMargin = Mathf.Clamp(Mathf.CeilToInt(sBody), 2, 5);
+                    int extraMargin = Mathf.Clamp(Mathf.CeilToInt(sBody), ExtraMarginMin, ExtraMarginMax);
                     CellRect extRect = viewRect.ExpandedBy(extraMargin);
 
                     if (extRect.Contains(pos))

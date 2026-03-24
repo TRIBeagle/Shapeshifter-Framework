@@ -58,15 +58,9 @@ namespace ShapeshifterFramework.Patches
                 var sb = new StringBuilder();
                 sb.Append("ShotBy".Translate(sel.LabelShort, sel) + ": ");
 
-                if (picked.CanHitTarget(target))
-                {
-                    var report = ShotReport.HitReportFor(picked.caster, picked, target);
-                    sb.Append(report.GetTextReadout());
-                }
-                else
-                {
-                    sb.AppendLine("CannotHit".Translate());
-                }
+                // picked는 위 루프에서 CanHitTarget 통과한 verb이므로 재검사 불필요
+                var report = ShotReport.HitReportFor(picked.caster, picked, target);
+                sb.Append(report.GetTextReadout());
 
                 // 야생동물 격분 경고
                 if (target is Pawn tp && tp.Faction == null && !tp.InAggroMentalState && tp.AnimalOrWildMan())

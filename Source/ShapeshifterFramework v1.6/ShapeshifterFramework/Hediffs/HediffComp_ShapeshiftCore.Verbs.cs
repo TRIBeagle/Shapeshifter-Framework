@@ -229,31 +229,37 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>verb 명령 라벨 반환.</summary>
         public string GetVerbLabel(int index, Verb v, bool preferToggleLabel)
         {
+            return GetVerbLabel(index, v, preferToggleLabel, FindGizmoOption(index, v));
+        }
+
+        /// <summary>verb 명령 라벨 반환 (조회 결과 재사용).</summary>
+        private string GetVerbLabel(int index, Verb v, bool preferToggleLabel, VerbGizmoOption o)
+        {
             var vp = v?.verbProps;
-            var o = FindGizmoOption(index, v);
             if (o != null)
             {
                 string s = preferToggleLabel ? (o.toggleLabel ?? o.label) : o.label;
                 if (!string.IsNullOrEmpty(s)) return s.Translate().CapitalizeFirst();
             }
 
-            string __label = string.IsNullOrEmpty(vp?.label) ? "SSF_Verb_Attack".Translate() : vp.label.Translate();
-            return __label.CapitalizeFirst();
+            string label = string.IsNullOrEmpty(vp?.label) ? "SSF_Verb_Attack".Translate() : vp.label.Translate();
+            return label.CapitalizeFirst();
         }
 
         /// <summary>verb 명령/토글 설명 반환.</summary>
         public string GetVerbDesc(int index, Verb v, bool forToggle)
         {
-            var o = FindGizmoOption(index, v);
-            string desc;
+            return GetVerbDesc(index, v, forToggle, FindGizmoOption(index, v));
+        }
+
+        /// <summary>verb 명령/토글 설명 반환 (조회 결과 재사용).</summary>
+        private string GetVerbDesc(int index, Verb v, bool forToggle, VerbGizmoOption o)
+        {
+            string desc = null;
             if (o != null)
             {
                 string s = forToggle ? (o.toggleDesc ?? o.desc) : o.desc;
                 desc = !string.IsNullOrEmpty(s) ? s.Translate() : null;
-            }
-            else
-            {
-                desc = null;
             }
 
             if (desc == null)
@@ -290,17 +296,30 @@ namespace ShapeshifterFramework.Hediffs
             return -1;
         }
 
-        /// <summary>verbGizmoOptions의 iconPath에서 아이콘 로드.</summary>
+        // verb 아이콘 텍스처 캐시 — iconPath별 1회만 ContentFinder 호출
+        private static readonly Dictionary<string, Texture2D> _verbIconCache =
+            new Dictionary<string, Texture2D>();
+
+        /// <summary>verbGizmoOptions의 iconPath에서 아이콘 로드 (캐시).</summary>
         private Texture2D GetVerbIcon(int index, Verb v)
         {
-            var o = FindGizmoOption(index, v);
-            if (o != null)
+            return GetVerbIcon(index, v, FindGizmoOption(index, v));
+        }
+
+        /// <summary>verbGizmoOptions의 iconPath에서 아이콘 로드 (조회 결과 재사용, 캐시).</summary>
+        private Texture2D GetVerbIcon(int index, Verb v, VerbGizmoOption o)
+        {
+            if (o == null) return null;
+            string path = o.iconPath;
+            if (string.IsNullOrEmpty(path)) return null;
+
+            Texture2D tex;
+            if (!_verbIconCache.TryGetValue(path, out tex))
             {
-                string path = o.iconPath;
-                if (!string.IsNullOrEmpty(path))
-                    return ContentFinder<Texture2D>.Get(path, reportFailure: false);
+                tex = ContentFinder<Texture2D>.Get(path, reportFailure: false);
+                _verbIconCache[path] = tex;
             }
-            return null;
+            return tex;
         }
     }
 }

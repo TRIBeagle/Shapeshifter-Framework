@@ -67,13 +67,16 @@ namespace ShapeshifterFramework.Hediffs
 
                 int idx = i;
 
+                // FindGizmoOption 1회 조회 후 label/desc/icon에 재사용
+                var gizOpt = FindGizmoOption(idx, v);
+
                 bool projectileOk = !(v is Verb_LaunchProjectile) || v.verbProps.defaultProjectile != null;
 
                 var cmd = new Command_VerbTarget
                 {
-                    defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: false),
-                    defaultDesc = GetVerbDesc(idx, v, forToggle: false),
-                    icon = GetVerbIcon(idx, v) ?? v.UIIcon,
+                    defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: false, gizOpt),
+                    defaultDesc = GetVerbDesc(idx, v, forToggle: false, gizOpt),
+                    icon = GetVerbIcon(idx, v, gizOpt) ?? v.UIIcon,
                     verb = v,
                 };
                 if (!projectileOk)
@@ -91,9 +94,9 @@ namespace ShapeshifterFramework.Hediffs
                 {
                     var tgl = new Command_Toggle
                     {
-                        defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: true),
-                        defaultDesc = GetVerbDesc(idx, v, forToggle: true),
-                        icon = GetVerbIcon(idx, v) ?? v.UIIcon,
+                        defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: true, gizOpt),
+                        defaultDesc = GetVerbDesc(idx, v, forToggle: true, gizOpt),
+                        icon = GetVerbIcon(idx, v, gizOpt) ?? v.UIIcon,
                         isActive = () => IsAutoAttackEnabled(idx, v),
                         toggleAction = () => ToggleAutoAttack(idx, v),
                         groupable = false,

@@ -11,9 +11,12 @@ namespace ShapeshifterFramework.Hediffs
     /// <summary>변신 폼 활성 상태를 나타내는 헤디프. 기즈모를 Core에 위임.</summary>
     public class Hediff_ShapeshiftForm : HediffWithComps
     {
-        /// <summary>이 Hediff에 부착된 HediffComp_ShapeshiftCore 접근.</summary>
+        // TryGetComp는 comps 리스트 선형 탐색 → 매 GetGizmos 호출마다 반복되므로 캐시
+        private HediffComp_ShapeshiftCore _cachedCore;
+
+        /// <summary>이 Hediff에 부착된 HediffComp_ShapeshiftCore 접근 (캐시).</summary>
         public HediffComp_ShapeshiftCore Core =>
-            this.TryGetComp<HediffComp_ShapeshiftCore>();
+            _cachedCore ?? (_cachedCore = this.TryGetComp<HediffComp_ShapeshiftCore>());
 
         /// <summary>기즈모 생성 — Core에 위임.</summary>
         public override IEnumerable<Gizmo> GetGizmos()

@@ -30,49 +30,49 @@ namespace ShapeshifterFramework.Hediffs
 
             Scribe_Values.Look(ref hasSavedColors, "hasSavedColors", false);
 
-            Color __tmpHairColor = originalHairColor ?? default;
-            bool __hasHairColor = originalHairColor.HasValue;
-            Scribe_Values.Look(ref __hasHairColor, "hasOriginalHairColor", false);
-            Scribe_Values.Look(ref __tmpHairColor, "originalHairColor");
+            Color tmpHairColor = originalHairColor ?? default;
+            bool hasHairColor = originalHairColor.HasValue;
+            Scribe_Values.Look(ref hasHairColor, "hasOriginalHairColor", false);
+            Scribe_Values.Look(ref tmpHairColor, "originalHairColor");
             if (Scribe.mode == LoadSaveMode.LoadingVars)
-                originalHairColor = __hasHairColor ? __tmpHairColor : (Color?)null;
+                originalHairColor = hasHairColor ? tmpHairColor : (Color?)null;
 
-            Color __tmpSkinColor = originalSkinColor ?? default;
-            bool __hasSkinColor = originalSkinColor.HasValue;
-            Scribe_Values.Look(ref __hasSkinColor, "hasOriginalSkinColor", false);
-            Scribe_Values.Look(ref __tmpSkinColor, "originalSkinColor");
+            Color tmpSkinColor = originalSkinColor ?? default;
+            bool hasSkinColor = originalSkinColor.HasValue;
+            Scribe_Values.Look(ref hasSkinColor, "hasOriginalSkinColor", false);
+            Scribe_Values.Look(ref tmpSkinColor, "originalSkinColor");
             if (Scribe.mode == LoadSaveMode.LoadingVars)
-                originalSkinColor = __hasSkinColor ? __tmpSkinColor : (Color?)null;
+                originalSkinColor = hasSkinColor ? tmpSkinColor : (Color?)null;
 
             // Def 리스트
 
-            List<AbilityDef> __tmpAbilities = null;
-            if (Scribe.mode == LoadSaveMode.Saving) __tmpAbilities = tempAddedAbilities;
-            Scribe_Collections.Look(ref __tmpAbilities, "tempAddedAbilities", LookMode.Def);
+            List<AbilityDef> tmpAbilities = null;
+            if (Scribe.mode == LoadSaveMode.Saving) tmpAbilities = tempAddedAbilities;
+            Scribe_Collections.Look(ref tmpAbilities, "tempAddedAbilities", LookMode.Def);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 tempAddedAbilities.Clear();
-                if (__tmpAbilities != null) tempAddedAbilities.AddRange(__tmpAbilities);
+                if (tmpAbilities != null) tempAddedAbilities.AddRange(tmpAbilities);
             }
 
-            List<HediffDef> __tmpHediffDefs = null;
-            if (Scribe.mode == LoadSaveMode.Saving) __tmpHediffDefs = tempAddedHediffsDefCache;
-            Scribe_Collections.Look(ref __tmpHediffDefs, "tempAddedHediffsDefCache", LookMode.Def);
+            List<HediffDef> tmpHediffDefs = null;
+            if (Scribe.mode == LoadSaveMode.Saving) tmpHediffDefs = tempAddedHediffsDefCache;
+            Scribe_Collections.Look(ref tmpHediffDefs, "tempAddedHediffsDefCache", LookMode.Def);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 tempAddedHediffsDefCache.Clear();
-                if (__tmpHediffDefs != null) tempAddedHediffsDefCache.AddRange(__tmpHediffDefs);
+                if (tmpHediffDefs != null) tempAddedHediffsDefCache.AddRange(tmpHediffDefs);
             }
 
             // Reference 리스트 - hediff
 
-            List<Hediff> __tmpHediffs = null;
-            if (Scribe.mode == LoadSaveMode.Saving) __tmpHediffs = tempAddedHediffs;
-            Scribe_Collections.Look(ref __tmpHediffs, "tempAddedHediffs", LookMode.Reference);
+            List<Hediff> tmpHediffs = null;
+            if (Scribe.mode == LoadSaveMode.Saving) tmpHediffs = tempAddedHediffs;
+            Scribe_Collections.Look(ref tmpHediffs, "tempAddedHediffs", LookMode.Reference);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 tempAddedHediffs.Clear();
-                __tmpHediffsLoad = __tmpHediffs;
+                tmpHediffsLoad = tmpHediffs;
             }
 
             // prevApparels - ThingID 문자열 저장
@@ -91,7 +91,7 @@ namespace ShapeshifterFramework.Hediffs
                 List<string> apIds = null;
                 Scribe_Collections.Look(ref apIds, "prevApparelIds", LookMode.Value);
                 prevApparels.Clear();
-                __tmpPrevApIds = apIds != null ? new HashSet<string>(apIds) : null;
+                tmpPrevApIds = apIds != null ? new HashSet<string>(apIds) : null;
             }
 
             // prevWeapons - ThingID 문자열 저장
@@ -110,18 +110,18 @@ namespace ShapeshifterFramework.Hediffs
                 List<string> wpIds = null;
                 Scribe_Collections.Look(ref wpIds, "prevWeaponIds", LookMode.Value);
                 prevWeapons.Clear();
-                __tmpPrevWpIds = wpIds != null ? new HashSet<string>(wpIds) : null;
+                tmpPrevWpIds = wpIds != null ? new HashSet<string>(wpIds) : null;
             }
 
             // Deep 리스트
 
-            List<ShapeshiftPartRestoreRecord> __tmpRestore = null;
-            if (Scribe.mode == LoadSaveMode.Saving) __tmpRestore = tempPartRestoreRecords;
-            Scribe_Collections.Look(ref __tmpRestore, "tempPartRestoreRecords", LookMode.Deep);
+            List<ShapeshiftPartRestoreRecord> tmpRestore = null;
+            if (Scribe.mode == LoadSaveMode.Saving) tmpRestore = tempPartRestoreRecords;
+            Scribe_Collections.Look(ref tmpRestore, "tempPartRestoreRecords", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 tempPartRestoreRecords.Clear();
-                if (__tmpRestore != null) tempPartRestoreRecords.AddRange(__tmpRestore);
+                if (tmpRestore != null) tempPartRestoreRecords.AddRange(tmpRestore);
             }
 
             // verbAutoToggle 딕셔너리
@@ -158,19 +158,19 @@ namespace ShapeshifterFramework.Hediffs
             if (generatedWeapons != null) generatedWeapons.RemoveAll(x => x == null);
             else generatedWeapons = new List<ThingWithComps>();
 
-            if (__tmpHediffsLoad != null)
+            if (tmpHediffsLoad != null)
             {
                 int lostCount = 0;
-                for (int i = 0; i < __tmpHediffsLoad.Count; i++)
+                for (int i = 0; i < tmpHediffsLoad.Count; i++)
                 {
-                    if (__tmpHediffsLoad[i] != null)
-                        tempAddedHediffs.Add(__tmpHediffsLoad[i]);
+                    if (tmpHediffsLoad[i] != null)
+                        tempAddedHediffs.Add(tmpHediffsLoad[i]);
                     else
                         lostCount++;
                 }
                 if (lostCount > 0)
                     Log.Warning($"[SSF] {lostCount} hediff reference(s) lost during load for pawn {Pawn?.Name}. Revert may leave orphaned hediffs.");
-                __tmpHediffsLoad = null;
+                tmpHediffsLoad = null;
             }
             else
             {
@@ -268,7 +268,7 @@ namespace ShapeshifterFramework.Hediffs
         internal void ResolveGearFromIds(Pawn pawn)
         {
             needsGearResolve = false;
-            if (__tmpPrevApIds == null && __tmpPrevWpIds == null) return;
+            if (tmpPrevApIds == null && tmpPrevWpIds == null) return;
 
             // 1차: 인벤토리 탐색
             if (pawn.inventory?.innerContainer != null)
@@ -276,15 +276,15 @@ namespace ShapeshifterFramework.Hediffs
                 for (int i = 0; i < pawn.inventory.innerContainer.Count; i++)
                 {
                     var t = pawn.inventory.innerContainer[i];
-                    if (__tmpPrevApIds != null && __tmpPrevApIds.Contains(t.ThingID) && t is Apparel ap)
+                    if (tmpPrevApIds != null && tmpPrevApIds.Contains(t.ThingID) && t is Apparel ap)
                     {
                         prevApparels.Add(ap);
-                        __tmpPrevApIds.Remove(t.ThingID);
+                        tmpPrevApIds.Remove(t.ThingID);
                     }
-                    else if (__tmpPrevWpIds != null && __tmpPrevWpIds.Contains(t.ThingID) && t is ThingWithComps twc)
+                    else if (tmpPrevWpIds != null && tmpPrevWpIds.Contains(t.ThingID) && t is ThingWithComps twc)
                     {
                         prevWeapons.Add(twc);
-                        __tmpPrevWpIds.Remove(t.ThingID);
+                        tmpPrevWpIds.Remove(t.ThingID);
                     }
                 }
             }
@@ -307,12 +307,12 @@ namespace ShapeshifterFramework.Hediffs
                 }
             }
 
-            if (__tmpPrevApIds != null && __tmpPrevApIds.Count > 0)
-                Log.Warning($"[SSF] {__tmpPrevApIds.Count} prev apparel(s) could not be resolved for {pawn?.Name}. Items may be lost on revert.");
-            if (__tmpPrevWpIds != null && __tmpPrevWpIds.Count > 0)
-                Log.Warning($"[SSF] {__tmpPrevWpIds.Count} prev weapon(s) could not be resolved for {pawn?.Name}. Items may be lost on revert.");
-            __tmpPrevApIds = null;
-            __tmpPrevWpIds = null;
+            if (tmpPrevApIds != null && tmpPrevApIds.Count > 0)
+                Log.Warning($"[SSF] {tmpPrevApIds.Count} prev apparel(s) could not be resolved for {pawn?.Name}. Items may be lost on revert.");
+            if (tmpPrevWpIds != null && tmpPrevWpIds.Count > 0)
+                Log.Warning($"[SSF] {tmpPrevWpIds.Count} prev weapon(s) could not be resolved for {pawn?.Name}. Items may be lost on revert.");
+            tmpPrevApIds = null;
+            tmpPrevWpIds = null;
         }
 
         /// <summary>Thing 리스트에서 ThingID 매칭으로 장비 참조 복원.</summary>
@@ -323,15 +323,15 @@ namespace ShapeshifterFramework.Hediffs
             {
                 var t = things[i];
                 if (t == null) continue;
-                if (__tmpPrevApIds != null && __tmpPrevApIds.Count > 0 && __tmpPrevApIds.Contains(t.ThingID) && t is Apparel ap)
+                if (tmpPrevApIds != null && tmpPrevApIds.Count > 0 && tmpPrevApIds.Contains(t.ThingID) && t is Apparel ap)
                 {
                     prevApparels.Add(ap);
-                    __tmpPrevApIds.Remove(t.ThingID);
+                    tmpPrevApIds.Remove(t.ThingID);
                 }
-                else if (__tmpPrevWpIds != null && __tmpPrevWpIds.Count > 0 && __tmpPrevWpIds.Contains(t.ThingID) && t is ThingWithComps twc)
+                else if (tmpPrevWpIds != null && tmpPrevWpIds.Count > 0 && tmpPrevWpIds.Contains(t.ThingID) && t is ThingWithComps twc)
                 {
                     prevWeapons.Add(twc);
-                    __tmpPrevWpIds.Remove(t.ThingID);
+                    tmpPrevWpIds.Remove(t.ThingID);
                 }
             }
         }

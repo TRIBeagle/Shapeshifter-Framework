@@ -78,7 +78,7 @@ namespace ShapeshifterFramework.Utilities
                                 if (core.isTransformed && core.currentForm != null)
                                 {
                                     ShapeshiftRegistry.Register(pawns[i], core);
-                                    HediffComp_ShapeshiftCore.ReapplyRuntimeCaches(pawns[i], core.currentForm);
+                                    HediffComp_ShapeshiftCore.ApplyRuntimeCaches(pawns[i], core.currentForm);
                                 }
                             }
                         }

@@ -90,9 +90,9 @@ namespace ShapeshifterFramework.Hediffs
         private bool _isApplyingOrRemoving;
 
         // PostLoadInit에서 Reference 연결 완료 후 AddRange하기 위한 임시 보관 필드
-        private List<Hediff> __tmpHediffsLoad = null;
-        private HashSet<string> __tmpPrevApIds = null;
-        private HashSet<string> __tmpPrevWpIds = null;
+        private List<Hediff> tmpHediffsLoad = null;
+        private HashSet<string> tmpPrevApIds = null;
+        private HashSet<string> tmpPrevWpIds = null;
         private bool needsGearResolve;
 
         // 파츠 복원 추적
@@ -694,14 +694,17 @@ namespace ShapeshifterFramework.Hediffs
 
         #region 캐시/그래픽/버브 재초기화
 
-        /// <summary>런타임 캐시 재등록.</summary>
-        public static void ReapplyRuntimeCaches(Pawn pawn, ShapeshiftFormDef form)
+        /// <summary>VerbTracker.AllVerbs getter 접근으로 lazy init을 강제 트리거.</summary>
+        private static void ForceVerbInit(VerbTracker vt)
         {
-            ApplyRuntimeCaches(pawn, form);
+            // AllVerbs getter는 내부적으로 verbsNeedReinitOnLoad 플래그 시 InitVerbsFromZero를 호출
+            // discard 변수 대신 명시적 헬퍼로 의도를 명확히 표현
+            if (vt.AllVerbs == null) { /* getter 사이드이펙트만 필요 */ }
         }
 
+
         /// <summary>런타임 캐시 등록(사운드/혈흔/FleshType).</summary>
-        private static void ApplyRuntimeCaches(Pawn pawn, ShapeshiftFormDef form)
+        public static void ApplyRuntimeCaches(Pawn pawn, ShapeshiftFormDef form)
         {
             if (pawn == null || form == null) return;
 
@@ -728,45 +731,46 @@ namespace ShapeshifterFramework.Hediffs
                 ShapeshiftRegistry.TryGet(pawn, out comp, out _);
             }
 
-            try { pawn.health?.capacities?.Notify_CapacityLevelsDirty(); } catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (Capacity) error: {ex}"); }
-            try { pawn.health?.hediffSet?.DirtyCache(); } catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (Hediff) error: {ex}"); }
-            try { pawn.Drawer?.renderer?.SetAllGraphicsDirty(); } catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (Graphics) error: {ex}"); }
-            try { PortraitsCache.SetDirty(pawn); } catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (Portrait) error: {ex}"); }
-            try { GlobalTextureAtlasManager.TryMarkPawnFrameSetDirty(pawn); } catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (Atlas) error: {ex}"); }
-            try { pawn.Notify_DisabledWorkTypesChanged(); } catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (WorkTypes) error: {ex}"); }
-
+            // ── 바닐라 캐시/그래픽 갱신 ──
             try
             {
-                if (forceReinitPawnVerbs)
+                pawn.health?.capacities?.Notify_CapacityLevelsDirty();
+                pawn.health?.hediffSet?.DirtyCache();
+                pawn.Drawer?.renderer?.SetAllGraphicsDirty();
+                PortraitsCache.SetDirty(pawn);
+                GlobalTextureAtlasManager.TryMarkPawnFrameSetDirty(pawn);
+                pawn.Notify_DisabledWorkTypesChanged();
+            }
+            catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (cache/graphics) error: {ex}"); }
+
+            // ── 바닐라 Verb 재초기화 ──
+            try
+            {
+                if (forceReinitPawnVerbs && pawn.verbTracker != null)
                 {
-                    pawn.verbTracker?.VerbsNeedReinitOnLoad();
-                    var _ = pawn.verbTracker?.AllVerbs;
+                    pawn.verbTracker.VerbsNeedReinitOnLoad();
+                    // AllVerbs getter 접근으로 lazy init 트리거 (의도적 사이드이펙트)
+                    ForceVerbInit(pawn.verbTracker);
                 }
             }
-            catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (Vanilla Verbs) error: {ex}"); }
+            catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (vanilla verbs) error: {ex}"); }
 
+            // ── 변신 전용 Verb 재초기화 ──
             try
             {
                 if (comp != null && resetShapeshiftVerbs)
                 {
                     comp.shapeshiftVerbTracker = null;
                     comp._verbKeyCache = null;
-
+                    // ShapeshiftVerbTracker getter 접근으로 lazy init 트리거 (의도적 사이드이펙트)
                     var vt = comp.ShapeshiftVerbTracker;
-                    if (vt != null)
-                    {
-                        var __ = vt.AllVerbs;
-                    }
+                    if (vt != null) ForceVerbInit(vt);
                 }
-            }
-            catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (Shapeshift Verbs) error: {ex}"); }
 
-            try
-            {
                 if (comp != null && comp.isTransformed && comp.currentForm != null && forceReinitPawnVerbs)
                 {
                     var form = comp.currentForm;
-                    bool replaceNative = form.replaceNativeTools.HasValue && form.replaceNativeTools.Value;
+                    bool replaceNative = form.replaceNativeTools ?? false;
 
                     if (replaceNative && form.tools != null && form.tools.Count > 0 && pawn.verbTracker != null)
                     {
@@ -780,8 +784,9 @@ namespace ShapeshifterFramework.Hediffs
                     }
                 }
             }
-            catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (Remove Native Melee) error: {ex}"); }
+            catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (shapeshift verbs) error: {ex}"); }
 
+            // ── UI 선택 갱신 ──
             try
             {
                 if (refreshSelection && Find.Selector != null && Find.Selector.IsSelected(pawn))
@@ -790,16 +795,10 @@ namespace ShapeshifterFramework.Hediffs
                     Find.Selector.Select(pawn, playSound: false, forceDesignatorDeselect: false);
                 }
             }
-            catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (UI Selection) error: {ex}"); }
+            catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (UI selection) error: {ex}"); }
 
-            try
-            {
-                if (comp != null)
-                {
-                    comp.verbTickErrorLogged = false;
-                }
-            }
-            catch (Exception ex) { Log.Warning($"[SSF] RefreshPawn (Error Reset) error: {ex}"); }
+            if (comp != null)
+                comp.verbTickErrorLogged = false;
         }
 
         #endregion

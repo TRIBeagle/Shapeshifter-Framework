@@ -9,6 +9,18 @@ using Verse;
 
 namespace ShapeshifterFramework.Utilities
 {
+    /// <summary>ResolveEffective 결과를 담는 구조체.</summary>
+    internal struct PartOverrideResolved
+    {
+        public PartControlMode mode;
+        public string replacementTexPath;
+        public string swimmingReplacementTexPath;
+        public Color? color;
+        public Color? swimmingColor;
+        public string shaderTypeDefName;
+        public string swimmingShaderTypeDefName;
+    }
+
     internal static class ShapeshiftPartControlUtility
     {
         // shaderTypeDefName -> Shader 캐시(없으면 null 캐시)
@@ -48,35 +60,17 @@ namespace ShapeshifterFramework.Utilities
         }
 
         /// <summary>성별 옵션과 base를 merge하여 유효 값 산출.</summary>
-        private static void ResolveEffective(
-            PartOverrideOption baseOpt, PartOverrideOption gOpt,
-            out PartControlMode mode,
-            out string replacementTexPath,
-            out string swimmingReplacementTexPath,
-            out Color? color,
-            out Color? swimmingColor,
-            out string shaderTypeDefName,
-            out string swimmingShaderTypeDefName)
+        private static PartOverrideResolved ResolveEffective(PartOverrideOption baseOpt, PartOverrideOption gOpt)
         {
-            mode = (gOpt != null && gOpt.mode != PartControlMode.Default) ? gOpt.mode : baseOpt.mode;
-
-            replacementTexPath =
-                (gOpt != null && !string.IsNullOrEmpty(gOpt.replacementTexPath)) ? gOpt.replacementTexPath : baseOpt.replacementTexPath;
-
-            swimmingReplacementTexPath =
-                (gOpt != null && !string.IsNullOrEmpty(gOpt.swimmingReplacementTexPath)) ? gOpt.swimmingReplacementTexPath : baseOpt.swimmingReplacementTexPath;
-
-            color =
-                (gOpt != null && gOpt.color.HasValue) ? gOpt.color : baseOpt.color;
-
-            swimmingColor =
-                (gOpt != null && gOpt.swimmingColor.HasValue) ? gOpt.swimmingColor : baseOpt.swimmingColor;
-
-            shaderTypeDefName =
-                (gOpt != null && !string.IsNullOrEmpty(gOpt.shaderTypeDefName)) ? gOpt.shaderTypeDefName : baseOpt.shaderTypeDefName;
-
-            swimmingShaderTypeDefName =
-                (gOpt != null && !string.IsNullOrEmpty(gOpt.swimmingShaderTypeDefName)) ? gOpt.swimmingShaderTypeDefName : baseOpt.swimmingShaderTypeDefName;
+            var r = new PartOverrideResolved();
+            r.mode = (gOpt != null && gOpt.mode != PartControlMode.Default) ? gOpt.mode : baseOpt.mode;
+            r.replacementTexPath = (gOpt != null && !string.IsNullOrEmpty(gOpt.replacementTexPath)) ? gOpt.replacementTexPath : baseOpt.replacementTexPath;
+            r.swimmingReplacementTexPath = (gOpt != null && !string.IsNullOrEmpty(gOpt.swimmingReplacementTexPath)) ? gOpt.swimmingReplacementTexPath : baseOpt.swimmingReplacementTexPath;
+            r.color = (gOpt != null && gOpt.color.HasValue) ? gOpt.color : baseOpt.color;
+            r.swimmingColor = (gOpt != null && gOpt.swimmingColor.HasValue) ? gOpt.swimmingColor : baseOpt.swimmingColor;
+            r.shaderTypeDefName = (gOpt != null && !string.IsNullOrEmpty(gOpt.shaderTypeDefName)) ? gOpt.shaderTypeDefName : baseOpt.shaderTypeDefName;
+            r.swimmingShaderTypeDefName = (gOpt != null && !string.IsNullOrEmpty(gOpt.swimmingShaderTypeDefName)) ? gOpt.swimmingShaderTypeDefName : baseOpt.swimmingShaderTypeDefName;
+            return r;
         }
 
         internal static bool IsHeadHiddenForGender(Pawn pawn, ShapeshiftFormDef form)
@@ -85,14 +79,8 @@ namespace ShapeshifterFramework.Utilities
 
             PartOverrideOption baseOpt = form.head;
             PartOverrideOption gOpt = GenderOpt(baseOpt, pawn.gender);
-
-            PartControlMode mode;
-            string rep, swim, shBase, shSwim;
-            Color? col;
-            Color? swimCol;
-            ResolveEffective(baseOpt, gOpt, out mode, out rep, out swim, out col, out swimCol, out shBase, out shSwim);
-
-            return mode == PartControlMode.Hidden;
+            var r = ResolveEffective(baseOpt, gOpt);
+            return r.mode == PartControlMode.Hidden;
         }
 
         /// <summary>바디 수영 replacement 텍스처 경로 존재 여부 확인.</summary>
@@ -103,17 +91,12 @@ namespace ShapeshifterFramework.Utilities
 
             PartOverrideOption baseOpt = form.body;
             PartOverrideOption gOpt = GenderOpt(baseOpt, pawn.gender);
+            var r = ResolveEffective(baseOpt, gOpt);
 
-            PartControlMode mode;
-            string rep, swim, shBase, shSwim;
-            Color? col;
-            Color? swimCol;
-            ResolveEffective(baseOpt, gOpt, out mode, out rep, out swim, out col, out swimCol, out shBase, out shSwim);
+            if (r.mode != PartControlMode.Replace) return false;
+            if (string.IsNullOrEmpty(r.swimmingReplacementTexPath)) return false;
 
-            if (mode != PartControlMode.Replace) return false;
-            if (string.IsNullOrEmpty(swim)) return false;
-
-            swimmingPath = swim;
+            swimmingPath = r.swimmingReplacementTexPath;
             return true;
         }
 
@@ -133,34 +116,29 @@ namespace ShapeshifterFramework.Utilities
             if (baseOpt == null) return false;
 
             PartOverrideOption gOpt = (pawn != null) ? GenderOpt(baseOpt, pawn.gender) : null;
+            var r = ResolveEffective(baseOpt, gOpt);
 
-            PartControlMode mode;
-            string repPath, swimPath, shaderBaseName, shaderSwimName;
-            Color? col;
-            Color? swimCol;
-            ResolveEffective(baseOpt, gOpt, out mode, out repPath, out swimPath, out col, out swimCol, out shaderBaseName, out shaderSwimName);
-
-            if (mode == PartControlMode.Default)
+            if (r.mode == PartControlMode.Default)
                 return false;
 
-            if (mode == PartControlMode.Hidden)
+            if (r.mode == PartControlMode.Hidden)
             {
                 result = null;
                 return true;
             }
 
-            if (mode == PartControlMode.Replace)
+            if (r.mode == PartControlMode.Replace)
             {
-                string path = repPath;
+                string path = r.replacementTexPath;
                 bool usedSwimming = false;
 
                 // 바디 + 물 타일 + swimmingReplacementTexPath 있으면 그걸 우선
-                if (isBody && pawn != null && pawn.Spawned && pawn.Map != null && !string.IsNullOrEmpty(swimPath))
+                if (isBody && pawn != null && pawn.Spawned && pawn.Map != null && !string.IsNullOrEmpty(r.swimmingReplacementTexPath))
                 {
                     var terr = pawn.Position.GetTerrain(pawn.Map);
                     if (terr != null && terr.IsWater)
                     {
-                        path = swimPath;
+                        path = r.swimmingReplacementTexPath;
                         usedSwimming = true;
                     }
                 }
@@ -168,10 +146,10 @@ namespace ShapeshifterFramework.Utilities
                 if (string.IsNullOrEmpty(path)) return false;
 
                 Color c1;
-                if (usedSwimming && swimCol.HasValue)
-                    c1 = swimCol.Value;
+                if (usedSwimming && r.swimmingColor.HasValue)
+                    c1 = r.swimmingColor.Value;
                 else
-                    c1 = col.HasValue ? col.Value : Color.white;
+                    c1 = r.color ?? Color.white;
 
                 // 셰이더 결정 규칙
                 // - 육지: shaderTypeDefName(있으면) -> 노드 기본
@@ -181,14 +159,14 @@ namespace ShapeshifterFramework.Utilities
                 if (usedSwimming && isBody)
                 {
                     useShader =
-                        ResolveShaderFromTypeDefName(shaderSwimName) ??
-                        ResolveShaderFromTypeDefName(shaderBaseName) ??
+                        ResolveShaderFromTypeDefName(r.swimmingShaderTypeDefName) ??
+                        ResolveShaderFromTypeDefName(r.shaderTypeDefName) ??
                         ShaderDatabase.Transparent;
                 }
                 else
                 {
                     useShader =
-                        ResolveShaderFromTypeDefName(shaderBaseName) ??
+                        ResolveShaderFromTypeDefName(r.shaderTypeDefName) ??
                         nodeShader;
                 }
 

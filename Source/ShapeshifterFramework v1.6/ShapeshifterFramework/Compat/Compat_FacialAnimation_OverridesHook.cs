@@ -290,33 +290,6 @@ namespace ShapeshifterFramework.Compat
             return _tmpComps;
         }
 
-        /// <summary>suffix 인덱스 조회.</summary>
-        private static int ControllerIndex(string controllerSuffix)
-        {
-            for (int i = 0; i < _controllerSuffixes.Length; i++)
-                if (_controllerSuffixes[i] == controllerSuffix) return i;
-            return -1;
-        }
-
-        /// <summary>Pawn에서 FA 컨트롤러 컴프를 이름으로 탐색 (단일 호출용 폴백).</summary>
-        private static ThingComp FindFAControllerComp(Pawn pawn, string controllerSuffix)
-        {
-            if (pawn == null) return null;
-            var list = (pawn as ThingWithComps)?.AllComps;
-            if (list == null) return null;
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                var c = list[i]; if (c == null) continue;
-                var full = c.GetType().FullName;
-                if (!string.IsNullOrEmpty(full)
-                    && full.StartsWith("FacialAnimation", System.StringComparison.Ordinal)
-                    && full.EndsWith(controllerSuffix, System.StringComparison.Ordinal))
-                    return c;
-            }
-            return null;
-        }
-
         /// <summary>faceType에서 defName 반환.</summary>
         private static string GetFADefName(ThingComp comp)
         {
@@ -327,13 +300,6 @@ namespace ShapeshifterFramework.Compat
                 cur = ShapeshiftReflectionCache.GetInstanceProperty<Def>(comp, "FaceType");
 
             return cur != null ? cur.defName : null;
-        }
-
-        /// <summary>faceType에서 defName 반환 (단일 호출 폴백).</summary>
-        private static string GetFADefName(Pawn pawn, string controller)
-        {
-            var comp = FindFAControllerComp(pawn, controller);
-            return GetFADefName(comp);
         }
 
         /// <summary>컨트롤러명에서 Def 타입 매핑.</summary>

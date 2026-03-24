@@ -67,22 +67,23 @@ namespace ShapeshifterFramework.Utilities
 
         #region 범용 캐시: 필드/프로퍼티
 
-        private static readonly ConcurrentDictionary<string, FieldInfo> FieldCache =
-            new ConcurrentDictionary<string, FieldInfo>();
+        // 키를 (Type, string) 튜플로 사용 — 문자열 연결 할당 제거
+        private static readonly ConcurrentDictionary<(Type, string), FieldInfo> FieldCache =
+            new ConcurrentDictionary<(Type, string), FieldInfo>();
         // 필드 탐색 실패 기록
-        private static readonly ConcurrentDictionary<string, bool> FieldNotFound =
-            new ConcurrentDictionary<string, bool>();
+        private static readonly ConcurrentDictionary<(Type, string), bool> FieldNotFound =
+            new ConcurrentDictionary<(Type, string), bool>();
 
-        private static readonly ConcurrentDictionary<string, PropertyInfo> PropCache =
-            new ConcurrentDictionary<string, PropertyInfo>();
+        private static readonly ConcurrentDictionary<(Type, string), PropertyInfo> PropCache =
+            new ConcurrentDictionary<(Type, string), PropertyInfo>();
         // 프로퍼티 탐색 실패 기록
-        private static readonly ConcurrentDictionary<string, bool> PropNotFound =
-            new ConcurrentDictionary<string, bool>();
+        private static readonly ConcurrentDictionary<(Type, string), bool> PropNotFound =
+            new ConcurrentDictionary<(Type, string), bool>();
 
         private static FieldInfo GetFieldCached(Type t, string name)
         {
             if (t == null || string.IsNullOrEmpty(name)) return null;
-            string key = t.FullName + "::F::" + name;
+            var key = (t, name);
 
             if (FieldNotFound.ContainsKey(key)) return null; // 이미 없다고 판명났으면 즉시 탈출
 
@@ -100,7 +101,7 @@ namespace ShapeshifterFramework.Utilities
         private static PropertyInfo GetPropCached(Type t, string name)
         {
             if (t == null || string.IsNullOrEmpty(name)) return null;
-            string key = t.FullName + "::P::" + name;
+            var key = (t, name);
 
             if (PropNotFound.ContainsKey(key)) return null;
 

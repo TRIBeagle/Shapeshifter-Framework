@@ -12,6 +12,9 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(HumanlikeMeshPoolUtility))]
     public static class Patch_HumanlikeMeshPoolUtility_Sizing
     {
+        /// <summary>바닐라 기본 머리 폭 (HumanlikeMeshPoolUtility 기본값).</summary>
+        private const float VanillaBaseHeadWidth = 1.5f;
+
         // Body 폭(및 높이 기준) 치환
         [HarmonyPatch(nameof(HumanlikeMeshPoolUtility.HumanlikeBodyWidthForPawn))]
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
@@ -45,8 +48,8 @@ namespace ShapeshifterFramework.Patches
         {
             if (!TryGetHeadFactors(pawn, out float targetHead, out _)) return;
 
-            float num = 1.5f * targetHead; // 바닐라 기본폭 1.5f에 head factor 곱
-            __result = MeshPool.GetMeshSetForSize(num * wFactor, num * hFactor);
+            float headWidth = VanillaBaseHeadWidth * targetHead;
+            __result = MeshPool.GetMeshSetForSize(headWidth * wFactor, headWidth * hFactor);
         }
 
         // 헤어 MeshSet

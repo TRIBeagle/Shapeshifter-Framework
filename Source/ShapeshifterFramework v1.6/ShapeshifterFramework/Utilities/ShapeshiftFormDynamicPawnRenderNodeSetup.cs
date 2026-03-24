@@ -5,7 +5,9 @@
 
 using HarmonyLib;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection;
 using Verse;
 
 namespace ShapeshifterFramework.Utilities
@@ -86,51 +88,68 @@ namespace ShapeshifterFramework.Utilities
             return outList;
         }
 
+        // ── 리플렉션 캐시 ──
+        // PawnRenderNode의 private 필드 — 항상 동일 타입이므로 정적 캐시
+        private static readonly FieldInfo _fProps = AccessTools.Field(typeof(PawnRenderNode), "props");
+        private static readonly FieldInfo _fGraph = AccessTools.Field(typeof(PawnRenderNode), "graph");
+
+        // 생성자 시그니처 후보 (우선순위순)
+        private static readonly Type[][] CtorSignatures =
+        {
+            new[] { typeof(Pawn), typeof(PawnRenderNodeProperties), typeof(PawnRenderTree) },
+            new[] { typeof(PawnRenderNodeProperties), typeof(PawnRenderTree) },
+            new[] { typeof(PawnRenderNodeProperties) },
+            new[] { typeof(PawnRenderTree) },
+            Type.EmptyTypes,
+        };
+
+        // nodeClass별 생성자 캐시 — 동적 생성자 호출이지만 같은 타입은 한 번만 탐색
+        private static readonly ConcurrentDictionary<Type, (ConstructorInfo ctor, int sigIndex)> _ctorCache =
+            new ConcurrentDictionary<Type, (ConstructorInfo, int)>();
+
         // vanilla-private: PawnRenderNode.props, PawnRenderNode.graph (RimWorld 1.6) — 바닐라 버전 변경 시 확인 필요
-        // 동적 생성자 호출이므로 정적 캐싱 불가 (nodeClass가 폼마다 다름)
         static PawnRenderNode TryMakeNode(PawnRenderNodeProperties props, Pawn pawn, PawnRenderTree tree)
         {
             try
             {
-                // 1) (Pawn, PawnRenderNodeProperties, PawnRenderTree)
-                var ctor = props.nodeClass.GetConstructor(new Type[] { typeof(Pawn), typeof(PawnRenderNodeProperties), typeof(PawnRenderTree) });
-                if (ctor != null) return (PawnRenderNode)ctor.Invoke(new object[] { pawn, props, tree });
-
-                // 2) (PawnRenderNodeProperties, PawnRenderTree)
-                ctor = props.nodeClass.GetConstructor(new Type[] { typeof(PawnRenderNodeProperties), typeof(PawnRenderTree) });
-                if (ctor != null) return (PawnRenderNode)ctor.Invoke(new object[] { props, tree });
-
-                // 3) (PawnRenderNodeProperties)
-                ctor = props.nodeClass.GetConstructor(new Type[] { typeof(PawnRenderNodeProperties) });
-                if (ctor != null)
+                var nodeClass = props.nodeClass;
+                if (!_ctorCache.TryGetValue(nodeClass, out var cached))
                 {
-                    var node = (PawnRenderNode)ctor.Invoke(new object[] { props });
-                    // 그래프 필드 세팅(있으면)
-                    var fGraph = AccessTools.Field(typeof(PawnRenderNode), "graph");
-                    if (fGraph != null && node != null) fGraph.SetValue(node, tree);
-                    return node;
+                    cached = (null, -1);
+                    for (int i = 0; i < CtorSignatures.Length; i++)
+                    {
+                        var ctor = nodeClass.GetConstructor(CtorSignatures[i]);
+                        if (ctor != null) { cached = (ctor, i); break; }
+                    }
+                    _ctorCache[nodeClass] = cached;
                 }
 
-                // 4) (PawnRenderTree)
-                ctor = props.nodeClass.GetConstructor(new Type[] { typeof(PawnRenderTree) });
-                if (ctor != null)
-                {
-                    var node = (PawnRenderNode)ctor.Invoke(new object[] { tree });
-                    var fProps = AccessTools.Field(typeof(PawnRenderNode), "props");
-                    if (fProps != null && node != null) fProps.SetValue(node, props);
-                    return node;
-                }
+                if (cached.ctor == null) return null;
 
-                // 5) 기본 생성자
-                ctor = props.nodeClass.GetConstructor(Type.EmptyTypes);
-                if (ctor != null)
+                PawnRenderNode node;
+                switch (cached.sigIndex)
                 {
-                    var node = (PawnRenderNode)ctor.Invoke(null);
-                    var fProps = AccessTools.Field(typeof(PawnRenderNode), "props");
-                    var fGraph = AccessTools.Field(typeof(PawnRenderNode), "graph");
-                    if (fProps != null && node != null) fProps.SetValue(node, props);
-                    if (fGraph != null && node != null) fGraph.SetValue(node, tree);
-                    return node;
+                    case 0: // (Pawn, Props, Tree)
+                        return (PawnRenderNode)cached.ctor.Invoke(new object[] { pawn, props, tree });
+
+                    case 1: // (Props, Tree)
+                        return (PawnRenderNode)cached.ctor.Invoke(new object[] { props, tree });
+
+                    case 2: // (Props)
+                        node = (PawnRenderNode)cached.ctor.Invoke(new object[] { props });
+                        if (_fGraph != null && node != null) _fGraph.SetValue(node, tree);
+                        return node;
+
+                    case 3: // (Tree)
+                        node = (PawnRenderNode)cached.ctor.Invoke(new object[] { tree });
+                        if (_fProps != null && node != null) _fProps.SetValue(node, props);
+                        return node;
+
+                    case 4: // ()
+                        node = (PawnRenderNode)cached.ctor.Invoke(null);
+                        if (_fProps != null && node != null) _fProps.SetValue(node, props);
+                        if (_fGraph != null && node != null) _fGraph.SetValue(node, tree);
+                        return node;
                 }
             }
             catch (Exception e)
