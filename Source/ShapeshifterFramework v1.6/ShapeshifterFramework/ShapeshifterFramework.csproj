@@ -67,6 +67,7 @@
   <ItemGroup>
     <!-- Root -->
     <Compile Include="HarmonyInit.cs" />
+    <Compile Include="ShapeshiftDefOf.cs" />
     <Compile Include="ShapeshiftFormDef.cs" />
     <Compile Include="ShapeshiftFormIndex.cs" />
     <Compile Include="ShapeshifterFrameworkMod.cs" />

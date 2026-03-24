@@ -63,10 +63,6 @@ namespace ShapeshifterFramework.Utilities
             return true;
         }
 
-        // 캐시: SSF_Shapeshifting_Abhorrent PreceptDef (게임 로드 후 불변)
-        private static PreceptDef _abhorrentPrecept;
-        private static bool _abhorrentPreceptResolved;
-
         /// <summary>이데올로기 규율에 의해 변신이 금지되는지 판정. SSF_Shapeshifting_Abhorrent 규율 시 금지.
         /// UI 진입점(기즈모/FloatMenu/CanBeUsedBy)에서 직접 호출해 사전 차단용.</summary>
         public static bool IsIdeologyForbidden(Pawn pawn)
@@ -74,12 +70,7 @@ namespace ShapeshifterFramework.Utilities
             if (!ModsConfig.IdeologyActive) return false;
             if (pawn == null || pawn.Ideo == null) return false;
 
-            if (!_abhorrentPreceptResolved)
-            {
-                _abhorrentPrecept = DefDatabase<PreceptDef>.GetNamedSilentFail("SSF_Shapeshifting_Abhorrent");
-                _abhorrentPreceptResolved = true;
-            }
-            var preceptDef = _abhorrentPrecept;
+            var preceptDef = ShapeshiftDefOf.SSF_Shapeshifting_Abhorrent;
             if (preceptDef == null) return false;
 
             // Pawn의 이데올로기가 해당 규율을 보유하고 있으면 금지

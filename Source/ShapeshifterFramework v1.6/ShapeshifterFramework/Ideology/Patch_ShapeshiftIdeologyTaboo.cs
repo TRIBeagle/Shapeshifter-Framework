@@ -21,8 +21,7 @@ namespace ShapeshifterFramework.Ideology
             if (!ModsConfig.IdeologyActive) return;
             if (pawn == null || pawn.Ideo == null) return;
 
-            // SSF_Shapeshifted HistoryEventDef 조회
-            var eventDef = DefDatabase<HistoryEventDef>.GetNamedSilentFail("SSF_Shapeshifted");
+            var eventDef = ShapeshiftDefOf.SSF_Shapeshifted;
             if (eventDef == null) return;
 
             // HistoryEvent 발행 — PreceptComp_SelfTookMemoryThought가 자동 처리
