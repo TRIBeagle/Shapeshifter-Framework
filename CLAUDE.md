@@ -33,12 +33,6 @@ API 변경, 새 XML 필드 추가/삭제, 동작 변경 시 아래 문서를 동
 - `TestMod_SSF/TEST_CHECKLIST.md` — 테스트 체크리스트 및 실행 계획 (단일 파일)
 - 필요 시 `TestMod_SSF/1.6/Defs/` 아래 테스트용 XML Def 추가
 
-### 세이브 호환성 (최우선 원칙)
-- `ExposeData()`의 Scribe 키 문자열은 **절대 변경/삭제 금지**.
-- 새 필드 추가 시 반드시 기존 세이브에서 안전한 기본값(default) 설정.
-- 직렬화 대상 클래스(Hediff, ThingComp, Apparel 등)의 **네임스페이스와 클래스명 변경 금지**.
-- 변경 전 세이브 영향 분석 필수.
-
 ### 성능 원칙
 - **Tick() / TickInterval()** 내 코드는 최소한으로. 무거운 로직은 TickRare(250틱) 이상 간격으로.
 - **리플렉션**: 1회 탐색 후 static 캐시. 실패 시 재탐색 없음.
