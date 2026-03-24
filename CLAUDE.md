@@ -47,8 +47,11 @@ API 변경, 새 XML 필드 추가/삭제, 동작 변경 시 아래 문서를 동
 - `as` 캐스팅 후 null 체크 없이 멤버 접근 금지.
 
 ### Harmony 패치
-- Patch 클래스는 `Patches/` 폴더에 파일 1개 = 패치 1개.
 - `[HarmonyPatch]` 어트리뷰트 사용. `PatchAll()` 자동 등록.
+- 패치 파일 배치 규칙 (파일 1개 = 패치 1개):
+  - `Patches/` — 바닐라 RimWorld 대상 패치
+  - `Compat/` — 타 모드 호환 패치 (HAR, FacialAnimation, SimpleSidearms 등)
+  - `Ideology/` — 이데올로기 관련 패치 및 ThoughtWorker
 - ThoughtWorker에서 게임 상태 변경(부작용) 금지. CompTickRare 등 안전한 위치에서 수행.
 
 ## 빌드
