@@ -1,12 +1,11 @@
 // ShapeshifterFramework | Gizmos | Gizmo_ShapeshiftStatus.cs
-// 목적 : 변신 상태 프로그레스 바 기즈모 — 남은 시간/해제 버튼을 하단 기즈모 영역에 표시.
+// 목적 : 변신 상태 프로그레스 바 기즈모 — 남은 시간을 하단 기즈모 영역에 표시.
 // 용도 : Gizmo_EnergyShieldStatus / Gizmo_Slider 스타일의 바 기즈모.
 //        시간제 변신: 남은 시간 프로그레스 바 표시. 영구 변신: 바 꽉 참 + "무제한" 텍스트.
-//        우측 상단에 변신 해제 버튼 배치.
+//        우측 상단에 자동사격 토글 버튼 배치. 해제 버튼은 별도 Command_Action으로 분리.
 
 using RimWorld;
 using ShapeshifterFramework.Hediffs;
-using ShapeshifterFramework.Utilities;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -72,36 +71,14 @@ namespace ShapeshifterFramework.Gizmos
 
             var form = core.currentForm;
 
-            // ── 상단: 폼 이름 + 해제 버튼 ──
+            // ── 상단: 폼 이름 + 버튼 ──
             Rect headerRect = innerRect;
             headerRect.height = Text.LineHeightOf(GameFont.Small);
 
             float headerBtnX = headerRect.xMax;
             bool mouseOverHeaderBtn = false;
 
-            // 해제 버튼 (우측 끝)
-            bool showRevert = core.ResolvedCanRevertVoluntarily;
-            if (showRevert)
-            {
-                headerBtnX -= HeaderBtnSize;
-                Rect revertBtnRect = new Rect(headerBtnX, headerRect.y, HeaderBtnSize, HeaderBtnSize);
-
-                var revertIcon = ShapeshiftTextureUtility.GetRevertIcon(form);
-                if (revertIcon != null)
-                    GUI.DrawTexture(revertBtnRect, revertIcon);
-
-                if (Widgets.ButtonInvisible(revertBtnRect))
-                    core.RemoveForm();
-
-                if (Mouse.IsOver(revertBtnRect))
-                {
-                    Widgets.DrawHighlight(revertBtnRect);
-                    TooltipHandler.TipRegion(revertBtnRect, "SSF_Command_RevertDesc".Translate());
-                    mouseOverHeaderBtn = true;
-                }
-            }
-
-            // 자동사격 토글 표시 버튼 (해제 버튼 왼쪽)
+            // 자동사격 토글 표시 버튼 (우측 끝)
             var settings = ShapeshifterFrameworkMod.Settings;
             if (settings != null && HasRangedVerbs())
             {

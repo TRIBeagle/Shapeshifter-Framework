@@ -27,12 +27,13 @@ namespace ShapeshifterFramework.Hediffs
 
                 if (showBar)
                 {
-                    // 프로그레스 바 기즈모 (해제 버튼 내장)
+                    // 프로그레스 바 기즈모
                     yield return new Gizmo_ShapeshiftStatus { core = this };
                 }
-                else if (ResolvedCanRevertVoluntarily)
+
+                // 해제 버튼 — 바 표시 여부와 무관하게 항상 단독 표시
+                if (ResolvedCanRevertVoluntarily)
                 {
-                    // 바 비활성 시 기존 해제 버튼만 표시
                     yield return new Command_Action
                     {
                         defaultLabel = "SSF_Command_RevertLabel".Translate(),
