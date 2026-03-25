@@ -121,14 +121,7 @@ namespace ShapeshifterFramework.Utilities
                     }
                 }
             }
-            else
-            {
-                if (isAddedPart)
-                {
-                    ShapeshiftDiagnostics.Info($"Skip addedPart on FullBody: {opt.hediff.defName}");
-                    return false;
-                }
-            }
+            // part == null && isAddedPart는 호출자(ApplyHediffEntries)에서 이미 필터링됨
 
             Hediff existing = FindExisting(pawn, opt.hediff, part);
             if (existing != null)

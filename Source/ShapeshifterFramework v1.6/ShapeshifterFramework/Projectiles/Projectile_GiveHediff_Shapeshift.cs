@@ -32,8 +32,6 @@ namespace ShapeshifterFramework.Projectiles
                 return;
             }
 
-            var casterPawn = Launcher as Pawn;
-
             // 2) 직격 대상 처리
             if (hitThing is Pawn p && !p.Dead)
             {
@@ -51,8 +49,12 @@ namespace ShapeshifterFramework.Projectiles
                         continue;
 
                     // 팩션 필터: affectAllies=false일 때, 시전자와 적대 관계가 아니면 스킵
-                    if (!ext.affectAllies && casterPawn != null && !pp.HostileTo(casterPawn))
-                        continue;
+                    // 시전자가 Pawn이 아닌 경우(터렛 등)에도 Launcher 기반 팩션으로 비교
+                    if (!ext.affectAllies)
+                    {
+                        if (Launcher != null && !pp.HostileTo(Launcher))
+                            continue;
+                    }
 
                     ApplyHediffToTarget(pp, ext);
                 }

@@ -82,6 +82,7 @@ namespace ShapeshifterFramework.Gizmos
             var form = core.currentForm;
 
             // ── 상단: 폼 이름 + 버튼 ──
+            GameFont prevFont = Text.Font;
             Rect headerRect = innerRect;
             headerRect.height = Text.LineHeightOf(GameFont.Small);
 
@@ -190,6 +191,7 @@ namespace ShapeshifterFramework.Gizmos
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(barRect, barLabel);
             Text.Anchor = TextAnchor.UpperLeft;
+            Text.Font = prevFont;
 
             // ── 툴팁 ──
             if (Mouse.IsOver(outerRect) && !mouseOverHeaderBtn)

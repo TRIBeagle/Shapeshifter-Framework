@@ -8,16 +8,25 @@ using Verse;
 
 namespace ShapeshifterFramework
 {
-    [StaticConstructorOnStartup]
+    /// <summary>ShapeshiftFormDef → HediffDef 역인덱스. 디버그 전용이므로 첫 접근 시 lazy 초기화.</summary>
     public static class ShapeshiftFormIndex
     {
-        // 역인덱스: ShapeshiftFormDef → 해당 폼을 사용하는 HediffDef 목록
-        public static readonly Dictionary<ShapeshiftFormDef, List<HediffDef>> FormToHediffDefs =
-            new Dictionary<ShapeshiftFormDef, List<HediffDef>>();
+        private static Dictionary<ShapeshiftFormDef, List<HediffDef>> _formToHediffDefs;
 
-        // 초기화: 모든 HediffDef를 순회하여 역인덱스 구성
-        static ShapeshiftFormIndex()
+        /// <summary>역인덱스: ShapeshiftFormDef → 해당 폼을 사용하는 HediffDef 목록. 첫 접근 시 빌드.</summary>
+        public static Dictionary<ShapeshiftFormDef, List<HediffDef>> FormToHediffDefs
         {
+            get
+            {
+                if (_formToHediffDefs == null)
+                    Build();
+                return _formToHediffDefs;
+            }
+        }
+
+        private static void Build()
+        {
+            _formToHediffDefs = new Dictionary<ShapeshiftFormDef, List<HediffDef>>();
             foreach (var hediffDef in DefDatabase<HediffDef>.AllDefsListForReading)
             {
                 if (hediffDef?.comps == null) continue;
@@ -25,10 +34,10 @@ namespace ShapeshifterFramework
                 {
                     if (hediffDef.comps[i] is HediffCompProperties_ShapeshiftCore coreProps && coreProps.formDef != null)
                     {
-                        if (!FormToHediffDefs.TryGetValue(coreProps.formDef, out var list))
+                        if (!_formToHediffDefs.TryGetValue(coreProps.formDef, out var list))
                         {
                             list = new List<HediffDef>(2);
-                            FormToHediffDefs[coreProps.formDef] = list;
+                            _formToHediffDefs[coreProps.formDef] = list;
                         }
                         list.Add(hediffDef);
                     }

@@ -21,21 +21,12 @@ namespace ShapeshifterFramework.Utilities
             if (ShapeshiftRuntimeCaches.FleshTypeByPawn.TryGetValue(pawn, out cached) && cached != null)
                 return cached;
 
-            // 2) 안전 접근: Pawn.def → def.race.FleshType
-            var def = pawn.def;
-            if (def != null)
-            {
-                var raceFromDef = def.race;
-                if (raceFromDef != null && raceFromDef.FleshType != null)
-                    return raceFromDef.FleshType;
-            }
+            // 2) 안전 접근: def.race.FleshType (Pawn.RaceProps와 동일 객체)
+            var race = pawn.def?.race;
+            if (race != null && race.FleshType != null)
+                return race.FleshType;
 
-            // 3) 보조 경로: Pawn.RaceProps.FleshType
-            var raceProps = pawn.RaceProps;
-            if (raceProps != null && raceProps.FleshType != null)
-                return raceProps.FleshType;
-
-            // 4) 못 찾으면 null 반환(상처 오버레이 생략)
+            // 3) 못 찾으면 null 반환(상처 오버레이 생략)
             return null;
         }
     }

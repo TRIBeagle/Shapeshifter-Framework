@@ -18,6 +18,8 @@ namespace ShapeshifterFramework.Patches
         [HarmonyPostfix]
         static void Postfix(Thing __instance, ref Vector2 __result)
         {
+            if (!ShapeshiftRegistry.HasAny()) return;
+
             Pawn pawn = __instance as Pawn;
             if (pawn == null) return;
 

@@ -45,7 +45,6 @@ namespace ShapeshifterFramework.Hediffs
 
             IntVec3 pos = pawn.PositionHeld;
             Map map = pawn.MapHeld;
-            ShapeshifterFrameworkSettings st = ShapeshifterFrameworkMod.Settings;
 
             if (form.apparelOnTransform != GearHandling.Keep && pawn.apparel != null)
             {

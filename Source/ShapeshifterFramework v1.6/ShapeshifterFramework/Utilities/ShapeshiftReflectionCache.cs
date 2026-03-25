@@ -183,35 +183,6 @@ namespace ShapeshifterFramework.Utilities
             return ps;
         }
 
-        /// <summary>객체 a/b의 필드에서 특정 타입 값을 탐색 (첫 일치 반환).</summary>
-        internal static T TryScanFieldsForType<T>(object a, object b) where T : class
-        {
-            var target = typeof(T);
-            T r = TryScanFieldsOne<T>(a, target);
-            if (r != null) return r;
-            return TryScanFieldsOne<T>(b, target);
-        }
-
-        private static T TryScanFieldsOne<T>(object obj, Type target) where T : class
-        {
-            if (obj == null) return null;
-            var fs = GetFieldsCached(obj.GetType());
-            for (int i = 0; i < fs.Length; i++)
-            {
-                var ft = fs[i].FieldType;
-                if (target.IsAssignableFrom(ft))
-                {
-                    try
-                    {
-                        var v = fs[i].GetValue(obj) as T;
-                        if (v != null) return v;
-                    }
-                    catch { /* 필드 스캔 캐스트 실패 무시 */ }
-                }
-            }
-            return null;
-        }
-
         /// <summary>exclusionTags(List(string))를 필드/프로퍼티에서 탐색 반환.</summary>
         internal static List<string> TryGetExclusionTags(object obj)
         {

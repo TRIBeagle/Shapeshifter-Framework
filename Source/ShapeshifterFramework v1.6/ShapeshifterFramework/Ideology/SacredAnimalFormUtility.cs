@@ -27,7 +27,7 @@ namespace ShapeshifterFramework.Ideology
         /// <summary>Pawn이 현재 성스러운 동물 폼인지 확인.</summary>
         public static bool IsSacredAnimalForm(Pawn p)
         {
-            if (p.Ideo == null) return false;
+            if (p == null || p.Ideo == null) return false;
 
             if (!ShapeshiftRegistry.TryGet(p, out var comp, out var form))
                 return false;
@@ -49,7 +49,7 @@ namespace ShapeshifterFramework.Ideology
         /// <summary>Pawn의 이데올로기 규율 단계에 해당하는 stage index 반환. 규율 미적용 시 DontCare(2).</summary>
         public static int GetPreceptStage(Pawn p)
         {
-            if (p.Ideo == null) return DefaultStage;
+            if (p == null || p.Ideo == null) return DefaultStage;
 
             var precepts = p.Ideo.PreceptsListForReading;
             for (int i = 0; i < precepts.Count; i++)

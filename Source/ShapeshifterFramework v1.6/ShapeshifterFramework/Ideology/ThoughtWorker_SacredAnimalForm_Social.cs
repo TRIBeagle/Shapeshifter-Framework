@@ -23,7 +23,7 @@ namespace ShapeshifterFramework.Ideology
         protected override ThoughtState CurrentSocialStateInternal(Pawn p, Pawn otherPawn)
         {
             if (!ModsConfig.IdeologyActive) return ThoughtState.Inactive;
-            if (p.Ideo == null) return ThoughtState.Inactive;
+            if (p == null || p.Ideo == null || otherPawn == null) return ThoughtState.Inactive;
 
             // 상대가 성스러운 동물 폼인지 확인
             if (!SacredAnimalFormUtility.IsSacredAnimalForm(otherPawn))

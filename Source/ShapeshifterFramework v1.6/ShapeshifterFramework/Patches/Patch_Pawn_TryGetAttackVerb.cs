@@ -26,11 +26,15 @@ namespace ShapeshifterFramework.Patches
             try
             {
                 // 1) 플레이어 강제 사격 중이면 현재 Job의 verbToUse만 반환 (동시 발사 방지)
-                var curJob = __instance.CurJob;
-                if (curJob != null && curJob.def == JobDefOf.AttackStatic && curJob.playerForced && curJob.verbToUse != null)
+                //    변신 폰 전용 — 비변신 폰에서는 바닐라 로직에 맡김
+                if (ShapeshiftRegistry.IsActive(__instance))
                 {
-                    __result = curJob.verbToUse;
-                    return false; // 원본 스킵
+                    var curJob = __instance.CurJob;
+                    if (curJob != null && curJob.def == JobDefOf.AttackStatic && curJob.playerForced && curJob.verbToUse != null)
+                    {
+                        __result = curJob.verbToUse;
+                        return false; // 원본 스킵
+                    }
                 }
 
                 // 2) 변신 중이면 토글 상태에 따라 verb 선택

@@ -30,6 +30,9 @@ namespace ShapeshifterFramework.Patches
             // burstShotsLeft가 감소하지 않았으면 발사 실패
             if (___burstShotsLeft >= __state) return;
 
+            // 변신 폰이 없으면 즉시 반환
+            if (!ShapeshiftRegistry.HasAny()) return;
+
             // 버스트 무기: 첫 발에만 차감 (__state == burstShotCount일 때가 첫 발)
             int shotsPerBurst = __instance.verbProps?.burstShotCount ?? 1;
             if (shotsPerBurst > 1 && __state != shotsPerBurst)

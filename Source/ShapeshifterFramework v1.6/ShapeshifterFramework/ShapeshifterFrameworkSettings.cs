@@ -56,45 +56,26 @@ namespace ShapeshifterFramework
             Listing_Standard list = new Listing_Standard();
             list.Begin(inRect);
 
-            bool tmpPortrait = enablePortraitScale;
-            list.CheckboxLabeled("SSF_Setting_PortraitScale_Title".Translate(), ref tmpPortrait, "SSF_Setting_PortraitScale_Desc".Translate());
-            enablePortraitScale = tmpPortrait;
-
-            bool tmpWeapons = scaleHeldWeapons;
-            list.CheckboxLabeled("SSF_Setting_WeaponScale_Title".Translate(), ref tmpWeapons, "SSF_Setting_WeaponScale_Desc".Translate());
-            scaleHeldWeapons = tmpWeapons;
+            list.CheckboxLabeled("SSF_Setting_PortraitScale_Title".Translate(), ref enablePortraitScale, "SSF_Setting_PortraitScale_Desc".Translate());
+            list.CheckboxLabeled("SSF_Setting_WeaponScale_Title".Translate(), ref scaleHeldWeapons, "SSF_Setting_WeaponScale_Desc".Translate());
 
             list.Gap(10f);
 
-            bool tmpInv = autoReequipFromInventory;
-            list.CheckboxLabeled("SSF_Setting_ReequipInventory_Title".Translate(), ref tmpInv, "SSF_Setting_ReequipInventory_Desc".Translate());
-            autoReequipFromInventory = tmpInv;
-
-            bool tmpGround = autoReequipFromGround;
-            list.CheckboxLabeled("SSF_Setting_ReequipGround_Title".Translate(), ref tmpGround, "SSF_Setting_ReequipGround_Desc".Translate());
-            autoReequipFromGround = tmpGround;
+            list.CheckboxLabeled("SSF_Setting_ReequipInventory_Title".Translate(), ref autoReequipFromInventory, "SSF_Setting_ReequipInventory_Desc".Translate());
+            list.CheckboxLabeled("SSF_Setting_ReequipGround_Title".Translate(), ref autoReequipFromGround, "SSF_Setting_ReequipGround_Desc".Translate());
 
             list.Gap(10f);
 
-            bool tmpForbid = forbidDroppedItemsOnTransform;
-            list.CheckboxLabeled("SSF_Setting_ForbidItems_Title".Translate(), ref tmpForbid, "SSF_Setting_ForbidItems_Desc".Translate());
-            forbidDroppedItemsOnTransform = tmpForbid;
+            list.CheckboxLabeled("SSF_Setting_ForbidItems_Title".Translate(), ref forbidDroppedItemsOnTransform, "SSF_Setting_ForbidItems_Desc".Translate());
 
             list.Gap(10f);
 
-            bool tmpShowToggle = showVerbAutoToggle;
-            list.CheckboxLabeled("SSF_Setting_VerbToggle_Title".Translate(), ref tmpShowToggle, "SSF_Setting_VerbToggle_Desc".Translate());
-            showVerbAutoToggle = tmpShowToggle;
-
-            bool tmpShowBar = showShapeshiftBar;
-            list.CheckboxLabeled("SSF_Setting_ShapeshiftBar_Title".Translate(), ref tmpShowBar, "SSF_Setting_ShapeshiftBar_Desc".Translate());
-            showShapeshiftBar = tmpShowBar;
+            list.CheckboxLabeled("SSF_Setting_VerbToggle_Title".Translate(), ref showVerbAutoToggle, "SSF_Setting_VerbToggle_Desc".Translate());
+            list.CheckboxLabeled("SSF_Setting_ShapeshiftBar_Title".Translate(), ref showShapeshiftBar, "SSF_Setting_ShapeshiftBar_Desc".Translate());
 
             list.Gap(10f);
 
-            bool tmpDebug = enableDebugLog;
-            list.CheckboxLabeled("SSF_Setting_DebugLog_Title".Translate(), ref tmpDebug, "SSF_Setting_DebugLog_Desc".Translate());
-            enableDebugLog = tmpDebug;
+            list.CheckboxLabeled("SSF_Setting_DebugLog_Title".Translate(), ref enableDebugLog, "SSF_Setting_DebugLog_Desc".Translate());
 
             list.Gap(12f);
 

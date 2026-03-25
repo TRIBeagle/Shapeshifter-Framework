@@ -4,6 +4,7 @@
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Verse;
@@ -53,6 +54,13 @@ namespace ShapeshifterFramework.Patches
         static void Postfix()
         {
             ShapeshiftFilthScope.CurrentPawn = null;
+        }
+
+        /// <summary>예외 발생 시에도 스코프를 반드시 정리 — Postfix가 호출되지 않는 경우 대비.</summary>
+        static Exception Finalizer(Exception __exception)
+        {
+            ShapeshiftFilthScope.CurrentPawn = null;
+            return __exception;
         }
     }
 }
