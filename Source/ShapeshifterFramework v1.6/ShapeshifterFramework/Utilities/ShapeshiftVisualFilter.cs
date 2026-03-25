@@ -1,66 +1,140 @@
 ﻿// ShapeshifterFramework | Utilities | ShapeshiftVisualFilter.cs
 // 목적 : 변신 폼의 렌더링 설정(renderShow/Hide)에 따라 바닐라 의상, 무기, 유전자, 헤디프 그래픽의 노출 여부를 판정.
-// 용도 : 와일드카드('*') 및 "All" 키워드를 지원하여 특정 레이어나 태그(Tag)를 정밀하게 차단/허용하며, 렌더 루프 내부에서 컴포넌트를 중복 탐색하지 않도록 최적화된 내부 헬퍼를 사용함.
+// 용도 : 와일드카드('*') 및 "All" 키워드를 사전 컴파일(CompiledFilterSet)하여 렌더 경로에서 HashSet O(1) 조회와 최소한의 문자열 비교만 수행.
+// 주의 : CompiledFilterSet은 ShapeshiftFormDef.ResolveReferences()에서 한 번만 빌드되며, 렌더 루프에서는 컴파일된 필터만 사용.
 
 using RimWorld;
-using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Hediffs;
 using System;
 using System.Collections.Generic;
 using Verse;
 
 namespace ShapeshifterFramework.Utilities
 {
-    internal static class ShapeshiftVisualFilter
+    // ─── 사전 컴파일된 와일드카드 필터 ───
+
+    internal enum FilterMode { Exact, Prefix, Suffix, Contains }
+
+    internal struct CompiledFilter
     {
-        // comp와 form을 한 번에 가져오는 내부 헬퍼 — 렌더 경로에서 TryGetComp 중복 호출 방지
-        private static bool TryGetFormAndComp(Pawn pawn, out CompShapeshifter comp, out ShapeshiftFormDef form)
+        public FilterMode mode;
+        public string core; // 소문자 변환된 핵심 문자열 (*제거)
+    }
+
+    /// <summary>와일드카드 패턴 리스트를 사전 파싱하여 O(1) 조회 및 최소 문자열 비교를 지원.</summary>
+    internal class CompiledFilterSet
+    {
+        public readonly bool hasAll;               // "All" 키워드 포함 여부
+        private readonly HashSet<string> _exact;   // 와일드카드 없는 정확 매칭 (OrdinalIgnoreCase)
+        private readonly CompiledFilter[] _wild;   // 와일드카드 패턴들
+
+        private CompiledFilterSet(bool hasAll, HashSet<string> exact, CompiledFilter[] wild)
         {
-            comp = pawn != null ? pawn.TryGetComp<CompShapeshifter>() : null;
-            if (comp != null && comp.isTransformed && comp.currentForm != null)
-            {
-                form = comp.currentForm;
-                return true;
-            }
-            form = null;
-            return false;
+            this.hasAll = hasAll;
+            _exact = exact;
+            _wild = wild;
         }
 
-        // ─── 공통 유틸리티 ───
-
-        private static bool WildcardMatch(string value, string pattern)
+        /// <summary>값이 이 필터셋의 패턴 중 하나라도 매칭되는지 판정.</summary>
+        public bool Matches(string value)
         {
-            if (string.IsNullOrEmpty(pattern)) return false;
-            if (string.Equals(pattern, "All", StringComparison.OrdinalIgnoreCase)) return true;
+            if (hasAll) return true;
             if (string.IsNullOrEmpty(value)) return false;
 
-            int star = pattern.IndexOf('*');
-            if (star < 0) return string.Equals(value, pattern, StringComparison.OrdinalIgnoreCase);
+            // HashSet O(1) 정확 매칭
+            if (_exact != null && _exact.Contains(value)) return true;
 
-            string core = pattern.Replace("*", "");
-            if (core.Length == 0) return true;
-            bool starts = pattern.StartsWith("*");
-            bool ends = pattern.EndsWith("*");
+            // 와일드카드 폴백
+            if (_wild != null)
+            {
+                for (int i = 0; i < _wild.Length; i++)
+                {
+                    ref var f = ref _wild[i];
+                    switch (f.mode)
+                    {
+                        case FilterMode.Prefix:
+                            if (value.StartsWith(f.core, StringComparison.OrdinalIgnoreCase)) return true;
+                            break;
+                        case FilterMode.Suffix:
+                            if (value.EndsWith(f.core, StringComparison.OrdinalIgnoreCase)) return true;
+                            break;
+                        case FilterMode.Contains:
+                            if (value.IndexOf(f.core, StringComparison.OrdinalIgnoreCase) >= 0) return true;
+                            break;
+                    }
+                }
+            }
 
-            if (starts && ends) return value.IndexOf(core, StringComparison.OrdinalIgnoreCase) >= 0;
-            if (starts) return value.EndsWith(core, StringComparison.OrdinalIgnoreCase);
-            if (ends) return value.StartsWith(core, StringComparison.OrdinalIgnoreCase);
-            return value.IndexOf(core, StringComparison.OrdinalIgnoreCase) >= 0;
-        }
-
-        private static bool MatchesAny(string value, List<string> patterns)
-        {
-            if (patterns == null || patterns.Count == 0) return false;
-            for (int i = 0; i < patterns.Count; i++)
-                if (WildcardMatch(value, patterns[i])) return true;
             return false;
         }
 
-        private static bool ListHasAll(List<string> patterns)
+        // 빈 필터 싱글톤
+        private static readonly CompiledFilterSet _empty = new CompiledFilterSet(false, null, null);
+
+        /// <summary>원본 패턴 리스트를 컴파일.</summary>
+        public static CompiledFilterSet Compile(List<string> patterns)
         {
-            if (patterns == null) return false;
+            if (patterns == null || patterns.Count == 0) return _empty;
+
+            bool hasAll = false;
+            HashSet<string> exact = null;
+            List<CompiledFilter> wild = null;
+
             for (int i = 0; i < patterns.Count; i++)
-                if (patterns[i] != null && patterns[i].Equals("All", StringComparison.OrdinalIgnoreCase))
-                    return true;
+            {
+                var p = patterns[i];
+                if (string.IsNullOrEmpty(p)) continue;
+
+                if (string.Equals(p, "All", StringComparison.OrdinalIgnoreCase))
+                {
+                    hasAll = true;
+                    continue; // "All"이면 다른 패턴은 의미 없지만 호환성 위해 계속 파싱
+                }
+
+                int star = p.IndexOf('*');
+                if (star < 0)
+                {
+                    // 정확 매칭 → HashSet
+                    if (exact == null) exact = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    exact.Add(p);
+                    continue;
+                }
+
+                // 와일드카드 패턴 분류
+                string core = p.Replace("*", "");
+                if (core.Length == 0)
+                {
+                    // "*"만 있으면 사실상 All
+                    hasAll = true;
+                    continue;
+                }
+
+                bool startsW = p[0] == '*';
+                bool endsW = p[p.Length - 1] == '*';
+
+                FilterMode mode;
+                if (startsW && endsW) mode = FilterMode.Contains;
+                else if (startsW) mode = FilterMode.Suffix;
+                else if (endsW) mode = FilterMode.Prefix;
+                else mode = FilterMode.Contains; // 중간 *는 contains로 폴백
+
+                if (wild == null) wild = new List<CompiledFilter>();
+                wild.Add(new CompiledFilter { mode = mode, core = core });
+            }
+
+            if (!hasAll && exact == null && wild == null) return _empty;
+            return new CompiledFilterSet(hasAll, exact, wild?.ToArray());
+        }
+    }
+
+    internal static class ShapeshiftVisualFilter
+    {
+        // core와 form을 한 번에 가져오는 내부 헬퍼 — 렌더 경로에서 hediff 탐색 중복 호출 방지
+        private static bool TryGetFormAndComp(Pawn pawn, out HediffComp_ShapeshiftCore core, out ShapeshiftFormDef form)
+        {
+            if (ShapeshiftRegistry.TryGet(pawn, out core, out form))
+                return true;
+            form = null;
             return false;
         }
 
@@ -75,24 +149,22 @@ namespace ShapeshifterFramework.Utilities
             var layers = def.apparel?.layers;
 
             // 1) 화이트리스트 (Show)
-            if (MatchesAny(def.defName, form.renderShowApparelDefNames)) return false;
+            if (form._showApparelDefNames.Matches(def.defName)) return false;
             if (layers != null)
             {
                 for (int i = 0; i < layers.Count; i++)
-                    if (MatchesAny(layers[i].defName, form.renderShowApparelLayers)) return false;
+                    if (form._showApparelLayers.Matches(layers[i].defName)) return false;
             }
 
             // 2) 블랙리스트 - 이름/전체 (Hide Defs)
-            var hideDefs = form.renderHideApparelDefNames;
-            if (ListHasAll(hideDefs) || MatchesAny(def.defName, hideDefs)) return true;
+            if (form._hideApparelDefNames.hasAll || form._hideApparelDefNames.Matches(def.defName)) return true;
 
             // 3) 블랙리스트 - 레이어 (Hide Layers)
-            var hideLayers = form.renderHideApparelLayers;
-            if (ListHasAll(hideLayers)) return true; // 레이어 정보가 없어도 All이면 숨김
+            if (form._hideApparelLayers.hasAll) return true;
             if (layers != null)
             {
                 for (int i = 0; i < layers.Count; i++)
-                    if (MatchesAny(layers[i].defName, hideLayers)) return true;
+                    if (form._hideApparelLayers.Matches(layers[i].defName)) return true;
             }
 
             return false;
@@ -109,24 +181,22 @@ namespace ShapeshifterFramework.Utilities
             var tags = def.weaponTags;
 
             // 1) 화이트리스트 (Show)
-            if (MatchesAny(def.defName, form.renderShowWeaponDefNames)) return false;
+            if (form._showWeaponDefNames.Matches(def.defName)) return false;
             if (tags != null)
             {
                 for (int i = 0; i < tags.Count; i++)
-                    if (MatchesAny(tags[i], form.renderShowWeaponTags)) return false;
+                    if (form._showWeaponTags.Matches(tags[i])) return false;
             }
 
             // 2) 블랙리스트 - 이름/전체 (Hide Defs)
-            var hideDefs = form.renderHideWeaponDefNames;
-            if (ListHasAll(hideDefs) || MatchesAny(def.defName, hideDefs)) return true;
+            if (form._hideWeaponDefNames.hasAll || form._hideWeaponDefNames.Matches(def.defName)) return true;
 
             // 3) 블랙리스트 - 태그 (Hide Tags)
-            var hideTags = form.renderHideWeaponTags;
-            if (ListHasAll(hideTags)) return true; // 태그가 없는 무기도 All이면 숨김
+            if (form._hideWeaponTags.hasAll) return true;
             if (tags != null)
             {
                 for (int i = 0; i < tags.Count; i++)
-                    if (MatchesAny(tags[i], hideTags)) return true;
+                    if (form._hideWeaponTags.Matches(tags[i])) return true;
             }
 
             return false;
@@ -140,24 +210,22 @@ namespace ShapeshifterFramework.Utilities
             if (!TryGetFormAndComp(pawn, out _, out var form)) return false;
 
             // 1) 화이트리스트 (Show)
-            if (MatchesAny(gene.def.defName, form.renderShowGeneDefNames)) return false;
+            if (form._showGeneDefNames.Matches(gene.def.defName)) return false;
             if (tagsFromNodeOrDef != null)
             {
                 for (int i = 0; i < tagsFromNodeOrDef.Count; i++)
-                    if (MatchesAny(tagsFromNodeOrDef[i], form.renderShowGeneExclusionTags)) return false;
+                    if (form._showGeneExclusionTags.Matches(tagsFromNodeOrDef[i])) return false;
             }
 
             // 2) 블랙리스트 - 이름/전체 (Hide Defs)
-            var hideDefs = form.renderHideGeneDefNames;
-            if (ListHasAll(hideDefs) || MatchesAny(gene.def.defName, hideDefs)) return true;
+            if (form._hideGeneDefNames.hasAll || form._hideGeneDefNames.Matches(gene.def.defName)) return true;
 
             // 3) 블랙리스트 - 태그 (Hide Tags)
-            var hideTags = form.renderHideGeneExclusionTags;
-            if (ListHasAll(hideTags)) return true;
+            if (form._hideGeneExclusionTags.hasAll) return true;
             if (tagsFromNodeOrDef != null)
             {
                 for (int i = 0; i < tagsFromNodeOrDef.Count; i++)
-                    if (MatchesAny(tagsFromNodeOrDef[i], hideTags)) return true;
+                    if (form._hideGeneExclusionTags.Matches(tagsFromNodeOrDef[i])) return true;
             }
 
             return false;
@@ -171,18 +239,37 @@ namespace ShapeshifterFramework.Utilities
             if (!TryGetFormAndComp(pawn, out _, out var form)) return false;
 
             // 1) 화이트리스트 (Show)
-            if (MatchesAny(hediff.def.defName, form.renderShowHediffDefNames)) return false;
+            if (form._showHediffDefNames.Matches(hediff.def.defName)) return false;
 
             // 2) 블랙리스트 - 이름/전체 (Hide Defs)
-            var hideDefs = form.renderHideHediffDefNames;
-            if (ListHasAll(hideDefs) || MatchesAny(hediff.def.defName, hideDefs)) return true;
+            if (form._hideHediffDefNames.hasAll || form._hideHediffDefNames.Matches(hediff.def.defName)) return true;
 
             return false;
         }
 
+        /// <summary>GeneDef가 외형에 영향을 주는지 판별 (렌더 노드, 피부색, 머리색, 체형 등).</summary>
+        private static bool HasAnyVisualEffect(GeneDef def)
+        {
+            if (!def.renderNodeProperties.NullOrEmpty()) return true;
+            if (def.skinColorBase != null) return true;
+            if (def.skinColorOverride.HasValue) return true;
+            if (def.hairColorOverride.HasValue) return true;
+            if (def.hairTagFilter != null) return true;
+            if (def.beardTagFilter != null) return true;
+            if (!def.forcedHeadTypes.NullOrEmpty()) return true;
+            if (def.bodyType != null) return true;
+            return false;
+        }
+
+        /// <summary>UI 탭에서 디밍 대상인지 판별. 외형에 영향이 없는 유전자(면역력, 대사 등)는 항상 false.</summary>
         internal static bool ShouldHideGeneForUI(Pawn pawn, Gene gene)
         {
-            var tags = (gene?.def != null) ? (IList<string>)gene.def.exclusionTags : null;
+            if (gene?.def == null) return false;
+
+            // 외형에 영향이 없는 유전자는 디밍하지 않음
+            if (!HasAnyVisualEffect(gene.def)) return false;
+
+            var tags = (IList<string>)gene.def.exclusionTags;
             return ShouldHideGeneByDefOrTags(pawn, gene, tags);
         }
     }

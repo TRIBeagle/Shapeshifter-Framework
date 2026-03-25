@@ -4,7 +4,6 @@
 
 using HarmonyLib;
 using RimWorld;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities; // ShapeshiftEquipRules
 using Verse;
 
@@ -21,10 +20,12 @@ namespace ShapeshifterFramework.Patches
             Pawn pawn = __instance.pawn;
             if (pawn == null) return true;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            if (comp != null && comp.isTransformed && ShapeshiftEquipRules.LockWeapons(comp))
+            if (ShapeshiftRegistry.TryGet(pawn, out var comp, out var form) && ShapeshiftEquipRules.LockWeapons(comp))
             {
-                if (!comp.suppressEquipLock && pawn.IsColonistPlayerControlled)
+                // 내부 시스템(suppressEquipLock)에 의한 복구는 허용
+                if (comp.suppressEquipLock) return true;
+
+                if (pawn.IsColonistPlayerControlled)
                 {
                     Messages.Message("SSF_Message_CannotEquip".Translate(pawn.Named("PAWN")),
                                      pawn, MessageTypeDefOf.RejectInput, false);

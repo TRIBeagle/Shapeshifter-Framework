@@ -4,6 +4,7 @@
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -13,7 +14,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(PawnRenderer), "DrawShadowInternal")]
     internal static class Patch_PawnRenderer_DrawShadowInternal
     {
-        private struct ShadowKey
+        private struct ShadowKey : System.IEquatable<ShadowKey>
         {
             public Vector3 v;
             public Vector3 o;
@@ -29,23 +30,26 @@ namespace ShapeshifterFramework.Patches
                 }
             }
 
+            public bool Equals(ShadowKey other)
+            {
+                return v == other.v && o == other.o;
+            }
+
             public override bool Equals(object obj)
             {
-                if (!(obj is ShadowKey)) return false;
-                ShadowKey other = (ShadowKey)obj;
-                return v == other.v && o == other.o;
+                return obj is ShadowKey key && Equals(key);
             }
         }
 
-        private static readonly Dictionary<ShadowKey, Graphic_Shadow> FormShadowGraphicByKey =
-            new Dictionary<ShadowKey, Graphic_Shadow>(64);
+        private static readonly ConcurrentDictionary<ShadowKey, Graphic_Shadow> FormShadowGraphicByKey =
+            new ConcurrentDictionary<ShadowKey, Graphic_Shadow>();
 
-        private static readonly Dictionary<ShadowData, Graphic_Shadow> SpecialShadowGraphicByRef =
-            new Dictionary<ShadowData, Graphic_Shadow>(16);
+        /// <summary>맵 전환/게임 로드 시 그림자 캐시 정리.</summary>
+        public static void ClearCache() { FormShadowGraphicByKey.Clear(); }
 
-        static bool Prefix(PawnRenderer __instance, Vector3 drawLoc)
+        static bool Prefix(PawnRenderer __instance, Pawn ___pawn, Vector3 drawLoc)
         {
-            Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
+            Pawn pawn = ___pawn;
             if (pawn == null) return true;
 
             // 비행 시 바닐라 처리
@@ -82,13 +86,12 @@ namespace ShapeshifterFramework.Patches
                 return true;
 
             ShadowKey key = new ShadowKey { v = vol, o = off };
-            Graphic_Shadow formShadow;
-            if (!FormShadowGraphicByKey.TryGetValue(key, out formShadow) || formShadow == null)
+            // 멀티스레드 렌더링 안전: GetOrAdd로 원자적 캐시 조회·생성
+            Graphic_Shadow formShadow = FormShadowGraphicByKey.GetOrAdd(key, k =>
             {
-                ShadowData sd = new ShadowData { volume = vol, offset = off };
-                formShadow = new Graphic_Shadow(sd);
-                FormShadowGraphicByKey[key] = formShadow;
-            }
+                ShadowData sd = new ShadowData { volume = k.v, offset = k.o };
+                return new Graphic_Shadow(sd);
+            });
 
             formShadow.Draw(drawLoc, Rot4.North, pawn);
 

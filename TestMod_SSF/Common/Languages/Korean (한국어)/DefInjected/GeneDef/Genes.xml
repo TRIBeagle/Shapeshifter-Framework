@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- 수인 변신 유전자 -->
+  <SSFTest_Gene_BeastkinShift.label>수인 변신 유전자</SSFTest_Gene_BeastkinShift.label>
+  <SSFTest_Gene_BeastkinShift.description>수인 변신 능력이 내재된 유전자. 이 유전자를 보유한 폰은 수인 변신 어빌리티를 사용할 수 있다.</SSFTest_Gene_BeastkinShift.description>
+
+  <!-- 유령 변신 유전자 -->
+  <SSFTest_Gene_PhantomShift.label>유령 변신 유전자</SSFTest_Gene_PhantomShift.label>
+  <SSFTest_Gene_PhantomShift.description>유령 변신 능력이 내재된 유전자. 이 유전자를 보유한 폰은 유령 변신 어빌리티를 사용할 수 있다.</SSFTest_Gene_PhantomShift.description>
+
+
+</LanguageData>

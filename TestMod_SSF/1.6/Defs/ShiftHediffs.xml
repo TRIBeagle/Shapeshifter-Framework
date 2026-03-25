@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       Per-form main HediffDef: shapeshift state marker + stat/capacity modifiers
+       hediffClass: ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm
+       Maps to FormDef via HediffCompProperties_ShapeshiftCore.formDef (one-way)
+       ====================================================== -->
+
+  <!-- 1) Bear form main hediff -->
+  <HediffDef>
+    <defName>SSFTest_BearFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>bear form</label>
+    <description>Shapeshifted into a bear. Increased movement speed, enhanced melee hit/dodge, reduced manipulation.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.4, 0.8, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>1.5</MoveSpeed>
+        </statOffsets>
+        <statFactors>
+          <MeleeHitChance>1.20</MeleeHitChance>
+          <MeleeDodgeChance>1.15</MeleeDodgeChance>
+        </statFactors>
+        <capMods>
+          <li><capacity>Manipulation</capacity><setMax>0.2</setMax></li>
+          <li><capacity>Talking</capacity><postFactor>0.1</postFactor></li>
+          <li><capacity>Moving</capacity><postFactor>1.30</postFactor></li>
+          <li><capacity>Sight</capacity><postFactor>1.10</postFactor></li>
+        </capMods>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_BearForm</formDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- 2) Bear warrior form main hediff -->
+  <HediffDef>
+    <defName>SSFTest_BearWarriorFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>bear warrior form</label>
+    <description>Shapeshifted into a bear warrior. Increased movement speed, dodge, and damage reduction.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.4, 0.8, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>0.5</MoveSpeed>
+          <MeleeDodgeChance>10</MeleeDodgeChance>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.8</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_BearWarriorForm</formDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- 3) Sheep form main hediff -->
+  <HediffDef>
+    <defName>SSFTest_SheepFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>sheep form</label>
+    <description>Shapeshifted into a sheep. Reduced movement speed.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.8, 0.8, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>-1.0</MoveSpeed>
+        </statOffsets>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_SheepForm</formDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- 4) Dark knight form main hediff -->
+  <HediffDef>
+    <defName>SSFTest_DarkKnightFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>dark knight form</label>
+    <description>Shapeshifted into a dark knight. Reduced movement speed, increased dodge, significant damage reduction.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.4, 0.4, 0.8)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>-0.3</MoveSpeed>
+          <MeleeDodgeChance>15</MeleeDodgeChance>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.6</IncomingDamageFactor>
+          <MeleeWeapon_CooldownMultiplier>0.85</MeleeWeapon_CooldownMultiplier>
+        </statFactors>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_DarkKnightForm</formDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- 5a) Beastkin form main hediff -->
+  <HediffDef>
+    <defName>SSFTest_BeastkinFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>beastkin form</label>
+    <description>Shapeshifted into a beastkin. Increased movement speed, dodge, and melee hit chance.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.4, 0.8, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>0.8</MoveSpeed>
+          <MeleeDodgeChance>5</MeleeDodgeChance>
+        </statOffsets>
+        <statFactors>
+          <MeleeHitChance>1.10</MeleeHitChance>
+        </statFactors>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_BeastkinForm</formDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- 5b) Full beast form main hediff -->
+  <HediffDef>
+    <defName>SSFTest_FullBeastFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>full beast form</label>
+    <description>Shapeshifted into a full beast. Greatly increased movement speed, damage reduction.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>2.0</MoveSpeed>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.7</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_FullBeastForm</formDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- 6) Guardian form main hediff -->
+  <HediffDef>
+    <defName>SSFTest_GuardianFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>guardian form</label>
+    <description>Shapeshifted into a guardian. Increased movement speed, damage reduction.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.4, 0.8, 0.8)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>0.3</MoveSpeed>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.85</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_GuardianForm</formDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- 7) Phantom form main hediff -->
+  <HediffDef>
+    <defName>SSFTest_PhantomFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>phantom form</label>
+    <description>Shapeshifted into a phantom. Increased movement speed.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.6, 0.7, 0.9)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>1.0</MoveSpeed>
+        </statOffsets>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_PhantomForm</formDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- 8) Race-locked form main hediff -->
+  <HediffDef>
+    <defName>SSFTest_RaceLockedFormHediff</defName>
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <label>race locked form</label>
+    <description>Human-only enhancement state. Increased movement speed, dodge, and damage reduction.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.8, 0.6, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <statOffsets>
+          <MoveSpeed>0.5</MoveSpeed>
+          <MeleeDodgeChance>10</MeleeDodgeChance>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.75</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <formDef>SSFTest_RaceLockedForm</formDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- ======================================================
+       Sustain condition test hediff — GuardianForm sustain condition
+       Replaced FibrousMechanites with custom hediff for independent testing
+       ====================================================== -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_GuardianMark</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>guardian's mark</label>
+    <description>Guardian's mark. The guardian transformation can be maintained while this mark remains. Transformation reverts when the mark is lost.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.3, 0.8, 0.6)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <stages>
+      <li>
+        <label>marked</label>
+        <statOffsets>
+          <PsychicSensitivity>0.05</PsychicSensitivity>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- ======================================================
+       Conditional auto-shift test — HediffComp_AutoShift
+       When this hediff is applied, auto-shifts to bear form with
+       80% chance when light level below 0.5 (night) or health below 30%
+       ====================================================== -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_AutoShiftCurse</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>beast curse (auto-shift test)</label>
+    <description>Beast curse. Automatically transforms into a bear with 80% chance when it's nighttime or health drops below 30%.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.9, 0.4, 0.2)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <stages>
+      <li>
+        <label>cursed</label>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
+        <hediffDef>SSFTest_BearFormHediff</hediffDef>
+        <healthThreshold>0.3</healthThreshold>
+        <triggerSunGlowBelow>0.5</triggerSunGlowBelow>
+        <checkIntervalTicks>120</checkIntervalTicks>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- Combat auto-shift test — triggerInCombat + triggerOnce -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_CombatAutoShift</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>combat instinct (auto-shift test)</label>
+    <description>Combat instinct. Automatically transforms into a bear warrior once when entering combat.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.8, 0.3, 0.3)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <stages>
+      <li>
+        <label>instinct ready</label>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_AutoShift">
+        <!-- hediffDef path test: directly specifying hediffDef instead of formDefName -->
+        <hediffDef>SSFTest_BearWarriorFormHediff</hediffDef>
+        <triggerInCombat>true</triggerInCombat>
+        <checkIntervalTicks>60</checkIntervalTicks>
+        <triggerOnce>true</triggerOnce>
+      </li>
+    </comps>
+  </HediffDef>
+
+</Defs>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Beastkin shift gene -->
+  <SSFTest_Gene_BeastkinShift.label>beastkin gene</SSFTest_Gene_BeastkinShift.label>
+  <SSFTest_Gene_BeastkinShift.description>A gene with innate beastkin transformation ability. Pawns with this gene can use the beastkin shift ability.</SSFTest_Gene_BeastkinShift.description>
+
+  <!-- Phantom shift gene -->
+  <SSFTest_Gene_PhantomShift.label>phantom gene</SSFTest_Gene_PhantomShift.label>
+  <SSFTest_Gene_PhantomShift.description>A gene with innate phantom transformation ability. Pawns with this gene can use the phantom shift ability.</SSFTest_Gene_PhantomShift.description>
+
+</LanguageData>

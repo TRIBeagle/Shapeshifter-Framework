@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- ======================================================
+       Shapeshifting precept thoughts — Ideology DLC only
+       4 levels: Abhorrent / Disapproved / Respected / Sublime
+       ====================================================== -->
+
+  <!-- ══════════════ Abhorrent ══════════════ -->
+
+  <!-- Mood -10 while shapeshifted (situational) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Abhorrent</defName>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
+    <stages>
+      <li>
+        <label>shapeshifted</label>
+        <description>This body is not mine. It's revolting and horrifying.</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Opinion -20 toward shapeshifters (social) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Abhorrent_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
+    <stages>
+      <li>
+        <label>shapeshifter</label>
+        <description>They changed their body. It makes my skin crawl.</description>
+        <baseOpinionOffset>-20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Taboo violation memory -10 (once on shapeshift, 5 days) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_ShapeshiftTabooViolated</defName>
+    <durationDays>5</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages>
+      <li>
+        <label>I shapeshifted</label>
+        <description>I did something I shouldn't have. My mind is troubled.</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- ══════════════ Disapproved ══════════════ -->
+
+  <!-- Mood -5 while shapeshifted (situational) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Disapproved</defName>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
+    <stages>
+      <li>
+        <label>shapeshifted</label>
+        <description>This form feels uncomfortable.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Opinion -10 toward shapeshifters (social) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Disapproved_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
+    <stages>
+      <li>
+        <label>shapeshifter</label>
+        <description>Shapeshifting like that... it's off-putting.</description>
+        <baseOpinionOffset>-10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Disapproval violation memory -5 (once on shapeshift, 3 days) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_ShapeshiftDisapprovedViolated</defName>
+    <durationDays>3</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages>
+      <li>
+        <label>I shapeshifted</label>
+        <description>It feels wrong. I wish I hadn't done that.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- ══════════════ Respected ══════════════ -->
+
+  <!-- Mood +5 while shapeshifted (situational) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Respected</defName>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
+    <stages>
+      <li>
+        <label>shapeshifted</label>
+        <description>This form isn't bad at all. Quite nice, actually.</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Opinion +10 toward shapeshifters (social) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Respected_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
+    <stages>
+      <li>
+        <label>shapeshifter</label>
+        <description>Their shapeshifting ability is quite impressive.</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- ══════════════ Sublime ══════════════ -->
+
+  <!-- Mood +10 while shapeshifted (situational) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Sublime</defName>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted</workerClass>
+    <stages>
+      <li>
+        <label>shapeshifted</label>
+        <description>I can feel the power within me awakening. It feels wonderful.</description>
+        <baseMoodEffect>10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Opinion +20 toward shapeshifters (social) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_Shapeshifted_Sublime_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_Precept_Shapeshifted_Social</workerClass>
+    <stages>
+      <li>
+        <label>shapeshifter</label>
+        <description>They possess the blessed power of shapeshifting. How wondrous.</description>
+        <baseOpinionOffset>20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- ══════════════ Witnessed shapeshift memories ══════════════ -->
+
+  <!-- Witnessed shapeshift — Abhorrent: -8 (5 days) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_WitnessedShapeshift_Abhorrent</defName>
+    <durationDays>5</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>someone shapeshifted</label>
+        <description>Someone changed their body right before my eyes. It was revolting and horrifying.</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Witnessed shapeshift — Disapproved: -4 (3 days) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_WitnessedShapeshift_Disapproved</defName>
+    <durationDays>3</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>someone shapeshifted</label>
+        <description>I saw someone shapeshift. It was a bit unsettling.</description>
+        <baseMoodEffect>-4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Witnessed shapeshift — Respected: +4 (3 days) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_WitnessedShapeshift_Respected</defName>
+    <durationDays>3</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>someone shapeshifted</label>
+        <description>I saw someone shapeshift. It was quite impressive.</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Witnessed shapeshift — Sublime: +8 (5 days) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_WitnessedShapeshift_Sublime</defName>
+    <durationDays>5</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>someone shapeshifted</label>
+        <description>I witnessed a sacred shapeshifting. It was a truly wondrous moment.</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- ══════════════ Common (precept-aware) ══════════════ -->
+
+  <!-- Sacred animal form — mood varies by shapeshifting precept stage
+       Stage 0: Abhorrent  -8  (desecration)
+       Stage 1: Disapproved -3 (uncomfortable)
+       Stage 2: DontCare   +2  (mildly positive)
+       Stage 3: Respected   +5
+       Stage 4: Sublime     +8  (blessed) -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_SacredAnimalForm</defName>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_SacredAnimalForm</workerClass>
+    <stages>
+      <li>
+        <label>sacred animal form</label>
+        <description>I've taken the form of a sacred animal with this vile power. I feel like I've committed a terrible sacrilege.</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>I'm wearing the form of a sacred animal through shapeshifting. It doesn't feel right.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>I've taken the form of a sacred animal. Huh, interesting.</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>I've taken the form of a sacred animal. It feels reverent.</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>I embody the sacred animal itself! I can feel divine power flowing through me.</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Sacred animal form — social opinion varies by shapeshifting precept stage
+       Stage 0: Abhorrent  -10
+       Stage 1: Disapproved -5
+       Stage 2: DontCare   +1
+       Stage 3: Respected   +5
+       Stage 4: Sublime     +10 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Thought_SacredAnimalForm_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>ShapeshifterFramework.Ideology.ThoughtWorker_SacredAnimalForm_Social</workerClass>
+    <stages>
+      <li>
+        <label>sacred animal form</label>
+        <description>They dare to wear the form of a sacred animal with that vile power. It's an unforgivable sacrilege.</description>
+        <baseOpinionOffset>-10</baseOpinionOffset>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>They're wearing the form of a sacred animal through shapeshifting. It's uncomfortable to watch.</description>
+        <baseOpinionOffset>-5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>They've taken the form of a sacred animal. It's kind of neat.</description>
+        <baseOpinionOffset>1</baseOpinionOffset>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>They embody a sacred animal. It's quite impressive.</description>
+        <baseOpinionOffset>5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>sacred animal form</label>
+        <description>They embody the sacred animal itself! They are truly blessed.</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+</Defs>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Bear form -->
+  <SSFTest_BearForm.label>bear form</SSFTest_BearForm.label>
+  <SSFTest_BearForm.description>Test bear shapeshift. Full animal transformation. Replaces body texture with bear, adjusts stats, grants hediffs.</SSFTest_BearForm.description>
+
+  <!-- Bear warrior form -->
+  <SSFTest_BearWarriorForm.label>bear warrior form</SSFTest_BearWarriorForm.label>
+  <SSFTest_BearWarriorForm.description>Test bear warrior shapeshift. Stats enhanced while keeping equipment. Bear sound override.</SSFTest_BearWarriorForm.description>
+
+  <!-- Sheep form -->
+  <SSFTest_SheepForm.label>sheep form</SSFTest_SheepForm.label>
+  <SSFTest_SheepForm.description>Test sheep shapeshift. Combat ability lost, voluntary revert disabled.</SSFTest_SheepForm.description>
+
+  <!-- Dark knight form -->
+  <SSFTest_DarkKnightForm.label>dark knight form</SSFTest_DarkKnightForm.label>
+  <SSFTest_DarkKnightForm.description>Dark knight transformation. Spawns dedicated plasteel plate armor and longsword. Existing gear moves to inventory. Spawned gear is destroyed on revert.</SSFTest_DarkKnightForm.description>
+
+  <!-- Beastkin form -->
+  <SSFTest_BeastkinForm.label>beastkin form</SSFTest_BeastkinForm.label>
+  <SSFTest_BeastkinForm.description>Beastkin form. Adds ear/tail graphics, tests various ranged verbs. Can perform 2nd-stage transformation to full beast while in beastkin form.</SSFTest_BeastkinForm.description>
+
+  <!-- Full beast form -->
+  <SSFTest_FullBeastForm.label>full beast form</SSFTest_FullBeastForm.label>
+  <SSFTest_FullBeastForm.description>Full beast form. Can only transform from beastkin state (ability granted via beastkin form's addAbilities).</SSFTest_FullBeastForm.description>
+
+  <!-- Guardian form -->
+  <SSFTest_GuardianForm.label>guardian form</SSFTest_GuardianForm.label>
+  <SSFTest_GuardianForm.description>Guardian form. Maintained while possessing magic stone or guardian's mark. Tests large shadow and portrait scaling.</SSFTest_GuardianForm.description>
+
+  <!-- Phantom form -->
+  <SSFTest_PhantomForm.label>phantom form</SSFTest_PhantomForm.label>
+  <SSFTest_PhantomForm.description>Phantom form. Semi-transparent head, thin body type. Firefighting disabled. FX delay test.</SSFTest_PhantomForm.description>
+
+  <!-- Race locked form -->
+  <SSFTest_RaceLockedForm.label>race locked form</SSFTest_RaceLockedForm.label>
+  <SSFTest_RaceLockedForm.description>Human-only enhancement form. Apparel change locked, weapons freely swappable. Fixed head type.</SSFTest_RaceLockedForm.description>
+
+</LanguageData>

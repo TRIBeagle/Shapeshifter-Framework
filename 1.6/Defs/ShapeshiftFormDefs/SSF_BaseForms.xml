@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Defs>
 
-  <!-- 완전 변신 베이스: 인간 파츠와 의상/무기/유전자 기본 숨김 -->
+  <!-- Full transformation base: hides human parts, apparel, weapons, and genes by default -->
   <ShapeshifterFramework.ShapeshiftFormDef Name="SSF_BaseForm_Animal" Abstract="True">
     <body><mode>Replace</mode></body>
     <head><mode>Hidden</mode></head>
@@ -28,7 +28,7 @@
 	
   </ShapeshifterFramework.ShapeshiftFormDef>
 
-  <!-- 휴머노이드 베이스: 사람 파츠 유지, 모자만 기본 숨김 -->
+  <!-- Humanoid base: keeps human parts, hides overhead apparel only -->
   <ShapeshifterFramework.ShapeshiftFormDef Name="SSF_BaseForm_Humanoid" Abstract="True">
     <body><mode>Default</mode></body>
     <head><mode>Default</mode></head>
@@ -45,6 +45,7 @@
     <headOffset>(0,0)</headOffset>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
+  <!-- Armored/suit base: keeps human appearance and existing gear, conflicting gear goes to inventory, apparel change locked -->
   <ShapeshifterFramework.ShapeshiftFormDef Name="SSF_BaseForm_Armored" Abstract="True">
     <body><mode>Default</mode></body>
     <head><mode>Default</mode></head>

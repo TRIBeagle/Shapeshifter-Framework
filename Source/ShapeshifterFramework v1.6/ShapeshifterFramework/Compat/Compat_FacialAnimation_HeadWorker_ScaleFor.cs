@@ -1,11 +1,13 @@
 ﻿// ShapeshifterFramework | Compat | Compat_FacialAnimation_HeadWorker_ScaleFor.cs
-// FA HeadWorker ScaleFor Postfix: 변신 시 FA 머리 스케일을 폼에 맞춰 동기화.
-// 대상 워커가 NLFacialAnimationHeadNodeWorker일 때만 배율 적용. 타입은 ReflectionCache로 캐싱.
+// 목적 : Facial Animation 머리 스케일 동기화 — 변신 시 FA 머리 스케일을 폼에 맞춰 적용.
+// 용도 : FA HeadWorker ScaleFor Postfix로, 대상 워커가 NLFacialAnimationHeadNodeWorker일 때만 배율 적용. 타입은 ReflectionCache로 캐싱.
 
 using HarmonyLib;
 using ShapeshifterFramework.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Verse;
 
@@ -29,10 +31,11 @@ namespace ShapeshifterFramework.Compat
         /// <summary>패치 적용 가능 여부 판정.</summary>
         static bool Prepare()
         {
-            // FA 비활성이면 패치 비적용
-            if (!CompatManager.FA.IsActive || T_BaseWorker == null || T_FAHeadWorker == null)
+            // FA 비활성이면 패치 비적용 — 실패 기록 불필요
+            if (!CompatManager.FA.IsActive) return false;
+            if (T_BaseWorker == null || T_FAHeadWorker == null)
             {
-                CompatManager.FA.Failed("HeadScale", "not active or types missing");
+                CompatManager.FA.Failed("HeadScale", "types missing");
                 return false;
             }
             return true;
@@ -65,28 +68,22 @@ namespace ShapeshifterFramework.Compat
         #region Postfix
 
         /// <summary>Postfix: 헤드 워커면 폼의 body*head 스케일 적용.</summary>
-        static void Postfix(ref Vector3 __result, PawnRenderNode __0, PawnDrawParms __1)
+        static void Postfix(PawnRenderNodeWorker __instance, ref Vector3 __result, PawnRenderNode __0, PawnDrawParms __1)
         {
             try
             {
-                var node = __0;
-                var parms = __1;
-                if (node == null) return;
-
-                Pawn pawn = parms.pawn;
-                if (pawn == null) return;
-
-                // FA 컨트롤러 없으면 스킵
-                if (!HasFAControllerComp(pawn)) return;
-
-                // FA 헤드 워커인지 판정
-                object worker = TryGetWorker(node);
-                if (worker == null || !T_FAHeadWorker.IsAssignableFrom(worker.GetType()))
+                // __instance가 곧 워커 — 리플렉션 없이 타입 체크만으로 FA 헤드 워커 판별
+                if (__instance == null || !T_FAHeadWorker.IsInstanceOfType(__instance))
                     return;
 
-                var comp = ShapeshiftUtility.GetShapeShiftComp(pawn);
-                var form = comp?.currentForm;
-                if (comp == null || !comp.isTransformed || form == null) return;
+                Pawn pawn = __1.pawn;
+                if (pawn == null) return;
+
+                // 비변신 폰 즉시 스킵
+                if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
+
+                // FA 컨트롤러 없으면 스킵 (캐시로 AllComps 순회 방지)
+                if (!HasFAControllerCompCached(pawn)) return;
 
                 float factor = 1f;
 
@@ -110,8 +107,30 @@ namespace ShapeshifterFramework.Compat
 
         #region Helpers
 
-        /// <summary>Pawn이 FA 컨트롤러 컴프를 보유하는지 검사.</summary>
-        private static bool HasFAControllerComp(Pawn pawn)
+        // FA 컨트롤러 보유 여부 캐시 — AllComps 순회 방지 (게임 중 FA 컴프는 변하지 않음)
+        // ConditionalWeakTable: Pawn GC 시 캐시 엔트리 자동 제거 → stale 데이터 방지
+        private static ConditionalWeakTable<Pawn, BoolBox> _faCompCache
+            = new ConditionalWeakTable<Pawn, BoolBox>();
+
+        /// <summary>ConditionalWeakTable 값 래퍼 (value type을 참조로 보관).</summary>
+        private sealed class BoolBox { public bool value; public bool resolved; }
+
+        /// <summary>게임 로드/전환 시 FA 컴프 캐시 정리.</summary>
+        internal static void ClearFACompCache() { _faCompCache = new ConditionalWeakTable<Pawn, BoolBox>(); }
+
+        /// <summary>Pawn이 FA 컨트롤러 컴프를 보유하는지 캐시 조회. 최초 1회만 AllComps 순회.</summary>
+        private static bool HasFAControllerCompCached(Pawn pawn)
+        {
+            var box = _faCompCache.GetOrCreateValue(pawn);
+            if (box.resolved) return box.value;
+
+            box.value = HasFAControllerCompScan(pawn);
+            box.resolved = true;
+            return box.value;
+        }
+
+        /// <summary>Pawn이 FA 컨트롤러 컴프를 보유하는지 실제 검사.</summary>
+        private static bool HasFAControllerCompScan(Pawn pawn)
         {
             if (T_FAComp == null || pawn == null) return false;
             try
@@ -131,18 +150,6 @@ namespace ShapeshifterFramework.Compat
                     CompatManager.FA.Failed("HasFAComp:Exception", e.Message);
             }
             return false;
-        }
-
-        /// <summary>PawnRenderNode에서 worker 인스턴스 획득(프로퍼티/필드 폴백).</summary>
-        private static object TryGetWorker(PawnRenderNode node)
-        {
-            if (node == null) return null;
-
-            // 캐시된 리플렉션 헬퍼 우선
-            var v = ShapeshiftReflectionCache.GetInstanceProperty<object>(node, "Worker");
-            if (v != null) return v;
-
-            return ShapeshiftReflectionCache.GetInstanceField<object>(node, "worker");
         }
 
         #endregion

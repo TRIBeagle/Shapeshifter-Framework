@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SSF TestMod — Combat Extended 호환 패치 예제
+
+  CE가 활성화된 경우에만 적용됨 (MayRequire).
+  SSF 폼의 tools/verbs는 NativeVerb (EquipmentSource=null)이므로 CE 탄약 시스템은 자연 면제.
+  다만 CE 전용 melee 필드(armorPenetrationSharp/Blunt)는 기본값(0)이므로,
+  CE 환경에서 의미 있는 관통력을 부여하려면 ToolCE로 교체 필요.
+
+  방법: XPath로 기존 <tools> 내 <li>를 CE 전용 필드가 추가된 버전으로 교체.
+  ToolCE는 Tool을 상속하므로 SSF의 List<Tool>에 정상 수용됨.
+-->
+<Patch>
+
+  <!-- ============================================================
+       BearForm — teeth 도구를 CE 관통값 포함 버전으로 교체
+       ============================================================ -->
+  <Operation Class="PatchOperationReplace" MayRequire="CETeam.CombatExtended">
+    <xpath>Defs/ShapeshifterFramework.ShapeshiftFormDef[defName="SSFTest_BearForm"]/tools</xpath>
+    <value>
+      <tools>
+        <li Class="CombatExtended.ToolCE">
+          <label>teeth</label>
+          <capacities><li>Bite</li></capacities>
+          <power>12</power>
+          <cooldownTime>1.5</cooldownTime>
+          <linkedBodyPartsGroup>Teeth</linkedBodyPartsGroup>
+          <armorPenetrationSharp>4</armorPenetrationSharp>
+          <armorPenetrationBlunt>8</armorPenetrationBlunt>
+        </li>
+      </tools>
+    </value>
+  </Operation>
+
+  <!-- ============================================================
+       BeastkinForm — claws 도구를 CE 관통값 포함 버전으로 교체
+       ============================================================ -->
+  <Operation Class="PatchOperationReplace" MayRequire="CETeam.CombatExtended">
+    <xpath>Defs/ShapeshifterFramework.ShapeshiftFormDef[defName="SSFTest_BeastkinForm"]/tools</xpath>
+    <value>
+      <tools>
+        <li Class="CombatExtended.ToolCE">
+          <label>claws</label>
+          <capacities><li>Scratch</li></capacities>
+          <power>10</power>
+          <cooldownTime>1.8</cooldownTime>
+          <linkedBodyPartsGroup>Hands</linkedBodyPartsGroup>
+          <armorPenetrationSharp>3</armorPenetrationSharp>
+          <armorPenetrationBlunt>6</armorPenetrationBlunt>
+        </li>
+      </tools>
+    </value>
+  </Operation>
+
+  <!-- ============================================================
+       BeastkinForm — AssaultRifle verb를 CE VerbPropertiesCE로 교체 예제
+       CE 환경에서 projectile, 탄종, 반동 등을 CE 전용 필드로 지정.
+
+       주의: 실제 CE 환경에서는 projectile도 CE 전용 탄약 Def로 교체해야 함.
+             이 예제는 구조 시연용으로 바닐라 projectile을 사용.
+       ============================================================ -->
+  <Operation Class="PatchOperationReplace" MayRequire="CETeam.CombatExtended">
+    <xpath>Defs/ShapeshifterFramework.ShapeshiftFormDef[defName="SSFTest_BeastkinForm"]/verbs/li[label="AssaultRifle"]</xpath>
+    <value>
+      <li Class="CombatExtended.VerbPropertiesCE">
+        <label>AssaultRifle</label>
+        <verbClass>CombatExtended.Verb_ShootCE</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>Bullet_AssaultRifle</defaultProjectile>
+        <warmupTime>1.0</warmupTime>
+        <range>28</range>
+        <burstShotCount>3</burstShotCount>
+        <ticksBetweenBurstShots>10</ticksBetweenBurstShots>
+        <requireLineOfSight>true</requireLineOfSight>
+        <stopBurstWithoutLos>true</stopBurstWithoutLos>
+        <!-- CE 전용 필드 -->
+        <recoilAmount>1.2</recoilAmount>
+        <targetParams>
+          <canTargetPawns>true</canTargetPawns>
+          <canTargetLocations>false</canTargetLocations>
+        </targetParams>
+      </li>
+    </value>
+  </Operation>
+
+</Patch>

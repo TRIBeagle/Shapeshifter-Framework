@@ -2,7 +2,6 @@
 // 목적 : 렌더링 루프 내부에서 PawnDrawParms에 폼의 스케일 배수 및 오프셋을 적용.
 // 용도 : ShapeshiftSizeFactorResolver에서 계산된 배율(bodyWidth, headSizeFactor 등)을 가져와 바닐라 렌더 파라미터(Scale, Offset) 연산에 직접 곱해줌.
 
-using ShapeshifterFramework.Comps;
 using UnityEngine;
 using Verse;
 
@@ -14,8 +13,7 @@ namespace ShapeshifterFramework.Utilities
         {
             if (pawn == null) return 1f;
 
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            if (comp == null || !comp.isTransformed || comp.currentForm == null) return 1f;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return 1f;
 
             var ls = pawn.ageTracker?.CurLifeStage;
             var eff = ShapeshiftSizeFactorResolver.Effective(pawn);

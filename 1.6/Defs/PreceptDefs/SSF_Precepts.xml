@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- ======================================================
+       Shapeshifting Precepts — Ideology DLC only
+       MayRequire ensures auto-skip when DLC is not installed
+       4 levels: Abhorrent / Disapproved / Respected / Sublime
+       ====================================================== -->
+
+  <!-- History event for shapeshifting (PreceptComp_SelfTookMemoryThought linkage) -->
+  <HistoryEventDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifted</defName>
+    <label>shapeshifted</label>
+  </HistoryEventDef>
+
+  <!-- Issue: shapeshifting acceptance -->
+  <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting</defName>
+    <label>shapeshifting</label>
+    <iconPath>UI/Issues/SSF_Shapeshifting</iconPath>
+  </IssueDef>
+
+  <!-- ── Level 0: Abhorrent (forbidden) ── -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting_Abhorrent</defName>
+    <issue>SSF_Shapeshifting</issue>
+    <label>abhorrent</label>
+    <description>Altering one's natural body is an utterly unforgivable desecration of nature.</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>40</displayOrderInIssue>
+    <displayOrderInImpact>1000</displayOrderInImpact>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSF_Thought_Shapeshifted_Abhorrent</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSF_Thought_Shapeshifted_Abhorrent_Social</thought>
+      </li>
+      <li Class="PreceptComp_SelfTookMemoryThought">
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_ShapeshiftTabooViolated</thought>
+      </li>
+      <li Class="PreceptComp_KnowsMemoryThought">
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_WitnessedShapeshift_Abhorrent</thought>
+      </li>
+      <li Class="PreceptComp_UnwillingToDo">
+        <eventDef>SSF_Shapeshifted</eventDef>
+      </li>
+    </comps>
+  </PreceptDef>
+
+  <!-- ── Level 1: Disapproved ── -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting_Disapproved</defName>
+    <issue>SSF_Shapeshifting</issue>
+    <label>disapproved</label>
+    <description>Altering one's natural body is a disgusting and unnatural act.</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>30</displayOrderInIssue>
+    <displayOrderInImpact>1000</displayOrderInImpact>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSF_Thought_Shapeshifted_Disapproved</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSF_Thought_Shapeshifted_Disapproved_Social</thought>
+      </li>
+      <li Class="PreceptComp_SelfTookMemoryThought">
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_ShapeshiftDisapprovedViolated</thought>
+      </li>
+      <li Class="PreceptComp_KnowsMemoryThought">
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_WitnessedShapeshift_Disapproved</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+
+  <!-- ── Level: Don't care (neutral, no effects) ── -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting_DontCare</defName>
+    <issue>SSF_Shapeshifting</issue>
+    <label>don't care</label>
+    <description>Shapeshifting is neither praised nor condemned. It simply is.</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>20</displayOrderInIssue>
+    <displayOrderInImpact>1000</displayOrderInImpact>
+    <defaultSelectionWeight>2</defaultSelectionWeight>
+  </PreceptDef>
+
+  <!-- ── Level 2: Respected ── -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting_Respected</defName>
+    <issue>SSF_Shapeshifting</issue>
+    <label>respected</label>
+    <description>The power to change one's body is a talent worthy of respect.</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>10</displayOrderInIssue>
+    <displayOrderInImpact>1000</displayOrderInImpact>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSF_Thought_Shapeshifted_Respected</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSF_Thought_Shapeshifted_Respected_Social</thought>
+      </li>
+      <li Class="PreceptComp_KnowsMemoryThought">
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_WitnessedShapeshift_Respected</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+
+  <!-- ── Level 3: Sublime ── -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSF_Shapeshifting_Sublime</defName>
+    <issue>SSF_Shapeshifting</issue>
+    <label>sublime</label>
+    <description>Shapeshifting is a divine blessing. Those who possess this power are to be revered.</description>
+    <impact>High</impact>
+    <displayOrderInIssue>0</displayOrderInIssue>
+    <displayOrderInImpact>1000</displayOrderInImpact>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSF_Thought_Shapeshifted_Sublime</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSF_Thought_Shapeshifted_Sublime_Social</thought>
+      </li>
+      <li Class="PreceptComp_KnowsMemoryThought">
+        <eventDef>SSF_Shapeshifted</eventDef>
+        <thought>SSF_Thought_WitnessedShapeshift_Sublime</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+
+</Defs>

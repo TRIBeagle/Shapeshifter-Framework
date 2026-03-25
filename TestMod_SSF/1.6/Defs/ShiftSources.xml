@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       Ability acquisition source diversity test
+       Validates ability grant/revoke per source path after AbilityDef system migration
+       ====================================================== -->
+
+  <!-- ======================================================
+       1) Gene (GeneDef) — Biotech DLC
+       Auto-grants beastkin shift ability when gene is present
+       MayRequire: ignored if Biotech DLC is absent
+       ====================================================== -->
+  <GeneDef MayRequire="Ludeon.RimWorld.Biotech">
+    <defName>SSFTest_Gene_BeastkinShift</defName>
+    <label>beastkin gene</label>
+    <description>A gene with innate beastkin transformation ability. Pawns with this gene can use the beastkin shift ability.</description>
+    <iconPath>UI/Icons/Genes/Gene_Claws_Retractable</iconPath>
+    <displayCategory>Miscellaneous</displayCategory>
+    <displayOrderInCategory>100</displayOrderInCategory>
+    <biostatCpx>2</biostatCpx>
+    <biostatMet>-1</biostatMet>
+    <abilities>
+      <li>SSFTest_Ability_Beastkin</li>
+    </abilities>
+  </GeneDef>
+
+  <!-- ======================================================
+       2) Gene (GeneDef) — phantom shift gene
+       Tests gene-path ability grant for another form
+       ====================================================== -->
+  <GeneDef MayRequire="Ludeon.RimWorld.Biotech">
+    <defName>SSFTest_Gene_PhantomShift</defName>
+    <label>phantom gene</label>
+    <description>A gene with innate phantom transformation ability. Pawns with this gene can use the phantom shift ability.</description>
+    <iconPath>UI/Icons/Genes/Gene_Deathless</iconPath>
+    <displayCategory>Miscellaneous</displayCategory>
+    <displayOrderInCategory>101</displayOrderInCategory>
+    <biostatCpx>1</biostatCpx>
+    <biostatMet>0</biostatMet>
+    <abilities>
+      <li>SSFTest_Ability_Phantom</li>
+    </abilities>
+  </GeneDef>
+
+  <!-- ======================================================
+       3) Equipped weapon — grants dark knight shift ability when equipped
+       Ability is immediately revoked when weapon is unequipped
+       ====================================================== -->
+  <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
+    <defName>SSFTest_Weapon_DarkBlade</defName>
+    <label>Test: dark blade</label>
+    <description>A blade imbued with dark power. Equipping grants the dark knight transformation ability. Unequipping removes the ability.</description>
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponMelee/LongSword</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <techLevel>Medieval</techLevel>
+    <costList>
+      <Steel>60</Steel>
+    </costList>
+    <statBases>
+      <WorkToMake>12000</WorkToMake>
+      <Mass>2.0</Mass>
+    </statBases>
+    <weaponTags>
+      <li>MedievalMeleeAdvanced</li>
+    </weaponTags>
+    <tools>
+      <li>
+        <label>edge</label>
+        <capacities><li>Cut</li></capacities>
+        <power>20</power>
+        <cooldownTime>2.0</cooldownTime>
+      </li>
+      <li>
+        <label>point</label>
+        <capacities><li>Stab</li></capacities>
+        <power>24</power>
+        <cooldownTime>2.4</cooldownTime>
+      </li>
+    </tools>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_Shapeshift">
+        <ability>SSFTest_Ability_DarkKnight</ability>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- ======================================================
+       4) Equipped apparel — grants phantom shift ability when worn
+       Ability is immediately revoked when removed
+       ====================================================== -->
+  <ThingDef ParentName="ApparelMakeableBase">
+    <defName>SSFTest_Apparel_PhantomCloak</defName>
+    <label>Test: phantom cloak</label>
+    <description>A cloak imbued with phantom power. Wearing grants the phantom transformation ability. Removing it removes the ability.</description>
+    <graphicData>
+      <texPath>Things/Pawn/Humanlike/Apparel/Cape/Cape</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <techLevel>Medieval</techLevel>
+    <costList>
+      <Cloth>40</Cloth>
+    </costList>
+    <statBases>
+      <WorkToMake>6000</WorkToMake>
+      <Mass>0.8</Mass>
+      <ArmorRating_Sharp>0.10</ArmorRating_Sharp>
+      <ArmorRating_Blunt>0.05</ArmorRating_Blunt>
+      <Insulation_Cold>5</Insulation_Cold>
+    </statBases>
+    <apparel>
+      <bodyPartGroups>
+        <li>Torso</li>
+      </bodyPartGroups>
+      <layers>
+        <li>Shell</li>
+      </layers>
+    </apparel>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_GiveAbility_Shapeshift">
+        <ability>SSFTest_Ability_Phantom</ability>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- ======================================================
+       5) Hediff-based ability grant (HediffComp_GiveAbility)
+       Vanilla pattern: auto-grants ability while hediff is present, revokes on removal
+       Example: bear warrior shift available while blessing hediff persists
+       ====================================================== -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_ShiftBlessing</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>shapeshifter's blessing</label>
+    <description>Shapeshifter's blessing. Grants the bear warrior transformation ability while this blessing persists.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.9, 0.7, 0.2)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <stages>
+      <li>
+        <label>blessed</label>
+        <statOffsets>
+          <MoveSpeed>0.1</MoveSpeed>
+        </statOffsets>
+      </li>
+    </stages>
+    <comps>
+      <li Class="HediffCompProperties_GiveAbility">
+        <abilityDef>SSFTest_Ability_BuffAlly</abilityDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- ======================================================
+       6) Hediff-based ability (race-locked form)
+       Race restriction test also covered via hediff path
+       ====================================================== -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_RacialAwakening</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>racial awakening</label>
+    <description>Racial awakening. Grants the race-locked transformation ability while in this state. (Human only)</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.8, 0.5, 0.3)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <stages>
+      <li>
+        <label>awakened</label>
+      </li>
+    </stages>
+    <comps>
+      <li Class="HediffCompProperties_GiveAbility">
+        <abilityDef>SSFTest_Ability_RaceLocked</abilityDef>
+      </li>
+    </comps>
+  </HediffDef>
+
+</Defs>

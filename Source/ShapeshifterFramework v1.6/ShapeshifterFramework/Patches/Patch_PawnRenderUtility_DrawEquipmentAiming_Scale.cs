@@ -18,6 +18,7 @@ namespace ShapeshifterFramework.Patches
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator gen)
         {
             var code = new List<CodeInstruction>(instr);
+            // IL 매칭용 리플렉션 — UnityEngine 표준 메서드 + 자체 메서드 (1.6 DLL 대조 감사 완료)
             var mTRS = AccessTools.Method(typeof(Matrix4x4), "TRS", new System.Type[] { typeof(Vector3), typeof(Quaternion), typeof(Vector3) });
             var mAdj = AccessTools.Method(typeof(Patch_PawnRenderUtility_DrawEquipmentAiming_Scale), nameof(AdjustWeaponScale));
 

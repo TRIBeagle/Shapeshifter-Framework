@@ -67,18 +67,24 @@ namespace ShapeshifterFramework.Compat
         /// <param name="__0">PawnRenderNode</param>
         /// <param name="__1">PawnDrawParms</param>
         /// <returns>원본 실행 여부</returns>
-        static bool Prefix(ref bool __result, object __0, PawnDrawParms __1)
+        static bool Prefix(ref bool __result, PawnRenderNode __0, PawnDrawParms __1)
         {
             try
             {
                 Pawn pawn = __1.pawn;
                 if (pawn == null) return true;
 
-                var comp = ShapeshiftUtility.GetShapeShiftComp(pawn);
-                if (comp?.currentForm != null && !comp.currentForm.showHarAddons)
+                if (ShapeshiftRegistry.TryGet(pawn, out var comp, out var form))
                 {
-                    __result = false;
-                    return false;
+                    // HARFormExtension 미지정 시 기본적으로 HAR 애드온을 숨김 (변신 폼의 외형 일관성 보장).
+                    // 모더가 <showHarAddons>true</showHarAddons>를 명시해야 HAR 애드온이 표시됨.
+                    var harExt = form.GetModExtension<HARFormExtension>();
+                    bool show = harExt != null && harExt.showHarAddons;
+                    if (!show)
+                    {
+                        __result = false;
+                        return false;
+                    }
                 }
             }
             catch (Exception e)

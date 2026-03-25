@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       Hediff definitions
+       ====================================================== -->
+
+  <!-- Beast arm (AddedPart) — arm replacement test for wolf form -->
+  <HediffDef ParentName="AddedBodyPartBase">
+    <defName>SSFTest_BeastArm</defName>
+    <hediffClass>Hediff_AddedPart</hediffClass>
+    <label>beast arm</label>
+    <description>A mutated beast arm grafted through shapeshifting.</description>
+    <addedPartProps>
+      <solid>true</solid>
+      <partEfficiency>0.85</partEfficiency>
+    </addedPartProps>
+  </HediffDef>
+
+  <!-- ======================================================
+       Projectile definitions
+       ====================================================== -->
+
+  <!-- Safe frag grenade — for beastkin form verb test -->
+  <ThingDef ParentName="BaseBullet">
+    <defName>SSFTest_Proj_FragGrenade_Safe</defName>
+    <label>frag grenade (SSF safe)</label>
+    <thingClass>Projectile_Explosive</thingClass>
+    <graphicData>
+      <texPath>Things/Projectile/Grenade</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <projectile>
+      <damageDef>Bomb</damageDef>
+      <damageAmountBase>60</damageAmountBase>
+      <explosionRadius>3.9</explosionRadius>
+      <ai_IsIncendiary>false</ai_IsIncendiary>
+      <flyOverhead>false</flyOverhead>
+      <speed>25</speed>
+      <soundExplode>Explosion_Bomb</soundExplode>
+    </projectile>
+  </ThingDef>
+
+  <!-- ======================================================
+       Filth (blood smear) definitions
+       ====================================================== -->
+
+  <!-- Insectoid blood smear — for bloodSmearDef test -->
+  <ThingDef ParentName="FilthBlood">
+    <defName>SSFTest_Filth_BloodInsectSmear</defName>
+    <label>blood smear</label>
+    <graphicData>
+      <texPath>Things/Filth/CrawlSmear</texPath>
+      <color>(132, 138, 114, 165)</color>
+      <graphicClass>Graphic_ClusterTight</graphicClass>
+      <drawSize>0.9</drawSize>
+    </graphicData>
+  </ThingDef>
+
+  <!-- ======================================================
+       Item definitions
+       ====================================================== -->
+
+  <!-- ======================================================
+       2a) Item shapeshift — self (no CompTargetable)
+       ====================================================== -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>SSFTest_ShiftScroll_Self</defName>
+    <label>shift scroll (self)</label>
+    <description>A scroll that transforms the user into a bear when used.</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>120</MarketValue>
+      <Mass>0.1</Mass>
+    </statBases>
+    <stackLimit>5</stackLimit>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>use shift scroll (self)</useLabel>
+      </li>
+      <li Class="CompProperties_UseEffectDestroySelf" />
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_Shapeshift">
+        <!-- hediffDef path test: directly specifying hediffDef instead of formDefName -->
+        <hediffDef>SSFTest_BearFormHediff</hediffDef>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- ======================================================
+       2b) Item shapeshift — targeted (CompTargetable_SinglePawn)
+       ====================================================== -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>SSFTest_ShiftScroll_Target</defName>
+    <label>shift scroll (target)</label>
+    <description>A scroll that transforms the clicked target into a bear. Select a target to walk over and use.</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>150</MarketValue>
+      <Mass>0.1</Mass>
+    </statBases>
+    <stackLimit>5</stackLimit>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>use shift scroll on...</useLabel>
+      </li>
+      <li Class="CompProperties_UseEffectDestroySelf" />
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_Shapeshift">
+        <hediffDef>SSFTest_BearFormHediff</hediffDef>
+      </li>
+      <li Class="CompProperties_Targetable">
+        <compClass>CompTargetable_SinglePawn</compClass>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- ======================================================
+       2c) Item: Extend bear form duration — CompUseEffect_ExtendShapeshift
+       Tests: targetFormDef (bear only), allowExtendBeyondMax=false
+       Extends duration by 30000 ticks (~8.3 hours in-game)
+       ====================================================== -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>SSFTest_ShiftScroll_BearRefresh</defName>
+    <label>shift scroll (bear refresh)</label>
+    <description>A scroll that extends the bear form duration by 30,000 ticks. Can only be used while in bear form.</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>130</MarketValue>
+      <Mass>0.1</Mass>
+    </statBases>
+    <stackLimit>5</stackLimit>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>use bear refresh scroll</useLabel>
+      </li>
+      <li Class="CompProperties_UseEffectDestroySelf" />
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ExtendShapeshift">
+        <extendTicks>30000</extendTicks>
+        <targetFormDef>SSFTest_BearForm</targetFormDef>
+        <allowExtendBeyondMax>false</allowExtendBeyondMax>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- ======================================================
+       2d) Item: Universal duration extension — CompUseEffect_ExtendShapeshift
+       Tests: targetFormDef 미설정 (폼 무관 범용), allowExtendBeyondMax=true
+       Extends duration by 20000 ticks (~5.6 hours in-game)
+       ====================================================== -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>SSFTest_ShiftScroll_UniversalRefresh</defName>
+    <label>shift scroll (universal refresh)</label>
+    <description>A scroll that extends any shapeshift form's duration by 20,000 ticks. Works regardless of current form. Can exceed maximum duration.</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>150</MarketValue>
+      <Mass>0.1</Mass>
+    </statBases>
+    <stackLimit>5</stackLimit>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>use universal refresh scroll</useLabel>
+      </li>
+      <li Class="CompProperties_UseEffectDestroySelf" />
+      <li Class="ShapeshifterFramework.Comps.CompProperties_UseEffect_ExtendShapeshift">
+        <extendTicks>20000</extendTicks>
+        <!-- targetFormDef 미설정: 어떤 폼이든 연장 가능 -->
+        <allowExtendBeyondMax>true</allowExtendBeyondMax>
+      </li>
+    </comps>
+  </ThingDef>
+
+</Defs>

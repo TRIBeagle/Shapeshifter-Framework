@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- Buff: Bear warrior -->
+  <SSFTest_Ability_BuffAlly.label>bestow bear warrior</SSFTest_Ability_BuffAlly.label>
+  <SSFTest_Ability_BuffAlly.description>Bestow the power of the bear warrior upon an ally. Stats are enhanced while keeping equipment.</SSFTest_Ability_BuffAlly.description>
+
+  <!-- Debuff: Sheep polymorph -->
+  <SSFTest_Ability_DebuffEnemy.label>polymorph: sheep</SSFTest_Ability_DebuffEnemy.label>
+  <SSFTest_Ability_DebuffEnemy.description>Polymorphs the target into a sheep. Combat ability is lost and voluntary revert is disabled.</SSFTest_Ability_DebuffEnemy.description>
+
+  <!-- Equipment summon: Dark knight -->
+  <SSFTest_Ability_DarkKnight.label>dark knight transformation</SSFTest_Ability_DarkKnight.label>
+  <SSFTest_Ability_DarkKnight.description>Transform into a dark knight. Spawns dedicated plasteel plate armor and longsword. Existing gear moves to inventory. Spawned gear is destroyed on revert.</SSFTest_Ability_DarkKnight.description>
+
+  <!-- AoE: Mass polymorph -->
+  <SSFTest_Ability_MassPolymorph.label>mass polymorph</SSFTest_Ability_MassPolymorph.label>
+  <SSFTest_Ability_MassPolymorph.description>AoE magic that polymorphs pawns within a 5-tile radius into sheep. 60% chance.</SSFTest_Ability_MassPolymorph.description>
+
+  <!-- Multi-stage: Beastkin -->
+  <SSFTest_Ability_Beastkin.label>beastkin shift</SSFTest_Ability_Beastkin.label>
+  <SSFTest_Ability_Beastkin.description>Transform into beastkin form. Can perform 2nd-stage transformation to full beast while in this form.</SSFTest_Ability_Beastkin.description>
+
+  <!-- Full beast (2nd stage) -->
+  <SSFTest_Ability_FullBeast.label>full beast shift</SSFTest_Ability_FullBeast.label>
+  <SSFTest_Ability_FullBeast.description>Transform into full beast form. Only usable while in beastkin form.</SSFTest_Ability_FullBeast.description>
+
+  <!-- Guardian -->
+  <SSFTest_Ability_Guardian.label>guardian shift</SSFTest_Ability_Guardian.label>
+  <SSFTest_Ability_Guardian.description>Transform into guardian form.</SSFTest_Ability_Guardian.description>
+
+  <!-- Phantom -->
+  <SSFTest_Ability_Phantom.label>phantom shift</SSFTest_Ability_Phantom.label>
+  <SSFTest_Ability_Phantom.description>Transform into phantom form. Semi-transparent head, thin body type.</SSFTest_Ability_Phantom.description>
+
+  <!-- Primal roar (beastkin-exclusive, duration cost) -->
+  <SSFTest_Ability_PrimalRoar.label>primal roar</SSFTest_Ability_PrimalRoar.label>
+  <SSFTest_Ability_PrimalRoar.description>Let out a terrifying primal roar that stuns a nearby enemy. Consumes shapeshift duration on use.</SSFTest_Ability_PrimalRoar.description>
+
+  <!-- Race-locked (human only) -->
+  <SSFTest_Ability_RaceLocked.label>race-locked shift</SSFTest_Ability_RaceLocked.label>
+  <SSFTest_Ability_RaceLocked.description>Human-only enhancement transformation. Non-human races cannot use this.</SSFTest_Ability_RaceLocked.description>
+
+</LanguageData>

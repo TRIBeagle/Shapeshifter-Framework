@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- Self-target shapeshift ability base: cooldown 0, warmup 0, non-hostile, SSF_Shapeshift category -->
+  <AbilityDef Name="SSF_BaseSelfShiftAbility" Abstract="True">
+    <cooldownTicksRange>0</cooldownTicksRange>
+    <hostile>false</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <targetRequired>false</targetRequired>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <category>SSF_Shapeshift</category>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <violent>false</violent>
+      <warmupTime>0</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+  </AbilityDef>
+
+  <!-- Targeted shapeshift ability base: non-hostile, SSF_Shapeshift category -->
+  <AbilityDef Name="SSF_BaseTargetedShiftAbility" Abstract="True">
+    <hostile>false</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <category>SSF_Shapeshift</category>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
+      <range>15</range>
+      <warmupTime>1.0</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetAnimals>false</canTargetAnimals>
+      </targetParams>
+    </verbProperties>
+  </AbilityDef>
+
+  <!-- AoE shapeshift ability base: hostile, targets locations + pawns, SSF_Shapeshift category -->
+  <AbilityDef Name="SSF_BaseAoEShiftAbility" Abstract="True">
+    <hostile>true</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <displayGizmoWhileUndrafted>false</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>true</disableGizmoWhileUndrafted>
+    <category>SSF_Shapeshift</category>
+    <iconPath>UI/Commands/SSF_Shift_Enter</iconPath>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
+      <range>25</range>
+      <warmupTime>2.5</warmupTime>
+      <targetParams>
+        <canTargetSelf>false</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetLocations>true</canTargetLocations>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+  </AbilityDef>
+
+</Defs>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       6) AoE shapeshift ability (vanilla pattern)
+       Ability_EffectRadius + CompAbilityShapeshift
+       ====================================================== -->
+  <AbilityDef ParentName="SSF_BaseAoEShiftAbility">
+    <defName>SSFTest_Ability_MassPolymorph</defName>
+    <label>mass polymorph</label>
+    <description>AoE magic that polymorphs pawns within a 5-tile radius into sheep. 60% chance.</description>
+    <cooldownTicksRange>6000</cooldownTicksRange>
+    <displayOrder>520</displayOrder>
+    <statBases>
+      <Ability_EffectRadius>5</Ability_EffectRadius>
+    </statBases>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
+        <hediffDef>SSFTest_SheepFormHediff</hediffDef>
+        <affectHostileOnly>true</affectHostileOnly>
+      </li>
+      <li Class="CompProperties_AbilityFleckOnTarget">
+        <fleckDef>PsycastPsychicEffect</fleckDef>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       7) Shapeshift projectile weapon — Projectile_GiveHediff_Shapeshift test
+       Cursed bow: targets hit by arrows are polymorphed into sheep
+       ====================================================== -->
+
+  <!-- Shapeshift arrow projectile -->
+  <ThingDef ParentName="BaseBullet">
+    <defName>SSFTest_Projectile_CursedArrow</defName>
+    <label>cursed arrow</label>
+    <graphicData>
+      <texPath>Things/Projectile/Arrow_Small</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <thingClass>ShapeshifterFramework.Projectiles.Projectile_GiveHediff_Shapeshift</thingClass>
+    <projectile>
+      <damageDef>Arrow</damageDef>
+      <damageAmountBase>8</damageAmountBase>
+      <stoppingPower>1</stoppingPower>
+      <armorPenetrationBase>0.18</armorPenetrationBase>
+      <speed>38</speed>
+    </projectile>
+    <modExtensions>
+      <li Class="ShapeshifterFramework.Extensions.GiveHediffProjectileExtension_Shapeshift">
+        <hediffDef>SSFTest_SheepFormHediff</hediffDef>
+        <!-- aoeRadius 0 = single target only -->
+      </li>
+    </modExtensions>
+  </ThingDef>
+
+  <!-- Cursed bow weapon -->
+  <ThingDef ParentName="BaseHumanMakeableGun">
+    <defName>SSFTest_Weapon_CursedBow</defName>
+    <label>cursed bow</label>
+    <description>A bow imbued with a curse. Targets hit by its arrows have a 40% chance of being polymorphed into a sheep.</description>
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponRanged/BowRecurve</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <techLevel>Medieval</techLevel>
+    <weaponTags>
+      <li>ShortBows</li>
+    </weaponTags>
+    <recipeMaker>
+      <recipeUsers>
+        <li>CraftingSpot</li>
+      </recipeUsers>
+      <researchPrerequisite>RecurveBow</researchPrerequisite>
+      <skillRequirements>
+        <Crafting>5</Crafting>
+      </skillRequirements>
+    </recipeMaker>
+    <costList>
+      <WoodLog>40</WoodLog>
+    </costList>
+    <statBases>
+      <WorkToMake>10000</WorkToMake>
+      <Mass>1.5</Mass>
+      <AccuracyTouch>0.60</AccuracyTouch>
+      <AccuracyShort>0.75</AccuracyShort>
+      <AccuracyMedium>0.55</AccuracyMedium>
+      <AccuracyLong>0.35</AccuracyLong>
+      <RangedWeapon_Cooldown>1.8</RangedWeapon_Cooldown>
+    </statBases>
+    <verbs>
+      <li>
+        <verbClass>Verb_Shoot</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>SSFTest_Projectile_CursedArrow</defaultProjectile>
+        <warmupTime>1.5</warmupTime>
+        <range>23</range>
+        <soundCast>Bow_Recurve</soundCast>
+      </li>
+    </verbs>
+    <tools>
+      <li>
+        <label>limb</label>
+        <capacities>
+          <li>Blunt</li>
+        </capacities>
+        <power>8</power>
+        <cooldownTime>2</cooldownTime>
+      </li>
+    </tools>
+  </ThingDef>
+
+</Defs>

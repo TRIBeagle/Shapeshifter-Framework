@@ -13,6 +13,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch]
     internal static class Patch_Verb_ShootBeam
     {
+        // vanilla-private: Verb_ShootBeam.pathCells (RimWorld 1.6) — 바닐라 버전 변경 시 확인 필요
         private static readonly FieldInfo PathCellsFI;
         private static readonly AccessTools.FieldRef<Verb_ShootBeam, HashSet<IntVec3>> PathCellsRef;
 
@@ -65,6 +66,9 @@ namespace ShapeshifterFramework.Patches
                             var cells = PathCellsFI.GetValue(__instance) as HashSet<IntVec3>;
                             if (cells != null && cells.Count > 0) cellCount = cells.Count;
                         }
+                        // pathCells 접근 실패 시 cellCount=1 폴백 — 데미지가 부정확할 수 있음
+                        if (cellCount <= 1 && PathCellsRef == null && PathCellsFI == null)
+                            Log.WarningOnce("[SSF] Verb_ShootBeam: pathCells field not accessible. Beam damage may be inaccurate.", 0x5346_4245);
 
                         float damage = __instance.verbProps.beamTotalDamage > 0
                             ? (__instance.verbProps.beamTotalDamage / cellCount) * damageFactor

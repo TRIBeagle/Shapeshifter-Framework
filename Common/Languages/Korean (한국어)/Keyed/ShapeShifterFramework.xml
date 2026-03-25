@@ -1,22 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  
-  <SSF_Command_TransformLabel>변신: {0}</SSF_Command_TransformLabel>
-  <SSF_Command_TransformDesc>변신 폼: {0}</SSF_Command_TransformDesc>
+
   <SSF_Command_RevertLabel>변신 해제</SSF_Command_RevertLabel>
   <SSF_Command_RevertDesc>변신을 해제합니다</SSF_Command_RevertDesc>
-  <SSF_Command_RevertTime>변신이 {0:0.0}초 남음</SSF_Command_RevertTime>
-  <SSF_Command_SwitchLabel>전환: {0}</SSF_Command_SwitchLabel>
-  <SSF_Command_SwitchDesc>전환 폼: {0}</SSF_Command_SwitchDesc>
 
-  <SSF_Menu_ChooseLabel>변신: 폼 선택</SSF_Menu_ChooseLabel>
-  <SSF_Menu_ChooseDesc>변신할 폼을 선택합니다.</SSF_Menu_ChooseDesc>
-  <SSF_Menu_SwitchLabel>변신: 폼 전환</SSF_Menu_SwitchLabel>
-  <SSF_Menu_SwitchDesc>다른 폼으로 전환합니다.</SSF_Menu_SwitchDesc>
-  <SSF_Menu_Blocked>차단됨</SSF_Menu_Blocked>
-
-  <SSF_Hediff_FormLabel>변신 효과: {0}</SSF_Hediff_FormLabel>
-  <SSF_Hediff_FormDesc>{0} 변신으로 인한 능력치 변동.</SSF_Hediff_FormDesc>
+  <SSF_Menu_Blocked>변신이 금지함</SSF_Menu_Blocked>
 
   <SSF_Inspect_Permanent>변신: 무제한</SSF_Inspect_Permanent>
   <SSF_Inspect_Remaining>변신: 남은 시간 {0}</SSF_Inspect_Remaining>
@@ -25,6 +13,7 @@
   <SSF_Verb_Attack>공격</SSF_Verb_Attack>
   <SSF_Verb_ToggleDesc>자동 공격 전환</SSF_Verb_ToggleDesc>
   <SSF_Verb_OrderDesc>공격 지시</SSF_Verb_OrderDesc>
+  <SSF_DurationCost>변신 시간 소모: {0}</SSF_DurationCost>
 
   <SSF_Message_CannotTransform>{0} 형태로 변신할 수 없습니다.</SSF_Message_CannotTransform>
   <SSF_Message_WorkDisabled>{0} 변신 때문에 비활성</SSF_Message_WorkDisabled>
@@ -34,33 +23,49 @@
   <SSF_Message_CannotDropGeneratedWeapon>변신 중에는 폼 전용 무기를 버릴 수 없습니다.</SSF_Message_CannotDropGeneratedWeapon>
   <SSF_Message_RevertDueToItemLost>{0}의 변신이 해제되었습니다: {1} 유실.</SSF_Message_RevertDueToItemLost>
   <SSF_Message_RevertDueToConditionLost>{0}의 변신이 해제되었습니다: 신체 조건 미충족.</SSF_Message_RevertDueToConditionLost>
+  <SSF_Message_AlreadyTransformed>이미 다른 형태로 변신 중입니다.</SSF_Message_AlreadyTransformed>
+  <SSF_Message_SameFormActive>이미 동일한 형태로 변신 중입니다.</SSF_Message_SameFormActive>
 
-  <SSF_Setting_MaxGizmo_Title>변신 버튼 최대 개수</SSF_Setting_MaxGizmo_Title>
-  <SSF_Setting_MaxGizmo_Desc>폼 수가 이 값을 초과하면 드롭다운 메뉴(목록)로 전환됩니다.</SSF_Setting_MaxGizmo_Desc>
-  
   <SSF_Setting_PortraitScale_Title>포트레잇 배율 적용</SSF_Setting_PortraitScale_Title>
   <SSF_Setting_PortraitScale_Desc>각 폼의 portraitDrawScale 값을 정보창 포트레잇에 적용합니다. 포트레잇 바 계열 모드와 충돌하면 꺼 주세요.</SSF_Setting_PortraitScale_Desc>
-  
+
   <SSF_Setting_WeaponScale_Title>장비 무기 크기를 바디 배율에 연동</SSF_Setting_WeaponScale_Title>
   <SSF_Setting_WeaponScale_Desc>변신 바디 드로우 배율에 맞춰 들고 있는 무기 그래픽을 등방으로 확대/축소합니다. 다른 무기 크기 조절 모드와 충돌하면 꺼 주세요.</SSF_Setting_WeaponScale_Desc>
-  
+
   <SSF_Setting_ReequipInventory_Title>인벤토리에서 자동 재장비</SSF_Setting_ReequipInventory_Title>
   <SSF_Setting_ReequipInventory_Desc>변신 해제 시 인벤토리에 있던 무기/도구를 자동으로 다시 장비합니다.</SSF_Setting_ReequipInventory_Desc>
-  
+
   <SSF_Setting_ReequipGround_Title>바닥에서 자동 재장비</SSF_Setting_ReequipGround_Title>
   <SSF_Setting_ReequipGround_Desc>변신 해제 시 근처에 떨어진 이전 장비를 자동으로 다시 주워 장비합니다.</SSF_Setting_ReequipGround_Desc>
-  
+
   <SSF_Setting_ForbidItems_Title>변신 중 드롭 아이템 금지</SSF_Setting_ForbidItems_Title>
   <SSF_Setting_ForbidItems_Desc>변신 과정에서 떨어진 아이템을 일시적으로 금지 상태로 표시합니다.</SSF_Setting_ForbidItems_Desc>
-  
+
   <SSF_Setting_VerbToggle_Title>자동 공격 토글 표시</SSF_Setting_VerbToggle_Title>
   <SSF_Setting_VerbToggle_Desc>공격 명령에 자동 공격 토글을 표시합니다.</SSF_Setting_VerbToggle_Desc>
-  
+
+  <SSF_Setting_ShapeshiftBar_Title>변신 상태 바 표시</SSF_Setting_ShapeshiftBar_Title>
+  <SSF_Setting_ShapeshiftBar_Desc>변신 중 하단 기즈모 영역에 남은 시간 프로그레스 바와 해제 버튼을 표시합니다. 끄면 기존 해제 버튼만 표시됩니다.</SSF_Setting_ShapeshiftBar_Desc>
+
+  <SSF_Inspect_Permanent_Short>무제한</SSF_Inspect_Permanent_Short>
+  <SSF_Gizmo_Tooltip_Permanent>{0}: 무제한 변신</SSF_Gizmo_Tooltip_Permanent>
+  <SSF_Gizmo_Tooltip_Timed>{0}: 남은 시간 {1} / 전체 {2}</SSF_Gizmo_Tooltip_Timed>
+  <SSF_Gizmo_VerbToggle_Tip>자동 공격 토글 표시/숨기기</SSF_Gizmo_VerbToggle_Tip>
+
+  <SSF_Tooltip_FormName>변신 폼</SSF_Tooltip_FormName>
+  <SSF_Tooltip_Duration>변신 지속</SSF_Tooltip_Duration>
+
   <SSF_Setting_DebugLog_Title>개발자 디버그 로그 출력</SSF_Setting_DebugLog_Title>
   <SSF_Setting_DebugLog_Desc>변신 프레임워크의 상세한 내부 연산을 출력합니다. 개발 중이거나 버그 추적 시에만 켜주세요.</SSF_Setting_DebugLog_Desc>
-  
+
   <SSF_Setting_ResetAll_Title>모두 기본값으로</SSF_Setting_ResetAll_Title>
 
   <SSF_Fallback_Transform>변신</SSF_Fallback_Transform>
+
+  <SSF_GizmoDisabled_RaceNotAllowed>이 폼은 {0} 종족에게 사용할 수 없습니다.</SSF_GizmoDisabled_RaceNotAllowed>
+
+  <SSF_Message_DurationExtended>{0}의 변신 지속 시간이 연장되었습니다.</SSF_Message_DurationExtended>
+  <SSF_Message_NotTransformed>{0}은(는) 현재 변신 중이 아닙니다.</SSF_Message_NotTransformed>
+  <SSF_Message_WrongFormForExtend>{0}은(는) 이 효과에 필요한 폼이 아닙니다.</SSF_Message_WrongFormForExtend>
 
 </LanguageData>

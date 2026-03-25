@@ -4,7 +4,6 @@
 
 using HarmonyLib;
 using RimWorld;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using System;
 using System.Text;
@@ -25,14 +24,14 @@ namespace ShapeshifterFramework.Patches
                 var sel = Find.Selector?.SingleSelectedThing as Pawn;
                 if (sel == null || sel == target) return;
 
-                // 플레이어 조종 + 드래프트 상태만
-                if (sel.IsPlayerControlled && !sel.Drafted) return;
+                // 플레이어 조종 + 드래프트 상태만 (비플레이어 폰이면 스킵)
+                if (!sel.IsPlayerControlled || !sel.Drafted) return;
 
                 // 비폭력 Pawn이면 계산 스킵
                 if (sel.WorkTagIsDisabled(WorkTags.Violent)) return;
 
-                var comp = sel.TryGetComp<CompShapeshifter>();
-                var vt = comp?.ShapeshiftVerbTracker;
+                if (!ShapeshiftRegistry.TryGet(sel, out var comp, out var form)) return;
+                var vt = comp.ShapeshiftVerbTracker;
                 if (vt == null) return;
 
                 Verb picked = null;
@@ -53,18 +52,15 @@ namespace ShapeshifterFramework.Patches
                 }
                 if (picked == null) return;
 
+                // 변신 폼의 race에서 ShootingAccuracyPawn 스탯이 비활성이면 HitReport 계산 불가
+                if (StatDefOf.ShootingAccuracyPawn.Worker.IsDisabledFor(sel)) return;
+
                 var sb = new StringBuilder();
                 sb.Append("ShotBy".Translate(sel.LabelShort, sel) + ": ");
 
-                if (picked.CanHitTarget(target))
-                {
-                    var report = ShotReport.HitReportFor(picked.caster, picked, target);
-                    sb.Append(report.GetTextReadout());
-                }
-                else
-                {
-                    sb.AppendLine("CannotHit".Translate());
-                }
+                // picked는 위 루프에서 CanHitTarget 통과한 verb이므로 재검사 불필요
+                var report = ShotReport.HitReportFor(picked.caster, picked, target);
+                sb.Append(report.GetTextReadout());
 
                 // 야생동물 격분 경고
                 if (target is Pawn tp && tp.Faction == null && !tp.InAggroMentalState && tp.AnimalOrWildMan())

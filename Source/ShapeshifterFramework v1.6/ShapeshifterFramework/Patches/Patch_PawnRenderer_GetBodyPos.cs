@@ -21,8 +21,7 @@ namespace ShapeshifterFramework.Patches
                 || ___pawn.IsPrisoner)
                 return;
 
-            var comp = ShapeshiftUtility.GetShapeShiftComp(___pawn);
-            if (comp == null || comp.currentForm == null || !ShapeshiftUtility.IsShapeShifting(___pawn))
+            if (!ShapeshiftRegistry.TryGet(___pawn, out var comp, out var form))
                 return;
 
             // 이미 보이거나 침대 아니면 스킵

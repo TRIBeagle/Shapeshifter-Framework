@@ -18,11 +18,14 @@ namespace ShapeshifterFramework.Patches
             // 오버레이 워커만 처리
             if (!(__instance is PawnRenderNodeWorker_Overlay)) return;
 
-            PawnRenderNodeProperties props;
-            if (!ShapeshiftReflectionCache.TryGetPropsFromNode(node, out props)) return;
+            // 비변신 폰 즉시 스킵 — 오버레이 워커에서도 리플렉션/스케일 연산 방지
+            if (!ShapeshiftRegistry.IsActive(parms.pawn)) return;
+
+            PawnRenderNodeProperties props = node?.Props;
+            if (props == null) return;
 
             // Head 레이어 여부 확인
-            bool isHead = (props != null && props.overlayLayer == PawnOverlayDrawer.OverlayLayer.Head);
+            bool isHead = (props.overlayLayer == PawnOverlayDrawer.OverlayLayer.Head);
 
             // 머리/몸통 구분하여 배율 적용
             ShapeshiftRenderUtility.ApplyDrawScale(parms, ref __result, useHeadScale: isHead);

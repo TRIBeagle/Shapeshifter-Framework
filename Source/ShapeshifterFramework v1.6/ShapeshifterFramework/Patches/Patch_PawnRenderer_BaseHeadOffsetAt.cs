@@ -3,7 +3,6 @@
 // 용도 : Postfix에서 바닐라의 bodySizeFactor 제곱근 비율 계산식을 재현한 뒤, 폼에 지정된 커스텀 헤드 오프셋(headOffset)을 폰이 바라보는 방향(Rotation)에 맞춰 적용함.
 
 using HarmonyLib;
-using ShapeshifterFramework.Comps;
 using ShapeshifterFramework.Utilities;
 using UnityEngine;
 using Verse;
@@ -14,10 +13,13 @@ namespace ShapeshifterFramework.Patches
     public static class Patch_PawnRenderer_BaseHeadOffsetAt
     {
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
-        static void Postfix(PawnRenderer __instance, Rot4 rotation, ref Vector3 __result)
+        static void Postfix(PawnRenderer __instance, Pawn ___pawn, Rot4 rotation, ref Vector3 __result)
         {
-            Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
+            Pawn pawn = ___pawn;
             if (pawn == null) return;
+
+            // 비변신 폰 즉시 스킵 — 렌더 핫패스에서 SizeFactorResolver/리플렉션 방지
+            if (!ShapeshiftRegistry.IsActive(pawn)) return;
 
             // 1) bodySizeFactor 보정
             var ls = pawn.ageTracker != null ? pawn.ageTracker.CurLifeStage : null;
@@ -30,9 +32,7 @@ namespace ShapeshifterFramework.Patches
             }
 
             // 2) 헤드 오프셋 적용
-            var comp = pawn.TryGetComp<CompShapeshifter>();
-            var form = comp != null ? comp.currentForm : null;
-            if (comp == null || !comp.isTransformed || form == null) return;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
 
             Vector2 add2 = form.headOffset.HasValue ? form.headOffset.Value : Vector2.zero;
             if (add2 == Vector2.zero) return;

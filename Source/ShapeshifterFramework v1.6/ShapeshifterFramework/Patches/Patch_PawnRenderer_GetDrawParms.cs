@@ -1,5 +1,5 @@
 ﻿// ShapeshifterFramework | Patches | Patch_PawnRenderer_GetDrawParms.cs
-// 목적 : 변신 폼의 바디 오프셋, UI 초상화 전용 스케일 배율을 적용하고 수영 관련 치명적 렌더링 버그를 수정.
+// 목적 : 변신 폼의 바디 오프셋, UI 초상화 스케일 배율을 적용하고 수영 관련 치명적 렌더링 버그를 수정.
 // 용도 : GetDrawParms 결과 매트릭스에 폼 오프셋 및 UI(Portrait) 스케일을 주입. 머리가 없는(Hidden) 폼이 수영할 때 폰 전체가 투명화되는 바닐라 NoBody 플래그 버그를 조건부로 해제함.
 
 using HarmonyLib;
@@ -14,29 +14,22 @@ namespace ShapeshifterFramework.Patches
     {
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void Postfix(
-            PawnRenderer __instance,
+            PawnRenderer __instance, Pawn ___pawn,
             Vector3 rootLoc, float angle, Rot4 bodyFacing, RotDrawMode bodyDrawType, PawnRenderFlags flags,
             ref PawnDrawParms __result)
         {
-            // Pawn
-            Pawn pawn = ShapeshiftReflectionCache.GetPawn(__instance);
+            Pawn pawn = ___pawn;
             if (pawn == null) return;
 
-            // ShapeShift Comp/Form
-            var comp = ShapeshiftUtility.GetShapeShiftComp(pawn);
-            if (comp == null || !comp.isTransformed || comp.currentForm == null) return;
-            var form = comp.currentForm;
+            // 변신 컴프/폼 조회
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return;
 
             // A) 수영 중 NoBody 해제 (헤드 숨김 폼 투명화 방지)
             if (pawn.Swimming && (flags & PawnRenderFlags.NoBody) != 0)
             {
-                ShapeshiftFormDef runForm;
-                if (ShapeshiftPartControlUtility.ShouldRun(pawn, out runForm) && runForm != null)
+                if (ShapeshiftPartControlUtility.IsHeadHiddenForGender(pawn, form))
                 {
-                    if (ShapeshiftPartControlUtility.IsHeadHiddenForGender(pawn, runForm))
-                    {
-                        __result.flags &= ~PawnRenderFlags.NoBody;
-                    }
+                    __result.flags &= ~PawnRenderFlags.NoBody;
                 }
             }
 
@@ -71,6 +64,7 @@ namespace ShapeshifterFramework.Patches
                     }
                 }
             }
+
         }
     }
 }

@@ -1,9 +1,12 @@
-﻿// ShapeshifterFramework | Root | ShapeshiftFormDef.cs
-// 목적 : 변신 폼(Form)의 모든 동작을 정의하는 최상위 XML 데이터 구조체(Schema).
-// 용도 : 외형 스케일/오프셋, 렌더링 숨김/대체 규칙, 스탯 및 능력치 보정, 변신 요구 조건, 부가 효과(능력/헤디프/FX/사운드), 타 모드(HAR/FA) 호환성 등 폼에 관한 모든 정적(Static) 데이터를 보관함.
-// 주의 : 이 클래스의 데이터는 XML 로드 시 확정되며, 런타임 게임 플레이 도중 수정(오염)되지 않도록 철저히 읽기 전용(Read-only) 데이터로 취급해야 함.
+// ShapeshifterFramework | Root | ShapeshiftFormDef.cs
+// 목적 : 변신 폼(Form)의 비주얼·장비·도구·사운드·VFX 등 정적 데이터를 정의하는 최상위 XML Def.
+// 용도 : 모더가 XML로 폼을 정의하면, HediffComp_ShapeshiftCore가 이 데이터를 읽어 변신을 적용/해제.
+//        스탯 보정은 HediffDef의 stages(statOffsets/statFactors/capMods)에서 정의.
+//        HediffDef → FormDef 매핑은 HediffCompProperties_ShapeshiftCore.formDef로 설정 (단방향).
+// 주의 : XML 로드 시 확정되는 읽기 전용 데이터 시트/템플릿. 런타임에 수정 금지.
 
 using RimWorld;
+using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -46,8 +49,8 @@ namespace ShapeshifterFramework
         public PartOverrideOption female = null;
     }
 
-    // 조건 컨디션 모드
-    public enum RequirementMatchMode { All, Any }
+    // sustain 조건 집계 모드
+    public enum SustainMode { All, Any }
 
     // 변신 시 기존 장비 처리 모드(의복/무기 각자 지정)
     public enum GearHandling { Keep, Inventory, Drop }
@@ -55,15 +58,18 @@ namespace ShapeshifterFramework
     // 착용/장착 금지 정책(기본 Auto = GearHandling에 묶음)
     public enum EquipLockMode { Auto, Locked, Unlocked }
 
-    // verb별 UI 메타
+    // verb별 UI 메타 — verbLabel로 매칭 (미지정 시 인덱스 폴백)
     public class VerbGizmoOption
     {
+        public string verbLabel;      // 매칭할 verb의 label (필수 권장). 미지정 시 리스트 인덱스로 폴백
         public string label;          // verb 명령 라벨(없으면 verbProps.label)
         public string desc;           // verb 명령 설명(없으면 기본)
         public string toggleLabel;    // 토글 버튼 라벨(없으면 label 사용)
         public string toggleDesc;     // 토글 버튼 설명(없으면 기본)
         public string iconPath;       // 지정하면 v.UIIcon 대신 이 아이콘 사용(선택)
-        public bool? autoAttackDefault; // 자동공격 토글 초기값. null이면 첫 번째 ranged verb만 ON, 나머지 OFF
+
+        /// <summary>이 verb 사용 시 차감할 변신 잔여 틱. 0이면 비용 없음. 버스트 무기는 버스트당 1회 차감.</summary>
+        public int durationCostTicks;
     }
 
     // AddedPart 정책
@@ -84,9 +90,32 @@ namespace ShapeshifterFramework
         public AddedPartPolicy addedPartPolicy = AddedPartPolicy.ForceAdd;
     }
 
-    /// <summary>변신 폼 Def. 외형/필터/요건/버튼/지속/부여물 일괄 관리.</summary>
+    /// <summary>변신 폼 Def. 비주얼/장비/도구/사운드/VFX 등 폼 전체 정의.</summary>
     public class ShapeshiftFormDef : Def
     {
+        // ── linkedHediff 삭제됨: HediffDef → FormDef 매핑은 HediffCompProperties_ShapeshiftCore.formDef로 단방향 설정.
+        //    FormDef는 순수 데이터 시트이며, 어떤 HediffDef와 연결될지는 HediffDef 쪽에서 결정.
+
+        #region 적용 대상 제한 (종족/뮤턴트)
+
+        /// <summary>이 폼을 적용받을 수 있는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        public List<ThingDef> formAllowedRaces;
+
+        /// <summary>이 폼을 적용받을 수 없는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        public List<ThingDef> formDisallowedRaces;
+
+        /// <summary>이 폼을 적용받을 수 있는 뮤턴트(MutantDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        [MayRequire("Ludeon.RimWorld.Anomaly")]
+        public List<MutantDef> formAllowedMutants;
+
+        /// <summary>이 폼을 적용받을 수 없는 뮤턴트(MutantDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        [MayRequire("Ludeon.RimWorld.Anomaly")]
+        public List<MutantDef> formDisallowedMutants;
+
+        #endregion
+
+        #region 렌더링 — 스케일/오프셋/파츠
+
         // 스케일/오프셋(렌더 보정용)
         public float? bodyDrawScale;   // 몸 전체 스케일 배수 (예: 5.0이면 5배) 비우면 1
         public float? headDrawScale;   // 헤드 추가 배수 (바디 스케일에 곱해짐) 비우면 1
@@ -103,6 +132,21 @@ namespace ShapeshifterFramework
         public PartOverrideOption beard = new PartOverrideOption();
         public PartOverrideOption tattooBody = new PartOverrideOption();
         public PartOverrideOption tattooHead = new PartOverrideOption();
+
+        // 폼 전용 렌더 노드(해당 폼 활성 시에만 추가)
+        public List<PawnRenderNodeProperties> renderNodeProperties;
+
+        // 타입 오버라이드(선택)
+        public BodyTypeDef bodyType;
+        public HeadTypeDef headType;
+
+        // 기본 컬러 오버라이드(선택, 텍스처 Replace 시 무시됨)
+        public Color? hairColor;
+        public Color? skinColor;
+
+        #endregion
+
+        #region 렌더링 — 숨김/표시 필터 (의상/무기/유전자/헤디프)
 
         // 의상 숨김: layer/defName (특수값: "All")
         public List<string> renderHideApparelLayers;
@@ -126,6 +170,10 @@ namespace ShapeshifterFramework
         public List<string> renderHideHediffDefNames;
         public List<string> renderShowHediffDefNames;
 
+        #endregion
+
+        #region 장비 처리 (의복/무기 관리, 소환, 잠금)
+
         // 변신 시 기존 장비 처리(폼별): 의복/무기 각각
         public GearHandling apparelOnTransform = GearHandling.Keep;
         public GearHandling weaponsOnTransform = GearHandling.Keep;
@@ -135,10 +183,10 @@ namespace ShapeshifterFramework
         public EquipLockMode weaponEquipLock = EquipLockMode.Auto;
 
         // 변신 시 소환해서 강제로 입힐 전용 의류 목록 (해제 시 자동 파괴)
-        public List<ThingDef> spawnApparelOnTransform = new List<ThingDef>();
+        public List<ThingDef> spawnApparelOnTransform;
 
         // 변신 시 소환해서 강제로 들려줄 전용 무기 목록 (해제 시 자동 파괴)
-        public List<ThingDef> spawnWeaponOnTransform = new List<ThingDef>();
+        public List<ThingDef> spawnWeaponOnTransform;
 
         // 소환되는 의류/무기의 재질 (예: ThingDefOf.Plasteel).
         public ThingDef spawnApparelStuff;
@@ -147,48 +195,38 @@ namespace ShapeshifterFramework
         // 소환된 전용 의류/무기와 부위가 겹쳐서 강제로 벗어야 하는 의복 처리
         public GearHandling conflictingGearHandling = GearHandling.Inventory;
 
+        #endregion
 
-        // 폼 전용 렌더 노드(해당 폼 활성 시에만 추가)
-        public List<PawnRenderNodeProperties> renderNodeProperties;
+        #region 유지 조건 (sustain) — 조건 깨지면 자동 해제
 
-        // 타입 오버라이드(선택)
-        public BodyTypeDef bodyType;
-        public HeadTypeDef headType;
+        public List<ThingDef> sustainApparels;   // 이 의류를 착용 유지해야 함
+        public List<ThingDef> sustainWeapons;    // 이 무기를 장비 유지해야 함
+        public List<HediffDef> sustainHediffs;   // 이 헤디프가 유지되어야 함
+        [MayRequire("Ludeon.RimWorld.Biotech")]
+        public List<GeneDef> sustainGenes;       // 이 유전자가 유지되어야 함 (Biotech)
+        public SustainMode? sustainMode;         // 기본 All: 모두 충족 / Any: 하나라도 충족
 
-        // 수치 변경
-        public List<StatModifier> statOffsets;
-        public List<StatModifier> statFactors;
-        public List<PawnCapacityModifier> capMods;
+        #endregion
 
-        // ── 변신 요건(카테고리 내부는 ALL-of, 카테고리 집계는 requirementsMode 적용)
-        public List<GeneDef> requiredGenes;
-        public List<ThingDef> requiredItems;
-        public List<ThingDef> requiredApparels;
-        public List<ThingDef> requiredWeapons;
-        public List<AbilityDef> requiredAbilities;
-        public List<HediffDef> requiredHediffs;
+        #region 변신 중 부여 (Hediff/능력)
 
-        // ──조건 집계와 무관, 항상 선행 필터
-        public List<ThingDef> allowedRaces;
-        public List<ThingDef> disallowedRaces;
-        [MayRequire("Ludeon.RimWorld.Anomaly")] public List<MutantDef> allowedMutants;
-        [MayRequire("Ludeon.RimWorld.Anomaly")] public List<MutantDef> disallowedMutants;
-        [MayRequire("Ludeon.RimWorld.Biotech")] public List<XenotypeDef> allowedXenotypes;
-        [MayRequire("Ludeon.RimWorld.Biotech")] public List<XenotypeDef> disallowedXenotypes;
-        public List<string> allowedFromForms; // defName 리스트
-
-        // ── 카테고리 집계 모드(기본 All)
-        public RequirementMatchMode? requirementsMode; // 기본 All
-
-        // 변신 중 부여
         public List<HediffAddEntry> addHediffs;
         public List<AbilityDef> addAbilities;
 
-        // ── 추가 Verb/Tool 정의 및 대체 플래그 ──
+        #endregion
+
+        #region 전투 — Verb/Tool/데미지소스
+
         // verbs : 변신 폼에서 사용할 VerbProperties 목록(원거리/근접 모두 가능)
         // tools : 변신 폼에서 사용할 Tool 목록(근접툴)
         // replaceNativeVerbs : true면 원래 Pawn의 Verb들을 무시하고 이 폼의 verbs만 사용
         // replaceNativeTools : true면 Pawn의 ThingDef.tools를 임시 교체(해제 시 원복)
+        //
+        // [Verb 선택 흐름] — 아래 3개 Harmony 패치가 협력:
+        //   1. Patch_VerbTracker_InitVerbsFromZero  : 폼 교체 시 tools를 NativeVerb 풀에 주입/제거 (구성 시점)
+        //   2. Patch_Pawn_TryGetAttackVerb           : 공격 시 원거리 우선 → 근접 폴백으로 최적 verb 선정 (선택 시점)
+        //   3. Patch_Pawn_MeleeVerbs_TryGetMeleeVerb : 바닐라 근접 경로 안전망 + power 비교 (폴백 시점)
+        //   공유 헬퍼: Patch_Pawn_TryGetAttackVerb.FindBestFormMelee()
         public List<VerbProperties> verbs;
         public List<Tool> tools;
         public bool? replaceNativeVerbs;
@@ -196,16 +234,33 @@ namespace ShapeshifterFramework
 
         public List<VerbGizmoOption> verbGizmoOptions; // verbs 순서에 맞춰 매칭
 
-        // ── 변신 시 특정 작업 불가(폼별)
+        // 근접 공격 시 상처 라벨에 표시할 종족 ThingDef (예: Warg → "Warg teeth")
+        // null이면 바닐라 기본(CasterPawn.def = "인간 teeth") 사용
+        public ThingDef damageSourceDef;
+
+        #endregion
+
+        #region 작업 제한
+
         public List<WorkTypeDef> disabledWorkTypesOnTransform;
 
-        // WorkTags 기반 일괄 차단(예: Violent, Caring 등)
+        // WorkTags 기반 일괄 차단(예: Violent, Caring 등) — XML에서 콤마로 OR 결합: <disabledWorkTagsOnTransform>Violent, Crafting</disabledWorkTagsOnTransform>
         public WorkTags disabledWorkTagsOnTransform = WorkTags.None;
 
-        // ── 이념 관련 외모 노출 계열 억제(폼별)
+        #endregion
+
+        #region 이념 연동
+
         public bool suppressIdeologyUncoveredThoughts = true; // 기본 on: 하의/상의/머리/얼굴 노출 사상 비활성
 
-        // ── [VFX/SFX: 변신 시작/해제] 폼별 이펙트·사운드 (원샷 중심)
+        /// <summary>이 폼이 대표하는 동물 종족. 이데올로기 숭배(성스러운) 동물과 매칭하여 기분 보너스 부여.</summary>
+        [MayRequire("Ludeon.RimWorld.Ideology")]
+        public ThingDef linkedSacredAnimalDef;
+
+        #endregion
+
+        #region VFX/SFX — 변신 시작/해제 (원샷)
+
         public SoundDef transformEnterSound;     // 변신 시작
         public SoundDef transformExitSound;      // 변신 해제
         public EffecterDef transformEnterEffecter;
@@ -225,12 +280,41 @@ namespace ShapeshifterFramework
         public int transformExitFxDelayTicks = 0;   // Exit  FX 재생 지연
         public int transformFxCooldownTicks = 30;   // 동일 단계 쿨다운(틱)
 
-        // 버튼/기타
-        public bool hideGizmo = false;
+        #endregion
+
+        #region VFX — 앰비언트 (변신 중 지속)
+
+        /// <summary>변신 중 매 틱 EffectTick으로 유지되는 지속형 Effecter (오라, 연기 등).</summary>
+        public EffecterDef ambientEffecter;
+        /// <summary>변신 중 주기적으로 스폰되는 일회성 Fleck (스파크, 불꽃 등).</summary>
+        public FleckDef ambientFleck;
+        /// <summary>ambientFleck 스폰 간격 (틱). 기본 60 = 1초.</summary>
+        public int ambientFleckIntervalTicks = 60;
+        /// <summary>ambientFleck 스케일. 기본 1.0.</summary>
+        public float ambientFleckScale = 1f;
+
+        #endregion
+
+        #region 변신 해제 시 부산물
+
+        /// <summary>변신 해제 시 드랍할 아이템 목록 (허물, 결정 등).</summary>
+        public List<ThingDefCountClass> revertDrops;
+        /// <summary>변신 해제 시 부여할 hediff 목록. HediffAddEntry로 부위/severity/정책 지정 가능. 프레임워크가 추적/제거하지 않음 (바닐라 수명).</summary>
+        public List<HediffAddEntry> revertAddHediffs;
+
+        #endregion
+
+        #region UI/기즈모/지속시간
+
         public string gizmoIconPathEnter;   // 변신 버튼 아이콘
         public string gizmoIconPathRevert;  // 해제 버튼 아이콘
         public int? durationTicks = null;      // 지속 틱(null=무제한)
         public bool canRevertVoluntarily = true; // false면 유저가 기즈모로 해제 불가(강제 변신용)
+        public bool revertOnDowned = false;      // true면 의식 상실(Downed) 시 변신 자동 해제
+
+        #endregion
+
+        #region 사운드 — 보이스/근접 전투
 
         // 보이스
         public SoundDef soundCall;
@@ -244,33 +328,148 @@ namespace ShapeshifterFramework
         public SoundDef soundMeleeHitBuilding;
         public SoundDef soundMeleeMiss;
 
-        // 혈흔/스미어
+        #endregion
+
+        #region 혈흔/살점
+
         public ThingDef bloodDef;
         public ThingDef bloodSmearDef;
         public FleshTypeDef fleshType;
 
-        // 런타임 자동 생성된 스탯 헤디프 (세이브 불필요, 매 시작 재생성)
-        [Unsaved(false)]
-        public HediffDef generatedStatHediff;
+        #endregion
 
-        // HAR 옵션
-        [MayRequire("erdelf.HumanoidAlienRaces")] public bool showHarAddons = false;
+        #region 내부 — 사전 컴파일 렌더 필터 (ResolveReferences에서 빌드, 세이브 제외)
+        [Unsaved] internal CompiledFilterSet _hideApparelLayers;
+        [Unsaved] internal CompiledFilterSet _hideApparelDefNames;
+        [Unsaved] internal CompiledFilterSet _showApparelLayers;
+        [Unsaved] internal CompiledFilterSet _showApparelDefNames;
+        [Unsaved] internal CompiledFilterSet _hideWeaponTags;
+        [Unsaved] internal CompiledFilterSet _hideWeaponDefNames;
+        [Unsaved] internal CompiledFilterSet _showWeaponTags;
+        [Unsaved] internal CompiledFilterSet _showWeaponDefNames;
+        [Unsaved] internal CompiledFilterSet _hideGeneExclusionTags;
+        [Unsaved] internal CompiledFilterSet _hideGeneDefNames;
+        [Unsaved] internal CompiledFilterSet _showGeneExclusionTags;
+        [Unsaved] internal CompiledFilterSet _showGeneDefNames;
+        [Unsaved] internal CompiledFilterSet _hideHediffDefNames;
+        [Unsaved] internal CompiledFilterSet _showHediffDefNames;
 
-        // Facial Animation 옵션
-        [MayRequire("Nals.FacialAnimation")] public string faHeadTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public string faEyeballTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public string faLidTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public string faBrowTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public string faMouthTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public string faSkinTypeDef;
-        [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor;
-        [MayRequire("Nals.FacialAnimation")] public ColorInt? faEyeColor2;
+        #endregion
 
-        /// <summary>Def 로드 완료 후 호출. 동적 HediffDef를 DefDatabase에 등록.</summary>
+        #region ResolveReferences / ConfigErrors
+
         public override void ResolveReferences()
         {
             base.ResolveReferences();
-            ShapeshifterFramework.Utilities.ShapeshiftStatHediffGenerator.TryGenerateFor(this);
+
+            // 렌더 필터 와일드카드 사전 컴파일 — 렌더 루프에서 문자열 파싱 제거
+            _hideApparelLayers = CompiledFilterSet.Compile(renderHideApparelLayers);
+            _hideApparelDefNames = CompiledFilterSet.Compile(renderHideApparelDefNames);
+            _showApparelLayers = CompiledFilterSet.Compile(renderShowApparelLayers);
+            _showApparelDefNames = CompiledFilterSet.Compile(renderShowApparelDefNames);
+            _hideWeaponTags = CompiledFilterSet.Compile(renderHideWeaponTags);
+            _hideWeaponDefNames = CompiledFilterSet.Compile(renderHideWeaponDefNames);
+            _showWeaponTags = CompiledFilterSet.Compile(renderShowWeaponTags);
+            _showWeaponDefNames = CompiledFilterSet.Compile(renderShowWeaponDefNames);
+            _hideGeneExclusionTags = CompiledFilterSet.Compile(renderHideGeneExclusionTags);
+            _hideGeneDefNames = CompiledFilterSet.Compile(renderHideGeneDefNames);
+            _showGeneExclusionTags = CompiledFilterSet.Compile(renderShowGeneExclusionTags);
+            _showGeneDefNames = CompiledFilterSet.Compile(renderShowGeneDefNames);
+            _hideHediffDefNames = CompiledFilterSet.Compile(renderHideHediffDefNames);
+            _showHediffDefNames = CompiledFilterSet.Compile(renderShowHediffDefNames);
         }
+
+        /// <summary>Def 참조 유효성 검증. 로드 시 깨진 참조 조기 검출.</summary>
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (var e in base.ConfigErrors())
+                yield return e;
+
+            // 능력 참조
+            if (addAbilities != null)
+            {
+                for (int i = 0; i < addAbilities.Count; i++)
+                    if (addAbilities[i] == null)
+                        yield return $"addAbilities[{i}]: null AbilityDef reference";
+            }
+
+            // hediff 참조
+            if (addHediffs != null)
+            {
+                for (int i = 0; i < addHediffs.Count; i++)
+                {
+                    var entry = addHediffs[i];
+                    if (entry == null) { yield return $"addHediffs[{i}]: null entry"; continue; }
+                    if (entry.hediff == null) yield return $"addHediffs[{i}]: null HediffDef reference";
+                }
+            }
+
+            // sustain 참조
+            if (sustainApparels != null)
+                for (int i = 0; i < sustainApparels.Count; i++)
+                    if (sustainApparels[i] == null) yield return $"sustainApparels[{i}]: null ThingDef reference";
+            if (sustainWeapons != null)
+                for (int i = 0; i < sustainWeapons.Count; i++)
+                    if (sustainWeapons[i] == null) yield return $"sustainWeapons[{i}]: null ThingDef reference";
+            if (sustainHediffs != null)
+                for (int i = 0; i < sustainHediffs.Count; i++)
+                    if (sustainHediffs[i] == null) yield return $"sustainHediffs[{i}]: null HediffDef reference";
+            if (sustainGenes != null)
+                for (int i = 0; i < sustainGenes.Count; i++)
+                    if (sustainGenes[i] == null) yield return $"sustainGenes[{i}]: null GeneDef reference";
+
+            // 종족/뮤턴트 제한 참조
+            if (formAllowedRaces != null)
+                for (int i = 0; i < formAllowedRaces.Count; i++)
+                    if (formAllowedRaces[i] == null) yield return $"formAllowedRaces[{i}]: null ThingDef reference";
+            if (formDisallowedRaces != null)
+                for (int i = 0; i < formDisallowedRaces.Count; i++)
+                    if (formDisallowedRaces[i] == null) yield return $"formDisallowedRaces[{i}]: null ThingDef reference";
+            if (formAllowedMutants != null)
+                for (int i = 0; i < formAllowedMutants.Count; i++)
+                    if (formAllowedMutants[i] == null) yield return $"formAllowedMutants[{i}]: null MutantDef reference";
+            if (formDisallowedMutants != null)
+                for (int i = 0; i < formDisallowedMutants.Count; i++)
+                    if (formDisallowedMutants[i] == null) yield return $"formDisallowedMutants[{i}]: null MutantDef reference";
+
+            // 소환 장비 참조 + 카테고리 검증
+            if (spawnApparelOnTransform != null)
+                for (int i = 0; i < spawnApparelOnTransform.Count; i++)
+                {
+                    if (spawnApparelOnTransform[i] == null) yield return $"spawnApparelOnTransform[{i}]: null ThingDef reference";
+                    else if (!spawnApparelOnTransform[i].IsApparel) yield return $"spawnApparelOnTransform[{i}]: {spawnApparelOnTransform[i].defName} is not apparel";
+                }
+            if (spawnWeaponOnTransform != null)
+                for (int i = 0; i < spawnWeaponOnTransform.Count; i++)
+                {
+                    if (spawnWeaponOnTransform[i] == null) yield return $"spawnWeaponOnTransform[{i}]: null ThingDef reference";
+                    else if (!spawnWeaponOnTransform[i].IsWeapon) yield return $"spawnWeaponOnTransform[{i}]: {spawnWeaponOnTransform[i].defName} is not a weapon";
+                }
+
+            // 작업 제한 참조
+            if (disabledWorkTypesOnTransform != null)
+                for (int i = 0; i < disabledWorkTypesOnTransform.Count; i++)
+                    if (disabledWorkTypesOnTransform[i] == null) yield return $"disabledWorkTypesOnTransform[{i}]: null WorkTypeDef reference";
+
+            // 스케일 범위 검증
+            if (bodyDrawScale.HasValue && bodyDrawScale.Value <= 0f)
+                yield return $"bodyDrawScale must be > 0, got {bodyDrawScale.Value}";
+            if (headDrawScale.HasValue && headDrawScale.Value <= 0f)
+                yield return $"headDrawScale must be > 0, got {headDrawScale.Value}";
+
+            // 해제 부산물 참조
+            if (revertDrops != null)
+                for (int i = 0; i < revertDrops.Count; i++)
+                    if (revertDrops[i]?.thingDef == null) yield return $"revertDrops[{i}]: null ThingDef reference";
+            if (revertAddHediffs != null)
+                for (int i = 0; i < revertAddHediffs.Count; i++)
+                {
+                    var entry = revertAddHediffs[i];
+                    if (entry == null) { yield return $"revertAddHediffs[{i}]: null entry"; continue; }
+                    if (entry.hediff == null) yield return $"revertAddHediffs[{i}]: null HediffDef reference";
+                }
+        }
+
+        #endregion
     }
 }

@@ -20,9 +20,21 @@ namespace ShapeshifterFramework.Patches
         {
             var list = new List<CodeInstruction>(instructions);
 
+            // IL 매칭용 리플렉션 — public 멤버이지만 트랜스파일러에서 MethodInfo/FieldInfo가 필요 (1.6 DLL 대조 감사 완료)
             var fleshGetter = AccessTools.PropertyGetter(typeof(RaceProperties), nameof(RaceProperties.FleshType));
             var helperMethod = AccessTools.Method(typeof(ShapeshiftOverlayUtility), nameof(ShapeshiftOverlayUtility.GetEffectiveFleshType));
             var parmsPawnFld = AccessTools.Field(typeof(PawnDrawParms), nameof(PawnDrawParms.pawn));
+
+            if (fleshGetter == null || helperMethod == null || parmsPawnFld == null)
+            {
+                Log.Warning("[SSF] PawnWoundDrawer transpiler: reflection lookup failed"
+                    + (fleshGetter == null ? " [FleshType getter]" : "")
+                    + (helperMethod == null ? " [GetEffectiveFleshType]" : "")
+                    + (parmsPawnFld == null ? " [PawnDrawParms.pawn]" : "")
+                    + ". Falling back to vanilla wound overlays.");
+                ShapeshiftPatchStatus.WoundDrawerTranspiled = false;
+                return list;
+            }
 
             // PawnDrawParms 파라미터 위치 동적 탐색 (+1: this)
             int parmsArgIndex = -1;

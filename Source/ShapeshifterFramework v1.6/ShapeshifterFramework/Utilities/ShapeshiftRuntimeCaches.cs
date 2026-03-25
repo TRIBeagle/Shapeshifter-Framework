@@ -47,6 +47,9 @@ namespace ShapeshifterFramework.Utilities
         /// <summary>전체 리셋(맵 전환/디버그용)</summary>
         public static void ClearAll()
         {
+            // 변신 레지스트리 초기화
+            ShapeshiftRegistry.Clear();
+
             // ConditionalWeakTable은 Clear()가 없으므로 새 인스턴스로 교체
             CallByPawn = new ConditionalWeakTable<Pawn, SoundDef>();
             WoundedByPawn = new ConditionalWeakTable<Pawn, SoundDef>();
@@ -55,6 +58,22 @@ namespace ShapeshifterFramework.Utilities
             BloodByPawn = new ConditionalWeakTable<Pawn, ThingDef>();
             SmearByPawn = new ConditionalWeakTable<Pawn, ThingDef>();
             FleshTypeByPawn = new ConditionalWeakTable<Pawn, FleshTypeDef>();
+
+            // 그림자 그래픽 캐시 정리
+            try { ShapeshifterFramework.Patches.Patch_PawnRenderer_DrawShadowInternal.ClearCache(); }
+            catch (System.Exception ex) { Log.Warning($"[SSF] ClearAll: DrawShadow cache clear failed: {ex.Message}"); }
+
+            // FA 컨트롤러 보유 캐시 정리
+            try { ShapeshifterFramework.Compat.Compat_FacialAnimation_HeadWorker_ScaleFor.ClearFACompCache(); }
+            catch (System.Exception ex) { Log.Warning($"[SSF] ClearAll: FA comp cache clear failed: {ex.Message}"); }
+
+            // HAR 헤드 애드온 판정 캐시 정리
+            try { ShapeshifterFramework.Compat.Compat_HAR_BodyAddon_ScaleFor.ClearHeadAddonCache(); }
+            catch (System.Exception ex) { Log.Warning($"[SSF] ClearAll: HAR addon cache clear failed: {ex.Message}"); }
+
+            // VerbTracker 실패 캐시 정리
+            try { ShapeshifterFramework.Patches.Patch_VerbTracker_InitVerbsFromZero.ClearCache(); }
+            catch (System.Exception ex) { Log.Warning($"[SSF] ClearAll: VerbTracker cache clear failed: {ex.Message}"); }
         }
     }
 }

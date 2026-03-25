@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       Ability: ally shapeshift (buff type)
+       Transforms ally into bear warrior form for combat enhancement
+       ====================================================== -->
+  <AbilityDef ParentName="SSF_BaseTargetedShiftAbility">
+    <defName>SSFTest_Ability_BuffAlly</defName>
+    <label>bestow bear warrior</label>
+    <description>Bestow the power of the bear warrior upon an ally. Stats are enhanced while keeping equipment.</description>
+    <cooldownTicksRange>1500</cooldownTicksRange>
+    <displayOrder>500</displayOrder>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
+        <!-- hediffDef path test: directly specifying hediffDef instead of formDefName -->
+        <hediffDef>SSFTest_BearWarriorFormHediff</hediffDef>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       Ability: enemy shapeshift (debuff type)
+       Polymorphs enemy into sheep to neutralize
+       ====================================================== -->
+  <AbilityDef ParentName="SSF_BaseTargetedShiftAbility">
+    <defName>SSFTest_Ability_DebuffEnemy</defName>
+    <label>polymorph: sheep</label>
+    <description>Polymorphs the target into a sheep. Combat ability is lost and voluntary revert is disabled.</description>
+    <cooldownTicksRange>3000</cooldownTicksRange>
+    <hostile>true</hostile>
+    <displayOrder>501</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
+      <range>20</range>
+      <warmupTime>1.5</warmupTime>
+      <targetParams>
+        <canTargetSelf>false</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetAnimals>false</canTargetAnimals>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
+        <hediffDef>SSFTest_SheepFormHediff</hediffDef>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       Ability: dark knight transformation
+       Spawns plasteel plate armor + longsword, destroyed on revert
+       ====================================================== -->
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
+    <defName>SSFTest_Ability_DarkKnight</defName>
+    <label>dark knight transformation</label>
+    <description>Transform into a dark knight. Spawns dedicated plasteel plate armor and longsword. Existing gear moves to inventory. Spawned gear is destroyed on revert.</description>
+    <cooldownTicksRange>3000</cooldownTicksRange>
+    <displayOrder>505</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
+      <range>0</range>
+      <warmupTime>1.5</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
+        <hediffDef>SSFTest_DarkKnightFormHediff</hediffDef>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       Ability: beastkin shift (Stage 1)
+       Human -> Beastkin. Can enter FullBeast via addAbilities while in beastkin form.
+       ====================================================== -->
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
+    <defName>SSFTest_Ability_Beastkin</defName>
+    <label>beastkin shift</label>
+    <description>Transform into beastkin form. Can perform 2nd-stage transformation to full beast while in this form.</description>
+    <cooldownTicksRange>1200</cooldownTicksRange>
+    <displayOrder>510</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <violent>false</violent>
+      <warmupTime>0.5</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
+        <hediffDef>SSFTest_BeastkinFormHediff</hediffDef>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       Ability: full beast shift (Stage 2)
+       Granted via beastkin form's addAbilities
+       ====================================================== -->
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
+    <defName>SSFTest_Ability_FullBeast</defName>
+    <label>full beast shift</label>
+    <description>Transform into full beast form. Only usable while in beastkin form.</description>
+    <cooldownTicksRange>0</cooldownTicksRange>
+    <displayOrder>511</displayOrder>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
+        <hediffDef>SSFTest_FullBeastFormHediff</hediffDef>
+        <!-- Only allow 2nd-stage shift from beastkin form -->
+        <allowedFromForms>
+          <li>SSFTest_BeastkinForm</li>
+        </allowedFromForms>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       Ability: guardian form
+       ====================================================== -->
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
+    <defName>SSFTest_Ability_Guardian</defName>
+    <label>guardian shift</label>
+    <description>Transform into guardian form.</description>
+    <cooldownTicksRange>1500</cooldownTicksRange>
+    <displayOrder>530</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <violent>false</violent>
+      <warmupTime>0.8</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
+        <hediffDef>SSFTest_GuardianFormHediff</hediffDef>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       Ability: phantom form
+       ====================================================== -->
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
+    <defName>SSFTest_Ability_Phantom</defName>
+    <label>phantom shift</label>
+    <description>Transform into phantom form. Semi-transparent head, thin body type.</description>
+    <cooldownTicksRange>1500</cooldownTicksRange>
+    <displayOrder>531</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <violent>false</violent>
+      <warmupTime>0.5</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
+        <hediffDef>SSFTest_PhantomFormHediff</hediffDef>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       Ability: race-locked (human only)
+       allowedRaces handled in comp
+       ====================================================== -->
+  <AbilityDef ParentName="SSF_BaseSelfShiftAbility">
+    <defName>SSFTest_Ability_RaceLocked</defName>
+    <label>race-locked shift</label>
+    <description>Human-only enhancement transformation. Non-human races cannot use this.</description>
+    <cooldownTicksRange>1500</cooldownTicksRange>
+    <displayOrder>532</displayOrder>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <range>0</range>
+      <violent>false</violent>
+      <warmupTime>0.8</warmupTime>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
+        <hediffDef>SSFTest_RaceLockedFormHediff</hediffDef>
+        <!-- Race restriction: human only -->
+        <allowedRaces>
+          <li>Human</li>
+        </allowedRaces>
+      </li>
+    </comps>
+  </AbilityDef>
+
+  <!-- ======================================================
+       Ability: Primal Roar — beastkin-exclusive ability with duration cost
+       Granted via beastkin form's addAbilities, removed on revert.
+       Stuns nearby enemies. Costs 7500 ticks (~3 hours) of shift time.
+       Reference: vanilla Berserk (targeted, warmup, hostile)
+       ====================================================== -->
+  <AbilityDef>
+    <defName>SSFTest_Ability_PrimalRoar</defName>
+    <label>primal roar</label>
+    <description>Let out a terrifying primal roar that stuns a nearby enemy. Consumes shapeshift duration on use.</description>
+    <cooldownTicksRange>2500</cooldownTicksRange>
+    <hostile>true</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <displayGizmoWhileUndrafted>false</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>true</disableGizmoWhileUndrafted>
+    <displayOrder>512</displayOrder>
+    <iconPath>UI/Abilities/Berserk</iconPath>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <violent>false</violent>
+      <range>10</range>
+      <warmupTime>1.0</warmupTime>
+      <targetParams>
+        <canTargetSelf>false</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetAnimals>true</canTargetAnimals>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <!-- 캐스터의 변신 시간 7500틱(~3시간) 차감 -->
+      <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityEffect_ShapeshiftDurationCost">
+        <durationCostTicks>7500</durationCostTicks>
+        <requireTransformed>true</requireTransformed>
+      </li>
+    </comps>
+  </AbilityDef>
+
+</Defs>

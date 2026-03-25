@@ -3,6 +3,7 @@
 // 용도 : 이펙트 다중 호출로 인한 소음 스팸과 과부하를 막기 위해 큐(Queue)와 쿨다운을 적용하며, 매 프레임 발생하는 가비지(GC) 할당을 막기 위해 List 기반의 재사용 버퍼(_removeBuffer)를 활용함.
 
 using RimWorld;
+using ShapeshifterFramework.Hediffs;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,12 +39,57 @@ namespace ShapeshifterFramework.Utilities
         private readonly List<int> _removeBuffer = new List<int>(32);
 
         // ──────────────────────────────────────────────────────────────
-        // Configurable values
+        // 설정 상수
         private const int CooldownExpiryTicks = 60000; // 1게임일 후 자동 정리
         private const int MaxFleckCount = 50;          // Fleck 안전상한
         // ──────────────────────────────────────────────────────────────
 
         public ShapeshiftTransformFxRunner(Game game) { }
+
+        /// <summary>게임 로드/시작 완료 시 전역 캐시 정리 — 이전 세션 잔여 데이터 누수 방지.</summary>
+        /// <remarks>
+        /// ClearAll()이 ShapeshiftRegistry를 비우므로, PostLoadInit/PostSpawnSetup에서 등록된 엔트리가 유실됨.
+        /// 따라서 캐시 정리 후 모든 맵의 변신 중 폰을 재등록해야 함.
+        /// </remarks>
+        public override void FinalizeInit()
+        {
+            base.FinalizeInit();
+
+            // ClearAll → 재등록 사이에 다른 GameComponent가 레지스트리를 조회해도
+            // hediff 기반 폴백으로 정확한 결과를 반환하도록 가드
+            ShapeshiftRegistry.BeginReInit();
+            try
+            {
+                ShapeshiftCoreUtility.ClearEvents();
+                ShapeshiftRuntimeCaches.ClearAll();
+
+                // 캐시 클리어로 유실된 변신 폰 레지스트리 + 런타임 캐시 재등록
+                if (Find.Maps != null)
+                {
+                    for (int m = 0; m < Find.Maps.Count; m++)
+                    {
+                        var pawns = Find.Maps[m]?.mapPawns?.AllPawnsSpawned;
+                        if (pawns == null) continue;
+                        for (int i = 0; i < pawns.Count; i++)
+                        {
+                            // HediffComp_ShapeshiftCore 기반 조회
+                            if (ShapeshiftCoreUtility.TryGetCore(pawns[i], out var core))
+                            {
+                                if (core.isTransformed && core.currentForm != null)
+                                {
+                                    ShapeshiftRegistry.Register(pawns[i], core);
+                                    HediffComp_ShapeshiftCore.ApplyRuntimeCaches(pawns[i], core.currentForm);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                ShapeshiftRegistry.EndReInit();
+            }
+        }
 
         public override void GameComponentTick()
         {
@@ -115,7 +161,7 @@ namespace ShapeshifterFramework.Utilities
         {
             try
             {
-                if (pawn == null || form == null) return;
+                if (pawn == null || pawn.Destroyed || form == null) return;
 
                 // 맵/스폰 체크: 시각효과는 맵에서만, 사운드는 맵 사운드로 1회
                 if (!pawn.Spawned || pawn.MapHeld == null)

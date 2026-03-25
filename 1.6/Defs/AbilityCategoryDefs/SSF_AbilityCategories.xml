@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- Shapeshift ability category -->
+  <AbilityCategoryDef>
+    <defName>SSF_Shapeshift</defName>
+    <label>Shapeshift</label>
+    <displayOrder>500</displayOrder>
+  </AbilityCategoryDef>
+
+</Defs>

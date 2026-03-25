@@ -1,4 +1,4 @@
-﻿// ShapeshifterFramework | Utilities | ShapeshiftVerbShootProvider.cs
+// ShapeshifterFramework | Utilities | ShapeshiftVerbShootProvider.cs
 // 목적 : 드래프트된(Drafted) 변신 폰이 타겟을 우클릭했을 때 나타나는 '플로트 메뉴(Float Menu)'에 폼 전용 원거리 공격 명령을 추가.
 // 용도 : 자동공격 토글(Auto-Attack)이 꺼져 있더라도 플레이어가 강제로 특정 Verb를 사용해 사격(AttackStatic Job)하도록 명령을 생성하며, 발사체가 없는 버그 무기 사용 시도(NRE)를 방어함.
 
@@ -21,8 +21,9 @@ namespace ShapeshifterFramework.Utilities
             var p = context?.FirstSelectedPawn;
             if (p == null || !p.Drafted) return false;
 
-            var comp = p.TryGetComp<ShapeshifterFramework.Comps.CompShapeshifter>();
-            return comp != null && comp.ShapeshiftVerbTracker != null;
+            // HediffComp_ShapeshiftCore 기반 조회
+            if (!ShapeshiftCoreUtility.TryGetCore(p, out var core)) return false;
+            return core.ShapeshiftVerbTracker != null;
         }
 
         public override bool TargetPawnValid(Pawn target, FloatMenuContext context)
@@ -41,8 +42,9 @@ namespace ShapeshifterFramework.Utilities
             var sel = context?.FirstSelectedPawn;
             if (sel == null || target == null) yield break;
 
-            var comp = sel.TryGetComp<ShapeshifterFramework.Comps.CompShapeshifter>();
-            var vt = comp?.ShapeshiftVerbTracker;
+            // HediffComp_ShapeshiftCore 기반 조회
+            if (!ShapeshiftCoreUtility.TryGetCore(sel, out var core)) yield break;
+            var vt = core.ShapeshiftVerbTracker;
             if (vt == null) yield break;
 
             var verbs = vt.AllVerbs;
@@ -61,7 +63,7 @@ namespace ShapeshifterFramework.Utilities
                 if (v.caster == null) v.caster = sel;
 
                 int idx = i; // 클로저 안전
-                string label = comp.GetVerbLabel(idx, v, preferToggleLabel: false);
+                string label = core.GetVerbLabel(idx, v, preferToggleLabel: false);
                 string menuLabel = $"{label}: {target.LabelShortCap}";
 
                 yield return new FloatMenuOption(menuLabel, () =>

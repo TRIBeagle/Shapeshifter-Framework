@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- 절대적으로 혐오함 — 개인 감정 -->
+  <SSF_Thought_Shapeshifted_Abhorrent.stages.0.label>변신 중</SSF_Thought_Shapeshifted_Abhorrent.stages.0.label>
+  <SSF_Thought_Shapeshifted_Abhorrent.stages.0.description>이 몸은 내가 아니야. 역겹고 끔찍해.</SSF_Thought_Shapeshifted_Abhorrent.stages.0.description>
+
+  <!-- 절대적으로 혐오함 — 사회 감정 -->
+  <SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.label>변신</SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.description>몸을 바꾸다니, 보기만 해도 소름이 돋아.</SSF_Thought_Shapeshifted_Abhorrent_Social.stages.0.description>
+
+  <!-- 금기 위반 기억 -->
+  <SSF_Thought_ShapeshiftTabooViolated.stages.0.label>변신해 버렸어</SSF_Thought_ShapeshiftTabooViolated.stages.0.label>
+  <SSF_Thought_ShapeshiftTabooViolated.stages.0.description>해선 안 되는 짓을 하고 말았어. 머릿속이 복잡해.</SSF_Thought_ShapeshiftTabooViolated.stages.0.description>
+
+  <!-- 못마땅함 — 개인 감정 -->
+  <SSF_Thought_Shapeshifted_Disapproved.stages.0.label>변신 중</SSF_Thought_Shapeshifted_Disapproved.stages.0.label>
+  <SSF_Thought_Shapeshifted_Disapproved.stages.0.description>이 모습이 영 불편해.</SSF_Thought_Shapeshifted_Disapproved.stages.0.description>
+
+  <!-- 못마땅함 — 사회 감정 -->
+  <SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.label>변신</SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.description>변신을 하다니, 눈살이 찌푸려져.</SSF_Thought_Shapeshifted_Disapproved_Social.stages.0.description>
+
+  <!-- 못마땅함 위반 기억 -->
+  <SSF_Thought_ShapeshiftDisapprovedViolated.stages.0.label>변신을 하고 말았어</SSF_Thought_ShapeshiftDisapprovedViolated.stages.0.label>
+  <SSF_Thought_ShapeshiftDisapprovedViolated.stages.0.description>찝찝해. 좀 그런 거 안 했으면 좋겠는데.</SSF_Thought_ShapeshiftDisapprovedViolated.stages.0.description>
+
+  <!-- 존중함 — 개인 감정 -->
+  <SSF_Thought_Shapeshifted_Respected.stages.0.label>변신 중</SSF_Thought_Shapeshifted_Respected.stages.0.label>
+  <SSF_Thought_Shapeshifted_Respected.stages.0.description>이 모습도 나쁘지 않네. 꽤 괜찮아.</SSF_Thought_Shapeshifted_Respected.stages.0.description>
+
+  <!-- 존중함 — 사회 감정 -->
+  <SSF_Thought_Shapeshifted_Respected_Social.stages.0.label>변신</SSF_Thought_Shapeshifted_Respected_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Respected_Social.stages.0.description>변신하는 모습이 꽤 인상적이야.</SSF_Thought_Shapeshifted_Respected_Social.stages.0.description>
+
+  <!-- 숭고함 — 개인 감정 -->
+  <SSF_Thought_Shapeshifted_Sublime.stages.0.label>변신 중</SSF_Thought_Shapeshifted_Sublime.stages.0.label>
+  <SSF_Thought_Shapeshifted_Sublime.stages.0.description>내 안의 힘이 깨어난 느낌이야. 기분이 좋아.</SSF_Thought_Shapeshifted_Sublime.stages.0.description>
+
+  <!-- 숭고함 — 사회 감정 -->
+  <SSF_Thought_Shapeshifted_Sublime_Social.stages.0.label>변신</SSF_Thought_Shapeshifted_Sublime_Social.stages.0.label>
+  <SSF_Thought_Shapeshifted_Sublime_Social.stages.0.description>축복받은 변신의 힘을 지니다니, 경이로워.</SSF_Thought_Shapeshifted_Sublime_Social.stages.0.description>
+
+  <!-- 변신 목격 — 절대적으로 혐오함 -->
+  <SSF_Thought_WitnessedShapeshift_Abhorrent.stages.0.label>누군가 변신함</SSF_Thought_WitnessedShapeshift_Abhorrent.stages.0.label>
+  <SSF_Thought_WitnessedShapeshift_Abhorrent.stages.0.description>누군가 눈앞에서 몸을 바꿨어. 소름 끼치고 역겨워.</SSF_Thought_WitnessedShapeshift_Abhorrent.stages.0.description>
+
+  <!-- 변신 목격 — 못마땅함 -->
+  <SSF_Thought_WitnessedShapeshift_Disapproved.stages.0.label>누군가 변신함</SSF_Thought_WitnessedShapeshift_Disapproved.stages.0.label>
+  <SSF_Thought_WitnessedShapeshift_Disapproved.stages.0.description>누군가 몸을 바꾸는 걸 봤어. 좀 거슬려.</SSF_Thought_WitnessedShapeshift_Disapproved.stages.0.description>
+
+  <!-- 변신 목격 — 존중함 -->
+  <SSF_Thought_WitnessedShapeshift_Respected.stages.0.label>누군가 변신함</SSF_Thought_WitnessedShapeshift_Respected.stages.0.label>
+  <SSF_Thought_WitnessedShapeshift_Respected.stages.0.description>누군가 변신하는 모습을 봤어. 꽤 인상적이었어.</SSF_Thought_WitnessedShapeshift_Respected.stages.0.description>
+
+  <!-- 변신 목격 — 숭고함 -->
+  <SSF_Thought_WitnessedShapeshift_Sublime.stages.0.label>누군가 변신함</SSF_Thought_WitnessedShapeshift_Sublime.stages.0.label>
+  <SSF_Thought_WitnessedShapeshift_Sublime.stages.0.description>신성한 변신을 눈앞에서 목격했어. 경이로운 순간이었어.</SSF_Thought_WitnessedShapeshift_Sublime.stages.0.description>
+
+  <!-- 성스러운 동물 폼 — 자기 감정 — 규율 단계별 (0:혐오 1:못마땅 2:무관심 3:존중 4:숭고) -->
+  <SSF_Thought_SacredAnimalForm.stages.0.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm.stages.0.label>
+  <SSF_Thought_SacredAnimalForm.stages.0.description>이 역겨운 힘으로 성스러운 동물의 모습을 하고 있어. 끔찍한 신성모독을 저지른 기분이야.</SSF_Thought_SacredAnimalForm.stages.0.description>
+  <SSF_Thought_SacredAnimalForm.stages.1.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm.stages.1.label>
+  <SSF_Thought_SacredAnimalForm.stages.1.description>변신으로 성스러운 동물의 모습을 하고 있어. 뭔가 잘못된 느낌이야.</SSF_Thought_SacredAnimalForm.stages.1.description>
+  <SSF_Thought_SacredAnimalForm.stages.2.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm.stages.2.label>
+  <SSF_Thought_SacredAnimalForm.stages.2.description>성스러운 동물의 모습을 하고 있어. 오, 신기하네.</SSF_Thought_SacredAnimalForm.stages.2.description>
+  <SSF_Thought_SacredAnimalForm.stages.3.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm.stages.3.label>
+  <SSF_Thought_SacredAnimalForm.stages.3.description>성스러운 동물의 모습을 하고 있어. 경건한 기분이 들어.</SSF_Thought_SacredAnimalForm.stages.3.description>
+  <SSF_Thought_SacredAnimalForm.stages.4.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm.stages.4.label>
+  <SSF_Thought_SacredAnimalForm.stages.4.description>성스러운 동물 그 자체가 되었어! 신성한 힘이 온몸에 흐르는 느낌이야.</SSF_Thought_SacredAnimalForm.stages.4.description>
+
+  <!-- 성스러운 동물 폼 — 사회 감정 — 규율 단계별 (0:혐오 1:못마땅 2:무관심 3:존중 4:숭고) -->
+  <SSF_Thought_SacredAnimalForm_Social.stages.0.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm_Social.stages.0.label>
+  <SSF_Thought_SacredAnimalForm_Social.stages.0.description>감히 그 역겨운 힘으로 성스러운 동물의 모습을 하다니. 용서할 수 없는 신성모독이야.</SSF_Thought_SacredAnimalForm_Social.stages.0.description>
+  <SSF_Thought_SacredAnimalForm_Social.stages.1.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm_Social.stages.1.label>
+  <SSF_Thought_SacredAnimalForm_Social.stages.1.description>변신으로 성스러운 동물의 모습을 하고 있어. 보기 불편해.</SSF_Thought_SacredAnimalForm_Social.stages.1.description>
+  <SSF_Thought_SacredAnimalForm_Social.stages.2.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm_Social.stages.2.label>
+  <SSF_Thought_SacredAnimalForm_Social.stages.2.description>성스러운 동물의 모습을 하고 있네. 좀 신기해.</SSF_Thought_SacredAnimalForm_Social.stages.2.description>
+  <SSF_Thought_SacredAnimalForm_Social.stages.3.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm_Social.stages.3.label>
+  <SSF_Thought_SacredAnimalForm_Social.stages.3.description>성스러운 동물의 모습을 하고 있어. 꽤 인상적이야.</SSF_Thought_SacredAnimalForm_Social.stages.3.description>
+  <SSF_Thought_SacredAnimalForm_Social.stages.4.label>성스러운 동물의 형상</SSF_Thought_SacredAnimalForm_Social.stages.4.label>
+  <SSF_Thought_SacredAnimalForm_Social.stages.4.description>성스러운 동물 그 자체가 되다니! 정말로 축복받은 존재야.</SSF_Thought_SacredAnimalForm_Social.stages.4.description>
+
+</LanguageData>

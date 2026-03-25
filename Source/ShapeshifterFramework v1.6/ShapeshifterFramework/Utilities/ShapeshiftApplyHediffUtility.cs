@@ -10,6 +10,8 @@ namespace ShapeshifterFramework.Utilities
 {
     public static class ShapeshiftApplyHediffUtility
     {
+        private static readonly List<BodyPartRecord> EmptyParts = new List<BodyPartRecord>(0);
+
         public static void ApplyHediffEntries(
             Pawn pawn,
             List<HediffAddEntry> entries,
@@ -99,11 +101,11 @@ namespace ShapeshifterFramework.Utilities
 
                         case AddedPartPolicy.RegrowFleshOnly:
                             if ((record.PreExistingAdded != null && record.PreExistingAdded.Count > 0) || childArtificial) return false;
-                            if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch { } }
+                            if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch (System.Exception ex) { Log.Warning($"[SSF] RestorePart failed (RegrowFleshOnly): {part.Label} — {ex.Message}"); } }
                             break;
 
                         case AddedPartPolicy.ForceAdd:
-                            if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch { } }
+                            if (partMissing || childMissing) { try { pawn.health.RestorePart(part); } catch (System.Exception ex) { Log.Warning($"[SSF] RestorePart failed (ForceAdd): {part.Label} — {ex.Message}"); } }
                             RemoveExistingAddedParts(pawn, part, record.PreExistingAdded);
                             break;
                     }
@@ -133,9 +135,10 @@ namespace ShapeshifterFramework.Utilities
             {
                 if (opt.severity.HasValue)
                 {
-                    try { existing.Severity = opt.severity.Value; } catch { }
+                    try { existing.Severity = opt.severity.Value; } catch (System.Exception ex) { Log.Warning($"[SSF] Set severity failed (existing): {opt.hediff.defName} — {ex.Message}"); }
                 }
-                ShapeshiftDiagnostics.Info($"Update existing: {opt.hediff.defName} {(part?.Label ?? "FullBody")}");
+                // 기존 hediff는 폼이 생성하지 않았으므로 추적하지 않음 — 해제 시 건드리지 않음
+                ShapeshiftDiagnostics.Info($"Update existing (not tracked): {opt.hediff.defName} {(part?.Label ?? "FullBody")}");
                 return false;
             }
 
@@ -144,7 +147,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 if (opt.severity.HasValue)
                 {
-                    try { created.Severity = opt.severity.Value; } catch { }
+                    try { created.Severity = opt.severity.Value; } catch (System.Exception ex) { Log.Warning($"[SSF] Set severity failed (created): {opt.hediff.defName} — {ex.Message}"); }
                 }
                 if (outTempAddedHediffs != null) outTempAddedHediffs.Add(created);
                 if (outTempAddedHediffsDefCache != null) outTempAddedHediffsDefCache.Add(opt.hediff);
@@ -193,8 +196,19 @@ namespace ShapeshifterFramework.Utilities
             {
                 Hediff h = list[i];
                 if (h?.def?.addedPartProps == null) continue;
-                if (h.Part != part) continue;
-                try { pawn.health.RemoveHediff(h); } catch { }
+                if (h.Part == null) continue;
+
+                // 대상 파츠 자신 또는 하위 파츠의 인공장기도 제거
+                bool isTargetOrChild = false;
+                BodyPartRecord current = h.Part;
+                while (current != null)
+                {
+                    if (current == part) { isTargetOrChild = true; break; }
+                    current = current.parent;
+                }
+                if (!isTargetOrChild) continue;
+
+                try { pawn.health.RemoveHediff(h); } catch (System.Exception ex) { Log.Warning($"[SSF] RemoveHediff failed: {h.def?.defName ?? "null"} — {ex.Message}"); }
             }
         }
 
@@ -212,7 +226,7 @@ namespace ShapeshifterFramework.Utilities
             return null;
         }
 
-        public static List<BodyPartRecord> ResolveTargetParts(Pawn pawn, HediffAddEntry opt)
+        private static List<BodyPartRecord> ResolveTargetParts(Pawn pawn, HediffAddEntry opt)
         {
             if (opt.targetPart != null)
             {
@@ -222,15 +236,15 @@ namespace ShapeshifterFramework.Utilities
                     var results = new List<BodyPartRecord>(4);
                     for (int i = 0; i < all.Count; i++)
                         if (all[i].def == opt.targetPart) results.Add(all[i]);
-                    return (results.Count == 0) ? new List<BodyPartRecord>() : results;
+                    return results.Count == 0 ? EmptyParts : results;
                 }
-                return new List<BodyPartRecord>();
+                return EmptyParts;
             }
 
             if (opt.targetGroups != null && opt.targetGroups.Count > 0)
             {
                 var all = pawn?.RaceProps?.body?.AllParts;
-                if (all == null || all.Count == 0) return new List<BodyPartRecord>();
+                if (all == null || all.Count == 0) return EmptyParts;
 
                 var set = new HashSet<BodyPartRecord>();
                 for (int i = 0; i < all.Count; i++)
@@ -248,11 +262,14 @@ namespace ShapeshifterFramework.Utilities
                         }
                     }
                 }
-                return (set.Count == 0) ? new List<BodyPartRecord>() : new List<BodyPartRecord>(set);
+                return set.Count == 0 ? EmptyParts : new List<BodyPartRecord>(set);
             }
 
             return null;
         }
+
+        // RemoveHediff 대상을 수집하기 위한 재사용 버퍼 — GC 할당 방지
+        private static readonly List<Hediff> _cleanupRemoveBuffer = new List<Hediff>(8);
 
         static void CleanupNullPartHediffs(Pawn pawn, List<HediffDef> prevDefCache)
         {
@@ -261,28 +278,41 @@ namespace ShapeshifterFramework.Utilities
 
             bool requiresDirtyCache = false;
 
+            // 1단계: null 엔트리 제거 (RemoveAt은 리스트 내부 조작만 하므로 안전)
             for (int i = list.Count - 1; i >= 0; i--)
             {
-                var h = list[i];
-                if (h == null)
+                if (list[i] == null)
                 {
                     list.RemoveAt(i);
                     requiresDirtyCache = true;
-                    continue;
-                }
-
-                if ((h.def?.addedPartProps != null || h is Hediff_MissingPart) && h.Part == null)
-                {
-                    if (prevDefCache == null || !prevDefCache.Contains(h.def)) continue;
-                    try
-                    {
-                        // RemoveHediff는 내부에서 DirtyCache 호출
-                        pawn.health.RemoveHediff(h);
-                        ShapeshiftDiagnostics.Info($"Cleanup null-part hediff: {h.def?.defName ?? "null"}");
-                    }
-                    catch { }
                 }
             }
+
+            // 2단계: Part가 null인 AddedPart/MissingPart 수집 (순회 중 리스트를 수정하지 않음)
+            _cleanupRemoveBuffer.Clear();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var h = list[i];
+                if (h == null || h.def == null) continue;
+                if ((h.def.addedPartProps != null || h is Hediff_MissingPart) && h.Part == null)
+                {
+                    if (prevDefCache == null || !prevDefCache.Contains(h.def)) continue;
+                    _cleanupRemoveBuffer.Add(h);
+                }
+            }
+
+            // 3단계: 수집된 hediff를 안전하게 제거
+            for (int i = 0; i < _cleanupRemoveBuffer.Count; i++)
+            {
+                try
+                {
+                    // RemoveHediff는 내부에서 DirtyCache 호출
+                    pawn.health.RemoveHediff(_cleanupRemoveBuffer[i]);
+                    ShapeshiftDiagnostics.Info($"Cleanup null-part hediff: {_cleanupRemoveBuffer[i].def?.defName ?? "null"}");
+                }
+                catch (System.Exception ex) { Log.Warning($"[SSF] RemoveHediff failed (cleanup): {_cleanupRemoveBuffer[i].def?.defName ?? "null"} — {ex.Message}"); }
+            }
+            _cleanupRemoveBuffer.Clear();
 
             // RemoveAt 실행 시 수동 캐시 갱신
             if (requiresDirtyCache)
@@ -302,6 +332,7 @@ namespace ShapeshifterFramework.Utilities
             for (int i = 0; i < hediffs.Count; i++)
             {
                 var h = hediffs[i];
+                if (h == null || h.def == null) continue;
                 if (h.Part == null || h.Part == rootPart) continue;
 
                 bool isMissing = h is Hediff_MissingPart;
@@ -335,6 +366,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 for (int i = 0; i < hediffs.Count; i++)
                 {
+                    if (hediffs[i] == null || hediffs[i].def == null) continue;
                     if (hediffs[i].Part == current && hediffs[i].def.addedPartProps != null)
                     {
                         return true;

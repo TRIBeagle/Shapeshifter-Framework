@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       1) Drug-based shapeshift — IngestionOutcomeDoer_Shapeshift
+       Consuming transforms the user into a bear
+       ====================================================== -->
+  <ThingDef ParentName="MakeableDrugBase">
+    <defName>SSFTest_BearElixir</defName>
+    <label>bear elixir</label>
+    <description>An elixir that transforms the drinker into a bear. 85% success chance.</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <socialPropernessMatters>false</socialPropernessMatters>
+    <rotatable>false</rotatable>
+    <stackLimit>10</stackLimit>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>80</MarketValue>
+      <Mass>0.1</Mass>
+      <WorkToMake>600</WorkToMake>
+    </statBases>
+    <techLevel>Medieval</techLevel>
+    <ingestible>
+      <foodType>Processed</foodType>
+      <drugCategory>Medical</drugCategory>
+      <baseIngestTicks>120</baseIngestTicks>
+      <outcomeDoers>
+        <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_Shapeshift">
+          <hediffDef>SSFTest_BearFormHediff</hediffDef>
+        </li>
+      </outcomeDoers>
+    </ingestible>
+    <recipeMaker>
+      <recipeUsers>
+        <li>DrugLab</li>
+      </recipeUsers>
+    </recipeMaker>
+    <costList>
+      <MedicineHerbal>1</MedicineHerbal>
+    </costList>
+    <comps>
+      <li Class="CompProperties_Drug">
+        <listOrder>1010</listOrder>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- ======================================================
+       2) Drug: Extend bear form duration — IngestionOutcomeDoer_ExtendShapeshift
+       Tests: targetFormDef (bear only), allowExtendBeyondMax=false
+       Extends duration by 30000 ticks (~8.3 hours in-game)
+       ====================================================== -->
+  <ThingDef ParentName="MakeableDrugBase">
+    <defName>SSFTest_BearRefreshElixir</defName>
+    <label>bear refresh elixir</label>
+    <description>An elixir that extends the bear form duration by 30,000 ticks. Can only be consumed while in bear form.</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <socialPropernessMatters>false</socialPropernessMatters>
+    <rotatable>false</rotatable>
+    <stackLimit>10</stackLimit>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>100</MarketValue>
+      <Mass>0.1</Mass>
+      <WorkToMake>600</WorkToMake>
+    </statBases>
+    <techLevel>Medieval</techLevel>
+    <ingestible>
+      <foodType>Processed</foodType>
+      <drugCategory>Medical</drugCategory>
+      <baseIngestTicks>120</baseIngestTicks>
+      <outcomeDoers>
+        <li Class="ShapeshifterFramework.Comps.IngestionOutcomeDoer_ExtendShapeshift">
+          <extendTicks>30000</extendTicks>
+          <targetFormDef>SSFTest_BearForm</targetFormDef>
+          <allowExtendBeyondMax>false</allowExtendBeyondMax>
+        </li>
+      </outcomeDoers>
+    </ingestible>
+    <recipeMaker>
+      <recipeUsers>
+        <li>DrugLab</li>
+      </recipeUsers>
+    </recipeMaker>
+    <costList>
+      <MedicineHerbal>1</MedicineHerbal>
+    </costList>
+    <comps>
+      <li Class="CompProperties_Drug">
+        <listOrder>1011</listOrder>
+      </li>
+    </comps>
+  </ThingDef>
+
+</Defs>

@@ -1,6 +1,6 @@
 ﻿// ShapeshifterFramework | Utilities | ShapeshiftReflectionCache.cs
 // 목적 : 바닐라 및 타 모드의 비공개 멤버(Field, Property, Method)에 접근하는 리플렉션 연산 비용과 충돌 위험을 최소화하는 중앙 집중식 캐시 매니저.
-// 용도 : ConcurrentDictionary와 AccessTools.FieldRef를 혼용해 읽기/쓰기 속도를 극대화하며, 외부 모드가 없거나 버전이 달라 멤버 탐색에 실패할 경우 예외(Exception)를 삼키고 null/false를 반환해 게임 크래시를 완벽히 방어함.
+// 용도 : ConcurrentDictionary와 AccessTools를 활용해 타입/필드/속성/메서드를 캐싱하며, 외부 모드가 없거나 버전이 달라 멤버 탐색에 실패할 경우 예외(Exception)를 삼키고 null/false를 반환해 게임 크래시를 완벽히 방어함.
 
 using HarmonyLib;
 using System;
@@ -8,109 +8,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using Verse;
-using Verse.AI;
 
 namespace ShapeshifterFramework.Utilities
 {
     /// <summary>리플렉션 접근/캐시 유틸리티. FieldRef 우선, FieldInfo 폴백. 예외 삼킴.</summary>
     internal static class ShapeshiftReflectionCache
     {
-        #region PawnRenderer.pawn
-
-        private static readonly AccessTools.FieldRef<PawnRenderer, Pawn> RendererPawnRef =
-            AccessTools.FieldRefAccess<PawnRenderer, Pawn>("pawn");
-        private static readonly FieldInfo RendererPawnFI =
-            AccessTools.Field(typeof(PawnRenderer), "pawn");
-
-        /// <summary>PawnRenderer의 Pawn 반환. FieldRef 우선, FieldInfo 폴백.</summary>
-        internal static Pawn GetPawn(PawnRenderer renderer)
-        {
-            if (renderer == null) return null;
-            try { return RendererPawnRef(renderer); } catch { }
-            return RendererPawnFI != null ? (Pawn)RendererPawnFI.GetValue(renderer) : null;
-        }
-
-        #endregion
-
-        #region Pawn_PathFollower.pawn
-
-        private static readonly AccessTools.FieldRef<Pawn_PathFollower, Pawn> PathFollowerPawnRef =
-            AccessTools.FieldRefAccess<Pawn_PathFollower, Pawn>("pawn");
-        private static readonly FieldInfo PathFollowerPawnFI =
-            AccessTools.Field(typeof(Pawn_PathFollower), "pawn");
-
-        /// <summary>Pawn_PathFollower의 Pawn 반환. FieldRef 우선, FieldInfo 폴백.</summary>
-        internal static Pawn GetPawn(Pawn_PathFollower pf)
-        {
-            if (pf == null) return null;
-            try { return PathFollowerPawnRef(pf); } catch { }
-            return PathFollowerPawnFI != null ? (Pawn)PathFollowerPawnFI.GetValue(pf) : null;
-        }
-
-        #endregion
-
-        #region PawnRenderer.results → PreRenderResults.parms
-
-        // results는 struct이므로 boxing 후 SetValue로 재반영 필요
-        private static readonly FieldInfo RendererResultsFI =
-            AccessTools.Field(typeof(PawnRenderer), "results");
-
-        private static readonly ConcurrentDictionary<Type, FieldInfo> PreRenderParmsFieldByResultsType =
-            new ConcurrentDictionary<Type, FieldInfo>();
-
-        /// <summary>PawnRenderer.results에서 PawnDrawParms를 안전하게 추출.</summary>
-        internal static bool TryGetPreRenderParms(PawnRenderer renderer, out object boxedResults, out FieldInfo parmsFi, out PawnDrawParms parms)
-        {
-            boxedResults = null;
-            parmsFi = null;
-            parms = default(PawnDrawParms);
-
-            if (renderer == null || RendererResultsFI == null) return false;
-
-            try { boxedResults = RendererResultsFI.GetValue(renderer); } catch { boxedResults = null; }
-            if (boxedResults == null) return false;
-
-            var t = boxedResults.GetType(); // PawnRenderer+PreRenderResults
-            if (t == null) return false;
-
-            if (!PreRenderParmsFieldByResultsType.TryGetValue(t, out parmsFi) || parmsFi == null)
-            {
-                parmsFi = t.GetField("parms", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                PreRenderParmsFieldByResultsType[t] = parmsFi;
-            }
-            if (parmsFi == null) return false;
-
-            try
-            {
-                parms = (PawnDrawParms)parmsFi.GetValue(boxedResults);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>변경된 parms를 renderer.results에 반영.</summary>
-        internal static bool TrySetPreRenderParms(PawnRenderer renderer, object boxedResults, FieldInfo parmsFi, PawnDrawParms parms)
-        {
-            if (renderer == null || RendererResultsFI == null) return false;
-            if (boxedResults == null || parmsFi == null) return false;
-
-            try
-            {
-                parmsFi.SetValue(boxedResults, parms);
-                RendererResultsFI.SetValue(renderer, boxedResults);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        #endregion
-
         #region eq.ParentHolder 체인 → pawn
 
         private static readonly ConcurrentDictionary<Type, FieldInfo> HolderPawnField =
@@ -132,10 +35,10 @@ namespace ShapeshifterFramework.Utilities
                 }
                 if (fi != null && fi.FieldType == typeof(Pawn))
                 {
-                    try { var p = (Pawn)fi.GetValue(h); if (p != null) return p; } catch { }
+                    try { var p = (Pawn)fi.GetValue(h); if (p != null) return p; } catch { /* 리플렉션 폴백 — 타입 불일치 무시 */ }
                 }
                 IThingHolder next = null;
-                try { next = h.ParentHolder; } catch { }
+                try { next = h.ParentHolder; } catch { /* ParentHolder 접근 실패 무시 */ }
                 h = next;
             }
             return null;
@@ -145,6 +48,7 @@ namespace ShapeshifterFramework.Utilities
 
         #region AttachPointTracker.parent
 
+        // private 필드이므로 리플렉션 필요 (1.6 DLL 대조 감사 완료: RimWorld.AttachPointTracker.parent는 private)
         private static readonly Type AttachPointTrackerT = AccessTools.TypeByName("Verse.AttachPointTracker");
         private static readonly FieldInfo AptParentFI = AttachPointTrackerT != null
             ? AttachPointTrackerT.GetField("parent", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
@@ -154,95 +58,32 @@ namespace ShapeshifterFramework.Utilities
         internal static Thing GetAttachParent(object attachPointTracker)
         {
             if (attachPointTracker == null || AptParentFI == null) return null;
-            try { return (Thing)AptParentFI.GetValue(attachPointTracker); } catch { return null; }
+            try { return (Thing)AptParentFI.GetValue(attachPointTracker); } catch { return null; /* 리플렉션 실패 방어 */ }
         }
 
         #endregion
 
-        #region PawnRenderNode: Owner/Props
-
-        private static readonly PropertyInfo PI_Node_Owner = AccessTools.Property(typeof(PawnRenderNode), "Owner");
-        private static readonly FieldInfo FI_Node_owner = AccessTools.Field(typeof(PawnRenderNode), "owner");
-        private static readonly PropertyInfo PI_Node_Props = AccessTools.Property(typeof(PawnRenderNode), "Props");
-        private static readonly FieldInfo FI_Node_props = AccessTools.Field(typeof(PawnRenderNode), "props");
-
-        /// <summary>PawnRenderNode.Owner를 안전하게 가져온다(Prop→Field 폴백).</summary>
-        internal static object TryGetOwnerFromNode(PawnRenderNode node)
-        {
-            if (node == null) return null;
-            object v = null;
-            if (PI_Node_Owner != null) { try { v = PI_Node_Owner.GetValue(node, null); } catch { } }
-            if (v != null) return v;
-            if (FI_Node_owner != null) { try { v = FI_Node_owner.GetValue(node); } catch { } }
-            return v;
-        }
-
-        /// <summary>PawnRenderNode.Props를 안전하게 가져온다(Prop→Field 폴백).</summary>
-        internal static object TryGetPropsFromNode(PawnRenderNode node)
-        {
-            if (node == null) return null;
-            object v = null;
-            if (PI_Node_Props != null) { try { v = PI_Node_Props.GetValue(node, null); } catch { } }
-            if (v != null) return v;
-            if (FI_Node_props != null) { try { v = FI_Node_props.GetValue(node); } catch { } }
-            return v;
-        }
-
-        /// <summary>Props(out) 비제네릭 버전.</summary>
-        internal static bool TryGetPropsFromNode(PawnRenderNode node, out PawnRenderNodeProperties props)
-        {
-            props = TryGetPropsFromNode(node) as PawnRenderNodeProperties;
-            return props != null;
-        }
-
-        /// <summary>Props(out) 제네릭 버전.</summary>
-        internal static bool TryGetPropsFromNode<T>(PawnRenderNode node, out T props) where T : class
-        {
-            props = TryGetPropsFromNode(node) as T;
-            return props != null;
-        }
-
-        #endregion
-
-        #region PawnRenderNodeWorker.owner (타입별 캐시)
-
-        private static readonly ConcurrentDictionary<Type, FieldInfo> OwnerFieldByWorker =
-            new ConcurrentDictionary<Type, FieldInfo>();
-
-        /// <summary>워커의 owner 필드를 타입별 캐싱으로 반환.</summary>
-        internal static object TryGetOwnerFromWorker(object worker)
-        {
-            if (worker == null) return null;
-            var t = worker.GetType();
-            FieldInfo fi;
-            if (!OwnerFieldByWorker.TryGetValue(t, out fi) || fi == null)
-            {
-                fi = t.GetField("owner", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                OwnerFieldByWorker[t] = fi;
-            }
-            return fi != null ? fi.GetValue(worker) : null;
-        }
-
-        #endregion
+        // PawnRenderNode.Props — public property이므로 node.Props로 직접 접근. 리플렉션 불필요.
 
         #region 범용 캐시: 필드/프로퍼티
 
-        private static readonly ConcurrentDictionary<string, FieldInfo> FieldCache =
-            new ConcurrentDictionary<string, FieldInfo>();
+        // 키를 (Type, string) 튜플로 사용 — 문자열 연결 할당 제거
+        private static readonly ConcurrentDictionary<(Type, string), FieldInfo> FieldCache =
+            new ConcurrentDictionary<(Type, string), FieldInfo>();
         // 필드 탐색 실패 기록
-        private static readonly ConcurrentDictionary<string, bool> FieldNotFound =
-            new ConcurrentDictionary<string, bool>();
+        private static readonly ConcurrentDictionary<(Type, string), bool> FieldNotFound =
+            new ConcurrentDictionary<(Type, string), bool>();
 
-        private static readonly ConcurrentDictionary<string, PropertyInfo> PropCache =
-            new ConcurrentDictionary<string, PropertyInfo>();
+        private static readonly ConcurrentDictionary<(Type, string), PropertyInfo> PropCache =
+            new ConcurrentDictionary<(Type, string), PropertyInfo>();
         // 프로퍼티 탐색 실패 기록
-        private static readonly ConcurrentDictionary<string, bool> PropNotFound =
-            new ConcurrentDictionary<string, bool>();
+        private static readonly ConcurrentDictionary<(Type, string), bool> PropNotFound =
+            new ConcurrentDictionary<(Type, string), bool>();
 
         private static FieldInfo GetFieldCached(Type t, string name)
         {
             if (t == null || string.IsNullOrEmpty(name)) return null;
-            string key = t.FullName + "::F::" + name;
+            var key = (t, name);
 
             if (FieldNotFound.ContainsKey(key)) return null; // 이미 없다고 판명났으면 즉시 탈출
 
@@ -260,7 +101,7 @@ namespace ShapeshifterFramework.Utilities
         private static PropertyInfo GetPropCached(Type t, string name)
         {
             if (t == null || string.IsNullOrEmpty(name)) return null;
-            string key = t.FullName + "::P::" + name;
+            var key = (t, name);
 
             if (PropNotFound.ContainsKey(key)) return null;
 
@@ -277,152 +118,6 @@ namespace ShapeshifterFramework.Utilities
 
         #endregion
 
-        #region 메서드 캐시/호출
-
-        private static readonly ConcurrentDictionary<string, MethodInfo> MethodCache =
-            new ConcurrentDictionary<string, MethodInfo>();
-        // 메서드 탐색 실패 기록
-        private static readonly ConcurrentDictionary<string, bool> MethodNotFound =
-            new ConcurrentDictionary<string, bool>();
-
-        private static MethodInfo GetMethodCached(Type t, string name, Type[] paramTypes, bool isStatic)
-        {
-            if (t == null || string.IsNullOrEmpty(name)) return null;
-
-            int argc = paramTypes?.Length ?? 0;
-            // LINQ 제거, StringBuilder 루프로 대체
-            string typeStr;
-            if (paramTypes == null || paramTypes.Length == 0)
-            {
-                typeStr = "0";
-            }
-            else
-            {
-                var sb = new System.Text.StringBuilder(paramTypes.Length * 16);
-                for (int i = 0; i < paramTypes.Length; i++)
-                {
-                    if (i > 0) sb.Append('_');
-                    sb.Append(paramTypes[i] != null ? paramTypes[i].Name : "any");
-                }
-                typeStr = sb.ToString();
-            }
-            string key = string.Concat(t.FullName, "::M::", isStatic ? "S" : "I", "::", name, "#", typeStr);
-
-            if (MethodNotFound.ContainsKey(key)) return null; // 실패 기록 확인
-
-            if (!MethodCache.TryGetValue(key, out MethodInfo mi))
-            {
-                var flags = (isStatic ? BindingFlags.Static : BindingFlags.Instance)
-                            | BindingFlags.Public | BindingFlags.NonPublic;
-
-                var methods = t.GetMethods(flags);
-                MethodInfo candidate = null;
-                for (int i = 0; i < methods.Length; i++)
-                {
-                    var m = methods[i];
-                    if (!string.Equals(m.Name, name, StringComparison.Ordinal)) continue;
-
-                    var ps = m.GetParameters();
-                    if (ps == null || ps.Length != argc) continue;
-
-                    bool match = true;
-                    if (paramTypes != null)
-                    {
-                        for (int j = 0; j < argc; j++)
-                        {
-                            if (paramTypes[j] != null && !ps[j].ParameterType.IsAssignableFrom(paramTypes[j]))
-                            {
-                                match = false;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (match)
-                    {
-                        candidate = m;
-                        break;
-                    }
-                }
-
-                if (candidate != null)
-                {
-                    MethodCache[key] = candidate;
-                    mi = candidate;
-                }
-                else
-                {
-                    MethodNotFound[key] = true; // 실패 기록
-                }
-            }
-            return mi;
-        }
-
-        /// <summary>인스턴스 메서드 호출(결과 무시).</summary>
-        internal static bool TryCallInstanceMethod(object obj, string name)
-        {
-            object _; return TryCallInstanceMethod(obj, name, null, out _);
-        }
-
-        /// <summary>인스턴스 메서드 호출(결과 무시, 인자 포함).</summary>
-        internal static bool TryCallInstanceMethod(object obj, string name, object[] args)
-        {
-            object _; return TryCallInstanceMethod(obj, name, args, out _);
-        }
-
-        /// <summary>인스턴스 메서드 호출(결과 out).</summary>
-        internal static bool TryCallInstanceMethod(object obj, string name, object[] args, out object result)
-        {
-            result = null;
-            if (obj == null || string.IsNullOrEmpty(name)) return false;
-
-            // 넘겨받은 args 배열에서 실제 타입들을 추출
-            Type[] paramTypes = null;
-            if (args != null)
-            {
-                paramTypes = new Type[args.Length];
-                for (int i = 0; i < args.Length; i++)
-                {
-                    paramTypes[i] = args[i]?.GetType(); // null인 경우 null 저장 (GetMethodCached에서 처리)
-                }
-            }
-
-            var mi = GetMethodCached(obj.GetType(), name, paramTypes, false);
-            if (mi == null) return false;
-
-            try { result = mi.Invoke(obj, args); return true; } catch { return false; }
-        }
-
-        /// <summary>정적 메서드 호출(옵션 인자/결과 out).</summary>
-        internal static bool TryCallStaticMethod(Type t, string name)
-        {
-            object _; return TryCallStaticMethod(t, name, null, out _);
-        }
-
-        internal static bool TryCallStaticMethod(Type t, string name, object[] args, out object result)
-        {
-            result = null;
-            if (t == null || string.IsNullOrEmpty(name)) return false;
-
-            // 넘겨받은 args 배열에서 실제 타입들을 추출
-            Type[] paramTypes = null;
-            if (args != null)
-            {
-                paramTypes = new Type[args.Length];
-                for (int i = 0; i < args.Length; i++)
-                {
-                    paramTypes[i] = args[i]?.GetType();
-                }
-            }
-
-            var mi = GetMethodCached(t, name, paramTypes, true);
-            if (mi == null) return false;
-
-            try { result = mi.Invoke(null, args); return true; } catch { return false; }
-        }
-
-        #endregion
-
         #region 필드/프로퍼티 Getter/Setter
 
         /// <summary>인스턴스 필드 값을 제네릭으로 읽는다(캐시 사용).</summary>
@@ -431,7 +126,7 @@ namespace ShapeshifterFramework.Utilities
             if (obj == null) return default(T);
             var fi = GetFieldCached(obj.GetType(), name);
             if (fi == null) return default(T);
-            try { return (T)fi.GetValue(obj); } catch { return default(T); }
+            try { return (T)fi.GetValue(obj); } catch { return default(T); /* 필드 읽기 실패 방어 */ }
         }
 
         /// <summary>인스턴스 프로퍼티 값을 제네릭으로 읽는다(캐시 사용).</summary>
@@ -440,7 +135,7 @@ namespace ShapeshifterFramework.Utilities
             if (obj == null) return default(T);
             var pi = GetPropCached(obj.GetType(), name);
             if (pi == null || !pi.CanRead) return default(T);
-            try { return (T)pi.GetValue(obj, null); } catch { return default(T); }
+            try { return (T)pi.GetValue(obj, null); } catch { return default(T); /* 프로퍼티 읽기 실패 방어 */ }
         }
 
         /// <summary>인스턴스 필드 값을 설정한다(캐시 사용).</summary>
@@ -449,7 +144,7 @@ namespace ShapeshifterFramework.Utilities
             if (obj == null || string.IsNullOrEmpty(name)) return false;
             var fi = GetFieldCached(obj.GetType(), name);
             if (fi == null) return false;
-            try { fi.SetValue(obj, value); return true; } catch { return false; }
+            try { fi.SetValue(obj, value); return true; } catch { return false; /* 필드 쓰기 실패 방어 */ }
         }
 
         /// <summary>인스턴스 프로퍼티 값을 설정한다(캐시 사용).</summary>
@@ -458,7 +153,7 @@ namespace ShapeshifterFramework.Utilities
             if (obj == null || string.IsNullOrEmpty(name)) return false;
             var pi = GetPropCached(obj.GetType(), name);
             if (pi == null || !pi.CanWrite) return false;
-            try { pi.SetValue(obj, value, null); return true; } catch { return false; }
+            try { pi.SetValue(obj, value, null); return true; } catch { return false; /* 프로퍼티 쓰기 실패 방어 */ }
         }
 
         #endregion
@@ -511,7 +206,7 @@ namespace ShapeshifterFramework.Utilities
                         var v = fs[i].GetValue(obj) as T;
                         if (v != null) return v;
                     }
-                    catch { }
+                    catch { /* 필드 스캔 캐스트 실패 무시 */ }
                 }
             }
             return null;
@@ -529,7 +224,7 @@ namespace ShapeshifterFramework.Utilities
                 if (string.Equals(fs[i].Name, "exclusionTags", StringComparison.OrdinalIgnoreCase)
                     && typeof(List<string>).IsAssignableFrom(fs[i].FieldType))
                 {
-                    try { return (List<string>)fs[i].GetValue(obj); } catch { }
+                    try { return (List<string>)fs[i].GetValue(obj); } catch { /* 필드 읽기 실패 무시 */ }
                 }
             }
 
@@ -541,7 +236,7 @@ namespace ShapeshifterFramework.Utilities
                     && string.Equals(ps[i].Name, "exclusionTags", StringComparison.OrdinalIgnoreCase)
                     && typeof(List<string>).IsAssignableFrom(ps[i].PropertyType))
                 {
-                    try { return (List<string>)ps[i].GetValue(obj, null); } catch { }
+                    try { return (List<string>)ps[i].GetValue(obj, null); } catch { /* 프로퍼티 읽기 실패 무시 */ }
                 }
             }
             return null;
@@ -549,20 +244,6 @@ namespace ShapeshifterFramework.Utilities
 
         /// <summary>풀네임으로 타입을 찾는다(AccessTools.TypeByName 포장).</summary>
         internal static Type TryType(string fullName) => AccessTools.TypeByName(fullName);
-
-        /// <summary>런타임 캐시 초기화(테스트/핫리로드 시 유용).</summary>
-        internal static void ClearCaches()
-        {
-            FieldCache.Clear();
-            FieldNotFound.Clear();
-            PropCache.Clear();
-            PropNotFound.Clear();
-            MethodCache.Clear();
-            MethodNotFound.Clear();
-            OwnerFieldByWorker.Clear();
-            HolderPawnField.Clear();
-            PreRenderParmsFieldByResultsType.Clear();
-        }
 
         #endregion
     }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>[SSF Test] Shapeshifter Playground</name>
+	<author>TRIBeagle</author>
+	<supportedVersions>
+		<li>1.6</li>
+	</supportedVersions>
+	<packageId>TRIBeagle.ssftest.playground</packageId>
+	<description>ShapeShifter Framework 종합 테스트 모드.
+- 약물 변신
+- 아이템 변신 (자기/대상)
+- 어빌리티: 동료 변신 (버프형)
+- 어빌리티: 적 변신 (디버프형)
+- 범위형 변신 (반경 내 모든 적)
+- 장비 소환 변신 (암흑 기사: 전용 갑옷+무기 소환)
+- 3단 변신 (인간→수인→동물)
+- 유전자 기반 변신 (Biotech DLC)
+- 장착 무기/의류 기반 변신
+- Hediff 기반 변신 (바닐라 HediffComp_GiveAbility)</description>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+		</li>
+		<li>
+			<packageId>TRIBeagle.shapeshifterframework</packageId>
+			<displayName>ShapeShifter Framework</displayName>
+			<downloadUrl>https://github.com/TRIBeagle/Shapeshifter-Framework</downloadUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>TRIBeagle.shapeshifterframework</li>
+	</loadAfter>
+</ModMetaData>

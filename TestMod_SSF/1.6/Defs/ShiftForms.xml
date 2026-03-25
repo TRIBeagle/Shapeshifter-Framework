@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- ======================================================
+       Shapeshift form definitions
+       ====================================================== -->
+
+  <!-- 1) Bear form (animal type) — drug/item only, not shown on ability bar
+       * Body replacement texture, hediff, effect integration test
+       * Stats/capacities defined in HediffDef(SSFTest_BearFormHediff) stages -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
+    <defName>SSFTest_BearForm</defName>
+    <label>bear form</label>
+    <description>Test bear shapeshift. Full animal transformation. Replaces body texture with bear, adjusts stats, grants hediffs.</description>
+    <!-- Body replacement texture -->
+    <body>
+      <mode>Replace</mode>
+      <replacementTexPath>Things/Pawn/Animal/Bear/Bear</replacementTexPath>
+      <swimmingReplacementTexPath>Things/Pawn/Animal/Bear/SwimmingBear</swimmingReplacementTexPath>
+      <color>(112,82,65)</color>
+      <swimmingColor>(255,255,255)</swimmingColor>
+    </body>
+    <bodyDrawScale>2.5</bodyDrawScale>
+    <!-- Sacred animal link: ideology sacred animal test (Bear_Grizzly) -->
+    <linkedSacredAnimalDef>Bear_Grizzly</linkedSacredAnimalDef>
+    <durationTicks>15000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <!-- Grant hediffs -->
+    <addHediffs>
+      <li>
+        <hediff>FibrousMechanites</hediff>
+        <severity>0.5</severity>
+      </li>
+      <li>
+        <hediff>SSFTest_BeastArm</hediff>
+        <targetPart>Arm</targetPart>
+        <addedPartPolicy>ForceAdd</addedPartPolicy>
+      </li>
+    </addHediffs>
+    <addAbilities>
+      <li MayRequire="Ludeon.Royalty">Berserk</li>
+    </addAbilities>
+    <apparelOnTransform>Drop</apparelOnTransform>
+    <weaponsOnTransform>Drop</weaponsOnTransform>
+    <!-- Revert drop test: drops 2 wood on bear form revert -->
+    <revertDrops>
+      <WoodLog>2</WoodLog>
+    </revertDrops>
+    <tools>
+      <li>
+        <label>teeth</label>
+        <capacities><li>Bite</li></capacities>
+        <power>12</power>
+        <cooldownTime>1.5</cooldownTime>
+        <linkedBodyPartsGroup>Teeth</linkedBodyPartsGroup>
+      </li>
+    </tools>
+    <replaceNativeTools>true</replaceNativeTools>
+    <!-- Blood/flesh -->
+    <bloodDef>Filth_BloodInsect</bloodDef>
+    <bloodSmearDef>SSFTest_Filth_BloodInsectSmear</bloodSmearDef>
+    <fleshType>Insectoid</fleshType>
+    <!-- Transform effects -->
+    <transformFxCooldownTicks>30</transformFxCooldownTicks>
+    <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
+    <transformEnterFleckCount>1</transformEnterFleckCount>
+    <transformEnterFleckScale>1.8</transformEnterFleckScale>
+    <transformEnterSound>PsychicPulseGlobal</transformEnterSound>
+    <transformExitFleck>PsycastSkipFlashExit</transformExitFleck>
+    <transformExitFleckCount>1</transformExitFleckCount>
+    <transformExitFleckScale>1.8</transformExitFleckScale>
+    <transformExitSound>PsychicSootheGlobal</transformExitSound>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+
+  <!-- 2) Bear warrior form (armored type) — buff ability for ally enhancement
+       * Sound override integration test
+       * Stats defined in HediffDef(SSFTest_BearWarriorFormHediff) stages -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_BearWarriorForm</defName>
+    <label>bear warrior form</label>
+    <description>Test bear warrior shapeshift. Stats enhanced while keeping equipment. Bear sound override.</description>
+    <bodyDrawScale>1.3</bodyDrawScale>
+    <durationTicks>15000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <!-- Sound override -->
+    <soundAngry>Pawn_Bear_Angry</soundAngry>
+    <soundMeleeHitPawn>Pawn_Melee_SmallScratch_HitPawn</soundMeleeHitPawn>
+    <soundMeleeHitBuilding>Pawn_Melee_SmallScratch_HitBuilding</soundMeleeHitBuilding>
+    <soundMeleeMiss>Pawn_Melee_SmallScratch_Miss</soundMeleeMiss>
+    <!-- Effects -->
+    <transformEnterEffecter>Vaporize_Heatwave</transformEnterEffecter>
+    <transformExitEffecter>ImpactSmallDustCloud</transformExitEffecter>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Entertest</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Reverttest</gizmoIconPathRevert>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 3) Sheep form (animal type) — for debuff/AoE. Cannot revert voluntarily
+       * Stats defined in HediffDef(SSFTest_SheepFormHediff) stages -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
+    <defName>SSFTest_SheepForm</defName>
+    <label>sheep form</label>
+    <description>Test sheep shapeshift. Combat ability lost, voluntary revert disabled.</description>
+    <!-- Replace body with sheep texture -->
+    <body>
+      <mode>Replace</mode>
+      <replacementTexPath>Things/Pawn/Animal/Sheep/SheepMale</replacementTexPath>
+      <female>
+        <replacementTexPath>Things/Pawn/Animal/Sheep/SheepFemale</replacementTexPath>
+      </female>
+    </body>
+    <bodyDrawScale>0.6</bodyDrawScale>
+    <durationTicks>10000</durationTicks>
+    <canRevertVoluntarily>false</canRevertVoluntarily>
+    <disabledWorkTagsOnTransform>
+      <li>Violent</li>
+    </disabledWorkTagsOnTransform>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- ======================================================
+       Equipment-spawning shapeshift forms
+       ====================================================== -->
+
+  <!-- 4) Dark knight form (equipment-spawning type) — spawns dedicated armor+weapon, auto-destroyed on revert
+       * Stats defined in HediffDef(SSFTest_DarkKnightFormHediff) stages -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_DarkKnightForm</defName>
+    <label>dark knight form</label>
+    <description>Dark knight transformation. Spawns dedicated plasteel plate armor and longsword. Existing gear moves to inventory. Spawned gear is destroyed on revert.</description>
+    <bodyDrawScale>1.2</bodyDrawScale>
+    <durationTicks>18000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <apparelOnTransform>Inventory</apparelOnTransform>
+    <weaponsOnTransform>Inventory</weaponsOnTransform>
+    <apparelEquipLock>Locked</apparelEquipLock>
+    <weaponEquipLock>Locked</weaponEquipLock>
+    <!-- Revert hediff grant test: grants vanilla FibrousMechanites on dark knight revert (untracked, HediffAddEntry format) -->
+    <revertAddHediffs>
+      <li>
+        <hediff>FibrousMechanites</hediff>
+      </li>
+    </revertAddHediffs>
+    <spawnApparelOnTransform>
+      <li>Apparel_PlateArmor</li>
+    </spawnApparelOnTransform>
+    <spawnWeaponOnTransform>
+      <li>MeleeWeapon_LongSword</li>
+    </spawnWeaponOnTransform>
+    <spawnApparelStuff>Plasteel</spawnApparelStuff>
+    <spawnWeaponStuff>Plasteel</spawnWeaponStuff>
+    <conflictingGearHandling>Inventory</conflictingGearHandling>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Entertest</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Reverttest</gizmoIconPathRevert>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- ======================================================
+       Multi-stage transformation forms: Human -> Beastkin -> Full Beast
+       ====================================================== -->
+
+  <!-- 5a) Beastkin form (humanoid type) — Stage 1: Human -> Beastkin
+       * Ear/tail renderNodeProperties, voice, verb, verbGizmoOptions integration test
+       * addAbilities includes FullBeast ability (for 2nd-stage transformation)
+       * Stats defined in HediffDef(SSFTest_BeastkinFormHediff) stages -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
+    <defName>SSFTest_BeastkinForm</defName>
+    <label>beastkin form</label>
+    <description>Beastkin form. Adds ear/tail graphics, tests various ranged verbs. Can perform 2nd-stage transformation to full beast while in beastkin form.</description>
+    <durationTicks>180000</durationTicks>
+    <bodyDrawScale>1.20</bodyDrawScale>
+    <headDrawScale>1.05</headDrawScale>
+    <headOffset>(0.0, 0.03)</headOffset>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <apparelOnTransform>Inventory</apparelOnTransform>
+    <weaponsOnTransform>Keep</weaponsOnTransform>
+    <!-- hediff -->
+    <addHediffs>
+      <li>
+        <hediff>FibrousMechanites</hediff>
+      </li>
+    </addHediffs>
+    <!-- addAbilities: 2nd-stage transformation (FullBeast) + others -->
+    <addAbilities>
+      <li MayRequire="Ludeon.Royalty">Waterskip</li>
+      <li>SSFTest_Ability_FullBeast</li>
+      <li>SSFTest_Ability_PrimalRoar</li>
+    </addAbilities>
+    <!-- Graphic display exceptions -->
+    <renderShowApparelDefNames>
+      <li>Apparel_Cape</li>
+      <li>Apparel_Tuque</li>
+    </renderShowApparelDefNames>
+    <!-- Ear/tail graphics -->
+    <renderNodeProperties>
+      <li>
+        <nodeClass>PawnRenderNode_AttachmentHead</nodeClass>
+        <workerClass>PawnRenderNodeWorker_FlipWhenCrawling</workerClass>
+        <texPath>Things/Pawn/Humanlike/HeadAttachments/FloppyEars/FloppyEars</texPath>
+        <colorType>Skin</colorType>
+        <parentTagDef>Head</parentTagDef>
+        <useSkinShader>true</useSkinShader>
+        <useRottenColor>true</useRottenColor>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <drawData>
+          <defaultData>
+            <layer>70</layer>
+          </defaultData>
+        </drawData>
+      </li>
+      <li>
+        <workerClass>PawnRenderNodeWorker_AttachmentBody</workerClass>
+        <texPath>Things/Pawn/Humanlike/BodyAttachments/FurryTail/FurryTail</texPath>
+        <colorType>Hair</colorType>
+        <overrideMeshSize>(1, 1)</overrideMeshSize>
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh, Rotting</rotDrawMode>
+        <drawData>
+          <scaleOffsetByBodySize>true</scaleOffsetByBodySize>
+          <defaultData>
+            <layer>-2</layer>
+          </defaultData>
+          <dataNorth>
+            <offset>(0.1, 0, -0.25)</offset>
+            <layer>90</layer>
+          </dataNorth>
+          <dataSouth>
+            <offset>(-0.1, 0, -0.25)</offset>
+          </dataSouth>
+          <dataEast>
+            <offset>(-0.5, 0, -0.15)</offset>
+          </dataEast>
+          <dataWest>
+            <offset>(0.5, 0, -0.15)</offset>
+          </dataWest>
+        </drawData>
+      </li>
+    </renderNodeProperties>
+    <!-- Default color override -->
+    <hairColor>(0.85, 0.85, 0.95)</hairColor>
+    <!-- Voice override -->
+    <soundCall>Pawn_Furskin_Call</soundCall>
+    <soundDeath>Pawn_Furskin_Death</soundDeath>
+    <soundWounded>Pawn_Furskin_Wounded</soundWounded>
+    <soundAngry>Pawn_Bear_Angry</soundAngry>
+    <soundEating>PredatorLarge_Eat</soundEating>
+    <soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
+    <soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
+    <soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
+    <!-- Blood/flesh -->
+    <bloodDef>Filth_BloodInsect</bloodDef>
+    <bloodSmearDef>SSFTest_Filth_BloodInsectSmear</bloodSmearDef>
+    <fleshType>Insectoid</fleshType>
+    <!-- Various verb type tests -->
+    <verbs>
+      <li Class="Verse.VerbProperties">
+        <label>AssaultRifle</label>
+        <verbClass>Verse.Verb_Shoot</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>Bullet_AssaultRifle</defaultProjectile>
+        <warmupTime>1.0</warmupTime>
+        <range>28</range>
+        <burstShotCount>3</burstShotCount>
+        <ticksBetweenBurstShots>10</ticksBetweenBurstShots>
+        <requireLineOfSight>true</requireLineOfSight>
+        <stopBurstWithoutLos>true</stopBurstWithoutLos>
+        <targetParams>
+          <canTargetPawns>true</canTargetPawns>
+          <canTargetLocations>false</canTargetLocations>
+        </targetParams>
+      </li>
+      <li Class="Verse.VerbProperties">
+        <label>FragGrenade</label>
+        <verbClass>Verse.Verb_LaunchProjectile</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>SSFTest_Proj_FragGrenade_Safe</defaultProjectile>
+        <warmupTime>1.5</warmupTime>
+        <range>13</range>
+        <forcedMissRadius>0</forcedMissRadius>
+        <requireLineOfSight>true</requireLineOfSight>
+        <stopBurstWithoutLos>true</stopBurstWithoutLos>
+        <targetParams>
+          <canTargetPawns>true</canTargetPawns>
+          <canTargetLocations>true</canTargetLocations>
+        </targetParams>
+        <soundCast>ThrowGrenade</soundCast>
+      </li>
+      <li Class="Verse.VerbProperties">
+        <label>ArcSprayProjectile</label>
+        <verbClass>Verse.Verb_ArcSprayProjectile</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>Bullet_IncendiaryLauncher</defaultProjectile>
+        <warmupTime>1.5</warmupTime>
+        <range>16</range>
+        <requireLineOfSight>true</requireLineOfSight>
+        <stopBurstWithoutLos>true</stopBurstWithoutLos>
+        <targetParams>
+          <canTargetPawns>true</canTargetPawns>
+          <canTargetLocations>true</canTargetLocations>
+        </targetParams>
+      </li>
+      <li Class="Verse.VerbProperties">
+        <label>SpewFire</label>
+        <verbClass>Verse.Verb_SpewFire</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <onlyManualCast>true</onlyManualCast>
+        <warmupTime>1.2</warmupTime>
+        <range>10</range>
+        <minRange>1</minRange>
+        <requireLineOfSight>true</requireLineOfSight>
+        <targetParams>
+          <canTargetPawns>true</canTargetPawns>
+          <canTargetLocations>true</canTargetLocations>
+        </targetParams>
+      </li>
+      <li>
+        <label>ShootBeam</label>
+        <verbClass>Verb_ShootBeam</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <warmupTime>1.0</warmupTime>
+        <range>24.9</range>
+        <minRange>3.9</minRange>
+        <beamFullWidthRange>6.9</beamFullWidthRange>
+        <burstShotCount>5</burstShotCount>
+        <showBurstShotStats>false</showBurstShotStats>
+        <beamWidth>6</beamWidth>
+        <ticksBetweenBurstShots>22</ticksBetweenBurstShots>
+        <beamDamageDef>Beam</beamDamageDef>
+        <soundCastTail>GunTail_Medium</soundCastTail>
+        <muzzleFlashScale>9</muzzleFlashScale>
+        <soundCastBeam>BeamGraser_Shooting</soundCastBeam>
+        <beamGroundFleckDef>Fleck_BeamBurn</beamGroundFleckDef>
+        <beamFleckChancePerTick>0.32</beamFleckChancePerTick>
+        <beamMaxDeviation>1.5</beamMaxDeviation>
+        <beamCurvature>0.6</beamCurvature>
+        <beamMoteDef>Mote_GraserBeamBase</beamMoteDef>
+        <beamEndEffecterDef>GraserBeam_End</beamEndEffecterDef>
+        <beamChanceToStartFire>0.85</beamChanceToStartFire>
+        <beamChanceToAttachFire>0.85</beamChanceToAttachFire>
+        <beamFireSizeRange>0.55~0.85</beamFireSizeRange>
+        <beamLineFleckDef>Fleck_BeamSpark</beamLineFleckDef>
+        <beamStartOffset>0.8</beamStartOffset>
+        <beamLineFleckChanceCurve>
+          <points>
+            <li>(0, 0)</li>
+            <li>(0.65, 0.4)</li>
+            <li>(1, 0.75)</li>
+          </points>
+        </beamLineFleckChanceCurve>
+      </li>
+    </verbs>
+    <!-- verbGizmoOptions: match verbs by verbLabel (order-independent) -->
+    <verbGizmoOptions>
+      <li>
+        <verbLabel>AssaultRifle</verbLabel>
+        <label>assault rifle</label>
+        <iconPath>Things/Item/Equipment/WeaponRanged/AssaultRifle</iconPath>
+      </li>
+      <li>
+        <verbLabel>FragGrenade</verbLabel>
+        <label>frag grenade</label>
+        <iconPath>Things/Item/Equipment/WeaponRanged/Grenades</iconPath>
+        <!-- 수류탄 투척 시 변신 시간 5000틱(~1.4시간) 차감 -->
+        <durationCostTicks>5000</durationCostTicks>
+      </li>
+      <li>
+        <verbLabel>ArcSprayProjectile</verbLabel>
+        <label>flame spray</label>
+        <iconPath>Things/Item/Equipment/WeaponRanged/InfernoCannon</iconPath>
+      </li>
+      <li>
+        <verbLabel>SpewFire</verbLabel>
+        <label>fire spew</label>
+        <iconPath>Things/Item/Equipment/WeaponRanged/IncendiaryLauncher</iconPath>
+      </li>
+      <li>
+        <verbLabel>ShootBeam</verbLabel>
+        <label>beam shot</label>
+        <iconPath>Things/Item/Equipment/WeaponRanged/ThumpCannon</iconPath>
+        <!-- 빔 발사 시 변신 시간 2500틱(~1시간) 차감 -->
+        <durationCostTicks>2500</durationCostTicks>
+      </li>
+    </verbGizmoOptions>
+    <tools>
+      <li>
+        <label>claws</label>
+        <capacities><li>Scratch</li></capacities>
+        <power>10</power>
+        <cooldownTime>1.8</cooldownTime>
+        <linkedBodyPartsGroup>Hands</linkedBodyPartsGroup>
+      </li>
+    </tools>
+    <replaceNativeVerbs>false</replaceNativeVerbs>
+    <replaceNativeTools>false</replaceNativeTools>
+    <disabledWorkTagsOnTransform>
+      <li>Crafting</li>
+      <li>Cooking</li>
+    </disabledWorkTagsOnTransform>
+    <!-- Transform effects -->
+    <transformFxCooldownTicks>30</transformFxCooldownTicks>
+    <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
+    <transformEnterFleckCount>1</transformEnterFleckCount>
+    <transformEnterFleckScale>1.8</transformEnterFleckScale>
+    <transformEnterSound>PsychicPulseGlobal</transformEnterSound>
+    <transformExitFleck>PsycastSkipFlashExit</transformExitFleck>
+    <transformExitFleckCount>1</transformExitFleckCount>
+    <transformExitFleckScale>1.8</transformExitFleckScale>
+    <transformExitSound>PsychicSootheGlobal</transformExitSound>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 5b) Full beast form (animal type) — Stage 2: Beastkin -> Full Beast (granted via beastkin's addAbilities)
+       * Stats defined in HediffDef(SSFTest_FullBeastFormHediff) stages -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Animal">
+    <defName>SSFTest_FullBeastForm</defName>
+    <label>full beast form</label>
+    <description>Full beast form. Can only transform from beastkin state (ability granted via beastkin form's addAbilities).</description>
+    <body>
+      <mode>Replace</mode>
+      <replacementTexPath>Things/Pawn/Animal/Wolf_Timber/Wolf_Timber</replacementTexPath>
+    </body>
+    <bodyDrawScale>1.0</bodyDrawScale>
+    <durationTicks>12000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <tools>
+      <li>
+        <label>fangs</label>
+        <capacities><li>Bite</li></capacities>
+        <power>18</power>
+        <cooldownTime>1.5</cooldownTime>
+        <linkedBodyPartsGroup>Teeth</linkedBodyPartsGroup>
+      </li>
+      <li>
+        <label>claws</label>
+        <capacities><li>Scratch</li></capacities>
+        <power>14</power>
+        <cooldownTime>1.2</cooldownTime>
+        <linkedBodyPartsGroup>Hands</linkedBodyPartsGroup>
+      </li>
+    </tools>
+    <replaceNativeTools>true</replaceNativeTools>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- ======================================================
+       Conditional / visual / race-locked test forms
+       ====================================================== -->
+
+  <!-- 6) Guardian form — sustain condition via sustainHediffs
+       * portraitDrawScale, bodyOffset, shadowVolume/Offset integration test
+       * Stats defined in HediffDef(SSFTest_GuardianFormHediff) stages -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
+    <defName>SSFTest_GuardianForm</defName>
+    <label>guardian form</label>
+    <description>Guardian form. Maintained while possessing magic stone or guardian's mark. Tests large shadow and portrait scaling.</description>
+    <bodyDrawScale>1.4</bodyDrawScale>
+    <portraitDrawScale>1.3</portraitDrawScale>
+    <bodyOffset>(0, -0.1)</bodyOffset>
+    <durationTicks>12000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <revertOnDowned>true</revertOnDowned>
+    <!-- sustain: guardian's mark must be maintained (Any mode — stone possession or mark, whichever) -->
+    <sustainHediffs>
+      <li>SSFTest_Hediff_GuardianMark</li>
+    </sustainHediffs>
+    <sustainMode>Any</sustainMode>
+    <!-- Shadow override -->
+    <body>
+      <mode>Default</mode>
+      <shadowVolume>(0.6, 1.0, 0.6)</shadowVolume>
+      <shadowOffset>(0, 0, -0.05)</shadowOffset>
+    </body>
+    <!-- Ambient VFX test: guardian aura (periodic Fleck spawn) -->
+    <ambientFleck>PsycastSkipInnerExit</ambientFleck>
+    <ambientFleckIntervalTicks>90</ambientFleckIntervalTicks>
+    <ambientFleckScale>0.6</ambientFleckScale>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 7) Phantom form (visual override) — head Replace, shader, bodyType, WorkTypeDef block
+       * Stats defined in HediffDef(SSFTest_PhantomFormHediff) stages -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Humanoid">
+    <defName>SSFTest_PhantomForm</defName>
+    <label>phantom form</label>
+    <description>Phantom form. Semi-transparent head, thin body type. Firefighting disabled. FX delay test.</description>
+    <head>
+      <mode>Replace</mode>
+      <replacementTexPath>Things/Pawn/Humanlike/Heads/Male/Male_AverageNormal</replacementTexPath>
+      <shaderTypeDefName>Transparent</shaderTypeDefName>
+      <color>(0.7, 0.8, 1.0, 0.5)</color>
+    </head>
+    <hair><mode>Hidden</mode></hair>
+    <bodyType>Thin</bodyType>
+    <skinColor>(0.7, 0.8, 1.0)</skinColor>
+    <bodyDrawScale>1.0</bodyDrawScale>
+    <durationTicks>10000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <disabledWorkTypesOnTransform>
+      <li>Firefighter</li>
+    </disabledWorkTypesOnTransform>
+    <transformEnterFxDelayTicks>30</transformEnterFxDelayTicks>
+    <transformExitFxDelayTicks>15</transformExitFxDelayTicks>
+    <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
+    <transformEnterFleckCount>1</transformEnterFleckCount>
+    <transformEnterFleckScale>1.5</transformEnterFleckScale>
+    <transformEnterSound>PsychicPulseGlobal</transformEnterSound>
+    <transformExitFleck>PsycastSkipFlashExit</transformExitFleck>
+    <transformExitFleckCount>1</transformExitFleckCount>
+    <transformExitFleckScale>1.5</transformExitFleckScale>
+    <transformExitSound>PsychicSootheGlobal</transformExitSound>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+  <!-- 8) Race-locked form — race restriction handled in AbilityDef comp
+       * Stats defined in HediffDef(SSFTest_RaceLockedFormHediff) stages -->
+  <ShapeshifterFramework.ShapeshiftFormDef ParentName="SSF_BaseForm_Armored">
+    <defName>SSFTest_RaceLockedForm</defName>
+    <label>race locked form</label>
+    <description>Human-only enhancement form. Apparel change locked, weapons freely swappable. Fixed head type.</description>
+    <bodyDrawScale>1.15</bodyDrawScale>
+    <durationTicks>12000</durationTicks>
+    <canRevertVoluntarily>true</canRevertVoluntarily>
+    <headType>Male_AverageNormal</headType>
+    <apparelEquipLock>Locked</apparelEquipLock>
+    <weaponEquipLock>Unlocked</weaponEquipLock>
+    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+    <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
+  </ShapeshifterFramework.ShapeshiftFormDef>
+
+</Defs>

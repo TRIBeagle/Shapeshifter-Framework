@@ -3,7 +3,7 @@
 // 용도 : GetDisabledWorkTypes에 Postfix로 개입하여 폼에 지정된 불가 작업을 결과 리스트(__result)에 밀어 넣으며, 태그 기반 파싱은 성능을 위해 Dictionary에 런타임 캐싱됨.
 
 using HarmonyLib;
-using ShapeshifterFramework.Comps;
+using ShapeshifterFramework.Utilities;
 using System.Collections.Generic;
 using Verse;
 
@@ -25,6 +25,10 @@ namespace ShapeshifterFramework.Patches
         private static readonly Dictionary<WorkTags, List<WorkTypeDef>> _workTypesByTagsCache
             = new Dictionary<WorkTags, List<WorkTypeDef>>(16);
 
+        // 재진입 안전을 위해 static HashSet 제거, 호출 빈도가 낮아 로컬 할당 허용
+        [System.ThreadStatic]
+        private static HashSet<WorkTypeDef> _tmpExisting;
+
         public static void ClearCache()
         {
             _workTypesByTagsCache.Clear();
@@ -34,23 +38,34 @@ namespace ShapeshifterFramework.Patches
         {
             if (__instance == null || __result == null) return;
 
-            var comp = __instance.TryGetComp<CompShapeshifter>();
-            var form = (comp != null && comp.isTransformed) ? comp.currentForm as ShapeshiftFormDef : null;
-            if (form == null) return;
+            if (!ShapeshiftRegistry.TryGet(__instance, out var comp, out var form)) return;
 
-            var extra = form.disabledWorkTypesOnTransform;
-            if (extra != null)
+            bool hasExtra = form.disabledWorkTypesOnTransform != null && form.disabledWorkTypesOnTransform.Count > 0;
+            bool hasTags = form.disabledWorkTagsOnTransform != WorkTags.None;
+            if (!hasExtra && !hasTags) return;
+
+            // 바닐라가 캐싱된 리스트를 반환할 수 있으므로, 변경 전에 새 리스트로 복사
+            __result = new List<WorkTypeDef>(__result);
+
+            // ThreadStatic으로 재진입 안전 + GC 절감
+            if (_tmpExisting == null) _tmpExisting = new HashSet<WorkTypeDef>();
+            else _tmpExisting.Clear();
+            for (int i = 0; i < __result.Count; i++)
+                _tmpExisting.Add(__result[i]);
+
+            if (hasExtra)
             {
+                var extra = form.disabledWorkTypesOnTransform;
                 for (int i = 0; i < extra.Count; i++)
                 {
                     var w = extra[i];
-                    if (w != null && !__result.Contains(w)) __result.Add(w);
+                    if (w != null && _tmpExisting.Add(w)) __result.Add(w);
                 }
             }
 
-            var tags = form.disabledWorkTagsOnTransform;
-            if (tags != WorkTags.None)
+            if (hasTags)
             {
+                var tags = form.disabledWorkTagsOnTransform;
                 if (!_workTypesByTagsCache.TryGetValue(tags, out var matched))
                 {
                     matched = new List<WorkTypeDef>(16);
@@ -68,7 +83,7 @@ namespace ShapeshifterFramework.Patches
                 for (int i = 0; i < matched.Count; i++)
                 {
                     var wt = matched[i];
-                    if (wt != null && !__result.Contains(wt))
+                    if (wt != null && _tmpExisting.Add(wt))
                         __result.Add(wt);
                 }
             }

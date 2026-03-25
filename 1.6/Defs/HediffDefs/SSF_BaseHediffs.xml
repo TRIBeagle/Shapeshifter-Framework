@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!--
+    ═══════════════════════════════════════════════════════════════
+    SSF abstract parent HediffDef — common settings for shapeshift form hediffs.
+    All shapeshift HediffDefs inherit from this abstract Def via ParentName.
+    ═══════════════════════════════════════════════════════════════
+  -->
+  <HediffDef Name="SSF_ShapeshiftFormBase" Abstract="True">
+    <hediffClass>ShapeshifterFramework.Hediffs.Hediff_ShapeshiftForm</hediffClass>
+    <defaultLabelColor>(0.8, 0.7, 1.0)</defaultLabelColor>
+    <isBad>false</isBad>
+    <makesAlert>false</makesAlert>
+    <tendable>false</tendable>
+    <makesSickThought>false</makesSickThought>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_ShapeshiftCore">
+        <!-- formDef: specified by inheriting HediffDef. Left empty here. -->
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!--
+    ═══════════════════════════════════════════════════════════════
+    SSF_GenericShapeshiftForm — generic / debug HediffDef.
+    formDef unset. Form assigned at runtime via comp.SetFormDef().
+    Used for debug actions, auto-verify, etc.
+    ═══════════════════════════════════════════════════════════════
+  -->
+  <HediffDef ParentName="SSF_ShapeshiftFormBase">
+    <defName>SSF_GenericShapeshiftForm</defName>
+    <label>shapeshift</label>
+    <description>A generic shapeshift form. The specific form is determined at runtime.</description>
+  </HediffDef>
+
+</Defs>

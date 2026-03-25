@@ -2,7 +2,6 @@
 // 목적 : 폼에 지정된 단순 배율(bodyDrawScale 등)을 바닐라 렌더링의 4대 요소(bodyWidth, headSizeFactor, bodySizeFactor, attachPointScaleFactor)로 변환계산.
 // 용도 : 복잡한 스케일 연산이 매 프레임마다 반복되는 것을 막기 위해, Time.frameCount를 기준으로 해당 프레임에 이미 계산이 끝난 폰의 결과값을 즉시 반환하는 고효율 캐싱(Frame Cache)을 적용함.
 
-using ShapeshifterFramework.Comps;
 using System.Collections.Concurrent;
 using UnityEngine;
 using Verse;
@@ -37,9 +36,7 @@ namespace ShapeshifterFramework.Utilities
                 bodySizeFactor = baseBodyFac
             };
 
-            var comp = pawn != null ? pawn.TryGetComp<CompShapeshifter>() : null;
-            var form = comp != null ? comp.currentForm : null;
-            if (comp == null || !comp.isTransformed || form == null) return false;
+            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return false;
 
             // 입력 배수(비우면 1)
             float sBody = form.bodyDrawScale.HasValue ? Mathf.Max(0.01f, form.bodyDrawScale.Value) : 1f;

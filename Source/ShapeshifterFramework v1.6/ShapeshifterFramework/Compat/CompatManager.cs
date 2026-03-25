@@ -1,7 +1,7 @@
 // ShapeshifterFramework | Compat | CompatManager.cs
-// 호환 패치 초기화·에러 집계·1회 보고 매니저.
-// ModLister로 모드 활성 판별, 패치 성공/실패·메트릭을 캐싱 후 ReportAllOnce로 요약.
-// Report 이후 런타임 에러는 동일 id당 1회만 경고.
+// 목적 : 호환 패치 초기화·에러 집계·1회 보고 매니저
+// 용도 : ModLister로 모드 활성 판별, 패치 성공/실패·메트릭을 캐싱 후 ReportAllOnce로 요약
+// 주의 : Report 이후 런타임 에러는 동일 id당 1회만 경고
 
 using System.Collections.Generic;
 using Verse;
@@ -16,8 +16,6 @@ namespace ShapeshifterFramework.Compat
 
         private readonly HashSet<string> ok = new HashSet<string>();
         private readonly Dictionary<string, string> fail = new Dictionary<string, string>();
-        private readonly Dictionary<string, Dictionary<string, long>> metrics =
-            new Dictionary<string, Dictionary<string, long>>();
 
         private bool reported;
 
@@ -45,37 +43,11 @@ namespace ShapeshifterFramework.Compat
 
         internal bool HasFailed(string id) => fail.ContainsKey(id);
 
-        /// <summary>메트릭 값 설정.</summary>
-        internal void MetricSet(string scope, string key, long value)
-        {
-            if (!metrics.TryGetValue(scope, out var bag))
-                metrics[scope] = bag = new Dictionary<string, long>();
-            bag[key] = value;
-        }
-
-        /// <summary>메트릭 값 누적.</summary>
-        internal void MetricAdd(string scope, string key, long delta = 1)
-        {
-            if (!metrics.TryGetValue(scope, out var bag))
-                metrics[scope] = bag = new Dictionary<string, long>();
-            bag.TryGetValue(key, out var cur);
-            bag[key] = cur + delta;
-        }
-
         /// <summary>모드별 요약을 1회만 출력.</summary>
         internal void ReportOnce()
         {
             if (reported || !IsActive) return;
             reported = true;
-
-            // AddComp 요약
-            if (metrics.TryGetValue("AddComp", out var bag))
-            {
-                long added = 0, deduped = 0;
-                bag.TryGetValue("added", out added);
-                bag.TryGetValue("deduped", out deduped);
-                Log.Message($"{LogPrefix} AddComp summary: added={added}, deduped={deduped}");
-            }
 
             // 패치 카운트
             if (FailCount == 0)
@@ -97,9 +69,13 @@ namespace ShapeshifterFramework.Compat
     {
         internal const string Pkg_HAR = "erdelf.HumanoidAlienRaces";
         internal const string Pkg_FA = "Nals.FacialAnimation";
+        internal const string Pkg_SS = "PeteTimesSix.SimpleSidearms";
+        internal const string Pkg_PS = "usagirei.pocketsand";
 
         internal const string LOG_HAR = "[SSF/HAR]";
         internal const string LOG_FA = "[SSF/FA]";
+        internal const string LOG_SS = "[SSF/SS]";
+        internal const string LOG_PS = "[SSF/PS]";
 
         /// <summary>모드 활성 확인.</summary>
         internal static bool IsActive(string packageId, bool ignorePostfix = false)
@@ -107,16 +83,12 @@ namespace ShapeshifterFramework.Compat
 
         internal static readonly CompatMod HAR = new CompatMod(Pkg_HAR, LOG_HAR);
         internal static readonly CompatMod FA = new CompatMod(Pkg_FA, LOG_FA);
+        internal static readonly CompatMod SS = new CompatMod(Pkg_SS, LOG_SS);
+        internal static readonly CompatMod PS = new CompatMod(Pkg_PS, LOG_PS);
 
         /// <summary>Report 전 준비.</summary>
         private static void RegisterBeforeReport()
         {
-            // HAR AddComp 보장
-            if (HAR.IsActive)
-            {
-                try { Compat_HAR_AddComp.EnsureInitialized(); }
-                catch (System.Exception e) { Log.Warning($"{HAR.LogPrefix} Compatibility failed to load: {e.Message}"); }
-            }
             // FA 폼 검증
             if (FA.IsActive)
             {
@@ -135,12 +107,16 @@ namespace ShapeshifterFramework.Compat
 
             if (HAR.IsActive) { anyActive = true; HAR.ReportOnce(); allOk &= (HAR.FailCount == 0); }
             if (FA.IsActive) { anyActive = true; FA.ReportOnce(); allOk &= (FA.FailCount == 0); }
+            if (SS.IsActive) { anyActive = true; SS.ReportOnce(); allOk &= (SS.FailCount == 0); }
+            if (PS.IsActive) { anyActive = true; PS.ReportOnce(); allOk &= (PS.FailCount == 0); }
 
             if (anyActive && allOk)
             {
                 var mods = new System.Collections.Generic.List<string>();
                 if (HAR.IsActive) mods.Add("HAR");
                 if (FA.IsActive) mods.Add("FA");
+                if (SS.IsActive) mods.Add("SS");
+                if (PS.IsActive) mods.Add("PS");
                 Log.Message($"[SSF] all compatibility patches active ({string.Join(", ", mods)}).");
             }
         }
