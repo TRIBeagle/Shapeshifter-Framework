@@ -13,14 +13,14 @@
   <SSF_Menu_ChooseDesc>변신할 폼을 선택합니다.</SSF_Menu_ChooseDesc>
   <SSF_Menu_SwitchLabel>변신: 폼 전환</SSF_Menu_SwitchLabel>
   <SSF_Menu_SwitchDesc>다른 폼으로 전환합니다.</SSF_Menu_SwitchDesc>
-  <SSF_Menu_Blocked>변신이 금지함</SSF_Menu_Blocked>
+  <SSF_Menu_Blocked>변신 금지됨</SSF_Menu_Blocked>
 
   <SSF_Hediff_FormLabel>변신 효과: {0}</SSF_Hediff_FormLabel>
   <SSF_Hediff_FormDesc>{0} 변신으로 인한 능력치 변동.</SSF_Hediff_FormDesc>
 
   <SSF_Inspect_Permanent>변신: 무제한</SSF_Inspect_Permanent>
   <SSF_Inspect_Remaining>변신: 남은 시간 {0}</SSF_Inspect_Remaining>
-  <SSF_Inspect_GeneHidden>변신({0}) 효과: 외형만 숨김</SSF_Inspect_GeneHidden>
+  <SSF_Inspect_GeneHidden>외형 전용, 변신({0})에 의해 숨겨짐</SSF_Inspect_GeneHidden>
 
   <SSF_Verb_Attack>공격</SSF_Verb_Attack>
   <SSF_Verb_ToggleDesc>자동 공격 전환</SSF_Verb_ToggleDesc>
@@ -28,7 +28,7 @@
   <SSF_DurationCost>변신 시간 소모: {0}</SSF_DurationCost>
 
   <SSF_Message_CannotTransform>{0} 형태로 변신할 수 없습니다.</SSF_Message_CannotTransform>
-  <SSF_Message_WorkDisabled>{0} 변신 때문에 비활성</SSF_Message_WorkDisabled>
+  <SSF_Message_WorkDisabled>{0} 변신으로 인해 비활성화되었습니다.</SSF_Message_WorkDisabled>
   <SSF_Message_NoProjectile>이 공격은 발사체가 없어 사용할 수 없습니다.</SSF_Message_NoProjectile>
   <SSF_Message_CannotWear>{PAWN}은(는) 변신 상태에서 의류를 착용할 수 없습니다.</SSF_Message_CannotWear>
   <SSF_Message_CannotEquip>{PAWN}은(는) 변신 상태에서 장비를 손에 들 수 없습니다.</SSF_Message_CannotEquip>
@@ -41,11 +41,11 @@
   <SSF_Setting_MaxGizmo_Title>변신 버튼 최대 개수</SSF_Setting_MaxGizmo_Title>
   <SSF_Setting_MaxGizmo_Desc>폼 수가 이 값을 초과하면 드롭다운 메뉴(목록)로 전환됩니다.</SSF_Setting_MaxGizmo_Desc>
   
-  <SSF_Setting_PortraitScale_Title>포트레잇 배율 적용</SSF_Setting_PortraitScale_Title>
-  <SSF_Setting_PortraitScale_Desc>각 폼의 portraitDrawScale 값을 정보창 포트레잇에 적용합니다. 포트레잇 바 계열 모드와 충돌하면 꺼 주세요.</SSF_Setting_PortraitScale_Desc>
+  <SSF_Setting_PortraitScale_Title>초상화 배율 적용</SSF_Setting_PortraitScale_Title>
+  <SSF_Setting_PortraitScale_Desc>각 폼의 portraitDrawScale 값을 정보창 초상화에 적용합니다. 초상화 관련 모드와 충돌하면 꺼 주세요.</SSF_Setting_PortraitScale_Desc>
   
   <SSF_Setting_WeaponScale_Title>장비 무기 크기를 바디 배율에 연동</SSF_Setting_WeaponScale_Title>
-  <SSF_Setting_WeaponScale_Desc>변신 바디 드로우 배율에 맞춰 들고 있는 무기 그래픽을 등방으로 확대/축소합니다. 다른 무기 크기 조절 모드와 충돌하면 꺼 주세요.</SSF_Setting_WeaponScale_Desc>
+  <SSF_Setting_WeaponScale_Desc>변신 바디 드로우 배율에 맞춰 들고 있는 무기 그래픽을 균일하게 확대/축소합니다. 다른 무기 크기 조절 모드와 충돌하면 꺼 주세요.</SSF_Setting_WeaponScale_Desc>
   
   <SSF_Setting_ReequipInventory_Title>인벤토리에서 자동 재장비</SSF_Setting_ReequipInventory_Title>
   <SSF_Setting_ReequipInventory_Desc>변신 해제 시 인벤토리에 있던 무기/도구를 자동으로 다시 장비합니다.</SSF_Setting_ReequipInventory_Desc>

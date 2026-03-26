@@ -95,7 +95,7 @@ namespace ShapeshifterFramework.Comps
             // HediffDef 기반 변신 진입
             if (Props.hediffDef == null)
             {
-                Log.Error("[SSF] CompUseEffect_Shapeshift: hediffDef가 지정되지 않았습니다.");
+                Log.Error("[SSF] CompUseEffect_Shapeshift: hediffDef is not specified.");
                 return;
             }
             ShapeshiftCoreUtility.GiveShiftHediff(target, Props.hediffDef);

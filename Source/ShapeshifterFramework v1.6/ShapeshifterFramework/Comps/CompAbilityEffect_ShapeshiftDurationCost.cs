@@ -47,7 +47,7 @@ namespace ShapeshifterFramework.Comps
             if (ShapeshifterFrameworkMod.Settings?.enableDebugLog == true)
             {
                 string abilityName = parent?.def?.label ?? "Unknown";
-                Log.Message($"[SSF] 어빌리티 '{abilityName}' 사용 — 변신 시간 {Props.durationCostTicks}틱 차감 (남은: {core.RemainingShapeshiftTicks}틱)");
+                Log.Message($"[SSF] Ability '{abilityName}' used — deducted {Props.durationCostTicks} ticks (remaining: {core.RemainingShapeshiftTicks})");
             }
         }
     }

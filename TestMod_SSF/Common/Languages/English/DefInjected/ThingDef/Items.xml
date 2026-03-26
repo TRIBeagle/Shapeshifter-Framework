@@ -8,10 +8,12 @@
   <!-- Item: Self target -->
   <SSFTest_ShiftScroll_Self.label>shift scroll (self)</SSFTest_ShiftScroll_Self.label>
   <SSFTest_ShiftScroll_Self.description>A scroll that transforms the user into a bear when used.</SSFTest_ShiftScroll_Self.description>
+  <SSFTest_ShiftScroll_Self.comps.CompUsable.useLabel>use shift scroll (self)</SSFTest_ShiftScroll_Self.comps.CompUsable.useLabel>
 
   <!-- Item: Target -->
   <SSFTest_ShiftScroll_Target.label>shift scroll (target)</SSFTest_ShiftScroll_Target.label>
   <SSFTest_ShiftScroll_Target.description>A scroll that transforms the clicked target into a bear. Select a target to walk over and use.</SSFTest_ShiftScroll_Target.description>
+  <SSFTest_ShiftScroll_Target.comps.CompUsable.useLabel>use shift scroll...</SSFTest_ShiftScroll_Target.comps.CompUsable.useLabel>
 
   <!-- Drug: Extend bear form duration -->
   <SSFTest_BearRefreshElixir.label>bear refresh elixir</SSFTest_BearRefreshElixir.label>

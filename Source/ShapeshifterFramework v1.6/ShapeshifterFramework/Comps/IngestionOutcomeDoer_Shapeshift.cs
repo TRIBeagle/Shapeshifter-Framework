@@ -32,7 +32,7 @@ namespace ShapeshifterFramework.Comps
 
             if (hediffDef == null)
             {
-                Log.Error("[SSF] IngestionOutcomeDoer_Shapeshift: hediffDef가 지정되지 않았습니다.");
+                Log.Error("[SSF] IngestionOutcomeDoer_Shapeshift: hediffDef is not specified.");
                 return;
             }
 
