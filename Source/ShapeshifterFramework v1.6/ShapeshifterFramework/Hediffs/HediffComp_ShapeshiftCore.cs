@@ -277,6 +277,11 @@ namespace ShapeshifterFramework.Hediffs
                 RemoveForm();
                 if (_isApplyingOrRemoving) return; // RemoveForm 중 재진입 발생 시 중단
                 _isApplyingOrRemoving = true;
+
+                // RemoveForm.finally가 severity=0으로 설정하여 바닐라 자동 제거를 유도하지만,
+                // 여기서는 동일 hediff에 새 폼을 계속 적용하므로 severity를 복원해야 함.
+                if (parent != null)
+                    parent.Severity = parent.def.initialSeverity > 0f ? parent.def.initialSeverity : 1f;
             }
 
             // sources가 명시적으로 전달되면 교체, 아니면 기존 sourceItems 보존 (GiveShiftHediff에서 사전 설정 가능)
