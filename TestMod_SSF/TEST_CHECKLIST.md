@@ -150,14 +150,14 @@
 - [ ] `5-M06` Overhead 레이어만 숨겨지는지 확인
 - [ ] `5-M07` FragGrenade/ShootBeam 사용 시 변신 시간 차감 확인 (durationCostTicks)
 - [ ] `5-M08` 차감 verb 기즈모 설명에 "변신 시간 소모" 텍스트 표시 확인
-- [ ] `5-M11` entropyCost 설정 verb: psylink 있는 폰에서 사용 시 신경열 증가 확인
-- [ ] `5-M12` entropyCost 설정 verb: psylink 없는 폰에서 신경열 한계=0이므로 기즈모 비활성 확인
-- [ ] `5-M13` entropyCost 설정 verb: psylink 있지만 신경열 꽉 찼을 때 기즈모 비활성 확인
-- [ ] `5-M14` entropyCost 설정 verb: 로열티 DLC 비활성 시 신경열 비용 무시, 자유 사용 확인
-- [ ] `5-M15` entropyCost 기즈모 설명에 "신경열: N" 텍스트 표시 확인
 - [ ] `5-M09` PrimalRoar 어빌리티: 수인 변신 시에만 표시, 사용 시 변신 시간 7500틱 차감 확인
 - [ ] `5-M10` PrimalRoar 어빌리티: 변신 해제 시 어빌리티 제거 확인
 - [ ] `5-M11` PrimalRoar 어빌리티: 툴팁에 "변신 시간 소모" 표시 확인
+- [ ] `5-M12` entropyCost 설정 verb: psylink 있는 폰에서 사용 시 신경열 증가 확인
+- [ ] `5-M13` entropyCost 설정 verb: psylink 없는 폰 (tracker=null) → 신경열 비용 무시, 자유 사용 확인
+- [ ] `5-M14` entropyCost 설정 verb: psylink 있지만 신경열 꽉 찼을 때 기즈모 비활성 확인
+- [ ] `5-M15` entropyCost 설정 verb: 로열티 DLC 비활성 시 신경열 비용 무시, 자유 사용 확인
+- [ ] `5-M16` entropyCost 기즈모 설명에 "신경열: N" 텍스트 표시 확인
 
 ---
 
@@ -329,6 +329,9 @@
 - [ ] `13-A04f` ExtendShapeshift: allowExtendBeyondMax=true → 연장 후 남은 시간이 원래 최대 시간 초과 가능 (`SSFTest_ShiftScroll_UniversalRefresh`)
 - [ ] `13-A04g` ExtendShapeshift: targetFormDef 미설정(범용) → 곰/양/다크나이트 등 어떤 폼에서든 연장 성공 (`SSFTest_ShiftScroll_UniversalRefresh`)
 - [ ] `13-A05` 파괴된(Destroyed) 폰에 FX 재생 시도 → 크래시 없이 스킵
+- [ ] `13-A06` sourceItem(변신 트리거 장비) 장착 중 → 변신 유지 (Spawned 상태여도 해제 안 됨)
+- [ ] `13-A07` sourceItem 파괴 → 즉시 변신 해제
+- [ ] `13-A08` sourceItem 드랍(바닥에 놓음) → 즉시 변신 해제
 
 ### [M] 수동 확인
 - [ ] `13-M01` 카라반 참여 중 변신/해제
