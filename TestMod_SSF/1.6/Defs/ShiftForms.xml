@@ -377,8 +377,9 @@
         <verbLabel>ShootBeam</verbLabel>
         <label>beam shot</label>
         <iconPath>Things/Item/Equipment/WeaponRanged/ThumpCannon</iconPath>
-        <!-- 빔 발사 시 변신 시간 2500틱(~1시간) 차감 -->
+        <!-- 빔 발사 시 변신 시간 2500틱(~1시간) 차감 + 신경열 12 추가 -->
         <durationCostTicks>2500</durationCostTicks>
+        <entropyCost>12</entropyCost>
       </li>
     </verbGizmoOptions>
     <tools>

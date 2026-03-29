@@ -365,6 +365,8 @@
 - [ ] `14-M02b` FA 활성 시 변신 해제 → FA 상태 원본 복구 확인
 - [ ] `14-M02c` FA 비활성 시 → `OverridesHook` 패치 미적용 확인 (Prepare false)
 - [ ] `14-M03` Simple Sidearms 활성 시 변신/해제 (무기 메모리 백업/복구)
+- [ ] `14-M03a` Pocket Sand 활성 + weaponEquipLock=Locked 폼(DarkKnight) → 무기 선택 기즈모 숨김
+- [ ] `14-M03b` Pocket Sand 활성 + weaponEquipLock=Unlocked 폼(RaceLocked) → 무기 선택 기즈모 정상 표시
 - [ ] `14-M04` 이데올로기 노출 감정 억제 (`suppressIdeologyUncoveredThoughts`)
 - [ ] `14-M05` 변신 규율: 섭리에 대한 모독 → **자기 주도 변신 금지** (기즈모 비활성 "사상이 금지함", 약물 섭취 불가, 주문서 사용 불가), **타인에 의한 강제 변신은 허용** (원래 시간 유지), 강제 변신 시 기분 -10, 의견 -20, 기억 감정 -10 (5일), **목격 기억 감정 -8 (5일)**
 - [ ] `14-M05a` 변신 규율: 섭리에 대한 모독 — 약물 우클릭 시 "(사상이 금지함)" 비활성 옵션 확인
