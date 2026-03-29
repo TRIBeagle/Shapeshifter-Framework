@@ -429,3 +429,8 @@ FodyWeavers.xsd
 # Rider/VS
 .idea/
 .vs/
+
+# Claude Code / AI agent docs
+CLAUDE.md
+agent_docs/
+DESIGN_NOTES.md
