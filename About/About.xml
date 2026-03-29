@@ -6,7 +6,38 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>TRIBeagle.shapeshifterframework</packageId>
-	<description>ShapeShifter Framework</description>
+	<description>
+[h1]Shapeshifter Framework[/h1]
+
+A universal shapeshifting framework for RimWorld 1.6.
+Modders can define custom transformation forms using [b]XML only[/b] — no C# required.
+
+[h2]Features[/h2]
+[list]
+[*] Timed or permanent forms with voluntary revert, sustain conditions, and multi-stage chains
+[*] Full visual control: body/head/hair/tattoo replace/hide, gender textures, render nodes, shaders
+[*] Custom verbs and tools with per-verb auto-attack toggle gizmos
+[*] Equipment handling: keep/inventory/drop per slot, equipment lock, spawn gear on transform
+[*] VFX and sound: enter/exit effects, ambient flecks, voice/blood/flesh override
+[*] Multiple trigger methods: ability, drug, scroll, projectile, equipment grant, gene, auto-shift
+[*] Ideology integration: shapeshift precepts with mood/opinion/social effects
+[*] Anomaly DLC: per-form mutant eligibility filtering
+[/list]
+
+[h2]For Modders[/h2]
+Define a [b]ShapeshiftFormDef[/b] in XML, link it to a HediffDef, and choose a trigger method.
+See the [url=https://github.com/TRIBeagle/Shapeshifter-Framework/blob/main/FORMDEF_GUIDE_EN.md]FormDef Creation Guide[/url] for the full field reference.
+
+[h2]Compatibility[/h2]
+[list]
+[*] HAR (Humanoid Alien Races) — body addon scaling
+[*] Facial Animation — face component backup/restore
+[*] Simple Sidearms — weapon memory backup/restore
+[*] Pocket Sand — gizmo filtering on transform
+[*] Combat Extended — compatible via XPath patches (see guide)
+[*] Pawnmorpher — [b]Incompatible[/b] (overlapping transformation systems)
+[/list]
+	</description>
 	<modDependencies>
 		<li>
 			<packageId>brrainz.harmony</packageId>
@@ -19,5 +50,6 @@
 		<li>erdelf.HumanoidAlienRaces</li>
 		<li>erdelf.HumanoidAlienRaces.dev</li>
 		<li>Nals.FacialAnimation</li>
+		<li>PeteTimesSix.SimpleSidearms</li>
 	</loadAfter>
 </ModMetaData>
