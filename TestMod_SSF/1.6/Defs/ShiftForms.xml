@@ -56,6 +56,18 @@
       </li>
     </tools>
     <replaceNativeTools>true</replaceNativeTools>
+    <!-- 동물 변신 시 수염/문신 숨김 -->
+    <beard><mode>Hidden</mode></beard>
+    <tattooBody><mode>Hidden</mode></tattooBody>
+    <tattooHead><mode>Hidden</mode></tattooHead>
+    <!-- 피해원 오버라이드: 상처 라벨에 "grizzly bear" 표시 -->
+    <damageSourceDef>Bear_Grizzly</damageSourceDef>
+    <!-- 이데올로기 노출 감정 억제 (동물 폼에서 "옷 안 입었다" 디버프 방지) -->
+    <suppressIdeologyUncoveredThoughts>true</suppressIdeologyUncoveredThoughts>
+    <!-- Anomaly DLC: 뮤턴트 필터 테스트 (Ghoul만 허용) -->
+    <formAllowedMutants MayRequire="Ludeon.RimWorld.Anomaly">
+      <li>Ghoul</li>
+    </formAllowedMutants>
     <!-- Blood/flesh -->
     <bloodDef>Filth_BloodInsect</bloodDef>
     <bloodSmearDef>SSFTest_Filth_BloodInsectSmear</bloodSmearDef>
@@ -93,6 +105,8 @@
     <!-- Effects -->
     <transformEnterEffecter>Vaporize_Heatwave</transformEnterEffecter>
     <transformExitEffecter>ImpactSmallDustCloud</transformExitEffecter>
+    <!-- 앰비언트 이펙터 테스트: 변신 중 지속 발열 이펙트 -->
+    <ambientEffecter>Shield_Break</ambientEffecter>
     <gizmoIconPathEnter>UI/Commands/SSF_Shift_Entertest</gizmoIconPathEnter>
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Reverttest</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
@@ -117,6 +131,10 @@
     <disabledWorkTagsOnTransform>
       <li>Violent</li>
     </disabledWorkTagsOnTransform>
+    <!-- 렌더 필터 테스트: 양 변신 시 모든 의류/무기/헤디프 그래픽 숨김 -->
+    <renderHideApparelLayers><li>All</li></renderHideApparelLayers>
+    <renderHideWeaponTags><li>All</li></renderHideWeaponTags>
+    <renderHideHediffDefNames><li>All</li></renderHideHediffDefNames>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- ======================================================
@@ -186,7 +204,8 @@
       <li>SSFTest_Ability_FullBeast</li>
       <li>SSFTest_Ability_PrimalRoar</li>
     </addAbilities>
-    <!-- Graphic display exceptions -->
+    <!-- Graphic display exceptions: Overhead 레이어 + 특정 defName 허용 -->
+    <renderShowApparelLayers><li>Overhead</li></renderShowApparelLayers>
     <renderShowApparelDefNames>
       <li>Apparel_Cape</li>
       <li>Apparel_Tuque</li>
@@ -354,6 +373,9 @@
       <li>
         <verbLabel>AssaultRifle</verbLabel>
         <label>assault rifle</label>
+        <desc>Fire a burst of rifle rounds at the target.</desc>
+        <toggleLabel>Auto-rifle</toggleLabel>
+        <toggleDesc>Toggle automatic rifle fire mode.</toggleDesc>
         <iconPath>Things/Item/Equipment/WeaponRanged/AssaultRifle</iconPath>
       </li>
       <li>
@@ -460,10 +482,13 @@
     <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
     <revertOnDowned>true</revertOnDowned>
-    <!-- sustain: guardian's mark must be maintained (Any mode — stone possession or mark, whichever) -->
+    <!-- sustain: Any 모드 — 아래 조건 중 하나라도 만족하면 유지 -->
     <sustainHediffs>
       <li>SSFTest_Hediff_GuardianMark</li>
     </sustainHediffs>
+    <sustainApparels>
+      <li>Apparel_PlateArmor</li>
+    </sustainApparels>
     <sustainMode>Any</sustainMode>
     <!-- Shadow override -->
     <body>
@@ -524,6 +549,10 @@
     <durationTicks>12000</durationTicks>
     <canRevertVoluntarily>true</canRevertVoluntarily>
     <headType>Male_AverageNormal</headType>
+    <!-- 종족 제한: formAllowedRaces는 어빌리티 comp에서 처리, formDisallowedRaces 추가 테스트 -->
+    <formDisallowedRaces>
+      <li>Waster</li>
+    </formDisallowedRaces>
     <apparelEquipLock>Locked</apparelEquipLock>
     <weaponEquipLock>Unlocked</weaponEquipLock>
     <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>

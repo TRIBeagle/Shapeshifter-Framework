@@ -43,6 +43,10 @@
 - [ ] `1-A06` addHediffs: `SSFTest_BeastArm` 부여 확인
 - [ ] `1-A07` 해제 시 addHediffs 제거, 이전 장비 복귀
 - [ ] `1-A08` revertDrops: `WoodLog 2` 드랍
+- [ ] `1-A09` beard=Hidden, tattooBody=Hidden, tattooHead=Hidden 적용
+- [ ] `1-A10` damageSourceDef=Bear_Grizzly → 상처 라벨에 "grizzly bear" 표시
+- [ ] `1-A11` suppressIdeologyUncoveredThoughts=true → 노출 감정 미발생
+- [ ] `1-A12` formAllowedMutants: Ghoul 뮤턴트만 변신 허용 (Anomaly DLC)
 
 ### [M] 수동 확인
 - [ ] `1-M01` 수영 시 텍스처가 `Things/Pawn/Animal/Bear/SwimmingBear`로 전환
@@ -75,6 +79,7 @@
 - [ ] `2-M04` 커스텀 기즈모 아이콘 (gizmoIconPathEnter/Revert)
 - [ ] `2-M05` 의류 장착 시도 시 차단 메시지 표시
 - [ ] `2-M06` 무기는 자유롭게 교체 가능
+- [ ] `2-M07` ambientEffecter (Shield_Break) 변신 중 지속 재생
 
 ---
 
@@ -91,6 +96,9 @@
 - [ ] `3-A01` `canRevertVoluntarily=false` — 해제 기즈모 없음
 - [ ] `3-A02` 작업 태그 비활성: `disabledWorkTagsOnTransform` 적용
 - [ ] `3-A03` 전체 그래픽 숨김 (All 필터)
+- [ ] `3-A04` renderHideApparelLayers=All → 모든 의류 그래픽 숨김
+- [ ] `3-A05` renderHideWeaponTags=All → 모든 무기 그래픽 숨김
+- [ ] `3-A06` renderHideHediffDefNames=All → 모든 헤디프 그래픽 숨김
 
 ### [M] 수동 확인
 - [ ] `3-M01` 성별 텍스처: 남성/여성 다른 body 텍스처 적용
@@ -140,6 +148,8 @@
 - [ ] `5-A04` verbGizmoOptions 각 버브별 라벨 확인
 - [ ] `5-A05` hairColor 오버라이드 적용
 - [ ] `5-A06` addAbilities 확인
+- [ ] `5-A07` renderShowApparelLayers: Overhead 레이어 의류만 표시
+- [ ] `5-A08` verbGizmoOptions desc/toggleLabel/toggleDesc 표시 확인 (AssaultRifle verb)
 
 ### [M] 수동 확인
 - [ ] `5-M01` 유전자(Gene_BeastkinShift)로 어빌리티 획득
@@ -196,7 +206,8 @@
 - [ ] `7-A03` shadowVolume/shadowOffset 오버라이드
 - [ ] `7-A04` sustainHediffs: GuardianMark 보유 시 유지
 - [ ] `7-A05` sustainMode=Any
-- [ ] `7-A06` GuardianMark 제거 → 자동 해제
+- [ ] `7-A06` GuardianMark 제거 → 자동 해제 (sustainApparels 조건도 미충족 시)
+- [ ] `7-A07` sustainApparels: PlateArmor 착용 시 GuardianMark 없이도 유지 (Any 모드)
 
 ### [M] 수동 확인
 - [ ] `7-M01` ambientFleck 주기적 스폰 (interval, scale 확인)
@@ -243,6 +254,7 @@
 - [ ] `9-A02` 비인간 종족에서 어빌리티 숨김
 - [ ] `9-A03` 비대칭 잠금: apparelEquipLock=Locked, weaponEquipLock=Unlocked
 - [ ] `9-A04` headType 오버라이드 적용
+- [ ] `9-A05` formDisallowedRaces: Waster 종족 변신 차단
 
 ### [M] 수동 확인
 - [ ] `9-M01` 헤디프(Hediff_RacialAwakening)로 어빌리티 획득
