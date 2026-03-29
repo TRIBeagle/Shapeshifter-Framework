@@ -46,45 +46,7 @@ namespace ShapeshifterFramework.Utilities
                 outList.Add(new ValueTuple<PawnRenderNode, PawnRenderNode>(node, null));
             }
 
-            // ── Dev 모드 로그
-            if (ShapeshiftDiagnostics.DebugLog && outList.Count > 0)
-            {
-                int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
-                int id = pawn.thingIDNumber;
-
-                // 딕셔너리가 임계값 초과 시 또는 일정 주기로 만료 엔트리 정리
-                if (lastLogTick.Count > LogDictCleanupThreshold || tick - lastCleanupTick > LogCooldownTicks * 50)
-                {
-                    lastCleanupTick = tick;
-                    var staleKeys = new List<int>();
-                    foreach (var kv in lastLogTick)
-                        if (tick - kv.Value > LogCooldownTicks * 5) staleKeys.Add(kv.Key);
-                    for (int k = 0; k < staleKeys.Count; k++)
-                        lastLogTick.Remove(staleKeys[k]);
-                }
-
-                int last;
-                if (!lastLogTick.TryGetValue(id, out last) || tick - last >= LogCooldownTicks)
-                {
-                    lastLogTick[id] = tick;
-                    try
-                    {
-                        ShapeshiftDiagnostics.Info($"DynamicSetup_ShapeshifterForm: +{outList.Count} node(s) for {pawn.LabelShortCap} ({pawn.thingIDNumber})");
-
-                        for (int i = 0; i < extras.Count; i++)
-                        {
-                            var p = extras[i];
-                            if (p == null) continue;
-                            var parentTag = p.parentTagDef != null ? p.parentTagDef.defName : "null";
-                            var tag = p.tagDef != null ? p.tagDef.defName : "null";
-
-                            ShapeshiftDiagnostics.Info($"  - {p.nodeClass?.Name}  parentTag={parentTag}  tag={tag}  tex={p.texPath ?? "(none)"}");
-                        }
-                    }
-                    catch { /* 로그 실패 무시 */ }
-                }
-            }
-
+            LogDynamicNodes(pawn, outList, extras);
             return outList;
         }
 
@@ -92,6 +54,45 @@ namespace ShapeshifterFramework.Utilities
         // PawnRenderNode의 private 필드 — 항상 동일 타입이므로 정적 캐시
         private static readonly FieldInfo _fProps = AccessTools.Field(typeof(PawnRenderNode), "props");
         private static readonly FieldInfo _fGraph = AccessTools.Field(typeof(PawnRenderNode), "graph");
+
+        /// <summary>Dev 모드 로그 출력 (쿨타임 적용, 스팸 방지).</summary>
+        static void LogDynamicNodes(Pawn pawn, List<ValueTuple<PawnRenderNode, PawnRenderNode>> outList, List<PawnRenderNodeProperties> extras)
+        {
+            if (!ShapeshiftDiagnostics.DebugLog || outList.Count == 0) return;
+
+            int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
+            int id = pawn.thingIDNumber;
+
+            // 딕셔너리가 임계값 초과 시 또는 일정 주기로 만료 엔트리 정리
+            if (lastLogTick.Count > LogDictCleanupThreshold || tick - lastCleanupTick > LogCooldownTicks * 50)
+            {
+                lastCleanupTick = tick;
+                var staleKeys = new List<int>();
+                foreach (var kv in lastLogTick)
+                    if (tick - kv.Value > LogCooldownTicks * 5) staleKeys.Add(kv.Key);
+                for (int k = 0; k < staleKeys.Count; k++)
+                    lastLogTick.Remove(staleKeys[k]);
+            }
+
+            int last;
+            if (!lastLogTick.TryGetValue(id, out last) || tick - last >= LogCooldownTicks)
+            {
+                lastLogTick[id] = tick;
+                try
+                {
+                    ShapeshiftDiagnostics.Info($"DynamicSetup_ShapeshifterForm: +{outList.Count} node(s) for {pawn.LabelShortCap} ({pawn.thingIDNumber})");
+                    for (int i = 0; i < extras.Count; i++)
+                    {
+                        var p = extras[i];
+                        if (p == null) continue;
+                        var parentTag = p.parentTagDef != null ? p.parentTagDef.defName : "null";
+                        var tag = p.tagDef != null ? p.tagDef.defName : "null";
+                        ShapeshiftDiagnostics.Info($"  - {p.nodeClass?.Name}  parentTag={parentTag}  tag={tag}  tex={p.texPath ?? "(none)"}");
+                    }
+                }
+                catch { /* 로그 실패 무시 */ }
+            }
+        }
 
         // 생성자 시그니처 후보 (우선순위순)
         private static readonly Type[][] CtorSignatures =

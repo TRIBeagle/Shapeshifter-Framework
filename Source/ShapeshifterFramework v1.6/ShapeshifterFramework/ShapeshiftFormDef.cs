@@ -408,32 +408,16 @@ namespace ShapeshifterFramework
             }
 
             // sustain 참조
-            if (sustainApparels != null)
-                for (int i = 0; i < sustainApparels.Count; i++)
-                    if (sustainApparels[i] == null) yield return $"sustainApparels[{i}]: null ThingDef reference";
-            if (sustainWeapons != null)
-                for (int i = 0; i < sustainWeapons.Count; i++)
-                    if (sustainWeapons[i] == null) yield return $"sustainWeapons[{i}]: null ThingDef reference";
-            if (sustainHediffs != null)
-                for (int i = 0; i < sustainHediffs.Count; i++)
-                    if (sustainHediffs[i] == null) yield return $"sustainHediffs[{i}]: null HediffDef reference";
-            if (sustainGenes != null)
-                for (int i = 0; i < sustainGenes.Count; i++)
-                    if (sustainGenes[i] == null) yield return $"sustainGenes[{i}]: null GeneDef reference";
+            foreach (var e in CheckNullRefs(sustainApparels, "sustainApparels")) yield return e;
+            foreach (var e in CheckNullRefs(sustainWeapons, "sustainWeapons")) yield return e;
+            foreach (var e in CheckNullRefs(sustainHediffs, "sustainHediffs")) yield return e;
+            foreach (var e in CheckNullRefs(sustainGenes, "sustainGenes")) yield return e;
 
             // 종족/뮤턴트 제한 참조
-            if (formAllowedRaces != null)
-                for (int i = 0; i < formAllowedRaces.Count; i++)
-                    if (formAllowedRaces[i] == null) yield return $"formAllowedRaces[{i}]: null ThingDef reference";
-            if (formDisallowedRaces != null)
-                for (int i = 0; i < formDisallowedRaces.Count; i++)
-                    if (formDisallowedRaces[i] == null) yield return $"formDisallowedRaces[{i}]: null ThingDef reference";
-            if (formAllowedMutants != null)
-                for (int i = 0; i < formAllowedMutants.Count; i++)
-                    if (formAllowedMutants[i] == null) yield return $"formAllowedMutants[{i}]: null MutantDef reference";
-            if (formDisallowedMutants != null)
-                for (int i = 0; i < formDisallowedMutants.Count; i++)
-                    if (formDisallowedMutants[i] == null) yield return $"formDisallowedMutants[{i}]: null MutantDef reference";
+            foreach (var e in CheckNullRefs(formAllowedRaces, "formAllowedRaces")) yield return e;
+            foreach (var e in CheckNullRefs(formDisallowedRaces, "formDisallowedRaces")) yield return e;
+            foreach (var e in CheckNullRefs(formAllowedMutants, "formAllowedMutants")) yield return e;
+            foreach (var e in CheckNullRefs(formDisallowedMutants, "formDisallowedMutants")) yield return e;
 
             // 소환 장비 참조 + 카테고리 검증
             if (spawnApparelOnTransform != null)
@@ -450,9 +434,7 @@ namespace ShapeshifterFramework
                 }
 
             // 작업 제한 참조
-            if (disabledWorkTypesOnTransform != null)
-                for (int i = 0; i < disabledWorkTypesOnTransform.Count; i++)
-                    if (disabledWorkTypesOnTransform[i] == null) yield return $"disabledWorkTypesOnTransform[{i}]: null WorkTypeDef reference";
+            foreach (var e in CheckNullRefs(disabledWorkTypesOnTransform, "disabledWorkTypesOnTransform")) yield return e;
 
             // 스케일 범위 검증
             if (bodyDrawScale.HasValue && bodyDrawScale.Value <= 0f)
@@ -471,6 +453,14 @@ namespace ShapeshifterFramework
                     if (entry == null) { yield return $"revertAddHediffs[{i}]: null entry"; continue; }
                     if (entry.hediff == null) yield return $"revertAddHediffs[{i}]: null HediffDef reference";
                 }
+        }
+
+        /// <summary>리스트 내 null 참조 검증 헬퍼.</summary>
+        private static IEnumerable<string> CheckNullRefs<T>(List<T> list, string fieldName) where T : class
+        {
+            if (list == null) yield break;
+            for (int i = 0; i < list.Count; i++)
+                if (list[i] == null) yield return $"{fieldName}[{i}]: null reference";
         }
 
         #endregion

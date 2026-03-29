@@ -571,42 +571,45 @@ namespace ShapeshifterFramework.Hediffs
                     || pawn.health.hediffSet.PartIsMissing(rec.Part))
                     continue;
 
-                for (int k = 0; k < rec.PreExistingAdded.Count; k++)
+                ReinstatePreExistingHediffs(pawn, rec);
+            }
+        }
+
+        /// <summary>파트에 이전 존재했던 hediff(added part 등)를 복원.</summary>
+        private void ReinstatePreExistingHediffs(Pawn pawn, ShapeshiftPartRestoreRecord rec)
+        {
+            for (int k = 0; k < rec.PreExistingAdded.Count; k++)
+            {
+                var prev = rec.PreExistingAdded[k];
+                if (prev?.Def == null) continue;
+
+                BodyPartRecord targetPart = ResolveTargetPart(pawn, rec.Part, prev.PartDef);
+                if (targetPart == null) continue;
+
+                var reinst = pawn.health.AddHediff(prev.Def, targetPart, null);
+                if (reinst != null && prev.Severity.HasValue)
                 {
-                    var prev = rec.PreExistingAdded[k];
-                    if (prev?.Def == null) continue;
-
-                    BodyPartRecord targetPart = null;
-                    if (prev.PartDef == null || prev.PartDef == rec.Part.def)
-                    {
-                        targetPart = rec.Part;
-                    }
-                    else
-                    {
-                        if (pawn.RaceProps?.body == null) continue;
-                        var allParts = pawn.RaceProps.body.AllParts;
-                        for (int pIdx = 0; pIdx < allParts.Count; pIdx++)
-                        {
-                            var x = allParts[pIdx];
-                            if (x.def == prev.PartDef && !pawn.health.hediffSet.PartIsMissing(x) && IsPartChildOf(x, rec.Part))
-                            {
-                                targetPart = x;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (targetPart != null)
-                    {
-                        var reinst = pawn.health.AddHediff(prev.Def, targetPart, null);
-                        if (reinst != null && prev.Severity.HasValue)
-                        {
-                            try { reinst.Severity = prev.Severity.Value; }
-                            catch (Exception ex) { Log.Warning($"[SSF] Restore Severity failed for '{prev.Def.defName}': {ex}"); }
-                        }
-                    }
+                    try { reinst.Severity = prev.Severity.Value; }
+                    catch (Exception ex) { Log.Warning($"[SSF] Restore Severity failed for '{prev.Def.defName}': {ex}"); }
                 }
             }
+        }
+
+        /// <summary>복원 대상 파트 결정. partDef가 다르면 하위 파트에서 탐색.</summary>
+        private BodyPartRecord ResolveTargetPart(Pawn pawn, BodyPartRecord basePart, BodyPartDef partDef)
+        {
+            if (partDef == null || partDef == basePart.def)
+                return basePart;
+
+            if (pawn.RaceProps?.body == null) return null;
+            var allParts = pawn.RaceProps.body.AllParts;
+            for (int i = 0; i < allParts.Count; i++)
+            {
+                var x = allParts[i];
+                if (x.def == partDef && !pawn.health.hediffSet.PartIsMissing(x) && IsPartChildOf(x, basePart))
+                    return x;
+            }
+            return null;
         }
 
         /// <summary>체형/머리형/컬러를 변신 전 상태로 복원.</summary>
