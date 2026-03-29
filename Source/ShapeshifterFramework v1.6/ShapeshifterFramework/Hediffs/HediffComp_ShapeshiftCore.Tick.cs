@@ -73,31 +73,8 @@ namespace ShapeshifterFramework.Hediffs
                 // 주기적 유지 요건(sustain) 검사
                 if (pawn.IsHashIntervalTick(SustainCheckIntervalTicks))
                 {
-                    // 코어 아이템 유실 검사
-                    if (this.sourceItems != null && this.sourceItems.Count > 0)
-                    {
-                        for (int i = this.sourceItems.Count - 1; i >= 0; i--)
-                        {
-                            Thing item = this.sourceItems[i];
-                            if (item == null) continue;
-
-                            bool isEquipped =
-                                (item is Apparel ap && pawn.apparel != null && pawn.apparel.Contains(ap)) ||
-                                (item is ThingWithComps tc && pawn.equipment != null && pawn.equipment.Contains(tc));
-
-                            if (item.Destroyed || !isEquipped)
-                            {
-                                ShapeshiftDiagnostics.Info("Source item lost. Forcing shapeshift revert.");
-                                Messages.Message("SSF_Message_RevertDueToItemLost".Translate(pawn.LabelShortCap, item.Label), pawn, MessageTypeDefOf.NegativeEvent, false);
-                                RemoveForm();
-                                return;
-                            }
-                        }
-                    }
-
-                    // sustain 조건 검사 (Props 오버라이드 반영)
-                    if (!CheckSustainConditions(pawn)
-                        && !(pawn.stances?.curStance is Stance_Warmup))
+                    if (CheckSourceItemLost(pawn)) return;
+                    if (!CheckSustainConditions(pawn) && !(pawn.stances?.curStance is Stance_Warmup))
                     {
                         Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
                         RemoveForm();
@@ -105,25 +82,7 @@ namespace ShapeshifterFramework.Hediffs
                     }
                 }
 
-                // 앰비언트 VFX
-                if ((currentForm.ambientEffecter != null || currentForm.ambientFleck != null)
-                    && pawn.Spawned)
-                {
-                    if (currentForm.ambientEffecter != null)
-                    {
-                        if (ambientEffecterInstance == null)
-                            ambientEffecterInstance = currentForm.ambientEffecter.Spawn();
-                        ambientEffecterInstance.EffectTick(pawn, pawn);
-                    }
-                    if (currentForm.ambientFleck != null
-                        && Find.TickManager.TicksGame >= ambientFleckNextTick)
-                    {
-                        FleckMaker.Static(pawn.DrawPos, pawn.Map, currentForm.ambientFleck,
-                            Mathf.Max(0.01f, currentForm.ambientFleckScale));
-                        ambientFleckNextTick = Find.TickManager.TicksGame
-                            + Mathf.Max(1, currentForm.ambientFleckIntervalTicks);
-                    }
-                }
+                TickAmbientVfx(pawn);
 
                 try
                 {
@@ -137,6 +96,46 @@ namespace ShapeshifterFramework.Hediffs
                         verbTickErrorLogged = true;
                     }
                 }
+            }
+        }
+
+        /// <summary>소스 아이템(변신 트리거 장비) 유실 검사. 유실 시 RemoveForm 호출 후 true 반환.</summary>
+        private bool CheckSourceItemLost(Pawn pawn)
+        {
+            if (this.sourceItems == null || this.sourceItems.Count == 0) return false;
+            for (int i = this.sourceItems.Count - 1; i >= 0; i--)
+            {
+                Thing item = this.sourceItems[i];
+                if (item == null) continue;
+                bool isEquipped =
+                    (item is Apparel ap && pawn.apparel != null && pawn.apparel.Contains(ap)) ||
+                    (item is ThingWithComps tc && pawn.equipment != null && pawn.equipment.Contains(tc));
+                if (item.Destroyed || !isEquipped)
+                {
+                    ShapeshiftDiagnostics.Info("Source item lost. Forcing shapeshift revert.");
+                    Messages.Message("SSF_Message_RevertDueToItemLost".Translate(pawn.LabelShortCap, item.Label), pawn, MessageTypeDefOf.NegativeEvent, false);
+                    RemoveForm();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>앰비언트 VFX 틱 처리 (이펙터 + 주기적 Fleck).</summary>
+        private void TickAmbientVfx(Pawn pawn)
+        {
+            if ((currentForm.ambientEffecter == null && currentForm.ambientFleck == null) || !pawn.Spawned) return;
+            if (currentForm.ambientEffecter != null)
+            {
+                if (ambientEffecterInstance == null)
+                    ambientEffecterInstance = currentForm.ambientEffecter.Spawn();
+                ambientEffecterInstance.EffectTick(pawn, pawn);
+            }
+            if (currentForm.ambientFleck != null && Find.TickManager.TicksGame >= ambientFleckNextTick)
+            {
+                FleckMaker.Static(pawn.DrawPos, pawn.Map, currentForm.ambientFleck,
+                    Mathf.Max(0.01f, currentForm.ambientFleckScale));
+                ambientFleckNextTick = Find.TickManager.TicksGame + Mathf.Max(1, currentForm.ambientFleckIntervalTicks);
             }
         }
 

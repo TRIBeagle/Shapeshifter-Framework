@@ -23,7 +23,7 @@ namespace ShapeshifterFramework.Patches
             {
                 unchecked
                 {
-                    int h = 17;
+                    int h = 17; // 소수 시드 + 31 곱 해시 (표준 DJB2 변형)
                     h = h * 31 + v.GetHashCode();
                     h = h * 31 + o.GetHashCode();
                     return h;

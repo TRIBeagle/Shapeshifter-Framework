@@ -20,19 +20,15 @@ namespace ShapeshifterFramework.Gizmos
 
         // 바 텍스처 (static 캐시)
         private static readonly Texture2D BarFilledTex =
-            SolidColorMaterials.NewSolidColorTexture(new Color(0.28f, 0.50f, 0.55f));
-
+            SolidColorMaterials.NewSolidColorTexture(new Color(0.28f, 0.50f, 0.55f)); // 청록: 일반 상태
         private static readonly Texture2D BarFilledPermanentTex =
-            SolidColorMaterials.NewSolidColorTexture(new Color(0.35f, 0.55f, 0.40f));
-
+            SolidColorMaterials.NewSolidColorTexture(new Color(0.35f, 0.55f, 0.40f)); // 녹색: 영구 변신
         private static readonly Texture2D BarFilledWarningTex =
-            SolidColorMaterials.NewSolidColorTexture(new Color(0.70f, 0.35f, 0.15f));
-
+            SolidColorMaterials.NewSolidColorTexture(new Color(0.70f, 0.35f, 0.15f)); // 주황: 경고 (≤30%)
         private static readonly Texture2D BarFilledCriticalTex =
-            SolidColorMaterials.NewSolidColorTexture(new Color(0.75f, 0.20f, 0.15f));
-
+            SolidColorMaterials.NewSolidColorTexture(new Color(0.75f, 0.20f, 0.15f)); // 빨강: 위험 (≤10%)
         private static readonly Texture2D BarEmptyTex =
-            SolidColorMaterials.NewSolidColorTexture(new Color(0.03f, 0.035f, 0.05f));
+            SolidColorMaterials.NewSolidColorTexture(new Color(0.03f, 0.035f, 0.05f)); // 거의 검정: 빈 바
 
         // 경고 임계값
         private const float WarningThreshold = 0.3f;
@@ -80,65 +76,12 @@ namespace ShapeshifterFramework.Gizmos
                 return new GizmoResult(GizmoState.Clear);
 
             var form = core.currentForm;
-
-            // ── 상단: 폼 이름 + 버튼 ──
             GameFont prevFont = Text.Font;
+
+            // ── 상단: 폼 이름 + 토글 버튼 ──
             Rect headerRect = innerRect;
             headerRect.height = Text.LineHeightOf(GameFont.Small);
-
-            float headerBtnX = headerRect.xMax;
-            bool mouseOverHeaderBtn = false;
-
-            // 자동사격 토글 표시 버튼 (우측 끝)
-            var settings = ShapeshifterFrameworkMod.Settings;
-            if (settings != null && HasRangedVerbs())
-            {
-                headerBtnX -= HeaderBtnSize;
-                Rect toggleBtnRect = new Rect(headerBtnX, headerRect.y, HeaderBtnSize, HeaderBtnSize);
-
-                // 체크박스 스타일 아이콘
-                GUI.DrawTexture(toggleBtnRect, TexCommand.Attack);
-                Rect checkRect = new Rect(toggleBtnRect.center.x, toggleBtnRect.y,
-                    toggleBtnRect.width / 2f, toggleBtnRect.height / 2f);
-                GUI.DrawTexture(checkRect, settings.showVerbAutoToggle
-                    ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex);
-
-                if (Widgets.ButtonInvisible(toggleBtnRect))
-                {
-                    settings.showVerbAutoToggle = !settings.showVerbAutoToggle;
-                    if (settings.showVerbAutoToggle)
-                        SoundDefOf.Tick_High.PlayOneShotOnCamera();
-                    else
-                        SoundDefOf.Tick_Low.PlayOneShotOnCamera();
-                }
-
-                if (Mouse.IsOver(toggleBtnRect))
-                {
-                    Widgets.DrawHighlight(toggleBtnRect);
-                    TooltipHandler.TipRegion(toggleBtnRect, "SSF_Gizmo_VerbToggle_Tip".Translate());
-                    mouseOverHeaderBtn = true;
-                }
-            }
-
-            headerRect.xMax = headerBtnX - 2f;
-
-            // 폼 이름 — 다중 선택 시 폰 이름 포함, 공간 부족 시 폰트 축소/말줄임 + 호버 전체 표시
-            string rawFormLabel = form.LabelCap.NullOrEmpty() ? form.defName : form.LabelCap.Resolve();
-            bool multiSelected = Find.Selector != null && Find.Selector.NumSelected > 1;
-            string formLabel = multiSelected && core.Pawn != null
-                ? rawFormLabel + " (" + core.Pawn.LabelShort + ")"
-                : rawFormLabel;
-            if (formLabel != _cachedFormLabel)
-            {
-                _cachedFormLabel = formLabel;
-                Text.Font = GameFont.Small;
-                _cachedFormLabelSmallWidth = Text.CalcSize(formLabel).x;
-            }
-            Text.Font = _cachedFormLabelSmallWidth > headerRect.width ? GameFont.Tiny : GameFont.Small;
-            string truncated = formLabel.Truncate(headerRect.width);
-            Widgets.Label(headerRect, truncated);
-            if (truncated != formLabel && Mouse.IsOver(headerRect))
-                TooltipHandler.TipRegion(headerRect, formLabel);
+            bool mouseOverHeaderBtn = RenderHeader(headerRect, form);
 
             // ── 하단: 프로그레스 바 ──
             Rect barRect = innerRect;
@@ -202,6 +145,65 @@ namespace ShapeshifterFramework.Gizmos
             }
 
             return new GizmoResult(GizmoState.Clear);
+        }
+
+        /// <summary>상단 헤더 영역 렌더: 폼 이름 + 자동사격 토글 버튼. 버튼 위에 마우스 있으면 true 반환.</summary>
+        private bool RenderHeader(Rect headerRect, ShapeshiftFormDef form)
+        {
+            float headerBtnX = headerRect.xMax;
+            bool mouseOverBtn = false;
+
+            // 자동사격 토글 표시 버튼 (우측 끝)
+            var settings = ShapeshifterFrameworkMod.Settings;
+            if (settings != null && HasRangedVerbs())
+            {
+                headerBtnX -= HeaderBtnSize;
+                Rect toggleBtnRect = new Rect(headerBtnX, headerRect.y, HeaderBtnSize, HeaderBtnSize);
+
+                GUI.DrawTexture(toggleBtnRect, TexCommand.Attack);
+                Rect checkRect = new Rect(toggleBtnRect.center.x, toggleBtnRect.y,
+                    toggleBtnRect.width / 2f, toggleBtnRect.height / 2f);
+                GUI.DrawTexture(checkRect, settings.showVerbAutoToggle
+                    ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex);
+
+                if (Widgets.ButtonInvisible(toggleBtnRect))
+                {
+                    settings.showVerbAutoToggle = !settings.showVerbAutoToggle;
+                    if (settings.showVerbAutoToggle)
+                        SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                    else
+                        SoundDefOf.Tick_Low.PlayOneShotOnCamera();
+                }
+
+                if (Mouse.IsOver(toggleBtnRect))
+                {
+                    Widgets.DrawHighlight(toggleBtnRect);
+                    TooltipHandler.TipRegion(toggleBtnRect, "SSF_Gizmo_VerbToggle_Tip".Translate());
+                    mouseOverBtn = true;
+                }
+            }
+
+            headerRect.xMax = headerBtnX - 2f;
+
+            // 폼 이름 — 다중 선택 시 폰 이름 포함, 공간 부족 시 폰트 축소/말줄임
+            string rawFormLabel = form.LabelCap.NullOrEmpty() ? form.defName : form.LabelCap.Resolve();
+            bool multiSelected = Find.Selector != null && Find.Selector.NumSelected > 1;
+            string formLabel = multiSelected && core.Pawn != null
+                ? rawFormLabel + " (" + core.Pawn.LabelShort + ")"
+                : rawFormLabel;
+            if (formLabel != _cachedFormLabel)
+            {
+                _cachedFormLabel = formLabel;
+                Text.Font = GameFont.Small;
+                _cachedFormLabelSmallWidth = Text.CalcSize(formLabel).x;
+            }
+            Text.Font = _cachedFormLabelSmallWidth > headerRect.width ? GameFont.Tiny : GameFont.Small;
+            string truncated = formLabel.Truncate(headerRect.width);
+            Widgets.Label(headerRect, truncated);
+            if (truncated != formLabel && Mouse.IsOver(headerRect))
+                TooltipHandler.TipRegion(headerRect, formLabel);
+
+            return mouseOverBtn;
         }
 
         /// <summary>폼에 원거리 verb가 있는지 확인 (폼 변경 시에만 재계산).</summary>

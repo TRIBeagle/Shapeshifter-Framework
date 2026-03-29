@@ -117,97 +117,89 @@ namespace ShapeshifterFramework.Hediffs
             }
         }
 
+        /// <summary>폼 전용 의류/무기를 생성하고 장착.</summary>
         void SpawnAndEquipFormGear(Pawn pawn, ShapeshiftFormDef form)
         {
             if (pawn == null || form == null) return;
-
             using (new ShapeshiftEquipLockScope(this))
             {
-                if (pawn.apparel != null && form.spawnApparelOnTransform != null && form.spawnApparelOnTransform.Count > 0)
+                SpawnFormApparel(pawn, form);
+                SpawnFormWeapons(pawn, form);
+            }
+        }
+
+        /// <summary>폼 전용 의류 생성: 충돌 의류 처리 후 새 의류 착용.</summary>
+        private void SpawnFormApparel(Pawn pawn, ShapeshiftFormDef form)
+        {
+            if (pawn.apparel == null || form.spawnApparelOnTransform == null || form.spawnApparelOnTransform.Count == 0) return;
+
+            for (int i = 0; i < form.spawnApparelOnTransform.Count; i++)
+            {
+                ThingDef apparelDef = form.spawnApparelOnTransform[i];
+                if (apparelDef == null || !apparelDef.IsApparel) continue;
+
+                // 충돌 의류 제거
+                List<Apparel> worn = pawn.apparel.WornApparel;
+                for (int j = worn.Count - 1; j >= 0; j--)
                 {
-                    for (int i = 0; i < form.spawnApparelOnTransform.Count; i++)
+                    Apparel existingAp = worn[j];
+                    if ((sourceItems != null && sourceItems.Contains(existingAp)) || generatedApparel.Contains(existingAp)) continue;
+
+                    if (pawn.RaceProps?.body != null && !ApparelUtility.CanWearTogether(apparelDef, existingAp.def, pawn.RaceProps.body))
                     {
-                        ThingDef apparelDef = form.spawnApparelOnTransform[i];
-                        if (apparelDef == null || !apparelDef.IsApparel) continue;
-
-                        if (pawn.apparel != null)
-                        {
-                            List<Apparel> worn = pawn.apparel.WornApparel;
-                            for (int j = worn.Count - 1; j >= 0; j--)
-                            {
-                                Apparel existingAp = worn[j];
-                                if ((sourceItems != null && sourceItems.Contains(existingAp)) || generatedApparel.Contains(existingAp)) continue;
-
-                                if (pawn.RaceProps?.body != null && !ApparelUtility.CanWearTogether(apparelDef, existingAp.def, pawn.RaceProps.body))
-                                {
-                                    pawn.apparel.Remove(existingAp);
-                                    HandleConflictingGear(existingAp, pawn, form.conflictingGearHandling);
-
-                                    if (!prevApparels.Contains(existingAp)) prevApparels.Add(existingAp);
-                                }
-                            }
-                        }
-
-                        ThingDef stuff = null;
-                        if (apparelDef.MadeFromStuff)
-                        {
-                            stuff = form.spawnApparelStuff;
-                            if (stuff == null || stuff.stuffProps == null || !stuff.stuffProps.CanMake(apparelDef))
-                            {
-                                stuff = GenStuff.DefaultStuffFor(apparelDef);
-                            }
-                        }
-
-                        Apparel newApparel = (Apparel)ThingMaker.MakeThing(apparelDef, stuff);
-
-                        if (pawn.apparel != null)
-                        {
-                            generatedApparel.Add(newApparel); // Wear 예외 시 고아 방지 — RemoveForm에서 반드시 파괴
-                            pawn.apparel.Wear(newApparel, dropReplacedApparel: false);
-                            pawn.apparel.Lock(newApparel);
-                        }
+                        pawn.apparel.Remove(existingAp);
+                        HandleConflictingGear(existingAp, pawn, form.conflictingGearHandling);
+                        if (!prevApparels.Contains(existingAp)) prevApparels.Add(existingAp);
                     }
                 }
 
-                if (pawn.equipment != null && form.spawnWeaponOnTransform != null && form.spawnWeaponOnTransform.Count > 0)
+                // 재질 결정 및 생성
+                ThingDef stuff = ResolveStuff(apparelDef, form.spawnApparelStuff);
+                Apparel newApparel = (Apparel)ThingMaker.MakeThing(apparelDef, stuff);
+
+                generatedApparel.Add(newApparel); // Wear 예외 시 고아 방지 — RemoveForm에서 반드시 파괴
+                pawn.apparel.Wear(newApparel, dropReplacedApparel: false);
+                pawn.apparel.Lock(newApparel);
+            }
+        }
+
+        /// <summary>폼 전용 무기 생성: 기존 무기 처리 후 새 무기 장착.</summary>
+        private void SpawnFormWeapons(Pawn pawn, ShapeshiftFormDef form)
+        {
+            if (pawn.equipment == null || form.spawnWeaponOnTransform == null || form.spawnWeaponOnTransform.Count == 0) return;
+
+            // 기존 무기 처리
+            if (pawn.equipment.Primary != null)
+            {
+                ThingWithComps existingWep = pawn.equipment.Primary;
+                if ((sourceItems == null || !sourceItems.Contains(existingWep)) && !generatedWeapons.Contains(existingWep))
                 {
-                    if (pawn.equipment != null && pawn.equipment.Primary != null)
-                    {
-                        ThingWithComps existingWep = pawn.equipment.Primary;
-                        if ((sourceItems == null || !sourceItems.Contains(existingWep)) && !generatedWeapons.Contains(existingWep))
-                        {
-                            pawn.equipment.Remove(existingWep);
-                            HandleConflictingGear(existingWep, pawn, form.conflictingGearHandling);
-
-                            if (!prevWeapons.Contains(existingWep)) prevWeapons.Add(existingWep);
-                        }
-                    }
-
-                    for (int i = 0; i < form.spawnWeaponOnTransform.Count; i++)
-                    {
-                        ThingDef weaponDef = form.spawnWeaponOnTransform[i];
-                        if (weaponDef == null || !weaponDef.IsWeapon) continue;
-
-                        ThingDef stuff = null;
-                        if (weaponDef.MadeFromStuff)
-                        {
-                            stuff = form.spawnWeaponStuff;
-                            if (stuff == null || stuff.stuffProps == null || !stuff.stuffProps.CanMake(weaponDef))
-                            {
-                                stuff = GenStuff.DefaultStuffFor(weaponDef);
-                            }
-                        }
-
-                        ThingWithComps newWeapon = (ThingWithComps)ThingMaker.MakeThing(weaponDef, stuff);
-
-                        if (pawn.equipment != null)
-                        {
-                            generatedWeapons.Add(newWeapon); // AddEquipment 예외 시 고아 방지 — RemoveForm에서 반드시 파괴
-                            pawn.equipment.AddEquipment(newWeapon);
-                        }
-                    }
+                    pawn.equipment.Remove(existingWep);
+                    HandleConflictingGear(existingWep, pawn, form.conflictingGearHandling);
+                    if (!prevWeapons.Contains(existingWep)) prevWeapons.Add(existingWep);
                 }
             }
+
+            for (int i = 0; i < form.spawnWeaponOnTransform.Count; i++)
+            {
+                ThingDef weaponDef = form.spawnWeaponOnTransform[i];
+                if (weaponDef == null || !weaponDef.IsWeapon) continue;
+
+                ThingDef stuff = ResolveStuff(weaponDef, form.spawnWeaponStuff);
+                ThingWithComps newWeapon = (ThingWithComps)ThingMaker.MakeThing(weaponDef, stuff);
+
+                generatedWeapons.Add(newWeapon); // AddEquipment 예외 시 고아 방지 — RemoveForm에서 반드시 파괴
+                pawn.equipment.AddEquipment(newWeapon);
+            }
+        }
+
+        /// <summary>ThingDef에 맞는 재질 결정. 지정 재질이 유효하지 않으면 기본 재질 반환.</summary>
+        private static ThingDef ResolveStuff(ThingDef thingDef, ThingDef preferredStuff)
+        {
+            if (!thingDef.MadeFromStuff) return null;
+            if (preferredStuff != null && preferredStuff.stuffProps != null && preferredStuff.stuffProps.CanMake(thingDef))
+                return preferredStuff;
+            return GenStuff.DefaultStuffFor(thingDef);
         }
 
         /// <summary>설정에 따라 드랍된 아이템을 금지(Forbid) 처리.</summary>
@@ -256,89 +248,70 @@ namespace ShapeshifterFramework.Hediffs
             }
         }
 
+        /// <summary>변신 해제 후 이전 장비를 자동 재착용.</summary>
         void TryReequipPreviousGear(Pawn pawn)
         {
             ShapeshiftDiagnostics.Info($"TryReequip: weapons={prevWeapons.Count}, apparels={prevApparels.Count}");
             if (pawn == null || pawn.Dead) return;
 
             ShapeshifterFrameworkSettings st = ShapeshifterFrameworkMod.Settings;
-            bool allowInv = (st == null) ? true : st.autoReequipFromInventory;
-            bool allowGround = (st == null) ? true : st.autoReequipFromGround;
+            bool allowInv = st == null || st.autoReequipFromInventory;
+            bool allowGround = st == null || st.autoReequipFromGround;
 
             var toQueue = new List<Job>(prevWeapons.Count + prevApparels.Count);
 
             using (new ShapeshiftEquipLockScope(this))
             {
-                if (prevWeapons.Count > 0)
-                {
-                    for (int i = 0; i < prevWeapons.Count; i++)
-                    {
-                        ThingWithComps w = prevWeapons[i];
-                        if (w == null || w.Destroyed) continue;
-
-                        if (w.Spawned)
-                        {
-                            if (!allowGround) continue;
-
-                            if (w.Map == pawn.MapHeld && pawn.CanReach(w, PathEndMode.ClosestTouch, Danger.Deadly))
-                            {
-                                if (w.IsForbidden(pawn)) w.SetForbidden(false);
-                                Job job = JobMaker.MakeJob(JobDefOf.Equip, w);
-                                job.playerForced = true;
-                                toQueue.Add(job);
-                            }
-                            continue;
-                        }
-
-                        if (allowInv && pawn.inventory?.innerContainer?.Contains(w) == true)
-                        {
-                            ShapeshiftInventoryReequipUtility.SafeEquipFromInventory(pawn, w);
-                        }
-                    }
-                }
-
-                if (prevApparels.Count > 0)
-                {
-                    for (int i = 0; i < prevApparels.Count; i++)
-                    {
-                        Apparel ap = prevApparels[i];
-                        if (ap == null || ap.Destroyed) continue;
-
-                        if (ap.Spawned)
-                        {
-                            if (!allowGround) continue;
-
-                            if (ap.Map == pawn.MapHeld && pawn.CanReach(ap, PathEndMode.ClosestTouch, Danger.Deadly))
-                            {
-                                if (ap.IsForbidden(pawn)) ap.SetForbidden(false);
-                                Job job = JobMaker.MakeJob(JobDefOf.Wear, ap);
-                                job.playerForced = true;
-                                toQueue.Add(job);
-                            }
-                            continue;
-                        }
-
-                        if (allowInv && pawn.inventory?.innerContainer?.Contains(ap) == true)
-                        {
-                            ShapeshiftInventoryReequipUtility.SafeWearFromInventory(pawn, ap, dropReplaced: true);
-                        }
-                    }
-                }
+                CollectReequipJobs(pawn, prevWeapons, allowInv, allowGround, toQueue, isWeapon: true);
+                CollectReequipJobs(pawn, prevApparels, allowInv, allowGround, toQueue, isWeapon: false);
             }
 
-            if (toQueue.Count > 0 && pawn.jobs != null)
-            {
-                Job first = toQueue[0];
-                pawn.jobs.TryTakeOrderedJob(first);
-                if (pawn.jobs.jobQueue != null)
-                {
-                    for (int i = 1; i < toQueue.Count; i++)
-                        pawn.jobs.jobQueue.EnqueueLast(toQueue[i]);
-                }
-            }
-
+            EnqueueJobs(pawn, toQueue);
             prevWeapons.Clear();
             prevApparels.Clear();
+        }
+
+        /// <summary>이전 장비 목록에서 재착용 가능한 아이템을 수집. 인벤토리는 즉시 착용, 바닥은 Job 큐잉.</summary>
+        private void CollectReequipJobs<T>(Pawn pawn, List<T> items, bool allowInv, bool allowGround, List<Job> toQueue, bool isWeapon) where T : Thing
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                T item = items[i];
+                if (item == null || item.Destroyed) continue;
+
+                if (item.Spawned)
+                {
+                    if (!allowGround) continue;
+                    if (item.Map == pawn.MapHeld && pawn.CanReach(item, PathEndMode.ClosestTouch, Danger.Deadly))
+                    {
+                        if (item.IsForbidden(pawn)) item.SetForbidden(false);
+                        Job job = JobMaker.MakeJob(isWeapon ? JobDefOf.Equip : JobDefOf.Wear, item);
+                        job.playerForced = true;
+                        toQueue.Add(job);
+                    }
+                    continue;
+                }
+
+                if (allowInv && pawn.inventory?.innerContainer?.Contains(item) == true)
+                {
+                    if (isWeapon)
+                        ShapeshiftInventoryReequipUtility.SafeEquipFromInventory(pawn, item as ThingWithComps);
+                    else
+                        ShapeshiftInventoryReequipUtility.SafeWearFromInventory(pawn, item as Apparel, dropReplaced: true);
+                }
+            }
+        }
+
+        /// <summary>수집된 재착용 Job들을 첫 번째는 즉시, 나머지는 큐에 추가.</summary>
+        private static void EnqueueJobs(Pawn pawn, List<Job> toQueue)
+        {
+            if (toQueue.Count == 0 || pawn.jobs == null) return;
+            pawn.jobs.TryTakeOrderedJob(toQueue[0]);
+            if (pawn.jobs.jobQueue != null)
+            {
+                for (int i = 1; i < toQueue.Count; i++)
+                    pawn.jobs.jobQueue.EnqueueLast(toQueue[i]);
+            }
         }
     }
 }

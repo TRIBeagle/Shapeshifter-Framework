@@ -316,36 +316,8 @@ namespace ShapeshifterFramework.Hediffs
                 hasSavedColors = true;
             }
 
-            // 능력 부여
-            tempAddedAbilities.Clear();
-            if (form.addAbilities != null && form.addAbilities.Count > 0 && pawn.abilities != null)
-            {
-                for (int i = 0; i < form.addAbilities.Count; i++)
-                {
-                    AbilityDef ad = form.addAbilities[i]; if (ad == null) continue;
-                    if (pawn.abilities.GetAbility(ad) == null)
-                    {
-                        pawn.abilities.GainAbility(ad);
-                        tempAddedAbilities.Add(ad);
-                    }
-                }
-            }
-
-            // 헤디프 부여
-            tempAddedHediffs.Clear();
-            tempAddedHediffsDefCache.Clear();
-            tempPartRestoreRecords.Clear();
-            if (form.addHediffs != null && form.addHediffs.Count > 0 && pawn.health != null)
-            {
-                ShapeshiftApplyHediffUtility.ApplyHediffEntries(
-                    pawn,
-                    form.addHediffs,
-                    tempAddedHediffs,
-                    tempAddedHediffsDefCache,
-                    tempPartRestoreRecords,
-                    prevDefCache: tempAddedHediffsDefCache
-                );
-            }
+            GrantAbilities(pawn, form);
+            GrantHediffs(pawn, form);
 
             // 상태 적용
             currentForm = form;
@@ -360,14 +332,7 @@ namespace ShapeshifterFramework.Hediffs
             ambientEffecterInstance = null;
             ambientFleckNextTick = 0;
 
-            // 체형/머리형/컬러 적용
-            if (pawn.story != null)
-            {
-                if (form.bodyType != null) pawn.story.bodyType = form.bodyType;
-                if (form.headType != null) pawn.story.headType = form.headType;
-                if (form.hairColor.HasValue) pawn.story.HairColor = form.hairColor.Value;
-                if (form.skinColor.HasValue) pawn.story.skinColorOverride = form.skinColor.Value;
-            }
+            ApplyAppearanceOverrides(pawn, form);
 
             // 런타임 캐시 등록
             ApplyRuntimeCaches(pawn, form);
@@ -393,6 +358,46 @@ namespace ShapeshifterFramework.Hediffs
             {
                 _isApplyingOrRemoving = false;
             }
+        }
+
+        /// <summary>폼의 addAbilities를 폰에 부여하고 tempAddedAbilities에 기록.</summary>
+        private void GrantAbilities(Pawn pawn, ShapeshiftFormDef form)
+        {
+            tempAddedAbilities.Clear();
+            if (form.addAbilities == null || form.addAbilities.Count == 0 || pawn.abilities == null) return;
+            for (int i = 0; i < form.addAbilities.Count; i++)
+            {
+                AbilityDef ad = form.addAbilities[i]; if (ad == null) continue;
+                if (pawn.abilities.GetAbility(ad) == null)
+                {
+                    pawn.abilities.GainAbility(ad);
+                    tempAddedAbilities.Add(ad);
+                }
+            }
+        }
+
+        /// <summary>폼의 addHediffs를 폰에 부여하고 임시 리스트에 기록.</summary>
+        private void GrantHediffs(Pawn pawn, ShapeshiftFormDef form)
+        {
+            tempAddedHediffs.Clear();
+            tempAddedHediffsDefCache.Clear();
+            tempPartRestoreRecords.Clear();
+            if (form.addHediffs == null || form.addHediffs.Count == 0 || pawn.health == null) return;
+            ShapeshiftApplyHediffUtility.ApplyHediffEntries(
+                pawn, form.addHediffs,
+                tempAddedHediffs, tempAddedHediffsDefCache, tempPartRestoreRecords,
+                prevDefCache: tempAddedHediffsDefCache
+            );
+        }
+
+        /// <summary>폼의 체형/머리형/헤어색/피부색 오버라이드를 적용.</summary>
+        private void ApplyAppearanceOverrides(Pawn pawn, ShapeshiftFormDef form)
+        {
+            if (pawn.story == null) return;
+            if (form.bodyType != null) pawn.story.bodyType = form.bodyType;
+            if (form.headType != null) pawn.story.headType = form.headType;
+            if (form.hairColor.HasValue) pawn.story.HairColor = form.hairColor.Value;
+            if (form.skinColor.HasValue) pawn.story.skinColorOverride = form.skinColor.Value;
         }
 
         /// <summary>현재 폼 해제.</summary>
