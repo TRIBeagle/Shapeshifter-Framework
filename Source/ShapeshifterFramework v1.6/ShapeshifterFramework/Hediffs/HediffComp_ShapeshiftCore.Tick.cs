@@ -85,7 +85,7 @@ namespace ShapeshifterFramework.Hediffs
                                 (item is Apparel ap && pawn.apparel != null && pawn.apparel.Contains(ap)) ||
                                 (item is ThingWithComps tc && pawn.equipment != null && pawn.equipment.Contains(tc));
 
-                            if (item.Destroyed || item.Spawned || !isEquipped)
+                            if (item.Destroyed || !isEquipped)
                             {
                                 ShapeshiftDiagnostics.Info("Source item lost. Forcing shapeshift revert.");
                                 Messages.Message("SSF_Message_RevertDueToItemLost".Translate(pawn.LabelShortCap, item.Label), pawn, MessageTypeDefOf.NegativeEvent, false);

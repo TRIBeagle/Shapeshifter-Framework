@@ -265,12 +265,20 @@ namespace ShapeshifterFramework.Hediffs
             if (desc == null)
                 desc = forToggle ? "SSF_Verb_ToggleDesc".Translate() : "SSF_Verb_OrderDesc".Translate();
 
-            // durationCostTicks 비용 표시
+            // durationCostTicks / entropyCost 비용 표시
             int cost = o != null ? o.durationCostTicks : 0;
-            if (cost > 0)
+            float entropy = o != null ? o.entropyCost : 0f;
+            if (cost > 0 || entropy > 0f)
             {
-                string costStr = GenDate.ToStringTicksToPeriod(cost, allowSeconds: false, shortForm: false);
-                desc += "\n\n" + "SSF_DurationCost".Translate(costStr);
+                var sb = new System.Text.StringBuilder(desc);
+                if (cost > 0)
+                {
+                    string costStr = GenDate.ToStringTicksToPeriod(cost, allowSeconds: false, shortForm: false);
+                    sb.Append("\n\n").Append("SSF_DurationCost".Translate(costStr));
+                }
+                if (entropy > 0f)
+                    sb.Append("\n").Append("SSF_EntropyCost".Translate(entropy.ToString("0.#")));
+                return sb.ToString();
             }
 
             return desc;
@@ -281,6 +289,13 @@ namespace ShapeshifterFramework.Hediffs
         {
             var o = FindGizmoOption(index, v);
             return o != null ? o.durationCostTicks : 0;
+        }
+
+        /// <summary>verb 사용 시 추가할 신경열 반환. 0이면 비용 없음.</summary>
+        public float GetVerbEntropyCost(int index, Verb v)
+        {
+            var o = FindGizmoOption(index, v);
+            return o != null ? o.entropyCost : 0f;
         }
 
         /// <summary>verb 인덱스를 빠르게 조회 (패치용).</summary>
