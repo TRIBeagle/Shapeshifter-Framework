@@ -87,6 +87,9 @@
 
   <SSF_GizmoDisabled_IdeologyForbidden>Ideology forbids shapeshifting.</SSF_GizmoDisabled_IdeologyForbidden>
 
+  <SSF_EntropyCost>Neural heat: {0}</SSF_EntropyCost>
+  <SSF_Message_EntropyOverflow>Would exceed neural heat limit.</SSF_Message_EntropyOverflow>
+
   <SSF_Message_DurationExtended>{0}'s shapeshift duration has been extended.</SSF_Message_DurationExtended>
   <SSF_Message_NotTransformed>{0} is not currently transformed.</SSF_Message_NotTransformed>
   <SSF_Message_WrongFormForExtend>{0} is not in the required form for this effect.</SSF_Message_WrongFormForExtend>

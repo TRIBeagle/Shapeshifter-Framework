@@ -1,7 +1,8 @@
 // ShapeshifterFramework | Patches | Patch_Verb_TryCastShot_DurationCost.cs
-// 목적 : 변신 폼 verb 사용 시 durationCostTicks만큼 변신 잔여 시간을 차감.
-// 용도 : verbGizmoOptions에 durationCostTicks가 설정된 verb를 성공적으로 발사하면
-//        해당 틱만큼 변신 타이머를 깎는다. 버스트 무기는 첫 발에만 1회 차감.
+// 목적 : 변신 폼 verb 사용 시 durationCostTicks 차감 및 entropyCost 신경열 추가.
+// 용도 : verbGizmoOptions에 설정된 비용을 성공적으로 발사 후 적용.
+//        durationCostTicks → 변신 타이머 차감, entropyCost → 신경열 추가 (로열티 DLC).
+//        버스트 무기는 첫 발에만 1회 차감.
 // 주의 : TryCastShot()은 abstract라 Harmony 패치 불가 → concrete 메서드 TryCastNextBurstShot() 패치.
 //        Prefix에서 burstShotsLeft를 __state에 저장, Postfix에서 감소 여부로 발사 성공 판별.
 
@@ -48,14 +49,30 @@ namespace ShapeshifterFramework.Patches
             if (idx < 0) return;
 
             int cost = core.GetVerbDurationCost(idx, __instance);
-            if (cost <= 0) return;
+            float entropy = core.GetVerbEntropyCost(idx, __instance);
 
-            core.ExtendDuration(-cost, true);
+            // 비용이 아무것도 없으면 즉시 반환
+            if (cost <= 0 && entropy <= 0f) return;
+
+            // 변신 시간 차감
+            if (cost > 0)
+                core.ExtendDuration(-cost, true);
+
+            // 신경열 추가 (로열티 DLC 비활성 또는 EntropyTracker 없으면 자연 스킵)
+            if (entropy > 0f)
+            {
+                var tracker = pawn.psychicEntropy;
+                if (tracker != null)
+                {
+                    tracker.TryAddEntropy(entropy);
+                }
+            }
 
             if (ShapeshifterFrameworkMod.Settings?.enableDebugLog == true)
             {
                 string verbName = __instance.verbProps?.label ?? __instance.GetType().Name;
-                Log.Message($"[SSF] Verb '{verbName}' used — deducted {cost} ticks (remaining: {core.RemainingShapeshiftTicks})");
+                Log.Message($"[SSF] Verb '{verbName}' used — deducted {cost} ticks (remaining: {core.RemainingShapeshiftTicks})" +
+                    (entropy > 0f ? $", entropy +{entropy}" : ""));
             }
         }
     }

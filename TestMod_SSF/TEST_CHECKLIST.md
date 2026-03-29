@@ -150,6 +150,11 @@
 - [ ] `5-M06` Overhead 레이어만 숨겨지는지 확인
 - [ ] `5-M07` FragGrenade/ShootBeam 사용 시 변신 시간 차감 확인 (durationCostTicks)
 - [ ] `5-M08` 차감 verb 기즈모 설명에 "변신 시간 소모" 텍스트 표시 확인
+- [ ] `5-M11` entropyCost 설정 verb: psylink 있는 폰에서 사용 시 신경열 증가 확인
+- [ ] `5-M12` entropyCost 설정 verb: psylink 없는 폰에서 신경열 한계=0이므로 기즈모 비활성 확인
+- [ ] `5-M13` entropyCost 설정 verb: psylink 있지만 신경열 꽉 찼을 때 기즈모 비활성 확인
+- [ ] `5-M14` entropyCost 설정 verb: 로열티 DLC 비활성 시 신경열 비용 무시, 자유 사용 확인
+- [ ] `5-M15` entropyCost 기즈모 설명에 "신경열: N" 텍스트 표시 확인
 - [ ] `5-M09` PrimalRoar 어빌리티: 수인 변신 시에만 표시, 사용 시 변신 시간 7500틱 차감 확인
 - [ ] `5-M10` PrimalRoar 어빌리티: 변신 해제 시 어빌리티 제거 확인
 - [ ] `5-M11` PrimalRoar 어빌리티: 툴팁에 "변신 시간 소모" 표시 확인

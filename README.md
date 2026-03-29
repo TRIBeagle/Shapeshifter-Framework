@@ -87,6 +87,10 @@ HediffDef (진입점 — 스탯/severity)
 | **HAR (Humanoid Alien Races)** | Compatible — body addon scaling, head addon detection |
 | **Facial Animation** | Compatible — face component backup/restore |
 | **Simple Sidearms** | Compatible — memory backup/restore on transform |
+| **Pocket Sand** | Compatible — gizmo filtering on transform |
+| **Combat Extended** | Compatible — use XPath patches to swap `Tool`→`ToolCE`, `VerbProperties`→`VerbPropertiesCE` ([guide](FORMDEF_GUIDE_EN.md#8-combat-extended-compatibility)) |
+| **Anomaly DLC** | Compatible — use `formAllowedMutants`/`formDisallowedMutants` to control per-form mutant eligibility |
+| **Pawnmorpher** | **Incompatible** — overlapping transformation systems cause hediff/body conflicts |
 
 ## Build
 ```bash

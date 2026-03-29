@@ -375,6 +375,7 @@
 | `toggleDesc` | `string` | 자동공격 토글 설명 |
 | `iconPath` | `string` | 아이콘 오버라이드 |
 | `durationCostTicks` | `int` | 사용 시 차감할 변신 잔여 틱 (0 = 무료). 버스트 무기는 버스트당 1회 차감. |
+| `entropyCost` | `float` | 사용 시 추가할 신경열 (0 = 없음). 로열티 DLC 필요. 신경열 추적기가 없는 폰은 발사 불가. 버스트당 1회. |
 
 ```xml
 <verbs>
@@ -403,6 +404,7 @@
     <toggleLabel>자동 물기</toggleLabel>
     <toggleDesc>자동 물기 공격 토글</toggleDesc>
     <durationCostTicks>2500</durationCostTicks> <!-- 사용 시 변신 시간 ~1시간 차감 -->
+    <entropyCost>12</entropyCost> <!-- 사용 시 신경열 12 추가 (로열티 DLC) -->
   </li>
 </verbGizmoOptions>
 ```

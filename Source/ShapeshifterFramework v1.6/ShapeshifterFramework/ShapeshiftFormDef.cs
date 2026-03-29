@@ -70,6 +70,9 @@ namespace ShapeshifterFramework
 
         /// <summary>이 verb 사용 시 차감할 변신 잔여 틱. 0이면 비용 없음. 버스트 무기는 버스트당 1회 차감.</summary>
         public int durationCostTicks;
+
+        /// <summary>이 verb 사용 시 추가할 신경열(Neural Heat). 0이면 비용 없음. 로열티 DLC 비활성 시 무시. 버스트당 1회.</summary>
+        public float entropyCost;
     }
 
     // AddedPart 정책

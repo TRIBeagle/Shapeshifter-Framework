@@ -87,6 +87,9 @@
 
   <SSF_GizmoDisabled_IdeologyForbidden>이데올로기가 변신을 금지합니다.</SSF_GizmoDisabled_IdeologyForbidden>
 
+  <SSF_EntropyCost>신경열: {0}</SSF_EntropyCost>
+  <SSF_Message_EntropyOverflow>신경열 한계를 초과합니다.</SSF_Message_EntropyOverflow>
+
   <SSF_Message_DurationExtended>{0}의 변신 지속 시간이 연장되었습니다.</SSF_Message_DurationExtended>
   <SSF_Message_NotTransformed>{0}은(는) 현재 변신 중이 아닙니다.</SSF_Message_NotTransformed>
   <SSF_Message_WrongFormForExtend>{0}은(는) 이 효과에 필요한 폼이 아닙니다.</SSF_Message_WrongFormForExtend>

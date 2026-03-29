@@ -379,6 +379,7 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 | `toggleDesc` | `string` | Auto-attack toggle description |
 | `iconPath` | `string` | Icon override |
 | `durationCostTicks` | `int` | Shift duration deducted per use (0 = free). Burst weapons deduct once per burst. |
+| `entropyCost` | `float` | Neural heat added per use (0 = none). Requires Royalty DLC. Pawns without a psychic entropy tracker cannot fire. Burst weapons add once per burst. |
 
 ```xml
 <verbs>
@@ -407,6 +408,7 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
     <toggleLabel>Auto-bite</toggleLabel>
     <toggleDesc>Toggle automatic bite attacks</toggleDesc>
     <durationCostTicks>2500</durationCostTicks> <!-- costs ~1 hour of shift time per use -->
+    <entropyCost>12</entropyCost> <!-- adds 12 neural heat per use (Royalty DLC) -->
   </li>
 </verbGizmoOptions>
 ```

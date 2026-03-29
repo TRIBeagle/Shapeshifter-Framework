@@ -86,6 +86,16 @@ namespace ShapeshifterFramework.Hediffs
                 else if (!v.Available())
                     cmd.Disable("CommandCannotFire".Translate());
 
+                // 신경열 비용 체크: tracker가 있지만 오버플로우 시 비활성
+                // tracker == null (DLC 없음/메카노이드) → 신경열 비용 자체 무시, 자유 사용
+                float entropyGizmo = gizOpt != null ? gizOpt.entropyCost : 0f;
+                if (entropyGizmo > 0f)
+                {
+                    var entropy = pawn.psychicEntropy;
+                    if (entropy != null && entropy.WouldOverflowEntropy(entropyGizmo))
+                        cmd.Disable("SSF_Message_EntropyOverflow".Translate());
+                }
+
                 yield return cmd;
 
                 if (multiSelected) continue;
