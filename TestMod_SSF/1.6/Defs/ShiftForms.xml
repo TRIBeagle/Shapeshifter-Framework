@@ -135,6 +135,16 @@
     <renderHideApparelLayers><li>All</li></renderHideApparelLayers>
     <renderHideWeaponTags><li>All</li></renderHideWeaponTags>
     <renderHideHediffDefNames><li>All</li></renderHideHediffDefNames>
+    <!-- 변신 FX: 연기 뿜으면서 양으로 변함 -->
+    <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
+    <transformEnterFleckCount>3</transformEnterFleckCount>
+    <transformEnterFleckScale>1.2</transformEnterFleckScale>
+    <transformEnterSound>PsychicPulseGlobal</transformEnterSound>
+    <transformExitFleck>PsycastSkipFlashExit</transformExitFleck>
+    <transformExitFleckCount>2</transformExitFleckCount>
+    <transformExitFleckScale>1.0</transformExitFleckScale>
+    <transformExitSound>PsychicSootheGlobal</transformExitSound>
+    <transformFxCooldownTicks>30</transformFxCooldownTicks>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
   <!-- ======================================================
@@ -550,8 +560,9 @@
     <canRevertVoluntarily>true</canRevertVoluntarily>
     <headType>Male_AverageNormal</headType>
     <!-- 종족 제한: formAllowedRaces는 어빌리티 comp에서 처리, formDisallowedRaces 추가 테스트 -->
+    <!-- formDisallowedRaces: ThingDef 종족 기준. Thrumbo 종족은 이 폼 사용 불가 -->
     <formDisallowedRaces>
-      <li>Waster</li>
+      <li>Thrumbo</li>
     </formDisallowedRaces>
     <apparelEquipLock>Locked</apparelEquipLock>
     <weaponEquipLock>Unlocked</weaponEquipLock>

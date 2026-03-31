@@ -27,6 +27,7 @@ namespace ShapeshifterFramework.Patches
             yield return AccessTools.Method(typeof(PawnRenderNode_Beard), "GraphicFor");
             yield return AccessTools.Method(typeof(PawnRenderNode_Tattoo_Head), "GraphicFor");
             yield return AccessTools.Method(typeof(PawnRenderNode_Tattoo_Body), "GraphicFor");
+            yield return AccessTools.Method(typeof(PawnRenderNode_AnimalPart), "GraphicFor");
         }
 
         [HarmonyPostfix]

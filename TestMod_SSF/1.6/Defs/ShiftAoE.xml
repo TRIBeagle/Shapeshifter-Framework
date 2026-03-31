@@ -17,7 +17,7 @@
     <comps>
       <li Class="ShapeshifterFramework.Comps.CompProperties_AbilityGiveHediff_Shapeshift">
         <hediffDef>SSFTest_SheepFormHediff</hediffDef>
-        <affectHostileOnly>true</affectHostileOnly>
+        <affectHostileOnly>false</affectHostileOnly>
       </li>
       <li Class="CompProperties_AbilityFleckOnTarget">
         <fleckDef>PsycastPsychicEffect</fleckDef>

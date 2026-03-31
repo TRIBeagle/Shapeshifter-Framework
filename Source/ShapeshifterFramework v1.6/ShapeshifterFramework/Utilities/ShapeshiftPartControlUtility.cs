@@ -112,6 +112,7 @@ namespace ShapeshifterFramework.Utilities
             else if (node is PawnRenderNode_Tattoo_Head) { baseOpt = form.tattooHead; nodeShader = ShaderDatabase.CutoutSkinOverlay; }
             else if (node is PawnRenderNode_Tattoo_Body) { baseOpt = form.tattooBody; nodeShader = ShaderDatabase.CutoutSkinOverlay; }
             else if (node is PawnRenderNode_Body) { baseOpt = form.body; nodeShader = ShaderDatabase.Cutout; isBody = true; }
+            else if (node is PawnRenderNode_AnimalPart) { baseOpt = form.body; nodeShader = ShaderDatabase.Cutout; isBody = true; }
 
             if (baseOpt == null) return false;
 
