@@ -53,4 +53,18 @@
   <SSFTest_Hediff_CombatAutoShift.label>combat instinct (auto-shift test)</SSFTest_Hediff_CombatAutoShift.label>
   <SSFTest_Hediff_CombatAutoShift.description>Combat instinct. Automatically transforms into a bear warrior once when entering combat.</SSFTest_Hediff_CombatAutoShift.description>
 
+  <!-- Permanent Transform -->
+  <SSFTest_Hediff_BeastCurse.label>beast curse (permanent transform test)</SSFTest_Hediff_BeastCurse.label>
+  <SSFTest_Hediff_BeastCurse.description>A curse that slowly turns the victim into a bear. At severity 1.0, the transformation becomes permanent.</SSFTest_Hediff_BeastCurse.description>
+
+  <SSFTest_Hediff_CheeseCurse.label>cheese curse (thing transform test)</SSFTest_Hediff_CheeseCurse.label>
+  <SSFTest_Hediff_CheeseCurse.description>A bizarre curse that turns the victim into cheese wheels at severity 1.0.</SSFTest_Hediff_CheeseCurse.description>
+
+  <!-- Harvestable -->
+  <SSFTest_Hediff_WoolGrowth.label>wool growth (harvestable test)</SSFTest_Hediff_WoolGrowth.label>
+  <SSFTest_Hediff_WoolGrowth.description>Magical wool grows on the pawn. Can be sheared when full.</SSFTest_Hediff_WoolGrowth.description>
+
+  <SSFTest_Hediff_EggLaying.label>egg laying (auto-spawn test)</SSFTest_Hediff_EggLaying.label>
+  <SSFTest_Hediff_EggLaying.description>Magical eggs. Female pawns automatically lay eggs on the ground.</SSFTest_Hediff_EggLaying.description>
+
 </LanguageData>

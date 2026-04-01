@@ -53,4 +53,18 @@
   <SSFTest_Hediff_CombatAutoShift.label>전투 본능 (자동 변신 테스트)</SSFTest_Hediff_CombatAutoShift.label>
   <SSFTest_Hediff_CombatAutoShift.description>전투 본능. 전투에 돌입하면 곰 전사로 1회 자동 변신한다.</SSFTest_Hediff_CombatAutoShift.description>
 
+  <!-- 영구 전환 -->
+  <SSFTest_Hediff_BeastCurse.label>야수의 저주 (영구 전환 테스트)</SSFTest_Hediff_BeastCurse.label>
+  <SSFTest_Hediff_BeastCurse.description>서서히 곰으로 변해가는 저주. severity 1.0 도달 시 영구적으로 곰이 된다.</SSFTest_Hediff_BeastCurse.description>
+
+  <SSFTest_Hediff_CheeseCurse.label>치즈 저주 (Thing 전환 테스트)</SSFTest_Hediff_CheeseCurse.label>
+  <SSFTest_Hediff_CheeseCurse.description>기괴한 저주. severity 1.0 도달 시 치즈로 변한다.</SSFTest_Hediff_CheeseCurse.description>
+
+  <!-- 자원 수확 -->
+  <SSFTest_Hediff_WoolGrowth.label>털 성장 (수확 테스트)</SSFTest_Hediff_WoolGrowth.label>
+  <SSFTest_Hediff_WoolGrowth.description>마법의 털이 자란다. 가득 차면 수확 가능.</SSFTest_Hediff_WoolGrowth.description>
+
+  <SSFTest_Hediff_EggLaying.label>알 낳기 (자동 스폰 테스트)</SSFTest_Hediff_EggLaying.label>
+  <SSFTest_Hediff_EggLaying.description>마법의 알. 암컷 폰이 자동으로 알을 낳는다.</SSFTest_Hediff_EggLaying.description>
+
 </LanguageData>

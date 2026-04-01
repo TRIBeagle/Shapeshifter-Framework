@@ -313,4 +313,107 @@
     </comps>
   </HediffDef>
 
+  <!-- ======================================================
+       Permanent Transform test — severity 1.0 → bear conversion
+       ====================================================== -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_BeastCurse</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>beast curse (permanent transform test)</label>
+    <description>A curse that slowly turns the victim into a bear. At severity 1.0, the transformation becomes permanent.</description>
+    <isBad>true</isBad>
+    <defaultLabelColor>(0.6, 0.2, 0.2)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <initialSeverity>0.5</initialSeverity>
+    <stages>
+      <li>
+        <label>early stage</label>
+        <minSeverity>0</minSeverity>
+      </li>
+      <li>
+        <label>advanced</label>
+        <minSeverity>0.7</minSeverity>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>-0.1</offset></li>
+        </capMods>
+      </li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_PermanentTransform">
+        <animalKind>Bear_Grizzly</animalKind>
+        <severityThreshold>1.0</severityThreshold>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- Permanent Transform test — severity 1.0 → cheese (Thing conversion) -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_CheeseCurse</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>cheese curse (thing transform test)</label>
+    <description>A bizarre curse that turns the victim into cheese wheels at severity 1.0.</description>
+    <isBad>true</isBad>
+    <defaultLabelColor>(0.9, 0.8, 0.3)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <initialSeverity>0.8</initialSeverity>
+    <stages>
+      <li><label>cursed</label></li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_PermanentTransform">
+        <thingDef>MealSimple</thingDef>
+        <thingCount>5</thingCount>
+        <severityThreshold>1.0</severityThreshold>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- ======================================================
+       Harvestable test — wool harvesting via hediff
+       ====================================================== -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_WoolGrowth</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>wool growth (harvestable test)</label>
+    <description>Magical wool grows on the pawn. Can be sheared when full.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.8, 0.7, 0.5)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <initialSeverity>1.0</initialSeverity>
+    <stages>
+      <li><label>growing</label></li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
+        <resourceDef>WoolSheep</resourceDef>
+        <resourceAmount>20</resourceAmount>
+        <intervalDays>2</intervalDays>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <!-- Harvestable test — egg auto-spawn, female only -->
+  <HediffDef>
+    <defName>SSFTest_Hediff_EggLaying</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>egg laying (auto-spawn test)</label>
+    <description>Magical eggs. Female pawns automatically lay eggs on the ground.</description>
+    <isBad>false</isBad>
+    <defaultLabelColor>(0.9, 0.85, 0.7)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <initialSeverity>1.0</initialSeverity>
+    <stages>
+      <li><label>laying</label></li>
+    </stages>
+    <comps>
+      <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
+        <resourceDef>EggChickenUnfertilized</resourceDef>
+        <resourceAmount>1</resourceAmount>
+        <intervalDays>1</intervalDays>
+        <autoSpawn>true</autoSpawn>
+        <requiredGender>Female</requiredGender>
+      </li>
+    </comps>
+  </HediffDef>
+
 </Defs>
