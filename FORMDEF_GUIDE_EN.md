@@ -113,7 +113,10 @@ Power suit / armor transformation. Keeps human appearance and existing gear. Con
 
 ```xml
 <formAllowedRaces><li>Human</li></formAllowedRaces>
-<formDisallowedRaces><li>Waster</li></formDisallowedRaces>
+<formDisallowedRaces><li>Thrumbo</li></formDisallowedRaces>
+<formAllowedMutants MayRequire="Ludeon.RimWorld.Anomaly">
+  <li>Ghoul</li>
+</formAllowedMutants>
 ```
 
 ### 3.2 Scale & Offset
@@ -320,6 +323,15 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 <sustainHediffs>
   <li>MyMod_GuardianMark</li>
 </sustainHediffs>
+<sustainApparels>
+  <li>Apparel_PlateArmor</li>
+</sustainApparels>
+<sustainWeapons>
+  <li>MeleeWeapon_LongSword</li>
+</sustainWeapons>
+<sustainGenes MayRequire="Ludeon.RimWorld.Biotech">
+  <li>MyMod_Gene_BeastBlood</li>
+</sustainGenes>
 <sustainMode>Any</sustainMode>
 ```
 
@@ -422,6 +434,12 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 | `soundMeleeHitBuilding` | `SoundDef` | Hit building sound |
 | `soundMeleeMiss` | `SoundDef` | Miss sound |
 
+```xml
+<soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
+<soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
+<soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
+```
+
 ### 3.13 Work Restrictions
 | Field | Type | Description |
 |-------|------|-------------|
@@ -441,6 +459,11 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 |-------|------|---------|-------------|
 | `suppressIdeologyUncoveredThoughts` | `bool` | `true` | Suppress all Ideology nudity/exposure thought penalties (groin, chest, hair, face uncovered) while transformed. Prevents animal/monster forms from triggering "naked savage" debuffs. |
 | `linkedSacredAnimalDef` | `ThingDef` | `null` | Animal race this form represents. Mood varies by precept stage when matching venerated animal (-8 / -3 / +2 / +5 / +8) |
+
+```xml
+<suppressIdeologyUncoveredThoughts>true</suppressIdeologyUncoveredThoughts>
+<linkedSacredAnimalDef>Bear_Grizzly</linkedSacredAnimalDef>
+```
 
 **Shapeshifting Precept (5 stages):**
 
@@ -520,12 +543,26 @@ Persistent effects during the transformation.
 | `soundAngry` | `SoundDef` | Angry/aggro sound |
 | `soundEating` | `SoundDef` | Eating sound |
 
+```xml
+<soundCall>Pawn_Furskin_Call</soundCall>
+<soundWounded>Pawn_Furskin_Wounded</soundWounded>
+<soundDeath>Pawn_Furskin_Death</soundDeath>
+<soundAngry>Pawn_Bear_Angry</soundAngry>
+<soundEating>PredatorLarge_Eat</soundEating>
+```
+
 ### 3.19 Blood & Flesh
 | Field | Type | Description |
 |-------|------|-------------|
 | `bloodDef` | `ThingDef` | Blood filth override |
 | `bloodSmearDef` | `ThingDef` | Blood smear override |
 | `fleshType` | `FleshTypeDef` | Flesh type override |
+
+```xml
+<bloodDef>Filth_BloodInsect</bloodDef>
+<bloodSmearDef>Filth_BloodInsectSmear</bloodSmearDef>
+<fleshType>Insectoid</fleshType>
+```
 
 ### 3.20 UI & Duration
 | Field | Type | Default | Description |
@@ -535,6 +572,14 @@ Persistent effects during the transformation.
 | `revertOnDowned` | `bool` | `false` | Auto-revert immediately when pawn becomes downed (unconscious/incapacitated). Checked every tick. |
 | `gizmoIconPathEnter` | `string` | null | Custom enter gizmo icon |
 | `gizmoIconPathRevert` | `string` | null | Custom revert gizmo icon |
+
+```xml
+<durationTicks>30000</durationTicks>    <!-- 12 hours -->
+<canRevertVoluntarily>true</canRevertVoluntarily>
+<revertOnDowned>true</revertOnDowned>
+<gizmoIconPathEnter>UI/Commands/MyMod_Shift_Enter</gizmoIconPathEnter>
+<gizmoIconPathRevert>UI/Commands/MyMod_Shift_Revert</gizmoIconPathRevert>
+```
 
 ---
 

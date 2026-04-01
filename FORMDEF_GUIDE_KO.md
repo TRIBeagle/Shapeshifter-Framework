@@ -113,7 +113,10 @@
 
 ```xml
 <formAllowedRaces><li>Human</li></formAllowedRaces>
-<formDisallowedRaces><li>Waster</li></formDisallowedRaces>
+<formDisallowedRaces><li>Thrumbo</li></formDisallowedRaces>
+<formAllowedMutants MayRequire="Ludeon.RimWorld.Anomaly">
+  <li>Ghoul</li>
+</formAllowedMutants>
 ```
 
 ### 3.2 스케일 & 오프셋
@@ -316,6 +319,15 @@
 <sustainHediffs>
   <li>MyMod_GuardianMark</li>
 </sustainHediffs>
+<sustainApparels>
+  <li>Apparel_PlateArmor</li>
+</sustainApparels>
+<sustainWeapons>
+  <li>MeleeWeapon_LongSword</li>
+</sustainWeapons>
+<sustainGenes MayRequire="Ludeon.RimWorld.Biotech">
+  <li>MyMod_Gene_BeastBlood</li>
+</sustainGenes>
 <sustainMode>Any</sustainMode>
 ```
 
@@ -418,6 +430,12 @@
 | `soundMeleeHitBuilding` | `SoundDef` | 건물 타격 사운드 |
 | `soundMeleeMiss` | `SoundDef` | 빗나감 사운드 |
 
+```xml
+<soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
+<soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
+<soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
+```
+
 ### 3.13 작업 제한
 | 필드 | 타입 | 설명 |
 |------|------|------|
@@ -437,6 +455,11 @@
 |------|------|--------|------|
 | `suppressIdeologyUncoveredThoughts` | `bool` | `true` | 변신 중 이데올로기 노출 관련 감정 페널티(하의/상의/머리/얼굴 노출) 전부 억제. 동물/몬스터 폼에서 "미개한 벌거벗음" 디버프 방지. |
 | `linkedSacredAnimalDef` | `ThingDef` | `null` | 이 폼이 대표하는 동물 종족. 숭배 동물 일치 시 규율 단계별 기분 (-8 / -3 / +2 / +5 / +8) |
+
+```xml
+<suppressIdeologyUncoveredThoughts>true</suppressIdeologyUncoveredThoughts>
+<linkedSacredAnimalDef>Bear_Grizzly</linkedSacredAnimalDef>
+```
 
 **변신 규율 (5단계):**
 
@@ -516,12 +539,26 @@
 | `soundAngry` | `SoundDef` | 분노 사운드 |
 | `soundEating` | `SoundDef` | 식사 사운드 |
 
+```xml
+<soundCall>Pawn_Furskin_Call</soundCall>
+<soundWounded>Pawn_Furskin_Wounded</soundWounded>
+<soundDeath>Pawn_Furskin_Death</soundDeath>
+<soundAngry>Pawn_Bear_Angry</soundAngry>
+<soundEating>PredatorLarge_Eat</soundEating>
+```
+
 ### 3.19 혈흔 & 살점
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | `bloodDef` | `ThingDef` | 혈흔 오버라이드 |
 | `bloodSmearDef` | `ThingDef` | 혈흔 번짐 오버라이드 |
 | `fleshType` | `FleshTypeDef` | 살점 유형 오버라이드 |
+
+```xml
+<bloodDef>Filth_BloodInsect</bloodDef>
+<bloodSmearDef>Filth_BloodInsectSmear</bloodSmearDef>
+<fleshType>Insectoid</fleshType>
+```
 
 ### 3.20 UI & 지속 시간
 | 필드 | 타입 | 기본값 | 설명 |
@@ -531,6 +568,14 @@
 | `revertOnDowned` | `bool` | `false` | 쓰러짐(의식 상실/무력화) 시 즉시 자동 해제. 매 틱 검사. |
 | `gizmoIconPathEnter` | `string` | null | 변신 기즈모 아이콘 |
 | `gizmoIconPathRevert` | `string` | null | 해제 기즈모 아이콘 |
+
+```xml
+<durationTicks>30000</durationTicks>    <!-- 12시간 -->
+<canRevertVoluntarily>true</canRevertVoluntarily>
+<revertOnDowned>true</revertOnDowned>
+<gizmoIconPathEnter>UI/Commands/MyMod_Shift_Enter</gizmoIconPathEnter>
+<gizmoIconPathRevert>UI/Commands/MyMod_Shift_Revert</gizmoIconPathRevert>
+```
 
 ---
 
