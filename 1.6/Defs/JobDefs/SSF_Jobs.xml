@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <!-- HediffComp_Harvestable 기반 자원 수확 Job -->
+  <JobDef>
+    <defName>SSF_GatherHediffResource</defName>
+    <driverClass>ShapeshifterFramework.Jobs.JobDriver_GatherHediffResource</driverClass>
+    <reportString>gathering resources from TargetA.</reportString>
+    <casualInterruptible>true</casualInterruptible>
+    <collideWithPawns>true</collideWithPawns>
+    <neverFleeFromEnemies>false</neverFleeFromEnemies>
+  </JobDef>
+
+  <WorkGiverDef>
+    <defName>SSF_GatherHediffResource</defName>
+    <giverClass>ShapeshifterFramework.Jobs.WorkGiver_GatherHediffResource</giverClass>
+    <workType>Handling</workType>
+    <label>gather hediff resources</label>
+    <verb>gather</verb>
+    <gerund>gathering hediff resources from</gerund>
+    <priorityInType>60</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+</Defs>
