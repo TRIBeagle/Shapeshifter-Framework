@@ -73,6 +73,7 @@ namespace ShapeshifterFramework.Hediffs
             if (!IsActive) return;
 
             // 바닐라 패턴: 1일 = 60000틱
+            if (Props.intervalDays <= 0) return;
             float growthPerTick = 1f / (Props.intervalDays * 60000f);
 
             var pawn = Pawn;
@@ -144,6 +145,16 @@ namespace ShapeshifterFramework.Hediffs
         {
             base.CompExposeData();
             Scribe_Values.Look(ref fullness, Props?.saveKey ?? "ssfHarvestFullness", 0f);
+        }
+
+        /// <summary>hediff 이름 옆 괄호 안에 표시 (건강 탭). 예: "bear form (Resource 45%)"</summary>
+        public override string CompLabelInBracketsExtra
+        {
+            get
+            {
+                if (!IsActive || fullness <= 0f) return null;
+                return Props.inspectStringKey.Translate(fullness.ToStringPercent());
+            }
         }
 
         public override string CompTipStringExtra

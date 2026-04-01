@@ -69,7 +69,7 @@ namespace ShapeshifterFramework.Patches
             if (dinfo.Weapon != null && dinfo.Weapon != attacker.def) return;
 
             // 폼 라벨을 상처 소스로 사용
-            string formLabel = form.LabelCap.NullOrEmpty() ? form.defName : form.label;
+            string formLabel = form.LabelCap.NullOrEmpty() ? form.defName : form.LabelCap.Resolve();
 
             // 이번 타격으로 추가된 부상 hediff의 sourceLabel을 폼 이름으로 교체
             if (pawn.health?.hediffSet?.hediffs == null) return;

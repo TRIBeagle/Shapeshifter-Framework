@@ -77,22 +77,7 @@ namespace ShapeshifterFramework.Jobs
             yield return wait;
         }
 
-        /// <summary>대상 폰에서 HediffComp_Harvestable 검색.</summary>
         private static HediffComp_Harvestable GetHarvestComp(Pawn target)
-        {
-            if (target?.health?.hediffSet?.hediffs == null) return null;
-            var hediffs = target.health.hediffSet.hediffs;
-            for (int i = 0; i < hediffs.Count; i++)
-            {
-                var hwc = hediffs[i] as HediffWithComps;
-                if (hwc?.comps == null) continue;
-                for (int c = 0; c < hwc.comps.Count; c++)
-                {
-                    if (hwc.comps[c] is HediffComp_Harvestable h && h.ActiveAndFull)
-                        return h;
-                }
-            }
-            return null;
-        }
+            => WorkGiver_GatherHediffResource.GetHarvestComp(target);
     }
 }
