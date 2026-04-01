@@ -82,6 +82,8 @@
     <Compile Include="Gizmos\Gizmo_ShapeshiftStatus.cs" />
     <Compile Include="Hediffs\Hediff_ShapeshiftForm.cs" />
     <Compile Include="Hediffs\HediffComp_AutoShift.cs" />
+    <Compile Include="Hediffs\HediffComp_BeastTransform.cs" />
+    <Compile Include="Hediffs\HediffComp_Harvestable.cs" />
     <Compile Include="Hediffs\HediffCompProperties_AutoShift.cs" />
     <Compile Include="Hediffs\HediffComp_ShapeshiftCore.cs" />
     <Compile Include="Hediffs\HediffComp_ShapeshiftCore.ExposeData.cs" />
