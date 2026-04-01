@@ -53,21 +53,11 @@ namespace ShapeshifterFramework.Jobs
             return JobMaker.MakeJob(SSFJobDefOf.SSF_GatherHediffResource, t);
         }
 
-        /// <summary>폰에서 ActiveAndFull인 HediffComp_Harvestable 검색. JobDriver에서도 참조.</summary>
+        /// <summary>폰에서 ActiveAndFull인 HediffComp_Harvestable 검색. 캐시 O(1) → ActiveAndFull 검증.</summary>
         internal static HediffComp_Harvestable GetHarvestComp(Pawn target)
         {
-            if (target?.health?.hediffSet?.hediffs == null) return null;
-            var hediffs = target.health.hediffSet.hediffs;
-            for (int i = 0; i < hediffs.Count; i++)
-            {
-                var hwc = hediffs[i] as HediffWithComps;
-                if (hwc?.comps == null) continue;
-                for (int c = 0; c < hwc.comps.Count; c++)
-                {
-                    if (hwc.comps[c] is HediffComp_Harvestable h && h.ActiveAndFull)
-                        return h;
-                }
-            }
+            var comp = HediffComp_Harvestable.TryGetCached(target);
+            if (comp != null && comp.ActiveAndFull) return comp;
             return null;
         }
     }

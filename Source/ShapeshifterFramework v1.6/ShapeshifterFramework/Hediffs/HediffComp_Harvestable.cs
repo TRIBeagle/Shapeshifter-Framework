@@ -5,6 +5,7 @@
 //        autoSpawn=true: fullness 1.0 시 바닥에 자동 스폰 (알 패턴)
 //        femaleOnly=true: 암컷만 활성 (우유/알 패턴)
 
+using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -43,6 +44,32 @@ namespace ShapeshifterFramework.Hediffs
     /// <summary>hediff 존재 시 자원 fullness가 틱마다 성장. 수확 또는 자동 스폰.</summary>
     public class HediffComp_Harvestable : HediffComp
     {
+        // ── 폰별 캐시: WorkGiver에서 O(1) 조회용 ──
+        private static readonly Dictionary<Pawn, HediffComp_Harvestable> _cache = new Dictionary<Pawn, HediffComp_Harvestable>(32);
+
+        /// <summary>캐시에서 O(1) 조회. 없으면 null.</summary>
+        public static HediffComp_Harvestable TryGetCached(Pawn pawn)
+        {
+            if (pawn != null && _cache.TryGetValue(pawn, out var comp))
+                return comp;
+            return null;
+        }
+
+        private void RegisterCache()
+        {
+            var pawn = Pawn;
+            if (pawn != null) _cache[pawn] = this;
+        }
+
+        private void UnregisterCache()
+        {
+            var pawn = Pawn;
+            if (pawn != null) _cache.Remove(pawn);
+        }
+
+        /// <summary>게임 로드/맵 전환 시 캐시 정리.</summary>
+        public static void ClearCache() => _cache.Clear();
+
         private float fullness;
 
         public HediffCompProperties_Harvestable Props => (HediffCompProperties_Harvestable)props;
@@ -141,10 +168,26 @@ namespace ShapeshifterFramework.Hediffs
             fullness = 0f;
         }
 
+        public override void CompPostPostAdd(DamageInfo? dinfo)
+        {
+            base.CompPostPostAdd(dinfo);
+            RegisterCache();
+        }
+
+        public override void CompPostPostRemoved()
+        {
+            base.CompPostPostRemoved();
+            UnregisterCache();
+        }
+
         public override void CompExposeData()
         {
             base.CompExposeData();
             Scribe_Values.Look(ref fullness, Props?.saveKey ?? "ssfHarvestFullness", 0f);
+
+            // 로드 후 캐시 재등록
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+                RegisterCache();
         }
 
         /// <summary>hediff 이름 옆 괄호 안에 표시 (건강 탭). 예: "bear form (Resource 45%)"</summary>

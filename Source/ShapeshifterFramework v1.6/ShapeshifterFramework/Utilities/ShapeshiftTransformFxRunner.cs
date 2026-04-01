@@ -62,6 +62,7 @@ namespace ShapeshifterFramework.Utilities
             {
                 ShapeshiftCoreUtility.ClearEvents();
                 ShapeshiftRuntimeCaches.ClearAll();
+                Hediffs.HediffComp_Harvestable.ClearCache();
 
                 // 캐시 클리어로 유실된 변신 폰 레지스트리 + 런타임 캐시 재등록
                 if (Find.Maps != null)
