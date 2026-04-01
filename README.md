@@ -29,6 +29,8 @@ HediffDef (entry point — stats/severity)
 - Revert on downed, sustain conditions (apparel/weapon/hediff/gene), auto-shift triggers
 - Multi-stage form chains (`allowedFromForms`)
 - Revert byproducts (item drops, hediff apply)
+- Permanent transformation (pawn → animal with name/relation transfer, or pawn → Thing)
+- Hediff-based resource harvesting (wool/milk/egg patterns in one HediffComp)
 
 **Visuals**
 - Body/head/hair/beard/tattoo per-part control (Default / Hidden / Replace)
@@ -147,6 +149,8 @@ HediffDef (진입점 — 스탯/severity)
 - 쓰러짐 시 해제, 유지 조건(의류/무기/헤디프/유전자), 자동 변신 트리거
 - 다단계 변신 체인 (`allowedFromForms`)
 - 해제 부산물 (아이템 드랍, 헤디프 부여)
+- 영구 전환 (폰→동물 이름/관계 이전, 또는 폰→Thing)
+- hediff 기반 자원 수확 (울/우유/알 패턴을 HediffComp 하나로 통합)
 
 **비주얼**
 - 몸/머리/머리카락/수염/문신 파트별 제어 (기본/숨김/교체)

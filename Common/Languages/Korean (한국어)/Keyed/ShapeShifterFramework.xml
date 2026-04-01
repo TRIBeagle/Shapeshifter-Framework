@@ -90,6 +90,19 @@
   <SSF_EntropyCost>신경열: {0}</SSF_EntropyCost>
   <SSF_Message_EntropyOverflow>신경열 한계를 초과합니다.</SSF_Message_EntropyOverflow>
 
+  <!-- PermanentTransform -->
+  <SSF_PermanentTransform_LetterTitle>영구 전환</SSF_PermanentTransform_LetterTitle>
+  <SSF_PermanentTransform_LetterText>{0}이(가) {1}(으)로 영구 전환되었습니다.</SSF_PermanentTransform_LetterText>
+
+  <!-- Harvestable -->
+  <SSF_Harvestable_Fullness>자원 성장: {0}</SSF_Harvestable_Fullness>
+
+  <!-- 설정 헤더 -->
+  <SSF_Setting_Header_Rendering>[ 렌더링 ]</SSF_Setting_Header_Rendering>
+  <SSF_Setting_Header_Equipment>[ 장비 ]</SSF_Setting_Header_Equipment>
+  <SSF_Setting_Header_UI>[ UI ]</SSF_Setting_Header_UI>
+  <SSF_Setting_Header_Debug>[ 디버그 ]</SSF_Setting_Header_Debug>
+
   <SSF_Message_DurationExtended>{0}의 변신 지속 시간이 연장되었습니다.</SSF_Message_DurationExtended>
   <SSF_Message_NotTransformed>{0}은(는) 현재 변신 중이 아닙니다.</SSF_Message_NotTransformed>
   <SSF_Message_WrongFormForExtend>{0}은(는) 이 효과에 필요한 폼이 아닙니다.</SSF_Message_WrongFormForExtend>

@@ -56,28 +56,33 @@ namespace ShapeshifterFramework
             Listing_Standard list = new Listing_Standard();
             list.Begin(inRect);
 
+            // ── 렌더링 ──
+            list.Label("SSF_Setting_Header_Rendering".Translate());
             list.CheckboxLabeled("SSF_Setting_PortraitScale_Title".Translate(), ref enablePortraitScale, "SSF_Setting_PortraitScale_Desc".Translate());
             list.CheckboxLabeled("SSF_Setting_WeaponScale_Title".Translate(), ref scaleHeldWeapons, "SSF_Setting_WeaponScale_Desc".Translate());
 
-            list.Gap(10f);
+            list.GapLine(12f);
 
+            // ── 장비 ──
+            list.Label("SSF_Setting_Header_Equipment".Translate());
             list.CheckboxLabeled("SSF_Setting_ReequipInventory_Title".Translate(), ref autoReequipFromInventory, "SSF_Setting_ReequipInventory_Desc".Translate());
             list.CheckboxLabeled("SSF_Setting_ReequipGround_Title".Translate(), ref autoReequipFromGround, "SSF_Setting_ReequipGround_Desc".Translate());
-
-            list.Gap(10f);
-
             list.CheckboxLabeled("SSF_Setting_ForbidItems_Title".Translate(), ref forbidDroppedItemsOnTransform, "SSF_Setting_ForbidItems_Desc".Translate());
 
-            list.Gap(10f);
+            list.GapLine(12f);
 
+            // ── UI ──
+            list.Label("SSF_Setting_Header_UI".Translate());
             list.CheckboxLabeled("SSF_Setting_VerbToggle_Title".Translate(), ref showVerbAutoToggle, "SSF_Setting_VerbToggle_Desc".Translate());
             list.CheckboxLabeled("SSF_Setting_ShapeshiftBar_Title".Translate(), ref showShapeshiftBar, "SSF_Setting_ShapeshiftBar_Desc".Translate());
 
-            list.Gap(10f);
+            list.GapLine(12f);
 
+            // ── 디버그 ──
+            list.Label("SSF_Setting_Header_Debug".Translate());
             list.CheckboxLabeled("SSF_Setting_DebugLog_Title".Translate(), ref enableDebugLog, "SSF_Setting_DebugLog_Desc".Translate());
 
-            list.Gap(12f);
+            list.GapLine(12f);
 
             if (list.ButtonText("SSF_Setting_ResetAll_Title".Translate()))
             {

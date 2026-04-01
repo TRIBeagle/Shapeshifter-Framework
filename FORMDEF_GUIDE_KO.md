@@ -626,6 +626,77 @@
 
 ---
 
+## 4b. 추가 HediffComp
+
+### HediffComp_PermanentTransform
+hediff severity가 임계값에 도달하면 폰을 동물 또는 Thing으로 영구 전환. 되돌릴 수 없음.
+
+| 필드 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `animalKind` | `PawnKindDef` | null | 스폰할 동물. 이름/관계 자동 이전. |
+| `thingDef` | `ThingDef` | null | animalKind가 null일 때 스폰할 Thing (치즈, 조각상 등) |
+| `thingCount` | `int` | 1 | thingDef 스폰 수량 |
+| `severityThreshold` | `float` | 1.0 | 전환 발동 severity 임계값 |
+| `sendLetter` | `bool` | true | 전환 시 알림 레터 발송 |
+| `letterTitleKey` | `string` | `SSF_PermanentTransform_LetterTitle` | 레터 타이틀 번역 키 |
+| `letterTextKey` | `string` | `SSF_PermanentTransform_LetterText` | 레터 본문 키. {0}=폰 이름, {1}=결과물 이름 |
+
+```xml
+<!-- 중독 severity 1.0 → 영구 곰 전환 -->
+<li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_PermanentTransform">
+  <animalKind>Bear_Grizzly</animalKind>
+  <severityThreshold>1.0</severityThreshold>
+</li>
+
+<!-- 저주 → 치즈 전환 -->
+<li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_PermanentTransform">
+  <thingDef>CheeseWheel</thingDef>
+  <thingCount>3</thingCount>
+  <severityThreshold>1.0</severityThreshold>
+</li>
+```
+
+### HediffComp_Harvestable
+hediff 활성 중 자원 수확 가능. 바닐라 CompShearable/CompMilkable/CompEggLayer 3종을 HediffComp 하나로 통합.
+
+| 필드 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `resourceDef` | `ThingDef` | null | 수확 자원 |
+| `resourceAmount` | `int` | 10 | 1회 수확 수량 |
+| `intervalDays` | `int` | 10 | fullness 0→1 소요 일수 |
+| `autoSpawn` | `bool` | false | true: 바닥에 자동 스폰 (알 패턴). false: WorkGiver 수확 (울/우유 패턴) |
+| `requiredGender` | `Gender?` | null | null=무관, `Female`=암컷만, `Male`=수컷만 |
+| `inspectStringKey` | `string` | `SSF_Harvestable_Fullness` | 인스펙터 표시 키. {0}=fullness% |
+| `saveKey` | `string` | `ssfHarvestFullness` | Scribe 저장 키 |
+
+```xml
+<!-- 울: 수확 필요, 10일 주기 -->
+<li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
+  <resourceDef>WoolSheep</resourceDef>
+  <resourceAmount>45</resourceAmount>
+  <intervalDays>10</intervalDays>
+</li>
+
+<!-- 우유: 수확 필요, 암컷만, 1일 주기 -->
+<li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
+  <resourceDef>RawMilk</resourceDef>
+  <resourceAmount>14</resourceAmount>
+  <intervalDays>1</intervalDays>
+  <requiredGender>Female</requiredGender>
+</li>
+
+<!-- 알: 자동 스폰, 암컷만, 1일 주기 -->
+<li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
+  <resourceDef>EggChickenUnfertilized</resourceDef>
+  <resourceAmount>1</resourceAmount>
+  <intervalDays>1</intervalDays>
+  <autoSpawn>true</autoSpawn>
+  <requiredGender>Female</requiredGender>
+</li>
+```
+
+---
+
 ## 5. 트리거 시스템
 
 ### 5.1 어빌리티 (자기/대상/범위)

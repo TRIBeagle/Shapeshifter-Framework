@@ -90,6 +90,19 @@
   <SSF_EntropyCost>Neural heat: {0}</SSF_EntropyCost>
   <SSF_Message_EntropyOverflow>Would exceed neural heat limit.</SSF_Message_EntropyOverflow>
 
+  <!-- PermanentTransform -->
+  <SSF_PermanentTransform_LetterTitle>Permanent Transformation</SSF_PermanentTransform_LetterTitle>
+  <SSF_PermanentTransform_LetterText>{0} has been permanently transformed into {1}.</SSF_PermanentTransform_LetterText>
+
+  <!-- Harvestable -->
+  <SSF_Harvestable_Fullness>Resource growth: {0}</SSF_Harvestable_Fullness>
+
+  <!-- Settings Headers -->
+  <SSF_Setting_Header_Rendering>[ Rendering ]</SSF_Setting_Header_Rendering>
+  <SSF_Setting_Header_Equipment>[ Equipment ]</SSF_Setting_Header_Equipment>
+  <SSF_Setting_Header_UI>[ UI ]</SSF_Setting_Header_UI>
+  <SSF_Setting_Header_Debug>[ Debug ]</SSF_Setting_Header_Debug>
+
   <SSF_Message_DurationExtended>{0}'s shapeshift duration has been extended.</SSF_Message_DurationExtended>
   <SSF_Message_NotTransformed>{0} is not currently transformed.</SSF_Message_NotTransformed>
   <SSF_Message_WrongFormForExtend>{0} is not in the required form for this effect.</SSF_Message_WrongFormForExtend>

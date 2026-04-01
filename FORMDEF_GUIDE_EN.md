@@ -630,6 +630,77 @@ Multiple HediffDefs can share one FormDef with different stats:
 
 ---
 
+## 4b. Additional HediffComps
+
+### HediffComp_PermanentTransform
+Permanently converts a pawn into an animal or Thing when hediff severity reaches a threshold. Irreversible.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `animalKind` | `PawnKindDef` | null | Animal to spawn. Name and relations auto-transferred. |
+| `thingDef` | `ThingDef` | null | Thing to spawn if animalKind is null (cheese, statue, etc.) |
+| `thingCount` | `int` | 1 | Stack count for thingDef spawn |
+| `severityThreshold` | `float` | 1.0 | Severity at which conversion triggers |
+| `sendLetter` | `bool` | true | Send notification letter on conversion |
+| `letterTitleKey` | `string` | `SSF_PermanentTransform_LetterTitle` | Letter title translation key |
+| `letterTextKey` | `string` | `SSF_PermanentTransform_LetterText` | Letter text key. {0}=pawn name, {1}=result name |
+
+```xml
+<!-- Addiction severity 1.0 → permanent bear -->
+<li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_PermanentTransform">
+  <animalKind>Bear_Grizzly</animalKind>
+  <severityThreshold>1.0</severityThreshold>
+</li>
+
+<!-- Wabbajack curse → cheese wheel -->
+<li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_PermanentTransform">
+  <thingDef>CheeseWheel</thingDef>
+  <thingCount>3</thingCount>
+  <severityThreshold>1.0</severityThreshold>
+</li>
+```
+
+### HediffComp_Harvestable
+Enables resource gathering from a pawn while the hediff is active. Combines vanilla CompShearable/CompMilkable/CompEggLayer into one HediffComp.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `resourceDef` | `ThingDef` | null | Resource to harvest |
+| `resourceAmount` | `int` | 10 | Amount per harvest cycle |
+| `intervalDays` | `int` | 10 | Days for fullness 0→1 |
+| `autoSpawn` | `bool` | false | true: auto-spawn on ground (egg pattern). false: WorkGiver harvest (wool/milk pattern) |
+| `requiredGender` | `Gender?` | null | null=any, `Female`=female only, `Male`=male only |
+| `inspectStringKey` | `string` | `SSF_Harvestable_Fullness` | Inspector display key. {0}=fullness% |
+| `saveKey` | `string` | `ssfHarvestFullness` | Scribe save key |
+
+```xml
+<!-- Wool: manual harvest, 10-day cycle -->
+<li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
+  <resourceDef>WoolSheep</resourceDef>
+  <resourceAmount>45</resourceAmount>
+  <intervalDays>10</intervalDays>
+</li>
+
+<!-- Milk: manual harvest, female only, 1-day cycle -->
+<li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
+  <resourceDef>RawMilk</resourceDef>
+  <resourceAmount>14</resourceAmount>
+  <intervalDays>1</intervalDays>
+  <requiredGender>Female</requiredGender>
+</li>
+
+<!-- Eggs: auto-spawn, female only, 1-day cycle -->
+<li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
+  <resourceDef>EggChickenUnfertilized</resourceDef>
+  <resourceAmount>1</resourceAmount>
+  <intervalDays>1</intervalDays>
+  <autoSpawn>true</autoSpawn>
+  <requiredGender>Female</requiredGender>
+</li>
+```
+
+---
+
 ## 5. Trigger System
 
 ### 5.1 Ability (Self / Target / AoE)
