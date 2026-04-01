@@ -99,11 +99,9 @@ namespace ShapeshifterFramework.Hediffs
                     new TargetInfo(pos, map));
             }
 
-            // 원본 폰 제거
+            // 원본 폰 제거 — Kill()이 시체 생성/파괴를 내부 처리
             if (!pawn.Dead)
                 pawn.Kill(null);
-            if (!pawn.Destroyed && pawn.Corpse != null)
-                pawn.Corpse.Destroy();
         }
 
         /// <summary>동물 폰 생성 + 이름/관계 이전.</summary>
