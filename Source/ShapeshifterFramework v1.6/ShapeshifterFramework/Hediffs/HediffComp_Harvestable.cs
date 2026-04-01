@@ -1,10 +1,9 @@
 // ShapeshifterFramework | Hediffs | HediffComp_Harvestable.cs
 // 목적 : hediff 보유 중 자원 수확을 가능하게 하는 범용 HediffComp.
-// 용도 : 바닐라 CompHasGatherableBodyResource(ThingComp)와 동일한 fullness 성장 + 수확 패턴을
-//        HediffComp로 구현. 변신 폼에 addHediffs로 부여하면 해당 폼 유지 중 수확 가능.
-//        hediff 제거(변신 해제) 시 자동으로 수확 불가.
-// 주의 : 바닐라 WorkGiver_GatherAnimalBodyResources는 IsAnimal 체크가 있어 인간 폰에 적용 불가.
-//        별도 WorkGiver/JobDriver 또는 바닐라 패치가 필요함 (서브모드에서 구현).
+// 용도 : 바닐라 CompShearable/CompMilkable/CompEggLayer 3종을 HediffComp 하나로 통합.
+//        autoSpawn=false (기본): WorkGiver가 수확 (울/우유 패턴)
+//        autoSpawn=true: fullness 1.0 시 바닥에 자동 스폰 (알 패턴)
+//        femaleOnly=true: 암컷만 활성 (우유/알 패턴)
 
 using RimWorld;
 using UnityEngine;
@@ -23,7 +22,13 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>fullness 0→1 충전에 걸리는 게임 일수.</summary>
         public int intervalDays = 10;
 
-        /// <summary>인스펙터에 표시할 번역 키. {0} = fullness%.</summary>
+        /// <summary>true면 fullness 1.0 도달 시 바닥에 자동 스폰 (알 패턴). false면 WorkGiver 수확 (울/우유 패턴).</summary>
+        public bool autoSpawn = false;
+
+        /// <summary>true면 암컷(Female)만 활성. 수컷/무성은 비활성.</summary>
+        public bool femaleOnly = false;
+
+        /// <summary>인스펙터 표시 번역 키. {0} = fullness%.</summary>
         public string inspectStringKey = "SSF_Harvestable_Fullness";
 
         /// <summary>Scribe 저장 키.</summary>
@@ -35,7 +40,7 @@ namespace ShapeshifterFramework.Hediffs
         }
     }
 
-    /// <summary>hediff 존재 시 자원 fullness가 틱마다 성장하고, 가득 차면 수확 가능.</summary>
+    /// <summary>hediff 존재 시 자원 fullness가 틱마다 성장. 수확 또는 자동 스폰.</summary>
     public class HediffComp_Harvestable : HediffComp
     {
         private float fullness;
@@ -45,10 +50,10 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>자원 충전도 (0~1).</summary>
         public float Fullness => fullness;
 
-        /// <summary>수확 가능 여부.</summary>
-        public bool ActiveAndFull => IsActive && fullness >= 1f;
+        /// <summary>WorkGiver 수확 가능 여부 (autoSpawn=false일 때만 사용).</summary>
+        public bool ActiveAndFull => !Props.autoSpawn && IsActive && fullness >= 1f;
 
-        /// <summary>활성 여부: 폰이 살아있고 소속 팩션이 있어야 함.</summary>
+        /// <summary>활성 여부.</summary>
         private bool IsActive
         {
             get
@@ -57,6 +62,7 @@ namespace ShapeshifterFramework.Hediffs
                 if (pawn == null || pawn.Dead) return false;
                 if (pawn.Faction == null) return false;
                 if (pawn.Suspended) return false;
+                if (Props.femaleOnly && pawn.gender != Gender.Female) return false;
                 return true;
             }
         }
@@ -66,18 +72,47 @@ namespace ShapeshifterFramework.Hediffs
             base.CompPostTick(ref severityAdjustment);
             if (!IsActive) return;
 
-            // 바닐라 CompHasGatherableBodyResource.CompTick 패턴: 1일 = 60000틱
+            // 바닐라 패턴: 1일 = 60000틱
             float growthPerTick = 1f / (Props.intervalDays * 60000f);
 
-            // 바닐라처럼 BodyResourceGrowthSpeed 적용 (영양/건강 상태 반영)
             var pawn = Pawn;
             if (pawn != null)
                 growthPerTick *= PawnUtility.BodyResourceGrowthSpeed(pawn);
 
-            fullness = Mathf.Clamp01(fullness + growthPerTick);
+            fullness += growthPerTick;
+
+            if (fullness >= 1f)
+            {
+                if (Props.autoSpawn)
+                {
+                    // 알 패턴: 자동 스폰 후 리셋
+                    AutoSpawnResource(pawn);
+                    fullness = 0f;
+                }
+                else
+                {
+                    fullness = 1f; // WorkGiver 수확 대기
+                }
+            }
         }
 
-        /// <summary>수확 실행. 바닐라 CompHasGatherableBodyResource.Gathered 패턴.</summary>
+        /// <summary>autoSpawn 시 자원을 바닥에 자동 스폰.</summary>
+        private void AutoSpawnResource(Pawn pawn)
+        {
+            if (Props.resourceDef == null || !pawn.Spawned) return;
+
+            int total = Props.resourceAmount;
+            while (total > 0)
+            {
+                int stack = Mathf.Clamp(total, 1, Props.resourceDef.stackLimit);
+                total -= stack;
+                Thing thing = ThingMaker.MakeThing(Props.resourceDef);
+                thing.stackCount = stack;
+                GenPlace.TryPlaceThing(thing, pawn.Position, pawn.Map, ThingPlaceMode.Near);
+            }
+        }
+
+        /// <summary>수확 실행 (WorkGiver 경유). 바닐라 Gathered 패턴.</summary>
         public void Gathered(Pawn doer)
         {
             if (!IsActive || Props.resourceDef == null) return;
