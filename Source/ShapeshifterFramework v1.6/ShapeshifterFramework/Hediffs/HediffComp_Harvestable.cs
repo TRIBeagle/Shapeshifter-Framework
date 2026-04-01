@@ -25,8 +25,8 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>true면 fullness 1.0 도달 시 바닥에 자동 스폰 (알 패턴). false면 WorkGiver 수확 (울/우유 패턴).</summary>
         public bool autoSpawn = false;
 
-        /// <summary>true면 암컷(Female)만 활성. 수컷/무성은 비활성.</summary>
-        public bool femaleOnly = false;
+        /// <summary>수확 활성에 필요한 성별. null이면 제한 없음.</summary>
+        public Gender? requiredGender = null;
 
         /// <summary>인스펙터 표시 번역 키. {0} = fullness%.</summary>
         public string inspectStringKey = "SSF_Harvestable_Fullness";
@@ -62,7 +62,7 @@ namespace ShapeshifterFramework.Hediffs
                 if (pawn == null || pawn.Dead) return false;
                 if (pawn.Faction == null) return false;
                 if (pawn.Suspended) return false;
-                if (Props.femaleOnly && pawn.gender != Gender.Female) return false;
+                if (Props.requiredGender.HasValue && pawn.gender != Props.requiredGender.Value) return false;
                 return true;
             }
         }
