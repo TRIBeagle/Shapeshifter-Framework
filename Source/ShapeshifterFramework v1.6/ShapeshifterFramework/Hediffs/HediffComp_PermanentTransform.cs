@@ -4,7 +4,7 @@
 //        animalKind 지정 시 → 해당 동물 폰 스폰 (콜로니스트 → 길들여진, 기타 → 야생)
 //        thingDef 지정 시 → 해당 Thing 스폰 (치즈/조각상 등 폰→비폰 전환)
 //        둘 다 지정 시 animalKind 우선.
-// 주의 : keepName/keepRelations 미사용 시 원본 폰의 모든 데이터(스킬/기억/관계)가 소실됨.
+// 주의 : 동물 전환 시 이름/관계 자동 이전. Thing 전환 시 모든 데이터 소실.
 
 using RimWorld;
 using System.Collections.Generic;
@@ -25,12 +25,6 @@ namespace ShapeshifterFramework.Hediffs
 
         /// <summary>전환 발동 severity 임계값. 기본 1.0.</summary>
         public float severityThreshold = 1f;
-
-        /// <summary>원본 폰의 이름을 전환된 동물에 이전. thingDef 전환 시 무시.</summary>
-        public bool keepName = true;
-
-        /// <summary>원본 폰의 사회적 관계를 전환된 동물에 이전. thingDef 전환 시 무시.</summary>
-        public bool keepRelations = true;
 
         /// <summary>전환 시 레터 발송 여부.</summary>
         public bool sendLetter = true;
@@ -123,12 +117,10 @@ namespace ShapeshifterFramework.Hediffs
                 forceGenerateNewPawn: true
             ));
 
-            // 이름 이전
-            if (Props.keepName && original.Name != null)
+            // 동물 전환: 이름/관계 자동 이전 (동물도 폰이므로 가능)
+            if (original.Name != null)
                 animal.Name = original.Name;
-
-            // 관계 이전
-            if (Props.keepRelations && original.relations != null)
+            if (original.relations != null)
                 TransferRelations(original, animal);
 
             if (map != null && pos.IsValid)
