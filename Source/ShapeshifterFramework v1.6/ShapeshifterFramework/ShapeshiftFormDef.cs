@@ -63,9 +63,9 @@ namespace ShapeshifterFramework
     {
         public string verbLabel;      // 매칭할 verb의 label (필수 권장). 미지정 시 리스트 인덱스로 폴백
         public string label;          // verb 명령 라벨(없으면 verbProps.label)
-        public string desc;           // verb 명령 설명(없으면 기본)
+        public string description;     // verb 명령 설명(없으면 기본)
         public string toggleLabel;    // 토글 버튼 라벨(없으면 label 사용)
-        public string toggleDesc;     // 토글 버튼 설명(없으면 기본)
+        public string toggleDescription; // 토글 버튼 설명(없으면 기본)
         public string iconPath;       // 지정하면 v.UIIcon 대신 이 아이콘 사용(선택)
 
         /// <summary>이 verb 사용 시 차감할 변신 잔여 틱. 0이면 비용 없음. 버스트 무기는 버스트당 1회 차감.</summary>
@@ -236,10 +236,6 @@ namespace ShapeshifterFramework
         public bool? replaceNativeTools;
 
         public List<VerbGizmoOption> verbGizmoOptions; // verbs 순서에 맞춰 매칭
-
-        // 근접 공격 시 상처 라벨에 표시할 종족 ThingDef (예: Warg → "Warg teeth")
-        // null이면 바닐라 기본(CasterPawn.def = "인간 teeth") 사용
-        public ThingDef damageSourceDef;
 
         #endregion
 

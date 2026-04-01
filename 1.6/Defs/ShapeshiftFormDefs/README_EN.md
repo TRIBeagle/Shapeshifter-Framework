@@ -24,7 +24,7 @@
 | Type/Color | `bodyType`, `headType`, `hairColor`, `skinColor` |
 | Sustain | `sustainApparels`, `sustainWeapons`, `sustainHediffs`, `sustainGenes`, `sustainMode` (All/Any) |
 | Additions | `addHediffs` (HediffAddEntry list), `addAbilities` (AbilityDef list) |
-| Combat | `verbs`, `tools`, `replaceNativeVerbs`, `replaceNativeTools`, `verbGizmoOptions`, `damageSourceDef` |
+| Combat | `verbs`, `tools`, `replaceNativeVerbs`, `replaceNativeTools`, `verbGizmoOptions` |
 | Work | `disabledWorkTypesOnTransform`, `disabledWorkTagsOnTransform`, `suppressIdeologyUncoveredThoughts` |
 | Ideology | `linkedSacredAnimalDef` — venerated animal match → mood by precept stage (-8/-3/+2/+5/+8). Precept `SSF_Shapeshifting` (Abhorrent/Disapproved/DontCare/Respected/Sublime) |
 | VFX/SFX | `transformEnterSound`/`ExitSound`, `transformEnterEffecter`/`ExitEffecter`, `transformEnterFleck`/`ExitFleck` (+Count, +Scale), FX delay/cooldown ticks |

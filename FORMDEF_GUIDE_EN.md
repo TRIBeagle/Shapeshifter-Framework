@@ -381,16 +381,15 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 | `replaceNativeVerbs` | `bool?` | Replace all vanilla verbs with form verbs |
 | `replaceNativeTools` | `bool?` | Replace all vanilla tools with form tools |
 | `verbGizmoOptions` | `List<VerbGizmoOption>` | Per-verb gizmo labels/icons/toggles |
-| `damageSourceDef` | `ThingDef` | Override damage source for verbs |
 
 **VerbGizmoOption fields:**
 | Field | Type | Description |
 |-------|------|-------------|
 | `verbLabel` | `string` | Match verb by its label |
 | `label` | `string` | Command button label |
-| `desc` | `string` | Command button description |
+| `description` | `string` | Command button description |
 | `toggleLabel` | `string` | Auto-attack toggle label |
-| `toggleDesc` | `string` | Auto-attack toggle description |
+| `toggleDescription` | `string` | Auto-attack toggle description |
 | `iconPath` | `string` | Icon override |
 | `durationCostTicks` | `int` | Shift duration deducted per use (0 = free). Burst weapons deduct once per burst. |
 | `entropyCost` | `float` | Neural heat added per use (0 = none). Requires Royalty DLC. Pawns without a psychic entropy tracker cannot fire. Burst weapons add once per burst. |
@@ -418,9 +417,9 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
   <li>
     <verbLabel>bite</verbLabel>
     <label>Bite Attack</label>
-    <desc>Powerful jaw attack</desc>
+    <description>Powerful jaw attack</description>
     <toggleLabel>Auto-bite</toggleLabel>
-    <toggleDesc>Toggle automatic bite attacks</toggleDesc>
+    <toggleDescription>Toggle automatic bite attacks</toggleDescription>
     <durationCostTicks>2500</durationCostTicks> <!-- costs ~1 hour of shift time per use -->
     <entropyCost>12</entropyCost> <!-- adds 12 neural heat per use (Royalty DLC) -->
   </li>

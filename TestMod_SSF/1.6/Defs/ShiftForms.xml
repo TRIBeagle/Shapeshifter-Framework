@@ -60,8 +60,6 @@
     <beard><mode>Hidden</mode></beard>
     <tattooBody><mode>Hidden</mode></tattooBody>
     <tattooHead><mode>Hidden</mode></tattooHead>
-    <!-- 피해원 오버라이드: 상처 라벨에 "grizzly bear" 표시 -->
-    <damageSourceDef>Bear_Grizzly</damageSourceDef>
     <!-- 이데올로기 노출 감정 억제 (동물 폼에서 "옷 안 입었다" 디버프 방지) -->
     <suppressIdeologyUncoveredThoughts>true</suppressIdeologyUncoveredThoughts>
     <!-- Anomaly DLC: 뮤턴트 필터 테스트 (Ghoul만 허용) -->
@@ -383,9 +381,9 @@
       <li>
         <verbLabel>AssaultRifle</verbLabel>
         <label>assault rifle</label>
-        <desc>Fire a burst of rifle rounds at the target.</desc>
+        <description>Fire a burst of rifle rounds at the target.</description>
         <toggleLabel>Auto-rifle</toggleLabel>
-        <toggleDesc>Toggle automatic rifle fire mode.</toggleDesc>
+        <toggleDescription>Toggle automatic rifle fire mode.</toggleDescription>
         <iconPath>Things/Item/Equipment/WeaponRanged/AssaultRifle</iconPath>
       </li>
       <li>

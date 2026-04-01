@@ -24,7 +24,7 @@
 | 타입/컬러 | `bodyType`, `headType`, `hairColor`, `skinColor` |
 | 유지 조건 | `sustainApparels`, `sustainWeapons`, `sustainHediffs`, `sustainGenes`, `sustainMode` (All/Any) |
 | 부여물 | `addHediffs` (HediffAddEntry 목록), `addAbilities` (AbilityDef 목록) |
-| 전투 | `verbs`, `tools`, `replaceNativeVerbs`, `replaceNativeTools`, `verbGizmoOptions`, `damageSourceDef` |
+| 전투 | `verbs`, `tools`, `replaceNativeVerbs`, `replaceNativeTools`, `verbGizmoOptions` |
 | 작업 | `disabledWorkTypesOnTransform`, `disabledWorkTagsOnTransform`, `suppressIdeologyUncoveredThoughts` |
 | 이데올로기 | `linkedSacredAnimalDef` — 숭배 동물 일치 시 규율 단계별 기분 (-8/-3/+2/+5/+8). 규율 `SSF_Shapeshifting` (혐오/못마땅/무관심/존중/숭고) |
 | VFX/SFX | `transformEnterSound`/`ExitSound`, `transformEnterEffecter`/`ExitEffecter`, `transformEnterFleck`/`ExitFleck` (+Count, +Scale), FX 지연/쿨다운 틱 |

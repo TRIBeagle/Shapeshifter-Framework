@@ -377,16 +377,15 @@
 | `replaceNativeVerbs` | `bool?` | 바닐라 버브를 폼 버브로 교체 |
 | `replaceNativeTools` | `bool?` | 바닐라 도구를 폼 도구로 교체 |
 | `verbGizmoOptions` | `List<VerbGizmoOption>` | 버브별 기즈모 라벨/아이콘/토글 |
-| `damageSourceDef` | `ThingDef` | 버브 대미지 소스 오버라이드 |
 
 **VerbGizmoOption 필드:**
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | `verbLabel` | `string` | 매칭할 버브 라벨 |
 | `label` | `string` | 명령 버튼 라벨 |
-| `desc` | `string` | 명령 버튼 설명 |
+| `description` | `string` | 명령 버튼 설명 |
 | `toggleLabel` | `string` | 자동공격 토글 라벨 |
-| `toggleDesc` | `string` | 자동공격 토글 설명 |
+| `toggleDescription` | `string` | 자동공격 토글 설명 |
 | `iconPath` | `string` | 아이콘 오버라이드 |
 | `durationCostTicks` | `int` | 사용 시 차감할 변신 잔여 틱 (0 = 무료). 버스트 무기는 버스트당 1회 차감. |
 | `entropyCost` | `float` | 사용 시 추가할 신경열 (0 = 없음). 로열티 DLC 필요. 신경열 추적기가 없는 폰은 발사 불가. 버스트당 1회. |
@@ -414,9 +413,9 @@
   <li>
     <verbLabel>물기</verbLabel>
     <label>물기 공격</label>
-    <desc>강력한 턱 공격</desc>
+    <description>강력한 턱 공격</description>
     <toggleLabel>자동 물기</toggleLabel>
-    <toggleDesc>자동 물기 공격 토글</toggleDesc>
+    <toggleDescription>자동 물기 공격 토글</toggleDescription>
     <durationCostTicks>2500</durationCostTicks> <!-- 사용 시 변신 시간 ~1시간 차감 -->
     <entropyCost>12</entropyCost> <!-- 사용 시 신경열 12 추가 (로열티 DLC) -->
   </li>

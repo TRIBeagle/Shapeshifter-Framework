@@ -258,7 +258,7 @@ namespace ShapeshifterFramework.Hediffs
             string desc = null;
             if (o != null)
             {
-                string s = forToggle ? (o.toggleDesc ?? o.desc) : o.desc;
+                string s = forToggle ? (o.toggleDescription ?? o.description) : o.description;
                 desc = !string.IsNullOrEmpty(s) ? s.Translate() : null;
             }
 

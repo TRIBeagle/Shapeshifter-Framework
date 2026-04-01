@@ -47,7 +47,7 @@ HediffDef (entry point — stats/severity)
 - Duration cost per verb (shift time deducted on use)
 - `replaceNativeVerbs` / `replaceNativeTools` for full override
 - Melee sound override (hit pawn / hit building / miss)
-- Damage source override (wound labels show form creature name)
+- Wound labels automatically show form name instead of race name
 - Work type / work tag restrictions
 
 **Equipment**
@@ -165,7 +165,7 @@ HediffDef (진입점 — 스탯/severity)
 - verb별 변신 시간 차감 비용
 - `replaceNativeVerbs` / `replaceNativeTools`로 바닐라 완전 대체
 - 근접 사운드 오버라이드 (폰 타격/건물 타격/빗나감)
-- 피해원 오버라이드 (상처 라벨에 변신 생물 이름 표시)
+- 상처 라벨에 종족명 대신 폼 이름 자동 표시
 - 작업 유형/작업 태그 제한
 
 **장비**

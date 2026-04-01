@@ -47,7 +47,7 @@
 - [ ] `1-A07` 해제 시 addHediffs 제거, 이전 장비 복귀
 - [ ] `1-A08` revertDrops: `WoodLog 2` 드랍
 - [ ] `1-A09` beard=Hidden, tattooBody=Hidden, tattooHead=Hidden 적용
-- [ ] `1-A10` damageSourceDef=Bear_Grizzly → 상처 라벨에 "grizzly bear" 표시
+- [ ] `1-A10` 변신 중 근접 공격 시 상처 라벨에 폼 이름("bear form") 자동 표시
 - [ ] `1-A11` suppressIdeologyUncoveredThoughts=true → 노출 감정 미발생
 - [ ] `1-A12` formAllowedMutants: Ghoul 뮤턴트만 변신 허용 (Anomaly DLC)
 
