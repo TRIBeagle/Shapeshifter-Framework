@@ -3,7 +3,6 @@
 // 용도 : 폰의 성별(Gender) 설정과 폼의 기본 설정을 병합(Merge)하여 최우선 규칙을 판별하며, 수영 타일(Water) 진입 시 전용 텍스처와 셰이더(Shader)로 교체하는 로직을 담당함.
 // 주의 : 렌더 핫패스(Hot-path)에서 실행되므로 LINQ를 배제하고, 동적 셰이더 탐색 결과를 Dictionary에 캐싱하여 성능 저하를 막음.
 
-using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -23,9 +22,6 @@ namespace ShapeshifterFramework.Utilities
 
     internal static class ShapeshiftPartControlUtility
     {
-        // shaderTypeDefName -> Shader 캐시(없으면 null 캐시)
-        private static readonly Dictionary<string, Shader> ShaderByTypeDefName = new Dictionary<string, Shader>(64);
-
         internal static bool ShouldRun(Pawn pawn, out ShapeshiftFormDef form)
         {
             form = null;
@@ -43,20 +39,12 @@ namespace ShapeshifterFramework.Utilities
             return null;
         }
 
+        /// <summary>shaderTypeDefName → Shader. DefDatabase가 이미 캐시하므로 별도 캐시 불필요.</summary>
         private static Shader ResolveShaderFromTypeDefName(string shaderTypeDefName)
         {
             if (string.IsNullOrEmpty(shaderTypeDefName)) return null;
-
-            Shader sh;
-            if (ShaderByTypeDefName.TryGetValue(shaderTypeDefName, out sh))
-                return sh;
-
-            // ShaderTypeDef는 Core Def(ShaderTypeDefs)에서 로드됨
             var def = DefDatabase<ShaderTypeDef>.GetNamedSilentFail(shaderTypeDefName);
-            sh = def != null ? def.Shader : null;
-
-            ShaderByTypeDefName[shaderTypeDefName] = sh; // null도 캐시(재조회 방지)
-            return sh;
+            return def?.Shader;
         }
 
         /// <summary>성별 옵션과 base를 merge하여 유효 값 산출.</summary>

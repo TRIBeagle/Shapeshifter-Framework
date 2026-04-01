@@ -32,13 +32,41 @@ namespace ShapeshifterFramework.Patches
             // 레지스트리는 PostLoadInit 이전이므로 hediff 직접 탐색
             if (!HasShapeshiftForm(pawn)) return;
 
-            ShapeshiftDiagnostics.Info($"[StripFormVerbs] pawn={pawn.LabelShort}: nulling verbs for ResolvingCrossRefs to skip InitVerbs matching");
+            ShapeshiftDiagnostics.Info($"[StripFormVerbs] pawn={pawn.LabelShort}: stripping form verbs for ResolvingCrossRefs");
 
-            // verbs를 null로 설정 → ExposeData 내부에서
-            // Scribe_Collections.Look 후 verbs == null 체크로 조기 리턴
-            // → InitVerbs 매칭 스킵 → "Replaced verb" 경고 방지
-            // → 이후 AllVerbs 접근 시 InitVerbsFromZero로 재구축
-            ___verbs = null;
+            // 폼 verb만 제거하고 바닐라 verb은 보존 — warmup/burst 상태 유실 방지
+            // 폼 verb는 loadID가 바닐라 ThingDef.tools와 불일치하므로 "Replaced verb" 경고 유발
+            // → 해당 verb만 제거하면 바닐라 verb의 상태(warmup 등)는 보존됨
+            for (int i = ___verbs.Count - 1; i >= 0; i--)
+            {
+                var v = ___verbs[i];
+                if (v == null) { ___verbs.RemoveAt(i); continue; }
+                // 폼 verb 판별: directOwner가 Pawn인데 verb의 tool/verbProps가 Pawn의 ThingDef에 없으면 폼 verb
+                if (v.tool != null && !BelongsToPawnDef(pawn, v.tool))
+                    ___verbs.RemoveAt(i);
+                else if (v.tool == null && v.verbProps != null && !BelongsToPawnDef(pawn, v.verbProps))
+                    ___verbs.RemoveAt(i);
+            }
+        }
+
+        /// <summary>tool이 폰의 ThingDef.tools에 속하는지 확인.</summary>
+        private static bool BelongsToPawnDef(Pawn pawn, Tool tool)
+        {
+            var tools = pawn.def.tools;
+            if (tools == null) return false;
+            for (int i = 0; i < tools.Count; i++)
+                if (tools[i] == tool) return true;
+            return false;
+        }
+
+        /// <summary>verbProps가 폰의 ThingDef.Verbs에 속하는지 확인.</summary>
+        private static bool BelongsToPawnDef(Pawn pawn, VerbProperties vp)
+        {
+            var verbs = pawn.def.Verbs;
+            if (verbs == null) return false;
+            for (int i = 0; i < verbs.Count; i++)
+                if (verbs[i] == vp) return true;
+            return false;
         }
 
         /// <summary>폰의 hediff에서 활성 ShapeshiftCore를 직접 탐색.</summary>

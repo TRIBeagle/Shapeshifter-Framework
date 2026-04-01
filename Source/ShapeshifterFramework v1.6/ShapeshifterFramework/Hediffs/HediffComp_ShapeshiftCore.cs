@@ -24,8 +24,17 @@ namespace ShapeshifterFramework.Hediffs
 
         #endregion
 
-        /// <summary>초기화 진행 중에는 바닐라 severity 기반 자동 소멸을 차단.</summary>
-        public override bool CompShouldRemove => needsInit ? false : base.CompShouldRemove;
+        /// <summary>초기화 중이거나 변신 중에는 바닐라 severity 기반 자동 소멸을 차단.
+        /// 외부(약물/다른 모드)가 severity를 줄여도 RemoveForm 경유 없이 hediff가 사라지는 것을 방지.</summary>
+        public override bool CompShouldRemove
+        {
+            get
+            {
+                if (needsInit) return false;
+                if (isTransformed) return false; // 변신 중 severity 감소에 의한 자동 제거 차단
+                return base.CompShouldRemove;
+            }
+        }
 
         #region 상태 필드/캐시
 
@@ -195,19 +204,28 @@ namespace ShapeshifterFramework.Hediffs
             needsInit = true;
         }
 
-        /// <summary>Hediff 제거 시 정리. RemoveForm이 미호출된 경우 대비.</summary>
+        /// <summary>Hediff 제거 시 정리. RemoveForm이 미호출된 경우 대비.
+        /// 사망/외부 모드에 의해 hediff가 직접 제거될 수 있으므로 반드시 방어적으로 정리.</summary>
         public override void CompPostPostRemoved()
         {
             base.CompPostPostRemoved();
 
+            var pawn = Pawn;
             if (isTransformed)
             {
-                RemoveForm();
+                try { RemoveForm(); }
+                catch (Exception ex)
+                {
+                    // RemoveForm 실패 시에도 핵심 상태 강제 정리 — 좀비 변신 방지
+                    Log.Error($"[SSF] CompPostPostRemoved: RemoveForm failed, forcing cleanup: {ex}");
+                    currentForm = null;
+                    if (pawn != null) ShapeshiftRegistry.Unregister(pawn);
+                    if (pawn != null) ShapeshiftRuntimeCaches.ClearFor(pawn);
+                }
             }
             else
             {
                 // 미등록 상태의 방어적 레지스트리 해제 (needsInit 중 제거 등)
-                var pawn = Pawn;
                 if (pawn != null)
                     ShapeshiftRegistry.Unregister(pawn);
             }

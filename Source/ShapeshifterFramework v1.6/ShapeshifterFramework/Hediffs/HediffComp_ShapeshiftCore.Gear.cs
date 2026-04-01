@@ -153,6 +153,13 @@ namespace ShapeshifterFramework.Hediffs
                     }
                 }
 
+                // 종족 body에 이 의류를 착용 가능한지 사전 검증 (HAR 비인간 종족 등)
+                if (pawn.RaceProps?.body != null && !ApparelUtility.HasPartsToWear(pawn, apparelDef))
+                {
+                    ShapeshiftDiagnostics.Info($"SpawnFormApparel: {apparelDef.defName} cannot be worn by {pawn.def.defName} (no matching body parts). Skipped.");
+                    continue;
+                }
+
                 // 재질 결정 및 생성
                 ThingDef stuff = ResolveStuff(apparelDef, form.spawnApparelStuff);
                 Apparel newApparel = (Apparel)ThingMaker.MakeThing(apparelDef, stuff);
