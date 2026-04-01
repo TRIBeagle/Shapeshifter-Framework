@@ -4,9 +4,10 @@
 //        animalKind 지정 시 → 해당 동물 폰 스폰 (콜로니스트 → 길들여진, 기타 → 야생)
 //        thingDef 지정 시 → 해당 Thing 스폰 (치즈/조각상 등 폰→비폰 전환)
 //        둘 다 지정 시 animalKind 우선.
-// 주의 : 원본 폰의 모든 데이터(스킬/기억/관계)가 소실됨.
+// 주의 : keepName/keepRelations 미사용 시 원본 폰의 모든 데이터(스킬/기억/관계)가 소실됨.
 
 using RimWorld;
+using System.Collections.Generic;
 using Verse;
 
 namespace ShapeshifterFramework.Hediffs
@@ -24,6 +25,12 @@ namespace ShapeshifterFramework.Hediffs
 
         /// <summary>전환 발동 severity 임계값. 기본 1.0.</summary>
         public float severityThreshold = 1f;
+
+        /// <summary>원본 폰의 이름을 전환된 동물에 이전. thingDef 전환 시 무시.</summary>
+        public bool keepName = true;
+
+        /// <summary>원본 폰의 사회적 관계를 전환된 동물에 이전. thingDef 전환 시 무시.</summary>
+        public bool keepRelations = true;
 
         /// <summary>전환 시 레터 발송 여부.</summary>
         public bool sendLetter = true;
@@ -81,26 +88,11 @@ namespace ShapeshifterFramework.Hediffs
 
             if (Props.animalKind != null)
             {
-                // 폰 → 동물 전환
-                Pawn animal = PawnGenerator.GeneratePawn(new PawnGenerationRequest(
-                    Props.animalKind,
-                    faction: wasColonist ? faction : null,
-                    context: PawnGenerationContext.NonPlayer,
-                    tile: map?.Tile ?? -1,
-                    forceGenerateNewPawn: true
-                ));
-                if (map != null && pos.IsValid)
-                    GenSpawn.Spawn(animal, pos, map);
-                resultLabel = animal.LabelShortCap;
+                resultLabel = SpawnAnimal(pawn, map, pos, faction, wasColonist);
             }
             else
             {
-                // 폰 → Thing 전환
-                Thing thing = ThingMaker.MakeThing(Props.thingDef);
-                thing.stackCount = Props.thingCount;
-                if (map != null && pos.IsValid)
-                    GenPlace.TryPlaceThing(thing, pos, map, ThingPlaceMode.Near);
-                resultLabel = thing.LabelShortCap;
+                resultLabel = SpawnThing(map, pos);
             }
 
             // 레터 발송
@@ -118,6 +110,64 @@ namespace ShapeshifterFramework.Hediffs
                 pawn.Kill(null);
             if (!pawn.Destroyed && pawn.Corpse != null)
                 pawn.Corpse.Destroy();
+        }
+
+        /// <summary>동물 폰 생성 + 이름/관계 이전.</summary>
+        private string SpawnAnimal(Pawn original, Map map, IntVec3 pos, Faction faction, bool wasColonist)
+        {
+            Pawn animal = PawnGenerator.GeneratePawn(new PawnGenerationRequest(
+                Props.animalKind,
+                faction: wasColonist ? faction : null,
+                context: PawnGenerationContext.NonPlayer,
+                tile: map?.Tile ?? -1,
+                forceGenerateNewPawn: true
+            ));
+
+            // 이름 이전
+            if (Props.keepName && original.Name != null)
+                animal.Name = original.Name;
+
+            // 관계 이전
+            if (Props.keepRelations && original.relations != null)
+                TransferRelations(original, animal);
+
+            if (map != null && pos.IsValid)
+                GenSpawn.Spawn(animal, pos, map);
+
+            return animal.LabelShortCap;
+        }
+
+        /// <summary>Thing 스폰 (비폰 전환).</summary>
+        private string SpawnThing(Map map, IntVec3 pos)
+        {
+            Thing thing = ThingMaker.MakeThing(Props.thingDef);
+            thing.stackCount = Props.thingCount;
+            if (map != null && pos.IsValid)
+                GenPlace.TryPlaceThing(thing, pos, map, ThingPlaceMode.Near);
+            return thing.LabelShortCap;
+        }
+
+        /// <summary>원본 폰의 직접 관계를 동물에 복사.</summary>
+        private static void TransferRelations(Pawn from, Pawn to)
+        {
+            if (from.relations?.DirectRelations == null) return;
+
+            // 순회 중 수정 방지를 위해 스냅샷
+            var snapshot = new List<DirectPawnRelation>(from.relations.DirectRelations);
+            for (int i = 0; i < snapshot.Count; i++)
+            {
+                var rel = snapshot[i];
+                if (rel.otherPawn == null || rel.otherPawn.Dead) continue;
+
+                try
+                {
+                    to.relations.AddDirectRelation(rel.def, rel.otherPawn);
+                }
+                catch (System.Exception ex)
+                {
+                    Log.Warning($"[SSF] PermanentTransform: relation transfer failed ({rel.def?.defName}): {ex.Message}");
+                }
+            }
         }
     }
 }
