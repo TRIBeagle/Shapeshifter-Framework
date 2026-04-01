@@ -142,6 +142,8 @@
 | `Hidden` | 파츠가 완전히 보이지 않음 (그래픽 null). 동물 폼에서 인간 머리/헤어 등을 숨길 때 사용. |
 | `Replace` | `replacementTexPath`의 커스텀 텍스처로 교체. 색상 틴트와 셰이더 오버라이드 가능. 수영 중이고 `swimmingReplacementTexPath`가 설정되면 수영 텍스처 사용. |
 
+**동물 폰 지원:** `body` 오버라이드는 `PawnRenderNode_AnimalPart`를 통해 동물 폰에도 적용됩니다. AoE 폴리모프 등으로 동물이 변신하면 폼의 `replacementTexPath`로 body 텍스처가 교체됩니다.
+
 **성별 오버라이드 우선순위:** `male` 또는 `female` 하위 옵션이 설정되면 해당 성별에서 공통 필드보다 우선. 미설정 시 공통 옵션으로 폴백.
 
 | 필드 | 타입 | 설명 |

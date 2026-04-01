@@ -142,6 +142,8 @@ Each part (`body`, `head`, `hair`, `beard`, `tattooBody`, `tattooHead`) accepts 
 | `Hidden` | Part is completely invisible (graphic set to null). Use for animal forms that hide the human head, hair, etc. |
 | `Replace` | Part uses the custom texture from `replacementTexPath` with optional color tint and shader override. If the pawn is swimming and `swimmingReplacementTexPath` is set, the swimming texture is used instead. |
 
+**Animal pawn support:** The `body` override also applies to animal pawns via `PawnRenderNode_AnimalPart`. When an animal is shapeshifted (e.g., AoE polymorph), its body texture is replaced with the form's `replacementTexPath`.
+
 **Gender override priority:** If `male` or `female` sub-option is set, it takes priority over the common fields for that gender. Unset gender fields fall back to the common option.
 
 | Field | Type | Description |
