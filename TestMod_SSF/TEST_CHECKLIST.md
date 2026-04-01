@@ -1,7 +1,7 @@
 # Shapeshifter Framework — 테스트 체크리스트
 
-최신 기준 커밋: `764a857` (2026-04-02)
-이전 기준 커밋: `44b8a97` (2026-04-01)
+최신 기준 커밋: `6bf428e` (2026-04-02)
+이전 기준 커밋: `764a857` (2026-04-02)
 
 > TestMod_SSF 기준 | `[A]` = Auto-Verify (디버그 액션) | `[M]` = 인게임 수동 확인
 > 넘버링: `{섹션}-A{번호}` = Auto-Verify | `{섹션}-M{번호}` = Manual
@@ -454,3 +454,46 @@
 - [ ] `18-M05` 폼 전용 생성 무기 드랍 시도 → 거부 메시지 (살아있는 플레이어 폰)
 - [ ] `18-M06` 폼 전용 생성 무기 시스템 드랍 → "holdingOwner still set" 에러 없이 소멸
 - [ ] `18-M07` 변신 중 비활성 작업(disabledWorkTypes) → 변신 해제 후 원래 작업 목록 복원 (캐시 오염 없음)
+
+---
+
+## 19. 동물 텍스처 교체 (PawnRenderNode_AnimalPart)
+
+### [M] 수동 확인
+- [ ] `19-M01` 인간→양 변신: body 텍스처 교체 확인
+- [ ] `19-M02` 동물(고양이 등)→양 변신 (AoE): body 텍스처 교체 확인
+- [ ] `19-M03` 동물 변신 해제 시 원래 텍스처 복원
+
+---
+
+## 20. 상처 라벨 (폼 이름 자동 표시)
+
+### [M] 수동 확인
+- [ ] `20-M01` 변신 중 근접 공격 → 상처 라벨에 폼 이름 표시 (예: "bear form teeth")
+- [ ] `20-M02` 변신 중 장비 공격 → 상처 라벨에 장비 이름 유지 (폼 이름 아님)
+- [ ] `20-M03` 비변신 상태 근접 공격 → 바닐라 라벨 유지
+
+---
+
+## 21. 영구 전환 (HediffComp_PermanentTransform)
+
+### [M] 수동 확인
+- [ ] `21-M01` severity 1.0 도달 → 폰 제거 + 지정 동물 스폰
+- [ ] `21-M02` 동물 전환: 이름/관계 이전 확인
+- [ ] `21-M03` Thing 전환 (thingDef 지정): 해당 Thing 스폰, 이름/관계 없음
+- [ ] `21-M04` 전환 시 레터 발송 확인
+- [ ] `21-M05` 콜로니스트 → 길들여진 동물, 비콜로니스트 → 야생 동물
+- [ ] `21-M06` 변신 중 severity 도달 → RemoveForm 먼저 실행 후 전환
+
+---
+
+## 22. 자원 수확 (HediffComp_Harvestable)
+
+### [M] 수동 확인
+- [ ] `22-M01` hediff 부여 → fullness 성장 시작 (건강 탭에 % 표시)
+- [ ] `22-M02` fullness 100% → WorkGiver가 수확 Job 할당 (autoSpawn=false)
+- [ ] `22-M03` autoSpawn=true → fullness 100% 시 바닥에 자동 스폰
+- [ ] `22-M04` requiredGender=Female → 수컷 폰에서 비활성
+- [ ] `22-M05` hediff 제거 → fullness 리셋, 수확 불가
+- [ ] `22-M06` 수확 시 AnimalGatherYield 스탯 반영 (낮으면 "Product wasted")
+- [ ] `22-M07` 세이브/로드 후 fullness 보존
