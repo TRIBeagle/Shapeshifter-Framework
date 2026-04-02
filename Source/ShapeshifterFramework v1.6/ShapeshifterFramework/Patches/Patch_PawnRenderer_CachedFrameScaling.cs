@@ -60,15 +60,19 @@ namespace ShapeshifterFramework.Patches
 
             // disableCache = true로 호출 → useCached = false + renderTree.ParallelPreDraw 실행
             // PreRenderResults가 private struct라 MethodInfo.Invoke 사용 (박싱 불가피)
-            if (_invokeArgs == null) _invokeArgs = new object[4];
-            _invokeArgs[0] = drawLoc;
-            _invokeArgs[1] = rotOverride;
-            _invokeArgs[2] = neverAimWeapon;
-            _invokeArgs[3] = true; // disableCache
-            object result = _getPreRenderResultsMI.Invoke(__instance, _invokeArgs);
-            if (result == null) return true;
-            _resultsField.SetValue(__instance, result);
-            return false;
+            try
+            {
+                if (_invokeArgs == null) _invokeArgs = new object[4];
+                _invokeArgs[0] = drawLoc;
+                _invokeArgs[1] = rotOverride;
+                _invokeArgs[2] = neverAimWeapon;
+                _invokeArgs[3] = true; // disableCache
+                object result = _getPreRenderResultsMI.Invoke(__instance, _invokeArgs);
+                if (result == null) return true;
+                _resultsField.SetValue(__instance, result);
+                return false;
+            }
+            catch { return true; } // 리플렉션 실패 시 바닐라 폴백
         }
     }
 }
