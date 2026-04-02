@@ -62,10 +62,6 @@
     <tattooHead><mode>Hidden</mode></tattooHead>
     <!-- 이데올로기 노출 감정 억제 (동물 폼에서 "옷 안 입었다" 디버프 방지) -->
     <suppressIdeologyUncoveredThoughts>true</suppressIdeologyUncoveredThoughts>
-    <!-- Anomaly DLC: 뮤턴트 필터 테스트 (Ghoul만 허용) -->
-    <formAllowedMutants MayRequire="Ludeon.RimWorld.Anomaly">
-      <li>Ghoul</li>
-    </formAllowedMutants>
     <!-- Blood/flesh -->
     <bloodDef>Filth_BloodInsect</bloodDef>
     <bloodSmearDef>SSFTest_Filth_BloodInsectSmear</bloodSmearDef>

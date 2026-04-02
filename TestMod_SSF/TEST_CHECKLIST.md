@@ -49,7 +49,7 @@
 - [ ] `1-A09` beard=Hidden, tattooBody=Hidden, tattooHead=Hidden 적용
 - [ ] `1-A10` 변신 중 근접 공격 시 상처 라벨에 폼 이름("bear form") 자동 표시
 - [ ] `1-A11` suppressIdeologyUncoveredThoughts=true → 노출 감정 미발생
-- [ ] `1-A12` formAllowedMutants: Ghoul 뮤턴트만 변신 허용 (Anomaly DLC)
+- [ ] `1-A12` formAllowedMutants: Anomaly DLC 설치 시 뮤턴트 필터 동작 확인 (별도 테스트 필요)
 
 ### [M] 수동 확인
 - [ ] `1-M01` 수영 시 텍스처가 `Things/Pawn/Animal/Bear/SwimmingBear`로 전환
