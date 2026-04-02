@@ -497,3 +497,17 @@
 - [ ] `22-M05` hediff 제거 → fullness 리셋, 수확 불가
 - [ ] `22-M06` 수확 시 AnimalGatherYield 스탯 반영 (낮으면 "Product wasted")
 - [ ] `22-M07` 세이브/로드 후 fullness 보존
+
+---
+
+## 23. 카테고리 필터 (allowHumanlike/allowAnimals/allowMechanoids/allowMutants)
+
+### [M] 수동 확인
+- [ ] `23-M01` 기본값 (Humanlike+Animal 허용): 인간 폰 변신 성공
+- [ ] `23-M02` 기본값: 동물 폰 AoE 변신 성공
+- [ ] `23-M03` 기본값: 메카노이드 투사체 변신 차단 확인
+- [ ] `23-M04` allowMechanoids=true: 메카노이드 투사체 변신 성공
+- [ ] `23-M05` allowAnimals=false: 동물 AoE 변신 차단, 인간만 변신
+- [ ] `23-M06` allowHumanlike=false + allowAnimals=true: 동물만 변신 가능, 인간 차단
+- [ ] `23-M07` 투사체 사전 차단: CanTransformBasic 실패 시 hediff 부여 안 됨
+- [ ] `23-M08` 어빌리티 대상 사전 차단: CanTransformBasic 실패 시 시전 불가

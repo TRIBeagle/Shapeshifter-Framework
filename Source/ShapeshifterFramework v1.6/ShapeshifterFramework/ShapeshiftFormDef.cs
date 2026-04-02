@@ -396,6 +396,7 @@ namespace ShapeshifterFramework
         /// <summary>Def 참조 유효성 검증. 로드 시 깨진 참조 조기 검출.</summary>
         public override IEnumerable<string> ConfigErrors()
         {
+            __warnings = null; // 다중 호출 시 중복 방지
             foreach (var e in base.ConfigErrors())
                 yield return e;
 
