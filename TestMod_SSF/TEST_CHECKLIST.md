@@ -1,7 +1,7 @@
 # Shapeshifter Framework — 테스트 체크리스트
 
-최신 기준 커밋: `6bf428e` (2026-04-02)
-이전 기준 커밋: `764a857` (2026-04-02)
+최신 기준 커밋: `06bea51` (2026-04-02)
+이전 기준 커밋: `6bf428e` (2026-04-02)
 
 > TestMod_SSF 기준 | `[A]` = Auto-Verify (디버그 액션) | `[M]` = 인게임 수동 확인
 > 넘버링: `{섹션}-A{번호}` = Auto-Verify | `{섹션}-M{번호}` = Manual
@@ -79,7 +79,7 @@
 - [ ] `2-M01` transformEnterEffecter (Vaporize_Heatwave) 재생
 - [ ] `2-M02` transformExitEffecter (ImpactSmallDustCloud) 재생
 - [ ] `2-M03` soundAngry, soundMelee* 사운드 오버라이드 확인
-- [ ] `2-M04` 커스텀 기즈모 아이콘 (gizmoIconPathEnter/Revert)
+- [ ] `2-M04` 커스텀 기즈모 아이콘 (gizmoIconPathRevert)
 - [ ] `2-M05` 의류 장착 시도 시 차단 메시지 표시
 - [ ] `2-M06` 무기는 자유롭게 교체 가능
 - [ ] `2-M07` ambientEffecter (Shield_Break) 변신 중 지속 재생

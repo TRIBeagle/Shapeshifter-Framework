@@ -30,7 +30,7 @@
 | VFX/SFX | `transformEnterSound`/`ExitSound`, `transformEnterEffecter`/`ExitEffecter`, `transformEnterFleck`/`ExitFleck` (+Count, +Scale), FX delay/cooldown ticks |
 | Ambient VFX | `ambientEffecter`, `ambientFleck`, `ambientFleckIntervalTicks`, `ambientFleckScale` |
 | Revert | `revertDrops` (ThingDefCountClass list), `revertAddHediffs` (HediffDef list) |
-| UI | `gizmoIconPathEnter`/`Revert`, `durationTicks`, `canRevertVoluntarily` |
+| UI | `gizmoIconPathRevert`, `durationTicks`, `canRevertVoluntarily` |
 | Voice | `soundCall`, `soundWounded`, `soundDeath`, `soundAngry`, `soundEating` |
 | Melee SFX | `soundMeleeHitPawn`, `soundMeleeHitBuilding`, `soundMeleeMiss` |
 | Blood | `bloodDef`, `bloodSmearDef`, `fleshType` |

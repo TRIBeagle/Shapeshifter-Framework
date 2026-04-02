@@ -103,7 +103,17 @@ Power suit / armor transformation. Keeps human appearance and existing gear. Con
 
 ## 3. Field Reference
 
-### 3.1 Race & Mutant Filters
+### 3.1 Target Category & Race Filters
+
+**Category bools** (vanilla TargetingParameters pattern):
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `allowHumanlike` | `bool` | `true` | Allow humanlike pawns (includes HAR races) |
+| `allowAnimals` | `bool` | `true` | Allow animal pawns |
+| `allowMechanoids` | `bool` | `false` | Allow mechanoid pawns |
+| `allowMutants` | `bool` | `false` | Allow mutant pawns. When true, `formAllowedMutants` can further restrict. |
+
+**Race & Mutant list filters:**
 | Field | Type | Description |
 |-------|------|-------------|
 | `formAllowedRaces` | `List<ThingDef>` | Only these races can use this form. Empty = no restriction. Null entries produce ConfigError. |
@@ -112,11 +122,23 @@ Power suit / armor transformation. Keeps human appearance and existing gear. Con
 | `formDisallowedMutants` | `List<MutantDef>` | [Anomaly] These mutant types blocked. Null entries produce ConfigError. |
 
 ```xml
-<formAllowedRaces><li>Human</li></formAllowedRaces>
-<formDisallowedRaces><li>Thrumbo</li></formDisallowedRaces>
+<!-- Default: humans + animals (don't need to write anything) -->
+
+<!-- Humanlike only (excludes animals) -->
+<allowAnimals>false</allowAnimals>
+
+<!-- Include mechanoids -->
+<allowMechanoids>true</allowMechanoids>
+
+<!-- Include specific mutants only -->
+<allowMutants>true</allowMutants>
 <formAllowedMutants MayRequire="Ludeon.RimWorld.Anomaly">
   <li>Ghoul</li>
 </formAllowedMutants>
+
+<!-- Race list filters -->
+<formAllowedRaces><li>Human</li></formAllowedRaces>
+<formDisallowedRaces><li>Thrumbo</li></formDisallowedRaces>
 ```
 
 ### 3.2 Scale & Offset
@@ -569,14 +591,12 @@ Persistent effects during the transformation.
 | `durationTicks` | `int?` | null (permanent) | Form duration. null = no timer. |
 | `canRevertVoluntarily` | `bool` | `true` | Show revert gizmo |
 | `revertOnDowned` | `bool` | `false` | Auto-revert immediately when pawn becomes downed (unconscious/incapacitated). Checked every tick. |
-| `gizmoIconPathEnter` | `string` | null | Custom enter gizmo icon |
 | `gizmoIconPathRevert` | `string` | null | Custom revert gizmo icon |
 
 ```xml
 <durationTicks>30000</durationTicks>    <!-- 12 hours -->
 <canRevertVoluntarily>true</canRevertVoluntarily>
 <revertOnDowned>true</revertOnDowned>
-<gizmoIconPathEnter>UI/Commands/MyMod_Shift_Enter</gizmoIconPathEnter>
 <gizmoIconPathRevert>UI/Commands/MyMod_Shift_Revert</gizmoIconPathRevert>
 ```
 

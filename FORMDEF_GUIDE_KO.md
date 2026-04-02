@@ -103,7 +103,17 @@
 
 ## 3. 필드 레퍼런스
 
-### 3.1 종족 & 뮤턴트 필터
+### 3.1 대상 카테고리 & 종족 필터
+
+**카테고리 bool** (바닐라 TargetingParameters 패턴):
+| 필드 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `allowHumanlike` | `bool` | `true` | 인간형 폰 허용 (HAR 종족 포함) |
+| `allowAnimals` | `bool` | `true` | 동물 폰 허용 |
+| `allowMechanoids` | `bool` | `false` | 메카노이드 폰 허용 |
+| `allowMutants` | `bool` | `false` | 뮤턴트 폰 허용. true일 때 `formAllowedMutants`로 추가 제한 가능. |
+
+**종족 & 뮤턴트 목록 필터:**
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | `formAllowedRaces` | `List<ThingDef>` | 이 종족만 사용 가능. 빈 목록 = 제한 없음. null 항목 시 ConfigError 출력. |
@@ -112,11 +122,23 @@
 | `formDisallowedMutants` | `List<MutantDef>` | [Anomaly] 이 뮤턴트 차단. null 항목 시 ConfigError 출력. |
 
 ```xml
-<formAllowedRaces><li>Human</li></formAllowedRaces>
-<formDisallowedRaces><li>Thrumbo</li></formDisallowedRaces>
+<!-- 기본값: 인간 + 동물 (아무것도 쓰지 않아도 됨) -->
+
+<!-- 인간형만 (동물 제외) -->
+<allowAnimals>false</allowAnimals>
+
+<!-- 메카노이드 포함 -->
+<allowMechanoids>true</allowMechanoids>
+
+<!-- 특정 뮤턴트만 포함 -->
+<allowMutants>true</allowMutants>
 <formAllowedMutants MayRequire="Ludeon.RimWorld.Anomaly">
   <li>Ghoul</li>
 </formAllowedMutants>
+
+<!-- 종족 목록 필터 -->
+<formAllowedRaces><li>Human</li></formAllowedRaces>
+<formDisallowedRaces><li>Thrumbo</li></formDisallowedRaces>
 ```
 
 ### 3.2 스케일 & 오프셋
@@ -565,14 +587,12 @@
 | `durationTicks` | `int?` | null (영구) | 폼 지속 시간. null = 타이머 없음. |
 | `canRevertVoluntarily` | `bool` | `true` | 해제 기즈모 표시 |
 | `revertOnDowned` | `bool` | `false` | 쓰러짐(의식 상실/무력화) 시 즉시 자동 해제. 매 틱 검사. |
-| `gizmoIconPathEnter` | `string` | null | 변신 기즈모 아이콘 |
 | `gizmoIconPathRevert` | `string` | null | 해제 기즈모 아이콘 |
 
 ```xml
 <durationTicks>30000</durationTicks>    <!-- 12시간 -->
 <canRevertVoluntarily>true</canRevertVoluntarily>
 <revertOnDowned>true</revertOnDowned>
-<gizmoIconPathEnter>UI/Commands/MyMod_Shift_Enter</gizmoIconPathEnter>
 <gizmoIconPathRevert>UI/Commands/MyMod_Shift_Revert</gizmoIconPathRevert>
 ```
 

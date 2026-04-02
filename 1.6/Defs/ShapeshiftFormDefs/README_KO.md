@@ -30,7 +30,7 @@
 | VFX/SFX | `transformEnterSound`/`ExitSound`, `transformEnterEffecter`/`ExitEffecter`, `transformEnterFleck`/`ExitFleck` (+Count, +Scale), FX 지연/쿨다운 틱 |
 | 앰비언트 VFX | `ambientEffecter`, `ambientFleck`, `ambientFleckIntervalTicks`, `ambientFleckScale` |
 | 해제 부산물 | `revertDrops` (ThingDefCountClass 목록), `revertAddHediffs` (HediffDef 목록) |
-| UI | `gizmoIconPathEnter`/`Revert`, `durationTicks`, `canRevertVoluntarily` |
+| UI | `gizmoIconPathRevert`, `durationTicks`, `canRevertVoluntarily` |
 | 보이스 | `soundCall`, `soundWounded`, `soundDeath`, `soundAngry`, `soundEating` |
 | 근접 SFX | `soundMeleeHitPawn`, `soundMeleeHitBuilding`, `soundMeleeMiss` |
 | 혈액 | `bloodDef`, `bloodSmearDef`, `fleshType` |
