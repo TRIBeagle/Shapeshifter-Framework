@@ -31,34 +31,39 @@ namespace ShapeshifterFramework.Utilities
             return true;
         }
 
-        /// <summary>폼의 formAllowedMutants/formDisallowedMutants에 대상 뮤턴트가 부합하는지 판정. 둘 다 null/빈 목록이면 제한 없음.</summary>
+        /// <summary>카테고리 bool 검사. 폰의 종류(인간형/동물/메카노이드/뮤턴트)가 폼에서 허용되는지.</summary>
+        private static bool IsCategoryAllowed(Pawn pawn, ShapeshiftFormDef form)
+        {
+            if (pawn.RaceProps == null) return false;
+
+            // 메카노이드 체크
+            if (pawn.RaceProps.IsMechanoid && !form.allowMechanoids) return false;
+
+            // 뮤턴트 체크 (뮤턴트이면서 allowMutants=false → 차단)
+            if (pawn.mutant?.Def != null && !form.allowMutants) return false;
+
+            // 인간형/동물 체크 (메카노이드/뮤턴트가 아닌 경우)
+            if (pawn.RaceProps.Humanlike && !form.allowHumanlike) return false;
+            if (pawn.RaceProps.Animal && !form.allowAnimals) return false;
+
+            return true;
+        }
+
+        /// <summary>뮤턴트 세부 필터. allowMutants=true일 때만 호출. 화이트/블랙 리스트.</summary>
         private static bool IsMutantAllowed(Pawn pawn, ShapeshiftFormDef form)
         {
-            if (pawn == null || form == null) return false;
-
-            var allow = form.formAllowedMutants;
-            var disallow = form.formDisallowedMutants;
-
-            bool hasAllow = allow != null && allow.Count > 0;
-            bool hasDisallow = disallow != null && disallow.Count > 0;
-            if (!hasAllow && !hasDisallow) return true;
-
-            // 바닐라에서 Pawn당 뮤턴트는 1개 — pawn.mutant?.Def로 직접 조회
             var mutantDef = pawn.mutant?.Def;
+            if (mutantDef == null) return true; // 비뮤턴트 → 통과
 
-            // allow: 뮤턴트가 allow 목록에 있어야 통과
-            if (hasAllow)
-            {
-                if (mutantDef == null || !allow.Contains(mutantDef))
-                    return false;
-            }
+            // 화이트리스트: 설정되어 있으면 해당 뮤턴트만 허용
+            var allow = form.formAllowedMutants;
+            if (allow != null && allow.Count > 0 && !allow.Contains(mutantDef))
+                return false;
 
-            // disallow: 뮤턴트가 disallow 목록에 있으면 차단
-            if (hasDisallow)
-            {
-                if (mutantDef != null && disallow.Contains(mutantDef))
-                    return false;
-            }
+            // 블랙리스트: 화이트리스트보다 우선
+            var disallow = form.formDisallowedMutants;
+            if (disallow != null && disallow.Count > 0 && disallow.Contains(mutantDef))
+                return false;
 
             return true;
         }
@@ -198,10 +203,13 @@ namespace ShapeshifterFramework.Utilities
             if (pawn == null || form == null) return false;
             if (pawn.Dead) return false;
 
-            // 종족 필터
+            // 1. 카테고리 bool (인간형/동물/메카노이드/뮤턴트)
+            if (!IsCategoryAllowed(pawn, form)) return false;
+
+            // 2. 종족 세부 리스트 (화이트/블랙)
             if (!IsRaceAllowed(pawn, form)) return false;
 
-            // 뮤턴트 필터
+            // 3. 뮤턴트 세부 리스트 (allowMutants=true일 때만 의미)
             if (!IsMutantAllowed(pawn, form)) return false;
 
             return true;

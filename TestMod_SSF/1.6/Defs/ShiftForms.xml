@@ -76,7 +76,7 @@
     <transformExitFleckCount>1</transformExitFleckCount>
     <transformExitFleckScale>1.8</transformExitFleckScale>
     <transformExitSound>PsychicSootheGlobal</transformExitSound>
-    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
@@ -101,7 +101,7 @@
     <transformExitEffecter>ImpactSmallDustCloud</transformExitEffecter>
     <!-- 앰비언트 이펙터 테스트: 변신 중 지속 발열 이펙트 -->
     <ambientEffecter>Shield_Break</ambientEffecter>
-    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Entertest</gizmoIconPathEnter>
+
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Reverttest</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
@@ -173,7 +173,7 @@
     <spawnApparelStuff>Plasteel</spawnApparelStuff>
     <spawnWeaponStuff>Plasteel</spawnWeaponStuff>
     <conflictingGearHandling>Inventory</conflictingGearHandling>
-    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Entertest</gizmoIconPathEnter>
+
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Reverttest</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
@@ -433,7 +433,7 @@
     <transformExitFleckCount>1</transformExitFleckCount>
     <transformExitFleckScale>1.8</transformExitFleckScale>
     <transformExitSound>PsychicSootheGlobal</transformExitSound>
-    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
@@ -504,7 +504,7 @@
     <ambientFleck>PsycastSkipInnerExit</ambientFleck>
     <ambientFleckIntervalTicks>90</ambientFleckIntervalTicks>
     <ambientFleckScale>0.6</ambientFleckScale>
-    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
@@ -539,7 +539,7 @@
     <transformExitFleckCount>1</transformExitFleckCount>
     <transformExitFleckScale>1.5</transformExitFleckScale>
     <transformExitSound>PsychicSootheGlobal</transformExitSound>
-    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 
@@ -560,7 +560,7 @@
     </formDisallowedRaces>
     <apparelEquipLock>Locked</apparelEquipLock>
     <weaponEquipLock>Unlocked</weaponEquipLock>
-    <gizmoIconPathEnter>UI/Commands/SSF_Shift_Enter</gizmoIconPathEnter>
+
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
 

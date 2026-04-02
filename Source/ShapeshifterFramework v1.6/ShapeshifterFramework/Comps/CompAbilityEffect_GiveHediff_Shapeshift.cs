@@ -92,9 +92,9 @@ namespace ShapeshifterFramework.Comps
 
             if (pawn.Dead) return false;
 
-            // 대상 종족이 폼의 formAllowedRaces에 없으면 차단
+            // FormDef 전체 필터 (카테고리 bool + 종족/뮤턴트 리스트)
             var formDef = ResolvedFormDef;
-            if (formDef != null && !ShapeshiftEligibility.IsRaceAllowed(pawn, formDef))
+            if (formDef != null && !ShapeshiftEligibility.CanTransformBasic(pawn, formDef))
                 return false;
 
             // 이미 변신 중이면 차단 (동일 폼 포함) — allowedFromForms로 허용된 전환만 예외

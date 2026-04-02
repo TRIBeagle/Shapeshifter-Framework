@@ -99,19 +99,35 @@ namespace ShapeshifterFramework
         // ── linkedHediff 삭제됨: HediffDef → FormDef 매핑은 HediffCompProperties_ShapeshiftCore.formDef로 단방향 설정.
         //    FormDef는 순수 데이터 시트이며, 어떤 HediffDef와 연결될지는 HediffDef 쪽에서 결정.
 
-        #region 적용 대상 제한 (종족/뮤턴트)
+        #region 적용 대상 제한 — 카테고리 bool (바닐라 TargetingParameters 패턴)
 
-        /// <summary>이 폼을 적용받을 수 있는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        /// <summary>인간형(Humanlike) 폰 허용. HAR 종족 포함. 기본 true.</summary>
+        public bool allowHumanlike = true;
+
+        /// <summary>동물(Animal) 폰 허용. 기본 true.</summary>
+        public bool allowAnimals = true;
+
+        /// <summary>메카노이드 폰 허용. 기본 false (차단).</summary>
+        public bool allowMechanoids = false;
+
+        /// <summary>뮤턴트 폰 허용. 기본 false (차단). true 시 formAllowedMutants로 세부 제한 가능.</summary>
+        public bool allowMutants = false;
+
+        #endregion
+
+        #region 적용 대상 제한 — 세부 리스트 (카테고리 허용 범위 안에서 추가 제한)
+
+        /// <summary>이 폼을 적용받을 수 있는 종족(ThingDef) 화이트리스트. null/빈 목록이면 카테고리 bool 범위 전부 허용.</summary>
         public List<ThingDef> formAllowedRaces;
 
-        /// <summary>이 폼을 적용받을 수 없는 종족(ThingDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        /// <summary>이 폼을 적용받을 수 없는 종족(ThingDef) 블랙리스트. 화이트리스트보다 우선.</summary>
         public List<ThingDef> formDisallowedRaces;
 
-        /// <summary>이 폼을 적용받을 수 있는 뮤턴트(MutantDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        /// <summary>허용할 뮤턴트(MutantDef) 화이트리스트. allowMutants=true일 때만 의미. null/빈 목록이면 모든 뮤턴트 허용.</summary>
         [MayRequire("Ludeon.RimWorld.Anomaly")]
         public List<MutantDef> formAllowedMutants;
 
-        /// <summary>이 폼을 적용받을 수 없는 뮤턴트(MutantDef) 목록. null/빈 목록이면 제한 없음.</summary>
+        /// <summary>차단할 뮤턴트(MutantDef) 블랙리스트. 화이트리스트보다 우선.</summary>
         [MayRequire("Ludeon.RimWorld.Anomaly")]
         public List<MutantDef> formDisallowedMutants;
 
@@ -305,7 +321,6 @@ namespace ShapeshifterFramework
 
         #region UI/기즈모/지속시간
 
-        public string gizmoIconPathEnter;   // 변신 버튼 아이콘
         public string gizmoIconPathRevert;  // 해제 버튼 아이콘
         public int? durationTicks = null;      // 지속 틱(null=무제한)
         public bool canRevertVoluntarily = true; // false면 유저가 기즈모로 해제 불가(강제 변신용)
@@ -438,6 +453,31 @@ namespace ShapeshifterFramework
             if (headDrawScale.HasValue && headDrawScale.Value <= 0f)
                 yield return $"headDrawScale must be > 0, got {headDrawScale.Value}";
 
+            // 전투 검증: 바닐라 verb/tool 대체 시 대체물 없으면 경고
+            if (replaceNativeVerbs == true && (verbs == null || verbs.Count == 0)
+                && (spawnWeaponOnTransform == null || spawnWeaponOnTransform.Count == 0))
+                yield return "replaceNativeVerbs=true but no verbs or spawnWeaponOnTransform defined — pawn will have no ranged attack";
+            if (replaceNativeTools == true && (tools == null || tools.Count == 0))
+                yield return "replaceNativeTools=true but no tools defined — pawn will have no melee attack";
+
+            // 무기 스폰 2개 이상 경고 (듀얼 윌드 모드 없으면 마지막만 장착)
+            if (spawnWeaponOnTransform != null && spawnWeaponOnTransform.Count > 1)
+                yield return $"spawnWeaponOnTransform has {spawnWeaponOnTransform.Count} weapons — vanilla only supports 1 primary weapon (extras will be dropped)";
+
+            // PartOverride: Replace 모드인데 텍스처 없으면 경고
+            CheckPartReplace(body, "body", ref __warnings);
+            CheckPartReplace(head, "head", ref __warnings);
+            CheckPartReplace(hair, "hair", ref __warnings);
+            CheckPartReplace(beard, "beard", ref __warnings);
+            CheckPartReplace(tattooBody, "tattooBody", ref __warnings);
+            CheckPartReplace(tattooHead, "tattooHead", ref __warnings);
+            if (__warnings != null)
+                foreach (var w in __warnings) yield return w;
+
+            // 뮤턴트 필터: allowMutants=false인데 formAllowedMutants 설정됨
+            if (!allowMutants && formAllowedMutants != null && formAllowedMutants.Count > 0)
+                yield return "formAllowedMutants is set but allowMutants=false — mutant list will be ignored";
+
             // 해제 부산물 참조
             if (revertDrops != null)
                 for (int i = 0; i < revertDrops.Count; i++)
@@ -449,6 +489,20 @@ namespace ShapeshifterFramework
                     if (entry == null) { yield return $"revertAddHediffs[{i}]: null entry"; continue; }
                     if (entry.hediff == null) yield return $"revertAddHediffs[{i}]: null HediffDef reference";
                 }
+        }
+
+        // ConfigErrors 임시 경고 리스트 (yield return 내 ref 사용 불가로 우회)
+        [Unsaved] private List<string> __warnings;
+
+        /// <summary>PartOverride가 Replace인데 텍스처 없으면 경고.</summary>
+        private void CheckPartReplace(PartOverrideOption opt, string name, ref List<string> warnings)
+        {
+            if (opt == null || opt.mode != PartControlMode.Replace) return;
+            if (string.IsNullOrEmpty(opt.replacementTexPath))
+            {
+                if (warnings == null) warnings = new List<string>();
+                warnings.Add($"{name}.mode=Replace but replacementTexPath is empty — will render vanilla texture, not hidden");
+            }
         }
 
         /// <summary>리스트 내 null 참조 검증 헬퍼.</summary>

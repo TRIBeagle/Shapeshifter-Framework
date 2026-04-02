@@ -64,13 +64,26 @@ namespace ShapeshifterFramework.Projectiles
             base.Impact(hitThing, blockedByShield);
         }
 
-        /// <summary>확장 설정에 따라 대상에게 hediff 부여. 이미 변신 중이면 스킵.</summary>
+        /// <summary>확장 설정에 따라 대상에게 hediff 부여. 이미 변신 중이거나 FormDef 필터 미통과 시 스킵.</summary>
         private static void ApplyHediffToTarget(Pawn target, GiveHediffProjectileExtension_Shapeshift ext)
         {
             if (ShapeshiftEligibility.IsAlreadyTransformed(target))
                 return;
 
+            // FormDef 필터 사전 차단 (카테고리 bool + 종족/뮤턴트 리스트)
+            var formDef = ResolveFormDef(ext.hediffDef);
+            if (formDef != null && !ShapeshiftEligibility.CanTransformBasic(target, formDef))
+                return;
+
             ShapeshiftCoreUtility.GiveShiftHediff(target, ext.hediffDef);
+        }
+
+        /// <summary>HediffDef에서 FormDef 조회 (캐시 없음 — 투사체 명중 시에만 호출).</summary>
+        private static ShapeshiftFormDef ResolveFormDef(HediffDef hediffDef)
+        {
+            if (hediffDef == null) return null;
+            var coreProps = hediffDef.CompProps<Hediffs.HediffCompProperties_ShapeshiftCore>();
+            return coreProps?.formDef;
         }
     }
 }
