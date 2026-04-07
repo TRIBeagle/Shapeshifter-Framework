@@ -22,6 +22,9 @@ Modders can define custom transformation forms using [b]XML only[/b] — no C# r
 [*] Multiple trigger methods: ability, drug, scroll, projectile, equipment grant, gene, auto-shift
 [*] Ideology integration: shapeshift precepts with mood/opinion/social effects
 [*] Anomaly DLC: per-form mutant eligibility filtering
+[*] Permanent transformation: pawn to animal (with name/relation transfer) or pawn to Thing
+[*] Hediff-based resource harvesting: wool/milk/egg patterns via unified HediffComp
+[*] Target category filters: humanlike/animal/mechanoid/mutant per-form eligibility
 [/list]
 
 [h2]For Modders[/h2]
@@ -51,5 +54,6 @@ See the [url=https://github.com/TRIBeagle/Shapeshifter-Framework/blob/main/FORMD
 		<li>erdelf.HumanoidAlienRaces.dev</li>
 		<li>Nals.FacialAnimation</li>
 		<li>PeteTimesSix.SimpleSidearms</li>
+		<li>usagirei.pocketsand</li>
 	</loadAfter>
 </ModMetaData>
