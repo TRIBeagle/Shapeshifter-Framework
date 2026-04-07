@@ -308,6 +308,9 @@ namespace ShapeshifterFramework
         /// <summary>ambientFleck 스케일. 기본 1.0.</summary>
         public float ambientFleckScale = 1f;
 
+        /// <summary>변신 중 주기적으로 재생되는 사운드. ambientFleck과 같은 간격(ambientFleckIntervalTicks)으로 재생.</summary>
+        public SoundDef ambientSound;
+
         #endregion
 
         #region 변신 해제 시 부산물

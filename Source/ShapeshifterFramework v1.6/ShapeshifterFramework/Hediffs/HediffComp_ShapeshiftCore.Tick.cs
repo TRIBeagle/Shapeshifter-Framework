@@ -8,6 +8,7 @@ using ShapeshifterFramework.Utilities;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Verse.Sound;
 using Verse;
 using Verse.AI;
 
@@ -124,17 +125,25 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>앰비언트 VFX 틱 처리 (이펙터 + 주기적 Fleck).</summary>
         private void TickAmbientVfx(Pawn pawn)
         {
-            if ((currentForm.ambientEffecter == null && currentForm.ambientFleck == null) || !pawn.Spawned) return;
+            if ((currentForm.ambientEffecter == null && currentForm.ambientFleck == null && currentForm.ambientSound == null)
+                || !pawn.Spawned) return;
             if (currentForm.ambientEffecter != null)
             {
                 if (ambientEffecterInstance == null)
                     ambientEffecterInstance = currentForm.ambientEffecter.Spawn();
                 ambientEffecterInstance.EffectTick(pawn, pawn);
             }
-            if (currentForm.ambientFleck != null && Find.TickManager.TicksGame >= ambientFleckNextTick)
+            if (Find.TickManager.TicksGame >= ambientFleckNextTick)
             {
-                FleckMaker.Static(pawn.DrawPos, pawn.Map, currentForm.ambientFleck,
-                    Mathf.Max(0.01f, currentForm.ambientFleckScale));
+                if (currentForm.ambientFleck != null)
+                {
+                    FleckMaker.Static(pawn.DrawPos, pawn.Map, currentForm.ambientFleck,
+                        Mathf.Max(0.01f, currentForm.ambientFleckScale));
+                }
+                if (currentForm.ambientSound != null)
+                {
+                    currentForm.ambientSound.PlayOneShot(SoundInfo.InMap(new TargetInfo(pawn.PositionHeld, pawn.MapHeld)));
+                }
                 ambientFleckNextTick = Find.TickManager.TicksGame + Mathf.Max(1, currentForm.ambientFleckIntervalTicks);
             }
         }
