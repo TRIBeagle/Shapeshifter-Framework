@@ -520,20 +520,22 @@
 <transformEnterFxDelayTicks>10</transformEnterFxDelayTicks>
 ```
 
-### 3.16 앰비언트 VFX
+### 3.16 앰비언트 VFX & 사운드
 변신 중 지속되는 효과.
 
 | 필드 | 타입 | 기본값 | 설명 |
 |------|------|--------|------|
-| `ambientEffecter` | `EffecterDef` | null | 지속 이펙터 |
+| `ambientEffecter` | `EffecterDef` | null | 지속 이펙터 (매 틱 EffectTick) |
 | `ambientFleck` | `FleckDef` | null | 주기적 플렉 |
-| `ambientFleckIntervalTicks` | `int` | 60 | 스폰 간격 (틱) |
+| `ambientFleckIntervalTicks` | `int` | 60 | 플렉/사운드 스폰 간격 (틱) |
 | `ambientFleckScale` | `float` | 1.0 | 플렉 스케일 |
+| `ambientSound` | `SoundDef` | null | 주기적 사운드 (플렉과 같은 간격) |
 
 ```xml
-<ambientFleck>FleckStatic_PsychicEffect</ambientFleck>
-<ambientFleckIntervalTicks>120</ambientFleckIntervalTicks>
-<ambientFleckScale>0.5</ambientFleckScale>
+<ambientFleck>PsycastSkipInnerExit</ambientFleck>
+<ambientFleckIntervalTicks>90</ambientFleckIntervalTicks>
+<ambientFleckScale>0.6</ambientFleckScale>
+<ambientSound>Ambient_AltarOfBioferrite</ambientSound>
 ```
 
 ### 3.17 해제 부산물

@@ -502,10 +502,11 @@
       <shadowVolume>(0.6, 1.0, 0.6)</shadowVolume>
       <shadowOffset>(0, 0, -0.05)</shadowOffset>
     </body>
-    <!-- Ambient VFX test: guardian aura (periodic Fleck spawn) -->
+    <!-- Ambient VFX + Sound test: guardian aura (periodic Fleck + Sound) -->
     <ambientFleck>PsycastSkipInnerExit</ambientFleck>
     <ambientFleckIntervalTicks>90</ambientFleckIntervalTicks>
     <ambientFleckScale>0.6</ambientFleckScale>
+    <ambientSound>Psycast_Skip_Exit</ambientSound>
 
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Revert</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>

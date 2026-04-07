@@ -524,20 +524,22 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 <transformEnterFxDelayTicks>10</transformEnterFxDelayTicks>
 ```
 
-### 3.16 Ambient VFX
+### 3.16 Ambient VFX & Sound
 Persistent effects during the transformation.
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `ambientEffecter` | `EffecterDef` | null | Sustained effecter |
+| `ambientEffecter` | `EffecterDef` | null | Sustained effecter (EffectTick every tick) |
 | `ambientFleck` | `FleckDef` | null | Periodically spawned fleck |
-| `ambientFleckIntervalTicks` | `int` | 60 | Spawn interval (ticks) |
+| `ambientFleckIntervalTicks` | `int` | 60 | Spawn interval for fleck and sound (ticks) |
 | `ambientFleckScale` | `float` | 1.0 | Fleck scale |
+| `ambientSound` | `SoundDef` | null | Periodically played sound (same interval as fleck) |
 
 ```xml
-<ambientFleck>FleckStatic_PsychicEffect</ambientFleck>
-<ambientFleckIntervalTicks>120</ambientFleckIntervalTicks>
-<ambientFleckScale>0.5</ambientFleckScale>
+<ambientFleck>PsycastSkipInnerExit</ambientFleck>
+<ambientFleckIntervalTicks>90</ambientFleckIntervalTicks>
+<ambientFleckScale>0.6</ambientFleckScale>
+<ambientSound>Ambient_AltarOfBioferrite</ambientSound>
 ```
 
 ### 3.17 Revert Byproducts
