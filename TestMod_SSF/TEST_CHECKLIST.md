@@ -82,7 +82,7 @@
 - [ ] `2-M04` 커스텀 기즈모 아이콘 (gizmoIconPathRevert)
 - [ ] `2-M05` 의류 장착 시도 시 차단 메시지 표시
 - [ ] `2-M06` 무기는 자유롭게 교체 가능
-- [ ] `2-M07` ambientEffecter (Shield_Break) 변신 중 지속 재생
+- [ ] `2-M07` ambientFleck (PsycastSkipInnerExit) 변신 중 주기적 스폰 (60틱 간격)
 
 ---
 

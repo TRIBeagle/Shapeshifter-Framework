@@ -99,8 +99,10 @@
     <!-- Effects -->
     <transformEnterEffecter>Vaporize_Heatwave</transformEnterEffecter>
     <transformExitEffecter>ImpactSmallDustCloud</transformExitEffecter>
-    <!-- 앰비언트 이펙터 테스트: 변신 중 지속 발열 이펙트 -->
-    <ambientEffecter>Shield_Break</ambientEffecter>
+    <!-- 앰비언트 Fleck 테스트: 변신 중 주기적 파티클 (이펙터 대신 Fleck 사용) -->
+    <ambientFleck>PsycastSkipInnerExit</ambientFleck>
+    <ambientFleckIntervalTicks>60</ambientFleckIntervalTicks>
+    <ambientFleckScale>0.8</ambientFleckScale>
 
     <gizmoIconPathRevert>UI/Commands/SSF_Shift_Reverttest</gizmoIconPathRevert>
   </ShapeshifterFramework.ShapeshiftFormDef>
