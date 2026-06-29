@@ -431,7 +431,11 @@ FodyWeavers.xsd
 .vs/
 
 # Claude Code / AI agent docs
+.claude/
 CLAUDE.md
 agent_docs/
 DESIGN_NOTES.md
 SampleMod_docs/
+
+# VS Code workspace files
+*.code-workspace
