@@ -387,7 +387,7 @@
       <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
         <resourceDef>WoolSheep</resourceDef>
         <resourceAmount>20</resourceAmount>
-        <intervalDays>2</intervalDays>
+        <intervalTicks>120000</intervalTicks> <!-- 2 days = 2 * 60000 -->
       </li>
     </comps>
   </HediffDef>
@@ -409,7 +409,7 @@
       <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
         <resourceDef>EggChickenUnfertilized</resourceDef>
         <resourceAmount>1</resourceAmount>
-        <intervalDays>1</intervalDays>
+        <intervalTicks>60000</intervalTicks> <!-- 1 day = 60000 -->
         <autoSpawn>true</autoSpawn>
         <requiredGender>Female</requiredGender>
       </li>

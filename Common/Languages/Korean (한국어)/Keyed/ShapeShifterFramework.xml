@@ -35,6 +35,12 @@
   <SSF_Message_CannotDropGeneratedWeapon>변신 중에는 폼 전용 무기를 버릴 수 없습니다.</SSF_Message_CannotDropGeneratedWeapon>
   <SSF_Message_RevertDueToItemLost>{0}의 변신이 해제되었습니다: {1} 유실.</SSF_Message_RevertDueToItemLost>
   <SSF_Message_RevertDueToConditionLost>{0}의 변신이 해제되었습니다: 신체 조건 미충족.</SSF_Message_RevertDueToConditionLost>
+  <SSF_Message_RevertDueToConditionLostDetail>{0}의 변신이 해제되었습니다: {1} 조건 미충족.</SSF_Message_RevertDueToConditionLostDetail>
+  <SSF_Sustain_Apparels>필수 의류</SSF_Sustain_Apparels>
+  <SSF_Sustain_Weapons>필수 무기</SSF_Sustain_Weapons>
+  <SSF_Sustain_Hediffs>필수 헤디프</SSF_Sustain_Hediffs>
+  <SSF_Sustain_Genes>필수 유전자</SSF_Sustain_Genes>
+  <SSF_Sustain_AllCategories>모든 유지 조건</SSF_Sustain_AllCategories>
   <SSF_Message_AlreadyTransformed>이미 다른 형태로 변신 중입니다.</SSF_Message_AlreadyTransformed>
   <SSF_Message_SameFormActive>이미 동일한 형태로 변신 중입니다.</SSF_Message_SameFormActive>
 

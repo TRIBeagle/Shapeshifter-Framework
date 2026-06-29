@@ -35,6 +35,12 @@
   <SSF_Message_CannotDropGeneratedWeapon>Cannot drop form-specific weapons while transformed.</SSF_Message_CannotDropGeneratedWeapon>
   <SSF_Message_RevertDueToItemLost>{0}'s shapeshift reverted: {1} lost.</SSF_Message_RevertDueToItemLost>
   <SSF_Message_RevertDueToConditionLost>{0}'s shapeshift reverted: Body condition lost.</SSF_Message_RevertDueToConditionLost>
+  <SSF_Message_RevertDueToConditionLostDetail>{0}'s shapeshift reverted: {1} condition not met.</SSF_Message_RevertDueToConditionLostDetail>
+  <SSF_Sustain_Apparels>required apparel</SSF_Sustain_Apparels>
+  <SSF_Sustain_Weapons>required weapon</SSF_Sustain_Weapons>
+  <SSF_Sustain_Hediffs>required hediff</SSF_Sustain_Hediffs>
+  <SSF_Sustain_Genes>required gene</SSF_Sustain_Genes>
+  <SSF_Sustain_AllCategories>all sustain conditions</SSF_Sustain_AllCategories>
   <SSF_Message_AlreadyTransformed>Already transformed into another form.</SSF_Message_AlreadyTransformed>
   <SSF_Message_SameFormActive>Already in this form.</SSF_Message_SameFormActive>
   

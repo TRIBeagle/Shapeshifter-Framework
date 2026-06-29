@@ -131,6 +131,12 @@ namespace ShapeshifterFramework
         [MayRequire("Ludeon.RimWorld.Anomaly")]
         public List<MutantDef> formDisallowedMutants;
 
+        /// <summary>이 hediff 보유 시 변신 불가. 예: 질병, 저주 등.</summary>
+        public List<HediffDef> forbiddenHediffs;
+
+        /// <summary>이 정신 상태 중 변신 불가. 예: 버서크, 광기 등.</summary>
+        public List<MentalStateDef> forbiddenMentalStates;
+
         #endregion
 
         #region 렌더링 — 스케일/오프셋/파츠
@@ -433,6 +439,8 @@ namespace ShapeshifterFramework
             foreach (var e in CheckNullRefs(formDisallowedRaces, "formDisallowedRaces")) yield return e;
             foreach (var e in CheckNullRefs(formAllowedMutants, "formAllowedMutants")) yield return e;
             foreach (var e in CheckNullRefs(formDisallowedMutants, "formDisallowedMutants")) yield return e;
+            foreach (var e in CheckNullRefs(forbiddenHediffs, "forbiddenHediffs")) yield return e;
+            foreach (var e in CheckNullRefs(forbiddenMentalStates, "forbiddenMentalStates")) yield return e;
 
             // 소환 장비 참조 + 카테고리 검증
             if (spawnApparelOnTransform != null)
@@ -464,6 +472,25 @@ namespace ShapeshifterFramework
             if (replaceNativeTools == true && (tools == null || tools.Count == 0))
                 yield return "replaceNativeTools=true but no tools defined — pawn will have no melee attack";
 
+            // verbGizmoOptions: verbLabel이 실제 verbs에 없으면 경고
+            if (verbGizmoOptions != null && verbs != null)
+            {
+                for (int i = 0; i < verbGizmoOptions.Count; i++)
+                {
+                    var opt = verbGizmoOptions[i];
+                    if (opt?.verbLabel.NullOrEmpty() == false)
+                    {
+                        bool found = false;
+                        for (int j = 0; j < verbs.Count; j++)
+                        {
+                            if (verbs[j]?.label == opt.verbLabel) { found = true; break; }
+                        }
+                        if (!found)
+                            yield return $"verbGizmoOptions[{i}].verbLabel=\"{opt.verbLabel}\" does not match any verb label — will fall back to index matching";
+                    }
+                }
+            }
+
             // 무기 스폰 2개 이상 경고 (듀얼 윌드 모드 없으면 마지막만 장착)
             if (spawnWeaponOnTransform != null && spawnWeaponOnTransform.Count > 1)
                 yield return $"spawnWeaponOnTransform has {spawnWeaponOnTransform.Count} weapons — vanilla only supports 1 primary weapon (extras will be dropped)";
@@ -481,6 +508,14 @@ namespace ShapeshifterFramework
             // 뮤턴트 필터: allowMutants=false인데 formAllowedMutants 설정됨
             if (!allowMutants && formAllowedMutants != null && formAllowedMutants.Count > 0)
                 yield return "formAllowedMutants is set but allowMutants=false — mutant list will be ignored";
+
+            // sustainMode가 명시됐는데 모든 sustain 리스트가 비어있으면 의미 없음
+            if (sustainMode.HasValue
+                && (sustainApparels == null || sustainApparels.Count == 0)
+                && (sustainWeapons == null || sustainWeapons.Count == 0)
+                && (sustainHediffs == null || sustainHediffs.Count == 0)
+                && (sustainGenes == null || sustainGenes.Count == 0))
+                yield return $"sustainMode={sustainMode.Value} is set but no sustain* lists defined — mode has no effect, transformation will never auto-revert from sustain checks";
 
             // 해제 부산물 참조
             if (revertDrops != null)

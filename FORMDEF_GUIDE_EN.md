@@ -120,6 +120,8 @@ Power suit / armor transformation. Keeps human appearance and existing gear. Con
 | `formDisallowedRaces` | `List<ThingDef>` | These races are blocked. Takes priority over allow. Null entries produce ConfigError. |
 | `formAllowedMutants` | `List<MutantDef>` | [Anomaly] Only these mutant types allowed. Null entries produce ConfigError. |
 | `formDisallowedMutants` | `List<MutantDef>` | [Anomaly] These mutant types blocked. Null entries produce ConfigError. |
+| `forbiddenHediffs` | `List<HediffDef>` | If pawn has any of these hediffs, transformation is blocked. |
+| `forbiddenMentalStates` | `List<MentalStateDef>` | If pawn is in any of these mental states, transformation is blocked. |
 
 ```xml
 <!-- Default: humans + animals (don't need to write anything) -->
@@ -356,6 +358,8 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 </sustainGenes>
 <sustainMode>Any</sustainMode>
 ```
+
+> **ConfigError warning**: If `sustainMode` is explicitly set but all 4 `sustain*` lists are empty, a warning is logged at load time. Setting only the mode without any conditions means auto-revert will never trigger, which is almost certainly unintended.
 
 ### 3.10 Added Effects
 | Field | Type | Description |
@@ -689,7 +693,7 @@ Enables resource gathering from a pawn while the hediff is active. Combines vani
 |-------|------|---------|-------------|
 | `resourceDef` | `ThingDef` | null | Resource to harvest |
 | `resourceAmount` | `int` | 10 | Amount per harvest cycle |
-| `intervalDays` | `int` | 10 | Days for fullness 0→1 |
+| `intervalTicks` | `int` | 600000 | Ticks for fullness 0→1 (60000 ticks = 1 day) |
 | `autoSpawn` | `bool` | false | true: auto-spawn on ground (egg pattern). false: WorkGiver harvest (wool/milk pattern) |
 | `requiredGender` | `Gender?` | null | null=any, `Female`=female only, `Male`=male only |
 | `inspectStringKey` | `string` | `SSF_Harvestable_Fullness` | Inspector display key. {0}=fullness% |
@@ -700,14 +704,14 @@ Enables resource gathering from a pawn while the hediff is active. Combines vani
 <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
   <resourceDef>WoolSheep</resourceDef>
   <resourceAmount>45</resourceAmount>
-  <intervalDays>10</intervalDays>
+  <intervalTicks>600000</intervalTicks> <!-- 10 days -->
 </li>
 
 <!-- Milk: manual harvest, female only, 1-day cycle -->
 <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
   <resourceDef>RawMilk</resourceDef>
   <resourceAmount>14</resourceAmount>
-  <intervalDays>1</intervalDays>
+  <intervalTicks>60000</intervalTicks> <!-- 1 day -->
   <requiredGender>Female</requiredGender>
 </li>
 
@@ -715,7 +719,7 @@ Enables resource gathering from a pawn while the hediff is active. Combines vani
 <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
   <resourceDef>EggChickenUnfertilized</resourceDef>
   <resourceAmount>1</resourceAmount>
-  <intervalDays>1</intervalDays>
+  <intervalTicks>60000</intervalTicks> <!-- 1 day -->
   <autoSpawn>true</autoSpawn>
   <requiredGender>Female</requiredGender>
 </li>
@@ -1016,8 +1020,9 @@ Extends the remaining duration of an active shapeshift. Separate from `Ingestion
 | `triggerInCombat` | `bool` | false | Trigger when drafted + enemies nearby |
 | `checkIntervalTicks` | `int` | 120 | Check interval (ticks) |
 | `triggerOnce` | `bool` | false | Remove this hediff after first trigger |
+| `requireAllConditions` | `bool` | false | `true`: ALL defined conditions must be met (AND). `false`: any one triggers (OR). |
 
-Conditions are evaluated with **OR** logic — any single condition triggers the shift.
+Conditions are evaluated with **OR** logic by default — any single condition triggers the shift. Set `requireAllConditions` to `true` for **AND** logic (all defined conditions must be simultaneously met).
 
 ### 5.8 Multi-Stage Form Chains
 Use `allowedFromForms` to enable casting while already transformed:

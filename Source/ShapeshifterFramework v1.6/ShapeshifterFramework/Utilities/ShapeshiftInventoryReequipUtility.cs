@@ -53,6 +53,7 @@ namespace ShapeshifterFramework.Utilities
 
             if (!success)
             {
+                ShapeshiftDiagnostics.Info($"Reequip failed for {pawn.LabelShort}: {item.Label} — returning to inventory or dropping.");
                 if (!inv.TryAdd(item, canMergeWithExistingStacks: true))
                 {
                     if (pawn.MapHeld != null)

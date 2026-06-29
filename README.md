@@ -60,7 +60,7 @@ HediffDef (entry point — stats/severity)
 
 **VFX & Sound**
 - Enter/exit sound, effecter, fleck (with count, scale, delay, cooldown)
-- Ambient effecter & fleck (sustained during transform)
+- Ambient effecter, fleck & sound (sustained during transform, periodic playback)
 - Voice override (call, wounded, death, angry, eating)
 - Blood / blood smear / flesh type override
 
@@ -104,8 +104,10 @@ HediffDef (entry point — stats/severity)
 
 | Document | Language |
 |----------|----------|
-| [FormDef Creation Guide](FORMDEF_GUIDE_EN.md) | English |
-| [FormDef 제작 가이드](FORMDEF_GUIDE_KO.md) | 한국어 |
+| [Quick Start Guide](QUICKSTART_EN.md) | English | First form in 3 XML files |
+| [빠른 시작 가이드](QUICKSTART_KO.md) | 한국어 | XML 3개로 첫 폼 만들기 |
+| [FormDef Creation Guide](FORMDEF_GUIDE_EN.md) | English | Full field reference |
+| [FormDef 제작 가이드](FORMDEF_GUIDE_KO.md) | 한국어 | 전체 필드 레퍼런스 |
 
 ### Build
 
@@ -180,7 +182,7 @@ HediffDef (진입점 — 스탯/severity)
 
 **VFX & 사운드**
 - 진입/해제 사운드, 이펙터, 플렉 (횟수/스케일/딜레이/쿨다운)
-- 앰비언트 이펙터 & 플렉 (변신 중 지속)
+- 앰비언트 이펙터, 플렉 & 사운드 (변신 중 지속, 주기적 재생)
 - 보이스 오버라이드 (호출/부상/사망/분노/식사)
 - 혈흔/혈흔 번짐/살점 유형 오버라이드
 
@@ -224,8 +226,10 @@ HediffDef (진입점 — 스탯/severity)
 
 | 문서 | 언어 |
 |------|------|
-| [FormDef Creation Guide](FORMDEF_GUIDE_EN.md) | English |
-| [FormDef 제작 가이드](FORMDEF_GUIDE_KO.md) | 한국어 |
+| [Quick Start Guide](QUICKSTART_EN.md) | English | First form in 3 XML files |
+| [빠른 시작 가이드](QUICKSTART_KO.md) | 한국어 | XML 3개로 첫 폼 만들기 |
+| [FormDef Creation Guide](FORMDEF_GUIDE_EN.md) | English | Full field reference |
+| [FormDef 제작 가이드](FORMDEF_GUIDE_KO.md) | 한국어 | 전체 필드 레퍼런스 |
 
 ### 빌드
 

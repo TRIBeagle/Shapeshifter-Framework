@@ -120,6 +120,8 @@
 | `formDisallowedRaces` | `List<ThingDef>` | 이 종족은 차단. allow보다 우선. null 항목 시 ConfigError 출력. |
 | `formAllowedMutants` | `List<MutantDef>` | [Anomaly] 이 뮤턴트만 허용. null 항목 시 ConfigError 출력. |
 | `formDisallowedMutants` | `List<MutantDef>` | [Anomaly] 이 뮤턴트 차단. null 항목 시 ConfigError 출력. |
+| `forbiddenHediffs` | `List<HediffDef>` | 이 hediff 보유 시 변신 불가. 예: 질병, 저주 등. |
+| `forbiddenMentalStates` | `List<MentalStateDef>` | 이 정신 상태 중 변신 불가. 예: 버서크, 광기 등. |
 
 ```xml
 <!-- 기본값: 인간 + 동물 (아무것도 쓰지 않아도 됨) -->
@@ -352,6 +354,8 @@
 </sustainGenes>
 <sustainMode>Any</sustainMode>
 ```
+
+> **ConfigError 경고**: `sustainMode`를 명시했으나 `sustain*` 리스트 4개가 모두 비어있으면 로드 시점에 경고가 출력됩니다. 모드만 설정하고 조건이 없으면 자동 해제가 절대 일어나지 않으므로 의도한 동작이 아닐 가능성이 높습니다.
 
 ### 3.10 부여 효과
 | 필드 | 타입 | 설명 |
@@ -685,7 +689,7 @@ hediff 활성 중 자원 수확 가능. 바닐라 CompShearable/CompMilkable/Com
 |------|------|--------|------|
 | `resourceDef` | `ThingDef` | null | 수확 자원 |
 | `resourceAmount` | `int` | 10 | 1회 수확 수량 |
-| `intervalDays` | `int` | 10 | fullness 0→1 소요 일수 |
+| `intervalTicks` | `int` | 600000 | fullness 0→1 소요 틱 (60000틱 = 1일) |
 | `autoSpawn` | `bool` | false | true: 바닥에 자동 스폰 (알 패턴). false: WorkGiver 수확 (울/우유 패턴) |
 | `requiredGender` | `Gender?` | null | null=무관, `Female`=암컷만, `Male`=수컷만 |
 | `inspectStringKey` | `string` | `SSF_Harvestable_Fullness` | 인스펙터 표시 키. {0}=fullness% |
@@ -696,14 +700,14 @@ hediff 활성 중 자원 수확 가능. 바닐라 CompShearable/CompMilkable/Com
 <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
   <resourceDef>WoolSheep</resourceDef>
   <resourceAmount>45</resourceAmount>
-  <intervalDays>10</intervalDays>
+  <intervalTicks>600000</intervalTicks> <!-- 10일 -->
 </li>
 
 <!-- 우유: 수확 필요, 암컷만, 1일 주기 -->
 <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
   <resourceDef>RawMilk</resourceDef>
   <resourceAmount>14</resourceAmount>
-  <intervalDays>1</intervalDays>
+  <intervalTicks>60000</intervalTicks> <!-- 1일 -->
   <requiredGender>Female</requiredGender>
 </li>
 
@@ -711,7 +715,7 @@ hediff 활성 중 자원 수확 가능. 바닐라 CompShearable/CompMilkable/Com
 <li Class="ShapeshifterFramework.Hediffs.HediffCompProperties_Harvestable">
   <resourceDef>EggChickenUnfertilized</resourceDef>
   <resourceAmount>1</resourceAmount>
-  <intervalDays>1</intervalDays>
+  <intervalTicks>60000</intervalTicks> <!-- 1일 -->
   <autoSpawn>true</autoSpawn>
   <requiredGender>Female</requiredGender>
 </li>
@@ -1012,8 +1016,9 @@ hediff 활성 중 자원 수확 가능. 바닐라 CompShearable/CompMilkable/Com
 | `triggerInCombat` | `bool` | false | 징집 + 근처 적 시 발동 |
 | `checkIntervalTicks` | `int` | 120 | 검사 간격 (틱) |
 | `triggerOnce` | `bool` | false | 발동 후 이 헤디프 제거 (1회성) |
+| `requireAllConditions` | `bool` | false | `true`: 정의된 모든 조건 동시 충족 필요 (AND). `false`: 하나만 충족해도 발동 (OR). |
 
-조건은 **OR** 로직 — 하나만 충족해도 변신 발동.
+기본값은 **OR** 로직 — 하나만 충족해도 변신 발동. `requireAllConditions`를 `true`로 설정하면 **AND** 로직 (정의된 조건 모두 동시 충족 필요).
 
 ### 5.8 다단계 폼 체인
 `allowedFromForms`로 변신 중 시전 허용:

@@ -212,6 +212,27 @@ namespace ShapeshifterFramework.Utilities
             // 3. 뮤턴트 세부 리스트 (allowMutants=true일 때만 의미)
             if (!IsMutantAllowed(pawn, form)) return false;
 
+            // 4. hediff 기반 금지 (질병/저주 등 보유 시 변신 차단)
+            if (form.forbiddenHediffs != null && form.forbiddenHediffs.Count > 0 && pawn.health?.hediffSet != null)
+            {
+                for (int i = 0; i < form.forbiddenHediffs.Count; i++)
+                {
+                    if (pawn.health.hediffSet.GetFirstHediffOfDef(form.forbiddenHediffs[i]) != null)
+                        return false;
+                }
+            }
+
+            // 5. 정신 상태 기반 금지 (버서크/광기 등 중 변신 차단)
+            if (form.forbiddenMentalStates != null && form.forbiddenMentalStates.Count > 0
+                && pawn.InMentalState && pawn.MentalStateDef != null)
+            {
+                for (int i = 0; i < form.forbiddenMentalStates.Count; i++)
+                {
+                    if (form.forbiddenMentalStates[i] == pawn.MentalStateDef)
+                        return false;
+                }
+            }
+
             return true;
         }
     }

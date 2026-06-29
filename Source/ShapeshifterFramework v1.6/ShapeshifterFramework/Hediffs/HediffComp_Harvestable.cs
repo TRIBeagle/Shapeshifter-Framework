@@ -20,8 +20,8 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>수확 1회당 자원 수량.</summary>
         public int resourceAmount = 10;
 
-        /// <summary>fullness 0→1 충전에 걸리는 게임 일수.</summary>
-        public int intervalDays = 10;
+        /// <summary>fullness 0→1 충전에 걸리는 게임 틱. 기본 600000 = 10일 (60000틱/일).</summary>
+        public int intervalTicks = 600000;
 
         /// <summary>true면 fullness 1.0 도달 시 바닥에 자동 스폰 (알 패턴). false면 WorkGiver 수확 (울/우유 패턴).</summary>
         public bool autoSpawn = false;
@@ -38,6 +38,17 @@ namespace ShapeshifterFramework.Hediffs
         public HediffCompProperties_Harvestable()
         {
             compClass = typeof(HediffComp_Harvestable);
+        }
+
+        public override IEnumerable<string> ConfigErrors(HediffDef parentDef)
+        {
+            foreach (var e in base.ConfigErrors(parentDef)) yield return e;
+            if (resourceDef == null)
+                yield return $"{parentDef.defName}: HediffCompProperties_Harvestable.resourceDef is null";
+            if (intervalTicks <= 0)
+                yield return $"{parentDef.defName}: HediffCompProperties_Harvestable.intervalTicks must be > 0 (got {intervalTicks})";
+            if (resourceAmount <= 0)
+                yield return $"{parentDef.defName}: HediffCompProperties_Harvestable.resourceAmount must be > 0 (got {resourceAmount})";
         }
     }
 
@@ -99,9 +110,8 @@ namespace ShapeshifterFramework.Hediffs
             base.CompPostTick(ref severityAdjustment);
             if (!IsActive) return;
 
-            // 바닐라 패턴: 1일 = 60000틱
-            if (Props.intervalDays <= 0) return;
-            float growthPerTick = 1f / (Props.intervalDays * 60000f);
+            if (Props.intervalTicks <= 0) return;
+            float growthPerTick = 1f / Props.intervalTicks;
 
             var pawn = Pawn;
             if (pawn != null)

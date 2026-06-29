@@ -75,9 +75,12 @@ namespace ShapeshifterFramework.Hediffs
                 if (pawn.IsHashIntervalTick(SustainCheckIntervalTicks))
                 {
                     if (CheckSourceItemLost(pawn)) return;
-                    if (!CheckSustainConditions(pawn) && !(pawn.stances?.curStance is Stance_Warmup))
+                    if (!CheckSustainConditions(pawn, out string failReason) && !(pawn.stances?.curStance is Stance_Warmup))
                     {
-                        Messages.Message("SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap), pawn, MessageTypeDefOf.NegativeEvent, false);
+                        string msg = failReason != null
+                            ? "SSF_Message_RevertDueToConditionLostDetail".Translate(pawn.LabelShortCap, failReason)
+                            : "SSF_Message_RevertDueToConditionLost".Translate(pawn.LabelShortCap);
+                        Messages.Message(msg, pawn, MessageTypeDefOf.NegativeEvent, false);
                         RemoveForm();
                         return;
                     }
@@ -125,6 +128,8 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>앰비언트 VFX 틱 처리 (이펙터 + 주기적 Fleck).</summary>
         private void TickAmbientVfx(Pawn pawn)
         {
+            // 방어: 호출 직전 RemoveForm이 동기 트리거됐다면 currentForm이 null일 수 있음
+            if (currentForm == null) return;
             if ((currentForm.ambientEffecter == null && currentForm.ambientFleck == null && currentForm.ambientSound == null)
                 || !pawn.Spawned) return;
             if (currentForm.ambientEffecter != null)
@@ -148,9 +153,10 @@ namespace ShapeshifterFramework.Hediffs
             }
         }
 
-        /// <summary>sustain 조건 충족 여부 검사. Props 오버라이드 반영.</summary>
-        private bool CheckSustainConditions(Pawn pawn)
+        /// <summary>sustain 조건 충족 여부 검사. Props 오버라이드 반영. 실패 시 failReason에 구체적 사유.</summary>
+        private bool CheckSustainConditions(Pawn pawn, out string failReason)
         {
+            failReason = null;
             var apparels = ResolvedSustainApparels;
             var weapons = ResolvedSustainWeapons;
             var hediffs = ResolvedSustainHediffs;
@@ -172,6 +178,10 @@ namespace ShapeshifterFramework.Hediffs
                 bool weaponMet = !hasWeapons || CheckSustainWeapons(pawn, weapons);
                 bool hediffMet = !hasHediffs || CheckSustainHediffs(pawn, hediffs);
                 bool geneMet = !hasGenes || CheckSustainGenes(pawn, genes);
+                if (!apparelMet) failReason = "SSF_Sustain_Apparels".Translate();
+                else if (!weaponMet) failReason = "SSF_Sustain_Weapons".Translate();
+                else if (!hediffMet) failReason = "SSF_Sustain_Hediffs".Translate();
+                else if (!geneMet) failReason = "SSF_Sustain_Genes".Translate();
                 return apparelMet && weaponMet && hediffMet && geneMet;
             }
 
@@ -180,6 +190,7 @@ namespace ShapeshifterFramework.Hediffs
             if (hasWeapons && CheckSustainWeapons(pawn, weapons)) return true;
             if (hasHediffs && CheckSustainHediffs(pawn, hediffs)) return true;
             if (hasGenes && CheckSustainGenes(pawn, genes)) return true;
+            failReason = "SSF_Sustain_AllCategories".Translate();
             return false;
         }
 

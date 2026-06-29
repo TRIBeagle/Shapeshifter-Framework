@@ -19,6 +19,14 @@ namespace ShapeshifterFramework.Hediffs
         // triggerOnce 발동 여부 (세이브/로드)
         private bool hasTriggered;
 
+        // EnemiesAreNearby 캐싱: 전체 맵 적 스캔이라 비용 큼 — 250틱(약 4.2초)간 결과 재사용
+        // 의도적으로 ExposeData에 저장하지 않음 — 캐시는 휘발성이 정답.
+        // 세이브에서 복원하면 오래된 stale 데이터로 잘못된 변신 트리거 위험.
+        // 로드 후 첫 호출에서 -99999 초기값으로 즉시 재평가됨 (보수적 안전 동작).
+        private const int EnemyCheckCacheTicks = 250;
+        private int _enemyCheckTick = -99999;
+        private bool _enemyCheckCached;
+
         public override void CompExposeData()
         {
             base.CompExposeData();
@@ -62,48 +70,96 @@ namespace ShapeshifterFramework.Hediffs
             }
         }
 
-        /// <summary>4가지 조건 중 하나라도 충족하면 true.</summary>
+        /// <summary>조건 판정. requireAllConditions=false(기본): OR — 하나라도 충족 시 true. requireAllConditions=true: AND — 정의된 조건 모두 충족 시 true.</summary>
         private bool AnyConditionMet(Pawn pawn)
         {
+            bool andMode = Props.requireAllConditions;
+            int defined = 0; // 정의된 조건 수 (AND에서 0이면 false)
+            int passed = 0;  // 충족된 조건 수
+
             // 체력 조건
-            if (Props.healthThreshold.HasValue
-                && pawn.health?.summaryHealth != null
-                && pawn.health.summaryHealth.SummaryHealthPercent < Props.healthThreshold.Value)
-                return true;
+            if (Props.healthThreshold.HasValue)
+            {
+                defined++;
+                if (pawn.health?.summaryHealth != null
+                    && pawn.health.summaryHealth.SummaryHealthPercent < Props.healthThreshold.Value)
+                {
+                    if (!andMode) return true;
+                    passed++;
+                }
+            }
 
             // 정신 상태 조건
-            if (Props.triggerMentalStates != null && Props.triggerMentalStates.Count > 0
-                && pawn.InMentalState && pawn.MentalStateDef != null)
+            if (Props.triggerMentalStates != null && Props.triggerMentalStates.Count > 0)
             {
-                for (int i = 0; i < Props.triggerMentalStates.Count; i++)
+                defined++;
+                if (pawn.InMentalState && pawn.MentalStateDef != null)
                 {
-                    if (Props.triggerMentalStates[i] == pawn.MentalStateDef)
-                        return true;
+                    for (int i = 0; i < Props.triggerMentalStates.Count; i++)
+                    {
+                        if (Props.triggerMentalStates[i] == pawn.MentalStateDef)
+                        {
+                            if (!andMode) return true;
+                            passed++;
+                            break;
+                        }
+                    }
                 }
             }
 
             // severity 조건 (이 hediff 자체의 severity)
-            if (Props.severityThreshold.HasValue
-                && parent.Severity >= Props.severityThreshold.Value)
-                return true;
+            if (Props.severityThreshold.HasValue)
+            {
+                defined++;
+                if (parent.Severity >= Props.severityThreshold.Value)
+                {
+                    if (!andMode) return true;
+                    passed++;
+                }
+            }
 
             // 밝기 조건 (SunGlow 기반, 바이옴/계절 자동 반영)
-            if (Props.triggerSunGlowBelow.HasValue && pawn.Spawned && pawn.Map != null)
+            if (Props.triggerSunGlowBelow.HasValue)
             {
-                if (GenCelestial.CurCelestialSunGlow(pawn.Map) < Props.triggerSunGlowBelow.Value)
-                    return true;
+                defined++;
+                if (pawn.Spawned && pawn.Map != null
+                    && GenCelestial.CurCelestialSunGlow(pawn.Map) < Props.triggerSunGlowBelow.Value)
+                {
+                    if (!andMode) return true;
+                    passed++;
+                }
             }
 
             // 전투 조건: 징집 상태이거나 최근 피격(5초 이내) + 근처 적대 폰
-            if (Props.triggerInCombat && pawn.Spawned)
+            if (Props.triggerInCombat)
             {
-                bool inCombat = pawn.Drafted
-                    || (pawn.mindState != null
-                        && Find.TickManager.TicksGame - pawn.mindState.lastAttackTargetTick < 300);
-                if (inCombat && PawnUtility.EnemiesAreNearby(pawn))
-                    return true;
+                defined++;
+                if (pawn.Spawned)
+                {
+                    bool inCombat = pawn.Drafted
+                        || (pawn.mindState != null
+                            && Find.TickManager.TicksGame - pawn.mindState.lastAttackTargetTick < 300);
+                    if (inCombat)
+                    {
+                        int now = Find.TickManager.TicksGame;
+                        if (now - _enemyCheckTick >= EnemyCheckCacheTicks)
+                        {
+                            _enemyCheckCached = PawnUtility.EnemiesAreNearby(pawn);
+                            _enemyCheckTick = now;
+                        }
+                        if (_enemyCheckCached)
+                        {
+                            if (!andMode) return true;
+                            passed++;
+                        }
+                    }
+                }
             }
 
+            // AND 모드: 정의된 조건 모두 충족 시 true
+            if (andMode) return defined > 0 && passed == defined;
+
+            // OR 모드: 여기까지 왔으면 아무것도 충족 안 됨
             return false;
         }
     }

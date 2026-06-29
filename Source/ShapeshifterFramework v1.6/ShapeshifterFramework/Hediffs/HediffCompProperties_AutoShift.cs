@@ -36,6 +36,9 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>true면 발동 후 이 hediff 자체를 제거 (1회성).</summary>
         public bool triggerOnce = false;
 
+        /// <summary>true면 모든 조건이 동시 충족되어야 발동 (AND). false면 하나만 충족해도 발동 (OR, 기본값).</summary>
+        public bool requireAllConditions = false;
+
         public HediffCompProperties_AutoShift()
         {
             compClass = typeof(HediffComp_AutoShift);
