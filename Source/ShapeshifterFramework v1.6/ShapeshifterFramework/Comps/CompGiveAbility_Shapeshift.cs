@@ -77,7 +77,39 @@ namespace ShapeshifterFramework.Comps
         {
             if (pawn?.abilities == null || Props.ability == null) return;
             if (pawn.abilities.GetAbility(Props.ability) == null) return;
+            // 같은 폰이 장비한 다른 아이템이 동일 AbilityDef를 부여 중이면 회수하지 않음 (다중 소스 충돌 방지).
+            if (AnyOtherGranterEquipped(pawn)) return;
             pawn.abilities.RemoveAbility(Props.ability);
+        }
+
+        /// <summary>이 아이템(parent)을 제외하고, 같은 폰이 장비한 다른 아이템이 동일 AbilityDef를 부여하는지 검사.</summary>
+        private bool AnyOtherGranterEquipped(Pawn pawn)
+        {
+            if (pawn == null) return false;
+
+            var apparel = pawn.apparel?.WornApparel;
+            if (apparel != null)
+            {
+                for (int i = 0; i < apparel.Count; i++)
+                    if (GrantsSameAbility(apparel[i])) return true;
+            }
+
+            var equipment = pawn.equipment?.AllEquipmentListForReading;
+            if (equipment != null)
+            {
+                for (int i = 0; i < equipment.Count; i++)
+                    if (GrantsSameAbility(equipment[i])) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>thing이 this.parent가 아니면서 동일 AbilityDef를 부여하는 CompGiveAbility_Shapeshift를 가지는지.</summary>
+        private bool GrantsSameAbility(Thing thing)
+        {
+            if (thing == null || thing == parent) return false;
+            var comp = thing.TryGetComp<CompGiveAbility_Shapeshift>();
+            return comp != null && comp.Props?.ability == Props.ability;
         }
 
         public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)

@@ -1,7 +1,7 @@
 # Shapeshifter Framework — 테스트 체크리스트
 
-최신 기준 커밋: `e72e60c` (2026-04-02)
-이전 기준 커밋: `06bea51` (2026-04-02)
+최신 기준 커밋: `be173ec` (2026-04-11)
+이전 기준 커밋: `e72e60c` (2026-04-02)
 
 > TestMod_SSF 기준 | `[A]` = Auto-Verify (디버그 액션) | `[M]` = 인게임 수동 확인
 > 넘버링: `{섹션}-A{번호}` = Auto-Verify | `{섹션}-M{번호}` = Manual
@@ -171,6 +171,7 @@
 - [ ] `5-M14` entropyCost 설정 verb: psylink 있지만 신경열 꽉 찼을 때 기즈모 비활성 확인
 - [ ] `5-M15` entropyCost 설정 verb: 로열티 DLC 비활성 시 신경열 비용 무시, 자유 사용 확인
 - [ ] `5-M16` entropyCost 기즈모 설명에 "신경열: N" 텍스트 표시 확인
+- [ ] `5-M17` Dev Mode 켠 상태에서 변신 → 기즈모 라벨/설명이 PseudoTranslated로 깨지지 않음 (verbProps.label·verbGizmoOptions label/desc는 표시 리터럴, .Translate() 미적용)
 
 ---
 
@@ -289,6 +290,7 @@
 - [ ] `10-M02` 의류 부여(Apparel_PhantomCloak): 착용 시 어빌리티 → 탈착 시 제거
 - [ ] `10-M03` 유전자(Gene_BeastkinShift): 유전자 보유 시 어빌리티
 - [ ] `10-M04` 헤디프(Hediff_ShiftBlessing): 헤디프 보유 시 어빌리티
+- [ ] `10-M05` 동일 AbilityDef를 부여하는 아이템 2개 동시 장비 → 하나만 해제/드롭/파괴 시 어빌리티 유지 (다른 소스가 남아있으면 회수 안 함)
 
 ---
 
@@ -397,6 +399,8 @@
 - [ ] `14-M11` CE 환경에서 BeastkinForm claws 공격 → ToolCE 관통값(sharp=3, blunt=6) 적용 확인 (MayRequire XML 패치)
 - [ ] `14-M12` CE 환경에서 BeastkinForm AssaultRifle verb → VerbPropertiesCE(Verb_ShootCE) 동작 확인 (MayRequire XML 패치)
 - [ ] `14-M13` CE 없이 로드 시 → CE 패치 미적용, 바닐라 Tool/VerbProperties 정상 동작 확인
+- [ ] `14-M14` SS 활성 + 폼 A→B 직접 전환(allowedFromForms) → B 변신 중 원본 사이드암 메모리 부활 안 함, 최종 해제 시 원본 정상 복원 (내부 RemoveForm 복원 보류 플래그)
+- [ ] `14-M15` FA 활성 + 변신 폰 렌더 중 스케일 예외 발생 시 → `[SSF]` 경고가 매 프레임 반복되지 않고 1회만 기록 (HasFailed 가드)
 
 ---
 
@@ -441,6 +445,10 @@
 - [ ] `17-A05` formDisallowedMutants에 null MutantDef → ConfigError 출력
 - [ ] `17-A06` spawnApparelOnTransform에 비의류 ThingDef → ConfigError 출력
 - [ ] `17-A07` spawnWeaponOnTransform에 비무기 ThingDef → ConfigError 출력
+- [ ] `17-A08` sustainMode 명시 + sustain* 리스트 4개 모두 비어있음 → ConfigError 경고 (모드 효과 없음 안내)
+- [ ] `17-A09` HediffCompProperties_Harvestable.resourceDef = null → ConfigError 경고
+- [ ] `17-A10` HediffCompProperties_Harvestable.intervalTicks ≤ 0 → ConfigError 경고
+- [ ] `17-A11` HediffCompProperties_Harvestable.resourceAmount ≤ 0 → ConfigError 경고
 
 ---
 
@@ -511,3 +519,30 @@
 - [ ] `23-M06` allowHumanlike=false + allowAnimals=true: 동물만 변신 가능, 인간 차단
 - [ ] `23-M07` 투사체 사전 차단: CanTransformBasic 실패 시 hediff 부여 안 됨
 - [ ] `23-M08` 어빌리티 대상 사전 차단: CanTransformBasic 실패 시 시전 불가
+
+---
+
+## 24. 변신 금지 조건 (forbiddenHediffs / forbiddenMentalStates)
+
+### [M] 수동 확인
+- [ ] `24-M01` forbiddenHediffs에 특정 질병 지정 → 해당 질병 보유 시 변신 차단
+- [ ] `24-M02` forbiddenMentalStates에 Berserk 지정 → 버서크 중 변신 차단
+- [ ] `24-M03` forbiddenHediffs 미설정(null) → 제한 없이 변신 가능
+
+---
+
+## 25. AutoShift AND/OR 로직 (requireAllConditions)
+
+### [M] 수동 확인
+- [ ] `25-M01` requireAllConditions=false (기본) → 조건 하나만 충족해도 변신 발동 (OR)
+- [ ] `25-M02` requireAllConditions=true → 모든 조건 동시 충족 시에만 변신 발동 (AND)
+- [ ] `25-M03` requireAllConditions=true, 조건 일부만 충족 → 변신 미발동
+
+---
+
+## 26. sustain 해제 상세 메시지
+
+### [M] 수동 확인
+- [ ] `26-M01` sustain 의류 해제 → 메시지에 "sustainApparels" 구체적 원인 표시
+- [ ] `26-M02` sustain 무기 해제 → 메시지에 "sustainWeapons" 표시
+- [ ] `26-M03` Any 모드 전체 미충족 → "all sustain categories" 표시

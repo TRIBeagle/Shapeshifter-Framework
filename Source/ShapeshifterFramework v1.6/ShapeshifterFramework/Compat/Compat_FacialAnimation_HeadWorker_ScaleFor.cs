@@ -98,8 +98,9 @@ namespace ShapeshifterFramework.Compat
             }
             catch (Exception e)
             {
-                // 실패 시 경고, 원본 유지
-                Log.Warning($"{CompatManager.LOG_FA} Head scale postfix failed: {e}");
+                // 렌더 핫패스 — 매 프레임 로그 스팸 방지를 위해 1회만 기록, 원본 유지.
+                if (!CompatManager.FA.HasFailed("HeadScale:PostfixException"))
+                    CompatManager.FA.Failed("HeadScale:PostfixException", e.Message);
             }
         }
 

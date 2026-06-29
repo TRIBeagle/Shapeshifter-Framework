@@ -238,11 +238,14 @@ namespace ShapeshifterFramework.Hediffs
             var vp = v?.verbProps;
             if (o != null)
             {
+                // o.label/toggleLabel은 XML 표시용 리터럴이므로 .Translate() 금지(번역키 아님). CapitalizeFirst만 적용.
                 string s = preferToggleLabel ? (o.toggleLabel ?? o.label) : o.label;
-                if (!string.IsNullOrEmpty(s)) return s.Translate().CapitalizeFirst();
+                if (!string.IsNullOrEmpty(s)) return s.CapitalizeFirst();
             }
 
-            string label = string.IsNullOrEmpty(vp?.label) ? "SSF_Verb_Attack".Translate() : vp.label.Translate();
+            // vp.label도 표시용 리터럴. "SSF_Verb_Attack"만 실제 번역키라 Translate 유지.
+            // (string) 캐스트: 삼항 두 분기를 string으로 통일 (TaggedString↔string, C# 7.3 대상유형변환 미지원).
+            string label = string.IsNullOrEmpty(vp?.label) ? (string)"SSF_Verb_Attack".Translate() : vp.label;
             return label.CapitalizeFirst();
         }
 
@@ -258,8 +261,9 @@ namespace ShapeshifterFramework.Hediffs
             string desc = null;
             if (o != null)
             {
+                // o.description/toggleDescription은 XML 표시용 리터럴 → .Translate() 금지(번역키 아님).
                 string s = forToggle ? (o.toggleDescription ?? o.description) : o.description;
-                desc = !string.IsNullOrEmpty(s) ? s.Translate() : null;
+                desc = !string.IsNullOrEmpty(s) ? s : null;
             }
 
             if (desc == null)

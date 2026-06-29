@@ -339,6 +339,11 @@ namespace ShapeshifterFramework.Compat
     {
         private static bool counted;
 
+        // ApplyForm 실행 중 플래그. 폼 전환(A→B) 시 ApplyForm 본문이 내부적으로 RemoveForm을 호출하는데,
+        // 이때 RemoveForm Postfix의 메모리 복원을 보류해야 store의 원본(비변신) 백업이 보존된다.
+        // 메인 스레드 단일 실행 전제(파일 헤더 참조)이므로 static bool로 충분.
+        private static bool _inApplyForm;
+
         /// <summary>ApplyForm Prefix: SS 메모리 백업 후 클리어.</summary>
         [HarmonyPatch(typeof(HediffComp_ShapeshiftCore), "ApplyForm",
             new Type[] { typeof(ShapeshiftFormDef), typeof(List<Thing>) })]
@@ -362,6 +367,8 @@ namespace ShapeshifterFramework.Compat
             /// <summary>변신 직전: SS 메모리 백업 → 클리어 (무기 제거 시 SS 간섭 방지).</summary>
             static void Prefix(HediffComp_ShapeshiftCore __instance)
             {
+                // ApplyForm 본문이 내부 RemoveForm을 부르더라도 그 복원을 보류시킨다(A→B 전환 시 원본 백업 보존).
+                _inApplyForm = true;
                 try
                 {
                     var pawn = __instance?.Pawn;
@@ -381,6 +388,12 @@ namespace ShapeshifterFramework.Compat
                         CompatManager.SS.Failed("MemoryHook:ApplyForm:Exception", e.Message);
                 }
             }
+
+            /// <summary>ApplyForm 종료(예외 포함) 후 플래그 해제. 내부 RemoveForm은 이 시점 이전에 끝난다.</summary>
+            static void Finalizer()
+            {
+                _inApplyForm = false;
+            }
         }
 
         /// <summary>RemoveForm Postfix: SS 메모리 원복.</summary>
@@ -392,6 +405,8 @@ namespace ShapeshifterFramework.Compat
             /// <summary>변신 해제 후: 원래 SS 메모리 복원.</summary>
             static void Postfix(HediffComp_ShapeshiftCore __instance)
             {
+                // 폼 전환(A→B) 시 ApplyForm이 호출한 내부 RemoveForm이면 복원 보류 — 원본 백업을 store에 유지.
+                if (_inApplyForm) return;
                 try
                 {
                     var pawn = __instance?.Pawn;
