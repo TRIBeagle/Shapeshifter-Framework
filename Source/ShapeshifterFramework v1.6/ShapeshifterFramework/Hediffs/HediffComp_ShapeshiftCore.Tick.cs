@@ -147,7 +147,8 @@ namespace ShapeshifterFramework.Hediffs
                 }
                 if (currentForm.ambientSound != null)
                 {
-                    currentForm.ambientSound.PlayOneShot(SoundInfo.InMap(new TargetInfo(pawn.PositionHeld, pawn.MapHeld)));
+                    // Spawned 가드(위) 하라 Position/Map 안전 — Fleck(pawn.DrawPos/pawn.Map)과 좌표 소스 통일
+                    currentForm.ambientSound.PlayOneShot(SoundInfo.InMap(new TargetInfo(pawn.Position, pawn.Map)));
                 }
                 ambientFleckNextTick = Find.TickManager.TicksGame + Mathf.Max(1, currentForm.ambientFleckIntervalTicks);
             }

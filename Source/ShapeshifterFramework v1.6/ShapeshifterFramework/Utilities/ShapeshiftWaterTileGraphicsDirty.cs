@@ -96,6 +96,7 @@ namespace ShapeshifterFramework.Utilities
             }
             catch
             {
+                // 맵 미스폰/위치 무효 등 예외 — 비수영으로 안전 폴백 (렌더 경로라 로그 생략)
                 return false;
             }
         }

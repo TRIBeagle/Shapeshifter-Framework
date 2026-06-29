@@ -15,7 +15,19 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch]
     internal static class Patch_FilthMaker_TryMakeFilth
     {
-        static MethodBase TargetMethod()
+        private static MethodBase _target;
+
+        static bool Prepare()
+        {
+            _target = ResolveTarget();
+            if (_target == null)
+                Log.Warning("[SSF] FilthMaker.TryMakeFilth 미발견 — 패치 스킵 (RimWorld 버전 변경 가능성)");
+            return _target != null;
+        }
+
+        static MethodBase TargetMethod() => _target;
+
+        static MethodBase ResolveTarget()
         {
             // private static bool TryMakeFilth(IntVec3 c, Map map, ThingDef filthDef, IEnumerable<string> sources, bool shouldPropagate, out Filth outFilth, FilthSourceFlags additionalFlags = FilthSourceFlags.None)
             return AccessTools.Method(typeof(FilthMaker), "TryMakeFilth", new Type[]

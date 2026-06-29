@@ -25,7 +25,7 @@ namespace ShapeshifterFramework.Patches
         private static readonly Dictionary<WorkTags, List<WorkTypeDef>> _workTypesByTagsCache
             = new Dictionary<WorkTags, List<WorkTypeDef>>(16);
 
-        // 재진입 안전을 위해 static HashSet 제거, 호출 빈도가 낮아 로컬 할당 허용
+        // 재진입 안전을 위해 ThreadStatic으로 스레드별 독립 버퍼 사용 (static 공유 HashSet의 재진입 손상 방지)
         [System.ThreadStatic]
         private static HashSet<WorkTypeDef> _tmpExisting;
 

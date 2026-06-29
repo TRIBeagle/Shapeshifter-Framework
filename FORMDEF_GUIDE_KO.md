@@ -148,8 +148,8 @@
 |------|------|--------|------|
 | `bodyDrawScale` | `float?` | 1.0 | 몸체 렌더 스케일 |
 | `headDrawScale` | `float?` | 1.0 | 머리 렌더 스케일 |
-| `bodyOffset` | `Vector2?` | (0,0) | 몸체 위치 오프셋 (x, z) |
-| `headOffset` | `Vector2?` | (0,0) | 머리 위치 오프셋 (x, z) |
+| `bodyOffset` | `Vector2?` | null | 몸체 위치 오프셋 (x, z) |
+| `headOffset` | `Vector2?` | null | 머리 위치 오프셋 (x, z) |
 | `portraitDrawScale` | `float?` | 1.0 | 초상화 UI 스케일 |
 
 ```xml
@@ -230,6 +230,10 @@
 <!-- 모든 의류 숨기되 파워 아머만 표시 -->
 <renderHideApparelLayers><li>All</li></renderHideApparelLayers>
 <renderShowApparelDefNames><li>Apparel_PowerArmor</li></renderShowApparelDefNames>
+
+<!-- 모든 유전자 숨기되 특정 유전자만 표시 -->
+<renderHideGeneExclusionTags><li>All</li></renderHideGeneExclusionTags>
+<renderShowGeneDefNames><li>Gene_ToughSkin</li></renderShowGeneDefNames>
 ```
 
 ### 3.5 장비 처리

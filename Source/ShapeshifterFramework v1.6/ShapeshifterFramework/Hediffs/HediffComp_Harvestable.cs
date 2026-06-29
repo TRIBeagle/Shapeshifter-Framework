@@ -154,6 +154,8 @@ namespace ShapeshifterFramework.Hediffs
         public void Gathered(Pawn doer)
         {
             if (!IsActive || Props.resourceDef == null) return;
+            // public 진입점 — 비스폰/맵 없음 시 Pawn.Map/doer.Map NRE 방지 (WorkGiver 외 호출자 대비)
+            if (Pawn == null || !Pawn.Spawned || Pawn.Map == null || doer?.Map == null) return;
 
             if (!Rand.Chance(doer.GetStatValue(StatDefOf.AnimalGatherYield)))
             {

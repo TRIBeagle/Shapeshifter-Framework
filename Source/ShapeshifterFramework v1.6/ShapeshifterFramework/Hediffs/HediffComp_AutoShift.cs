@@ -50,7 +50,7 @@ namespace ShapeshifterFramework.Hediffs
             // 이미 변신 중이면 건너뜀
             if (ShapeshiftRegistry.IsActive(pawn)) return;
 
-            // 조건 판정 (OR: 하나라도 충족 시 트리거)
+            // 조건 판정 (requireAllConditions=false면 OR, true면 AND — AnyConditionMet 참조)
             if (!AnyConditionMet(pawn)) return;
 
             // HediffDef 기반 변신 진입

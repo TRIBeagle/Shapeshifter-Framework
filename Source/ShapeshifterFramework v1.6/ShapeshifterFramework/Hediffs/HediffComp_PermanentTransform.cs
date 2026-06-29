@@ -39,6 +39,17 @@ namespace ShapeshifterFramework.Hediffs
         {
             compClass = typeof(HediffComp_PermanentTransform);
         }
+
+        public override IEnumerable<string> ConfigErrors(HediffDef parentDef)
+        {
+            foreach (var e in base.ConfigErrors(parentDef)) yield return e;
+            if (animalKind == null && thingDef == null)
+                yield return $"{parentDef.defName}: HediffCompProperties_PermanentTransform — animalKind와 thingDef가 모두 null (전환 대상 없음)";
+            if (thingCount <= 0)
+                yield return $"{parentDef.defName}: HediffCompProperties_PermanentTransform.thingCount must be > 0 (got {thingCount})";
+            if (severityThreshold <= 0f)
+                yield return $"{parentDef.defName}: HediffCompProperties_PermanentTransform.severityThreshold should be > 0 (got {severityThreshold})";
+        }
     }
 
     /// <summary>severity 임계값 도달 시 폰 → 동물/Thing 영구 전환.</summary>
@@ -130,8 +141,11 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>Thing 스폰 (비폰 전환).</summary>
         private string SpawnThing(Map map, IntVec3 pos)
         {
-            Thing thing = ThingMaker.MakeThing(Props.thingDef);
-            thing.stackCount = Props.thingCount;
+            var def = Props.thingDef;
+            // MadeFromStuff ThingDef(무기/일부 가구)는 stuff 없이 MakeThing 시 예외 → 기본 재료 전달
+            Thing thing = ThingMaker.MakeThing(def, def.MadeFromStuff ? GenStuff.DefaultStuffFor(def) : null);
+            if (thing == null) return def.label ?? def.defName;
+            thing.stackCount = System.Math.Min(System.Math.Max(Props.thingCount, 1), def.stackLimit);
             if (map != null && pos.IsValid)
                 GenPlace.TryPlaceThing(thing, pos, map, ThingPlaceMode.Near);
             return thing.LabelShortCap;

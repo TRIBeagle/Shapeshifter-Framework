@@ -62,7 +62,7 @@ namespace ShapeshifterFramework.Compat
                     shouldFilter = true;
                 }
             }
-            catch { }
+            catch { /* 레지스트리/규칙 조회 실패 시 필터링 생략하고 원본 기즈모 그대로 표시 */ }
 
             if (!shouldFilter)
             {

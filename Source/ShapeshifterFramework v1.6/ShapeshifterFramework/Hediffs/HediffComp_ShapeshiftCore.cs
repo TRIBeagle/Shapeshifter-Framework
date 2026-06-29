@@ -663,9 +663,17 @@ namespace ShapeshifterFramework.Hediffs
             {
                 var entry = drops[i];
                 if (entry?.thingDef == null || entry.count <= 0) continue;
-                Thing thing = ThingMaker.MakeThing(entry.thingDef);
-                thing.stackCount = entry.count;
-                GenPlace.TryPlaceThing(thing, pawn.PositionHeld, pawn.MapHeld, ThingPlaceMode.Near);
+                // stackLimit 초과 시 분할 배치 — 단일 Thing에 한계 초과 stackCount 설정은 바닐라 규약 위반
+                int remaining = entry.count;
+                int limit = System.Math.Max(1, entry.thingDef.stackLimit);
+                while (remaining > 0)
+                {
+                    int batch = System.Math.Min(remaining, limit);
+                    Thing thing = ThingMaker.MakeThing(entry.thingDef);
+                    thing.stackCount = batch;
+                    GenPlace.TryPlaceThing(thing, pawn.PositionHeld, pawn.MapHeld, ThingPlaceMode.Near);
+                    remaining -= batch;
+                }
             }
         }
 

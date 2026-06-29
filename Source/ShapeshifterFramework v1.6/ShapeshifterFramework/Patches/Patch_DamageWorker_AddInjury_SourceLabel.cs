@@ -16,10 +16,17 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch]
     internal static class Patch_DamageWorker_AddInjury_SourceLabel
     {
-        static MethodBase TargetMethod()
+        private static MethodBase _target;
+
+        static bool Prepare()
         {
-            return AccessTools.Method(typeof(DamageWorker_AddInjury), "ApplyToPawn");
+            _target = AccessTools.Method(typeof(DamageWorker_AddInjury), "ApplyToPawn");
+            if (_target == null)
+                Log.Warning("[SSF] DamageWorker_AddInjury.ApplyToPawn 미발견 — 패치 스킵 (RimWorld 버전 변경 가능성)");
+            return _target != null;
         }
+
+        static MethodBase TargetMethod() => _target;
 
         [HarmonyPostfix]
         static void Postfix(DamageInfo dinfo, Pawn pawn)

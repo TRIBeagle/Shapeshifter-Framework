@@ -15,6 +15,18 @@ namespace ShapeshifterFramework.Comps
     {
         public CompProperties_UseEffect_Shapeshift Props => (CompProperties_UseEffect_Shapeshift)props;
 
+        // CompTargetable 1회 캐시 — CanBeUsedBy(FloatMenu/hover 빈번 호출)·DoEffect의 반복 선형 탐색 방지
+        private CompTargetable _targetable;
+        private bool _targetableResolved;
+        private CompTargetable Targetable
+        {
+            get
+            {
+                if (!_targetableResolved) { _targetable = parent.GetComp<CompTargetable>(); _targetableResolved = true; }
+                return _targetable;
+            }
+        }
+
         /// <summary>사용 가능 여부 판정. 이데올로기 금지, 사용자/대상 변신 중이면 차단.
         /// CompTargetable이 있는 타인변신 아이템은 사용자 변신 상태와 무관하게 사용 가능.</summary>
         public override AcceptanceReport CanBeUsedBy(Pawn pawn)
@@ -22,7 +34,7 @@ namespace ShapeshifterFramework.Comps
             if (ShapeshiftEligibility.IsIdeologyForbidden(pawn))
                 return "IdeoligionForbids".Translate();
 
-            var targetable = parent.GetComp<CompTargetable>();
+            var targetable = Targetable;
 
             // 자기변신 아이템(CompTargetable 없음): 사용자 본인이 변신 중이면 차단 (allowedFromForms 예외)
             if (targetable == null && ShapeshiftEligibility.IsAlreadyTransformed(pawn))
@@ -37,7 +49,7 @@ namespace ShapeshifterFramework.Comps
                 var jobTarget = pawn.CurJob?.targetB.Thing as Pawn;
                 if (jobTarget != null && ShapeshiftEligibility.IsAlreadyTransformed(jobTarget))
                 {
-                    Messages.Message("SSF_Message_AlreadyTransformed".Translate(), jobTarget, MessageTypeDefOf.RejectInput, false);
+                    // 판정 메서드이므로 Messages.Message 부수효과 없이 거부 사유만 반환 (UI가 reason을 표출)
                     return "SSF_Message_AlreadyTransformed".Translate();
                 }
             }
@@ -54,7 +66,7 @@ namespace ShapeshifterFramework.Comps
             Pawn target = null;
 
             // CompTargetable이 있으면 UseItem Job의 targetB에서 대상을 가져옴
-            var targetable = parent.GetComp<CompTargetable>();
+            var targetable = Targetable;
             if (targetable != null)
             {
                 // 1차: UseItem Job의 targetB (RimWorld이 타겟 선택 결과를 여기에 저장)

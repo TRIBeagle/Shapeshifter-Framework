@@ -71,7 +71,7 @@ namespace ShapeshifterFramework.Patches
             if (ShapeshifterFrameworkMod.Settings?.enableDebugLog == true)
             {
                 string verbName = __instance.verbProps?.label ?? __instance.GetType().Name;
-                Log.Message($"[SSF] Verb '{verbName}' used — deducted {cost} ticks (remaining: {core.RemainingShapeshiftTicks})" +
+                Log.Message($"[SSF] Verb '{verbName}' used — cost {cost} ticks (영구 변신은 미차감; remaining: {core.RemainingShapeshiftTicks})" +
                     (entropy > 0f ? $", entropy +{entropy}" : ""));
             }
         }

@@ -15,11 +15,17 @@ namespace ShapeshifterFramework.Patches
     internal static class Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound
     {
         // 대상 메서드: private void PlayWoundedVoiceSound(DamageInfo dinfo, Pawn pawn)
-        static MethodBase TargetMethod()
+        private static MethodBase _target;
+
+        static bool Prepare()
         {
-            var t = typeof(DamageWorker_AddInjury);
-            return AccessTools.Method(t, "PlayWoundedVoiceSound", new Type[] { typeof(DamageInfo), typeof(Pawn) });
+            _target = AccessTools.Method(typeof(DamageWorker_AddInjury), "PlayWoundedVoiceSound", new Type[] { typeof(DamageInfo), typeof(Pawn) });
+            if (_target == null)
+                Log.Warning("[SSF] DamageWorker_AddInjury.PlayWoundedVoiceSound 미발견 — 패치 스킵 (RimWorld 버전 변경 가능성)");
+            return _target != null;
         }
+
+        static MethodBase TargetMethod() => _target;
 
         static bool Prefix(DamageInfo dinfo, Pawn pawn)
         {

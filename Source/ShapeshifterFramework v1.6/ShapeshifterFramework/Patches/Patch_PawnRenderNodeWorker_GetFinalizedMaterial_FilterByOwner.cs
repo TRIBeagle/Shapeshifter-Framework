@@ -36,7 +36,7 @@ namespace ShapeshifterFramework.Patches
             = new ConditionalWeakTable<PawnRenderNode, NodeOwnerEntry>();
 
         /// <summary>노드의 소유자를 캐시에서 조회하거나, 최초 1회 탐색 후 캐시.</summary>
-        private static NodeOwnerEntry GetOrResolveOwner(PawnRenderNode node, PawnRenderNodeWorker worker)
+        private static NodeOwnerEntry GetOrResolveOwner(PawnRenderNode node)
         {
             if (_nodeOwnerCache.TryGetValue(node, out var entry))
                 return entry;
@@ -73,7 +73,7 @@ namespace ShapeshifterFramework.Patches
         #endregion
 
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
-        static void Postfix(PawnRenderNodeWorker __instance, PawnRenderNode node, PawnDrawParms parms, ref Material __result)
+        static void Postfix(PawnRenderNode node, PawnDrawParms parms, ref Material __result)
         {
             if (__result == null) return;
             Pawn pawn = parms.pawn; if (pawn == null) return;
@@ -82,7 +82,7 @@ namespace ShapeshifterFramework.Patches
             if (!ShapeshiftRegistry.IsActive(pawn)) return;
 
             // 캐시에서 노드 소유자 조회 (최초 1회만 탐색)
-            var cached = GetOrResolveOwner(node, __instance);
+            var cached = GetOrResolveOwner(node);
 
             switch (cached.ownerKind)
             {

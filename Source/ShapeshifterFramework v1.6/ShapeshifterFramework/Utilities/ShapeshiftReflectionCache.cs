@@ -28,7 +28,8 @@ namespace ShapeshifterFramework.Utilities
             {
                 var t = h.GetType();
                 FieldInfo fi;
-                if (!HolderPawnField.TryGetValue(t, out fi) || fi == null)
+                // 'pawn 필드 없음'(fi=null)도 캐시에 저장 — TryGetValue 성공 시 재탐색 안 함 (매 프레임 GetField 방지)
+                if (!HolderPawnField.TryGetValue(t, out fi))
                 {
                     fi = t.GetField("pawn", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     HolderPawnField[t] = fi;

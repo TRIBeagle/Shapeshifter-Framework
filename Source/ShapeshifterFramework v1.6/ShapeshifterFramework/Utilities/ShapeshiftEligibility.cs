@@ -60,7 +60,7 @@ namespace ShapeshifterFramework.Utilities
             if (allow != null && allow.Count > 0 && !allow.Contains(mutantDef))
                 return false;
 
-            // 블랙리스트: 화이트리스트보다 우선
+            // 블랙리스트: 지정된 뮤턴트는 차단 (화이트/블랙 독립 적용 — 어느 쪽이든 걸리면 불가)
             var disallow = form.formDisallowedMutants;
             if (disallow != null && disallow.Count > 0 && disallow.Contains(mutantDef))
                 return false;

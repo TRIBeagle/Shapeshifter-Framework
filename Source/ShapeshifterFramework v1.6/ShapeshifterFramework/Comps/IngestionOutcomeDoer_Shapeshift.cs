@@ -17,6 +17,7 @@ using Verse;
 
 namespace ShapeshifterFramework.Comps
 {
+    /// <summary>약물 섭취 시 폰을 변신시키는 IngestionOutcomeDoer.</summary>
     public class IngestionOutcomeDoer_Shapeshift : IngestionOutcomeDoer
     {
         /// <summary>변신 적용에 사용할 HediffDef (HediffComp_ShapeshiftCore 포함 필수).</summary>

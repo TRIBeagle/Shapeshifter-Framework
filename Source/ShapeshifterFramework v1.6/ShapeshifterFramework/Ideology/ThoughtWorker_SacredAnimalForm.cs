@@ -18,7 +18,7 @@ namespace ShapeshifterFramework.Ideology
         protected override ThoughtState CurrentStateInternal(Pawn p)
         {
             if (!ModsConfig.IdeologyActive) return ThoughtState.Inactive;
-            if (p.Ideo == null) return ThoughtState.Inactive;
+            if (p == null || p.Ideo == null) return ThoughtState.Inactive;
 
             if (!SacredAnimalFormUtility.IsSacredAnimalForm(p))
                 return ThoughtState.Inactive;

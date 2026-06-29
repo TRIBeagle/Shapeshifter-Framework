@@ -23,6 +23,9 @@ namespace ShapeshifterFramework.Patches
             var pawn = ShapeshiftReflectionCache.GetAttachParent(__instance) as Pawn;
             if (pawn == null) return;
 
+            // 비변신 폰 즉시 스킵 — 다른 렌더 패치와 일관, 비변신 폰의 Effective() 프레임캐시 연산 절약
+            if (!ShapeshiftRegistry.IsActive(pawn)) return;
+
             var ls = pawn.ageTracker != null ? pawn.ageTracker.CurLifeStage : null;
             float vanilla = ls != null ? ls.attachPointScaleFactor : 1f;
             float target = ShapeshiftSizeFactorResolver.Effective(pawn).attachPointScaleFactor;

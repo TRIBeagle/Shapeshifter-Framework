@@ -148,8 +148,8 @@ Power suit / armor transformation. Keeps human appearance and existing gear. Con
 |-------|------|---------|-------------|
 | `bodyDrawScale` | `float?` | 1.0 | Body render scale |
 | `headDrawScale` | `float?` | 1.0 | Head render scale |
-| `bodyOffset` | `Vector2?` | (0,0) | Body position offset (x, z) |
-| `headOffset` | `Vector2?` | (0,0) | Head position offset (x, z) |
+| `bodyOffset` | `Vector2?` | null | Body position offset (x, z) |
+| `headOffset` | `Vector2?` | null | Head position offset (x, z) |
 | `portraitDrawScale` | `float?` | 1.0 | Portrait UI scale |
 
 ```xml
