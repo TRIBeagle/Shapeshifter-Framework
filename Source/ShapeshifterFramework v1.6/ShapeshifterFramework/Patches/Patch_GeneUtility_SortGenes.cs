@@ -10,7 +10,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(GeneUtility), nameof(GeneUtility.SortGenes))]
-    public static class Patch_GeneUtility_SortGenes
+    internal static class Patch_GeneUtility_SortGenes
     {
         static void Prefix(List<Gene> genes)
         {

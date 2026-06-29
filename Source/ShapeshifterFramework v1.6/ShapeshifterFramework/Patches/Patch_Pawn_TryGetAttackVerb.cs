@@ -19,7 +19,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.TryGetAttackVerb), new Type[] { typeof(Thing), typeof(bool), typeof(bool) })]
-    public static class Patch_Pawn_TryGetAttackVerb
+    internal static class Patch_Pawn_TryGetAttackVerb
     {
         public static bool Prefix(Pawn __instance, ref Verb __result, Thing target, bool allowManualCastWeapons, bool allowTurrets)
         {

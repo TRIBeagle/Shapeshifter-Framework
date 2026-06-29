@@ -21,7 +21,7 @@ namespace ShapeshifterFramework.Patches
         {
             _target = ResolveTarget();
             if (_target == null)
-                Log.Warning("[SSF] FilthMaker.TryMakeFilth 미발견 — 패치 스킵 (RimWorld 버전 변경 가능성)");
+                Log.Warning("[SSF] FilthMaker.TryMakeFilth not found - patch skipped (RimWorld version change?)");
             return _target != null;
         }
 

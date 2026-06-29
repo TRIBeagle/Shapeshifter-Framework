@@ -13,7 +13,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(Pawn), "DoKillSideEffects")]
-    public static class Patch_Pawn_DoKillSideEffects
+    internal static class Patch_Pawn_DoKillSideEffects
     {
         private static bool _reported = false;
 

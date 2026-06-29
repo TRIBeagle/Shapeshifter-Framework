@@ -14,7 +14,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(DynamicDrawManager), nameof(DynamicDrawManager.DrawDynamicThings))]
     [HarmonyPriority(Priority.Last)]
-    public static class Patch_DynamicDrawManager_DrawDynamicThings
+    internal static class Patch_DynamicDrawManager_DrawDynamicThings
     {
         /// <summary>추가 드로우가 필요한 최소 bodyDrawScale (이하는 바닐라 1셀 확장으로 충분).</summary>
         private const float ExtraDrawMinScale = 1.5f;

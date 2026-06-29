@@ -11,7 +11,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(PawnRenderNodeWorker_AttachmentBody), "ScaleFor")]
     [HarmonyPriority(Priority.Last)]
-    public static class Patch_PawnRenderNodeWorker_AttachmentBody_ScaleFor
+    internal static class Patch_PawnRenderNodeWorker_AttachmentBody_ScaleFor
     {
         public static void Postfix(PawnDrawParms parms, ref Vector3 __result)
         {

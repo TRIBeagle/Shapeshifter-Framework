@@ -13,7 +13,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(Thing), "get_DrawSize")]
     [HarmonyPriority(Priority.Last)]
-    public static class Patch_Thing_DrawSize
+    internal static class Patch_Thing_DrawSize
     {
         [HarmonyPostfix]
         static void Postfix(Thing __instance, ref Vector2 __result)

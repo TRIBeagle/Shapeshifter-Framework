@@ -14,7 +14,7 @@ namespace ShapeshifterFramework.Ideology
 {
     /// <summary>변신 시 HistoryEvent 발행 — 규율 컴프가 기억 감정을 자동 부여.</summary>
     [HarmonyPatch(typeof(ShapeshiftCoreUtility), "FireFormApplied")]
-    public static class Patch_ShapeshiftIdeologyTaboo
+    internal static class Patch_ShapeshiftIdeologyTaboo
     {
         static void Postfix(Pawn pawn, ShapeshiftFormDef form)
         {

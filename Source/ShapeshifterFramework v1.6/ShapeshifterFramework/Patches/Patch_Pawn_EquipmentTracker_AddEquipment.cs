@@ -13,7 +13,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(nameof(Pawn_EquipmentTracker.AddEquipment))]
     [HarmonyPatch(new[] { typeof(ThingWithComps) })]
     [HarmonyPriority(Priority.First)]
-    public static class Patch_Pawn_EquipmentTracker_AddEquipment
+    internal static class Patch_Pawn_EquipmentTracker_AddEquipment
     {
         static bool Prefix(Pawn_EquipmentTracker __instance, ThingWithComps newEq)
         {

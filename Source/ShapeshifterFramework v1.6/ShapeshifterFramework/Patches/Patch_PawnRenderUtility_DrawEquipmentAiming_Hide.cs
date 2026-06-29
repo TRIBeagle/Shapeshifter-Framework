@@ -10,7 +10,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(PawnRenderUtility), "DrawEquipmentAiming")]
-    public static class Patch_PawnRenderUtility_DrawEquipmentAiming_Hide
+    internal static class Patch_PawnRenderUtility_DrawEquipmentAiming_Hide
     {
         [HarmonyPrefix]
         static bool Prefix(Thing eq, Vector3 drawLoc, float aimAngle)

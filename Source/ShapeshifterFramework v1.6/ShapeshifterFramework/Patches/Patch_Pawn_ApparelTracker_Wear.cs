@@ -13,7 +13,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(nameof(Pawn_ApparelTracker.Wear))]
     [HarmonyPatch(new[] { typeof(Apparel), typeof(bool), typeof(bool) })]
     [HarmonyPriority(Priority.First)]
-    public static class Patch_Pawn_ApparelTracker_Wear
+    internal static class Patch_Pawn_ApparelTracker_Wear
     {
         static bool Prefix(Pawn_ApparelTracker __instance, Apparel newApparel, bool dropReplacedApparel, bool locked)
         {

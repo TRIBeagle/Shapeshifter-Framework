@@ -22,7 +22,7 @@ namespace ShapeshifterFramework.Patches
         {
             _target = AccessTools.Method(typeof(DamageWorker_AddInjury), "ApplyToPawn");
             if (_target == null)
-                Log.Warning("[SSF] DamageWorker_AddInjury.ApplyToPawn 미발견 — 패치 스킵 (RimWorld 버전 변경 가능성)");
+                Log.Warning("[SSF] DamageWorker_AddInjury.ApplyToPawn not found - patch skipped (RimWorld version change?)");
             return _target != null;
         }
 

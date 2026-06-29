@@ -13,7 +13,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(PawnRenderUtility), "DrawEquipmentAiming")]
-    public static class Patch_PawnRenderUtility_DrawEquipmentAiming_Scale
+    internal static class Patch_PawnRenderUtility_DrawEquipmentAiming_Scale
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator gen)
         {

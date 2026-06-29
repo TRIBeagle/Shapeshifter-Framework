@@ -139,6 +139,18 @@ namespace ShapeshifterFramework.Utilities
             try { return (T)pi.GetValue(obj, null); } catch { return default(T); /* 프로퍼티 읽기 실패 방어 */ }
         }
 
+        /// <summary>인스턴스 프로퍼티를 읽고 성공 여부를 반환(캐시 사용). 프로퍼티 부재/읽기 실패 시 false.
+        /// default(T)와 '실제로 읽은 값'을 구분해야 할 때 사용 (예: 색상 백업).</summary>
+        internal static bool TryGetInstanceProperty<T>(object obj, string name, out T value)
+        {
+            value = default(T);
+            if (obj == null) return false;
+            var pi = GetPropCached(obj.GetType(), name);
+            if (pi == null || !pi.CanRead) return false;
+            try { value = (T)pi.GetValue(obj, null); return true; }
+            catch { return false; /* 프로퍼티 읽기 실패 */ }
+        }
+
         /// <summary>인스턴스 필드 값을 설정한다(캐시 사용).</summary>
         internal static bool TrySetInstanceField(object obj, string name, object value)
         {

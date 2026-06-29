@@ -15,7 +15,7 @@ namespace ShapeshifterFramework.Patches
 {
     /// <summary>이데올로기 노출 사상 4종 패치 통합.</summary>
     [HarmonyPatch]
-    public static class Patch_ThoughtWorker_Precept_GroinUncovered
+    internal static class Patch_ThoughtWorker_Precept_GroinUncovered
     {
         /// <summary>패치 대상: 이데올로기 노출 판정 4종.</summary>
         static IEnumerable<MethodBase> TargetMethods()

@@ -12,7 +12,7 @@ namespace ShapeshifterFramework.Patches
 {
     /// <summary>변신 폼의 근접 사운드를 우선 적용.</summary>
     [HarmonyPatch]
-    public static class Patch_Verb_MeleeAttack_Sounds
+    internal static class Patch_Verb_MeleeAttack_Sounds
     {
         // 무기 verb인지 판별 (CompEquippable 소유 verb만 무기)
         private static bool IsWeaponVerb(Verb verb)

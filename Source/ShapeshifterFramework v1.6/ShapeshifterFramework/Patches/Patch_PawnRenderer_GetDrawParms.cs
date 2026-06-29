@@ -10,7 +10,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(PawnRenderer), "GetDrawParms")]
-    public static class Patch_PawnRenderer_GetDrawParms
+    internal static class Patch_PawnRenderer_GetDrawParms
     {
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void Postfix(

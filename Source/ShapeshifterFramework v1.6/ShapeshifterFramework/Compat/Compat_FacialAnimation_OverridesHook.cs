@@ -136,11 +136,16 @@ namespace ShapeshifterFramework.Compat
             var eyeComp = comps[1]; // EyeballControllerComp
             if (eyeComp != null)
             {
-                // 색상 값과 무관하게 항상 백업 — default(Color)도 유효한 색상일 수 있음
-                var c1 = ShapeshiftReflectionCache.GetInstanceProperty<Color>(eyeComp, "FaceColor");
-                var c2 = ShapeshiftReflectionCache.GetInstanceProperty<Color>(eyeComp, "FaceSecondColor");
-                dst.eyeColor = c1; dst.eyeColorSet = true;
-                dst.eyeColor2 = c2; dst.eyeColor2Set = true;
+                // 읽기에 성공한 색상만 백업 — 실패 시 default(Color)(검정)를 유효 백업으로 저장하면
+                // 복원 때 눈이 검정으로 강제될 수 있으므로, 프로퍼티 부재/읽기 실패 시엔 백업하지 않음.
+                if (ShapeshiftReflectionCache.TryGetInstanceProperty<Color>(eyeComp, "FaceColor", out var c1))
+                {
+                    dst.eyeColor = c1; dst.eyeColorSet = true;
+                }
+                if (ShapeshiftReflectionCache.TryGetInstanceProperty<Color>(eyeComp, "FaceSecondColor", out var c2))
+                {
+                    dst.eyeColor2 = c2; dst.eyeColor2Set = true;
+                }
             }
         }
 

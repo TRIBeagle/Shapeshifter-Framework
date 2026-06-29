@@ -10,7 +10,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(PawnRenderer), "BaseHeadOffsetAt")]
-    public static class Patch_PawnRenderer_BaseHeadOffsetAt
+    internal static class Patch_PawnRenderer_BaseHeadOffsetAt
     {
         [HarmonyPostfix, HarmonyPriority(Priority.Last)]
         static void Postfix(PawnRenderer __instance, Pawn ___pawn, Rot4 rotation, ref Vector3 __result)

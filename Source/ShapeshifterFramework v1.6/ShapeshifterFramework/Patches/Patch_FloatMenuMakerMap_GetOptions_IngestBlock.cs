@@ -13,7 +13,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(FloatMenuMakerMap), nameof(FloatMenuMakerMap.GetOptions))]
     [HarmonyPriority(Priority.Last - 1)]
-    public static class Patch_FloatMenuMakerMap_GetOptions_IngestBlock
+    internal static class Patch_FloatMenuMakerMap_GetOptions_IngestBlock
     {
         static void Postfix(List<Pawn> selectedPawns, Vector3 clickPos, ref FloatMenuContext context, ref List<FloatMenuOption> __result)
         {

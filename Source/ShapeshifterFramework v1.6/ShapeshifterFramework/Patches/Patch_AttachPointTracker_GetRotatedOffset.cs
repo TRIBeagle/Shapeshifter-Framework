@@ -16,7 +16,7 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPatch(typeof(AttachPointTracker), nameof(AttachPointTracker.GetRotatedOffset),
                   new Type[] { typeof(AttachPointType), typeof(Rot4) })]
     [HarmonyPriority(Priority.Last)]
-    public static class Patch_AttachPointTracker_GetRotatedOffset
+    internal static class Patch_AttachPointTracker_GetRotatedOffset
     {
         static void Postfix(AttachPointTracker __instance, AttachPointType type, Rot4 rot, ref Vector3 __result)
         {

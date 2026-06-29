@@ -11,7 +11,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(PawnRenderNodeWorker_Spastic), "OffsetFor")]
     [HarmonyPriority(Priority.Last)]
-    public static class Patch_PawnRenderNodeWorker_Spastic_OffsetFor
+    internal static class Patch_PawnRenderNodeWorker_Spastic_OffsetFor
     {
         public static void Postfix(PawnDrawParms parms, ref Vector3 __result)
         {

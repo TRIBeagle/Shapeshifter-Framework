@@ -14,7 +14,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(PawnRenderNodeWorker), "GetFinalizedMaterial")]
-    public static class Patch_PawnRenderNodeWorker_GetFinalizedMaterial_FilterByOwner
+    internal static class Patch_PawnRenderNodeWorker_GetFinalizedMaterial_FilterByOwner
     {
         // Gene exclusionTags 수집용 재사용 셋 — 렌더 핫패스 GC 할당 방지 및 O(1) 중복 검사
         // [ThreadStatic]: 병렬 렌더 패스(ParallelPreRenderPawnAt)에서 스레드 간 경합 방지

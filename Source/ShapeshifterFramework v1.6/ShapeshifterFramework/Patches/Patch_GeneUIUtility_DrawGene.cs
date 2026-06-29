@@ -14,7 +14,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(GeneUIUtility))]
     [HarmonyPriority(Priority.Last)] // 마지막에 오버레이
-    public static class Patch_GeneUIUtility_DrawGene
+    internal static class Patch_GeneUIUtility_DrawGene
     {
         // 대상: DrawGene(Rect, Gene, ...) 오버로드 동적 탐색
         [HarmonyTargetMethod]

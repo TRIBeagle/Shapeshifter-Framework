@@ -10,7 +10,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(PawnRenderNodeWorker_HediffEye), nameof(PawnRenderNodeWorker_HediffEye.OffsetFor))]
-    public static class Patch_PawnRenderNodeWorker_HediffEye_OffsetFor
+    internal static class Patch_PawnRenderNodeWorker_HediffEye_OffsetFor
     {
         public static void Postfix(PawnDrawParms parms, ref Vector3 __result)
         {

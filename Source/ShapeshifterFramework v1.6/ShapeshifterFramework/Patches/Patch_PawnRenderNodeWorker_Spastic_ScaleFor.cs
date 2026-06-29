@@ -11,7 +11,7 @@ namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(PawnRenderNodeWorker_Spastic), "ScaleFor")]
     [HarmonyPriority(Priority.Last)]
-    public static class Patch_PawnRenderNodeWorker_Spastic_ScaleFor
+    internal static class Patch_PawnRenderNodeWorker_Spastic_ScaleFor
     {
         public static void Postfix(PawnDrawParms parms, ref Vector3 __result)
         {

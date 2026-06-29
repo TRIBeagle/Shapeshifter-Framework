@@ -15,7 +15,7 @@ namespace ShapeshifterFramework.Patches
 {
     /// <summary>Verb.TryCastNextBurstShot 성공 시 변신 시간 차감.</summary>
     [HarmonyPatch(typeof(Verb), "TryCastNextBurstShot")]
-    public static class Patch_Verb_TryCastNextBurstShot_DurationCost
+    internal static class Patch_Verb_TryCastNextBurstShot_DurationCost
     {
         /// <summary>발사 전 burstShotsLeft를 __state에 저장.</summary>
         [HarmonyPrefix]
@@ -71,7 +71,7 @@ namespace ShapeshifterFramework.Patches
             if (ShapeshifterFrameworkMod.Settings?.enableDebugLog == true)
             {
                 string verbName = __instance.verbProps?.label ?? __instance.GetType().Name;
-                Log.Message($"[SSF] Verb '{verbName}' used — cost {cost} ticks (영구 변신은 미차감; remaining: {core.RemainingShapeshiftTicks})" +
+                Log.Message($"[SSF] Verb '{verbName}' used - cost {cost} ticks (permanent forms not deducted; remaining: {core.RemainingShapeshiftTicks})" +
                     (entropy > 0f ? $", entropy +{entropy}" : ""));
             }
         }

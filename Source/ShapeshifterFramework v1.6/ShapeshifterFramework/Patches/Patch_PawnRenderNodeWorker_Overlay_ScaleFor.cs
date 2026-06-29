@@ -11,7 +11,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(PawnRenderNodeWorker), "ScaleFor")]
-    public static class Patch_PawnRenderNodeWorker_Overlay_ScaleFor
+    internal static class Patch_PawnRenderNodeWorker_Overlay_ScaleFor
     {
         public static void Postfix(PawnRenderNodeWorker __instance, PawnRenderNode node, PawnDrawParms parms, ref Vector3 __result)
         {

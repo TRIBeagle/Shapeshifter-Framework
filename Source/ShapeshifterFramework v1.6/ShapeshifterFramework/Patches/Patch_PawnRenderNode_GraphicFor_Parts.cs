@@ -37,7 +37,7 @@ namespace ShapeshifterFramework.Patches
                 // Harmony PatchAll이 전체 중단되어 SSF 모든 패치가 무력화되므로, null은 경고 후 스킵.
                 var m = AccessTools.Method(types[i], "GraphicFor");
                 if (m != null) yield return m;
-                else Log.Warning($"[SSF] PawnRenderNode 패치: {types[i].Name}.GraphicFor 미발견 — 스킵 (RimWorld 버전 변경 가능성)");
+                else Log.Warning($"[SSF] PawnRenderNode patch: {types[i].Name}.GraphicFor not found - skipped (RimWorld version change?)");
             }
         }
 

@@ -11,7 +11,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(Pawn), "GetReasonsForDisabledWorkType")]
-    public static class Patch_Pawn_GetReasonsForDisabledWorkType
+    internal static class Patch_Pawn_GetReasonsForDisabledWorkType
     {
         static void Postfix(Pawn __instance, WorkTypeDef workType, ref List<string> __result)
         {

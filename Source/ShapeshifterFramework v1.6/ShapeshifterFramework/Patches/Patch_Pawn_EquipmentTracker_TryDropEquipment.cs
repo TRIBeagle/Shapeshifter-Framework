@@ -10,7 +10,7 @@ using ShapeshifterFramework.Utilities;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(Pawn_EquipmentTracker), "TryDropEquipment")]
-    public static class Patch_Pawn_EquipmentTracker_TryDropEquipment
+    internal static class Patch_Pawn_EquipmentTracker_TryDropEquipment
     {
         public static bool Prefix(Pawn_EquipmentTracker __instance, ThingWithComps eq, ref ThingWithComps resultingEq, ref bool __result)
         {

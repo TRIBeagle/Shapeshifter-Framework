@@ -10,7 +10,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(HumanlikeMeshPoolUtility))]
-    public static class Patch_HumanlikeMeshPoolUtility_Sizing
+    internal static class Patch_HumanlikeMeshPoolUtility_Sizing
     {
         /// <summary>바닐라 기본 머리 폭 (HumanlikeMeshPoolUtility 기본값).</summary>
         private const float VanillaBaseHeadWidth = 1.5f;

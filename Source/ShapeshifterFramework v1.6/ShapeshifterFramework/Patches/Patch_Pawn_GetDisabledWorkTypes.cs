@@ -11,7 +11,7 @@ namespace ShapeshifterFramework.Patches
 {
     // 게임 로드/시작 시 캐시를 비워주는 초기화 클래스
     [StaticConstructorOnStartup]
-    public static class Patch_Pawn_GetDisabledWorkTypes_CacheClearer
+    internal static class Patch_Pawn_GetDisabledWorkTypes_CacheClearer
     {
         static Patch_Pawn_GetDisabledWorkTypes_CacheClearer()
         {
@@ -20,7 +20,7 @@ namespace ShapeshifterFramework.Patches
     }
 
     [HarmonyPatch(typeof(Pawn), "GetDisabledWorkTypes")]
-    public static class Patch_Pawn_GetDisabledWorkTypes
+    internal static class Patch_Pawn_GetDisabledWorkTypes
     {
         private static readonly Dictionary<WorkTags, List<WorkTypeDef>> _workTypesByTagsCache
             = new Dictionary<WorkTags, List<WorkTypeDef>>(16);

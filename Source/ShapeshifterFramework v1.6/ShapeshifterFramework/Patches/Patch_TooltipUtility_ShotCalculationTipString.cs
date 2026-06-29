@@ -12,7 +12,7 @@ using Verse;
 namespace ShapeshifterFramework.Patches
 {
     [HarmonyPatch(typeof(TooltipUtility), nameof(TooltipUtility.ShotCalculationTipString))]
-    public static class Patch_TooltipUtility_ShotCalculationTipString
+    internal static class Patch_TooltipUtility_ShotCalculationTipString
     {
         public static void Postfix(Thing target, ref string __result)
         {
