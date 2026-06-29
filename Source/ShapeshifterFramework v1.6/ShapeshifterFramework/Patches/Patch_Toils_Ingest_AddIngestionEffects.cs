@@ -1,4 +1,4 @@
-// ShapeshifterFramework | Patches | Patch_Toils_Ingest_ChewIngestible.cs
+// ShapeshifterFramework | Patches | Patch_Toils_Ingest_AddIngestionEffects.cs
 // 목적 : 폰이 음식을 씹어 먹을 때 나는 소리(Ingest Sound)를 변신 폼의 식사음으로 대체.
 // 용도 : AddIngestionEffects에 Postfix로 개입하여, 바닐라가 등록한 사운드 재생 델리게이트(Func)를 가로채고 폼 전용 식사음(soundEating)을 최우선으로 반환하는 커스텀 델리게이트로 덮어씌움.
 

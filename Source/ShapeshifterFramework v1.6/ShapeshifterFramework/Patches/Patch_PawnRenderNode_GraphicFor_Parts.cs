@@ -21,13 +21,24 @@ namespace ShapeshifterFramework.Patches
         // Harmony TargetMethods용 — public override이지만 MethodBase 반환이 필요 (1.6 DLL 대조 감사 완료)
         static IEnumerable<MethodBase> TargetMethods()
         {
-            yield return AccessTools.Method(typeof(PawnRenderNode_Body), "GraphicFor");
-            yield return AccessTools.Method(typeof(PawnRenderNode_Head), "GraphicFor");
-            yield return AccessTools.Method(typeof(PawnRenderNode_Hair), "GraphicFor");
-            yield return AccessTools.Method(typeof(PawnRenderNode_Beard), "GraphicFor");
-            yield return AccessTools.Method(typeof(PawnRenderNode_Tattoo_Head), "GraphicFor");
-            yield return AccessTools.Method(typeof(PawnRenderNode_Tattoo_Body), "GraphicFor");
-            yield return AccessTools.Method(typeof(PawnRenderNode_AnimalPart), "GraphicFor");
+            var types = new[]
+            {
+                typeof(PawnRenderNode_Body),
+                typeof(PawnRenderNode_Head),
+                typeof(PawnRenderNode_Hair),
+                typeof(PawnRenderNode_Beard),
+                typeof(PawnRenderNode_Tattoo_Head),
+                typeof(PawnRenderNode_Tattoo_Body),
+                typeof(PawnRenderNode_AnimalPart),
+            };
+            for (int i = 0; i < types.Length; i++)
+            {
+                // AccessTools.Method가 null(향후 RimWorld 버전에서 메서드 제거/리네임)인데 그대로 yield하면
+                // Harmony PatchAll이 전체 중단되어 SSF 모든 패치가 무력화되므로, null은 경고 후 스킵.
+                var m = AccessTools.Method(types[i], "GraphicFor");
+                if (m != null) yield return m;
+                else Log.Warning($"[SSF] PawnRenderNode 패치: {types[i].Name}.GraphicFor 미발견 — 스킵 (RimWorld 버전 변경 가능성)");
+            }
         }
 
         [HarmonyPostfix]

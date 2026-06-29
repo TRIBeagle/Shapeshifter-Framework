@@ -1,4 +1,4 @@
-// ShapeshifterFramework | Patches | Patch_Verb_TryCastShot_DurationCost.cs
+// ShapeshifterFramework | Patches | Patch_Verb_TryCastNextBurstShot_DurationCost.cs
 // 목적 : 변신 폼 verb 사용 시 durationCostTicks 차감 및 entropyCost 신경열 추가.
 // 용도 : verbGizmoOptions에 설정된 비용을 성공적으로 발사 후 적용.
 //        durationCostTicks → 변신 타이머 차감, entropyCost → 신경열 추가 (로열티 DLC).

@@ -1,4 +1,4 @@
-// ShapeshifterFramework | Patches | Patch_Thing_TakeDamage.cs
+// ShapeshifterFramework | Patches | Patch_DamageWorker_AddInjury_SourceLabel.cs
 // 목적 : 변신 중 맨손 공격 시 상처 라벨의 종족명을 폼 이름으로 교체.
 // 용도 : 바닐라는 DamageInfo.Weapon = CasterPawn.def (예: Human)로 설정하여
 //        상처 라벨이 "물림 (인간 이빨)"로 표시됨. 변신 중이면 Postfix에서

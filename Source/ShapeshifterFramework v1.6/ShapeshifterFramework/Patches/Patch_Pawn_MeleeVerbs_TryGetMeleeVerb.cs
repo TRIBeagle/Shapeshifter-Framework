@@ -1,4 +1,4 @@
-// ShapeshifterFramework | Patches | Patch_Pawn_MeleeVerbs_TryGetUpdatedMeleeVerb.cs
+// ShapeshifterFramework | Patches | Patch_Pawn_MeleeVerbs_TryGetMeleeVerb.cs
 // 목적 : 바닐라 Pawn_MeleeVerbs가 폼의 근접 도구를 무시하는 문제 해결.
 // 용도 : pawn.verbTracker에서 네이티브 근접이 제거된 상태이므로, 바닐라 ChooseMeleeVerb가
 //        빈 리스트를 받아 에러를 출력하기 전에 Prefix에서 폼 verb를 직접 반환.

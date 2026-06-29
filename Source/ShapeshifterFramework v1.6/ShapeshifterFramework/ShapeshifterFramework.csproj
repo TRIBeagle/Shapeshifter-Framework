@@ -103,9 +103,9 @@
     <Compile Include="Patches\Patch_PawnRenderNodeWorker_Spastic_OffsetFor.cs" />
     <Compile Include="Patches\Patch_PawnRenderNodeWorker_Spastic_ScaleFor.cs" />
     <Compile Include="Patches\Patch_Pawn_PathFollower_TryEnterNextPathCell.cs" />
-    <Compile Include="Patches\Patch_Toils_Ingest_ChewIngestible.cs" />
+    <Compile Include="Patches\Patch_Toils_Ingest_AddIngestionEffects.cs" />
     <Compile Include="Patches\Patch_Verb_MeleeAttack_Sounds.cs" />
-    <Compile Include="Patches\Patch_Verb_TryCastShot_DurationCost.cs" />
+    <Compile Include="Patches\Patch_Verb_TryCastNextBurstShot_DurationCost.cs" />
     <Compile Include="Extensions\GiveHediffProjectileExtension_Shapeshift.cs" />
     <Compile Include="Projectiles\Projectile_GiveHediff_Shapeshift.cs" />
     <Compile Include="Patches\Patch_PawnWoundDrawer_WriteCache.cs" />
@@ -114,7 +114,7 @@
     <Compile Include="Patches\Patch_Pawn_Kill.cs" />
     <Compile Include="Patches\Patch_Pawn_DoKillSideEffects.cs" />
     <Compile Include="Patches\Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound.cs" />
-    <Compile Include="Patches\Patch_Thing_TakeDamage.cs" />
+    <Compile Include="Patches\Patch_DamageWorker_AddInjury_SourceLabel.cs" />
     <Compile Include="Patches\Patch_Pawn_CallTracker_DoCall.cs" />
     <Compile Include="Ideology\Patch_ShapeshiftIdeologyTaboo.cs" />
     <Compile Include="Ideology\ThoughtWorker_Precept_Shapeshifted.cs" />
@@ -133,7 +133,7 @@
     <Compile Include="Patches\Patch_VerbTracker_ExposeData_StripFormVerbs.cs" />
     <Compile Include="Patches\Patch_VerbTracker_InitVerbsFromZero.cs" />
     <Compile Include="Patches\Patch_Pawn_TryGetAttackVerb.cs" />
-    <Compile Include="Patches\Patch_Pawn_MeleeVerbs_TryGetUpdatedMeleeVerb.cs" />
+    <Compile Include="Patches\Patch_Pawn_MeleeVerbs_TryGetMeleeVerb.cs" />
     <Compile Include="Patches\Patch_PawnRenderer_BaseHeadOffsetAt.cs" />
     <Compile Include="Patches\Patch_GeneUIUtility_DrawGene.cs" />
     <Compile Include="Patches\Patch_AttachPointTracker_GetRotatedOffset.cs" />

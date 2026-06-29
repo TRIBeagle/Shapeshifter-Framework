@@ -108,11 +108,6 @@ namespace ShapeshifterFramework.Utilities
         private static readonly ConcurrentDictionary<Type, (ConstructorInfo ctor, int sigIndex)> _ctorCache =
             new ConcurrentDictionary<Type, (ConstructorInfo, int)>();
 
-        // Invoke용 object 배열 재사용 — 시그니처별 고정 크기
-        private static readonly object[] _args3 = new object[3];
-        private static readonly object[] _args2 = new object[2];
-        private static readonly object[] _args1 = new object[1];
-
         // vanilla-private: PawnRenderNode.props, PawnRenderNode.graph (RimWorld 1.6) — 바닐라 버전 변경 시 확인 필요
         static PawnRenderNode TryMakeNode(PawnRenderNodeProperties props, Pawn pawn, PawnRenderTree tree)
         {
@@ -136,22 +131,19 @@ namespace ShapeshifterFramework.Utilities
                 switch (cached.sigIndex)
                 {
                     case 0: // (Pawn, Props, Tree)
-                        _args3[0] = pawn; _args3[1] = props; _args3[2] = tree;
-                        return (PawnRenderNode)cached.ctor.Invoke(_args3);
+                        // 지역 배열 사용 — 병렬 렌더 스레드 간 공유 버퍼 레이스 방지 (노드 생성은 빈번하지 않아 GC 무시 가능).
+                        return (PawnRenderNode)cached.ctor.Invoke(new object[] { pawn, props, tree });
 
                     case 1: // (Props, Tree)
-                        _args2[0] = props; _args2[1] = tree;
-                        return (PawnRenderNode)cached.ctor.Invoke(_args2);
+                        return (PawnRenderNode)cached.ctor.Invoke(new object[] { props, tree });
 
                     case 2: // (Props)
-                        _args1[0] = props;
-                        node = (PawnRenderNode)cached.ctor.Invoke(_args1);
+                        node = (PawnRenderNode)cached.ctor.Invoke(new object[] { props });
                         if (_fGraph != null && node != null) _fGraph.SetValue(node, tree);
                         return node;
 
                     case 3: // (Tree)
-                        _args1[0] = tree;
-                        node = (PawnRenderNode)cached.ctor.Invoke(_args1);
+                        node = (PawnRenderNode)cached.ctor.Invoke(new object[] { tree });
                         if (_fProps != null && node != null) _fProps.SetValue(node, props);
                         return node;
 

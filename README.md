@@ -65,7 +65,7 @@ HediffDef (entry point — stats/severity)
 - Blood / blood smear / flesh type override
 
 **Ideology Integration**
-- Shapeshifting precept with 5 stages (Blasphemy → Divine Blessing)
+- Shapeshifting precept with 5 stages (Abhorrent → Sublime)
 - Self-initiated transform blocking at forbidden stage
 - Sacred animal form mood effects
 - Nudity/exposure thought suppression
@@ -187,7 +187,7 @@ HediffDef (진입점 — 스탯/severity)
 - 혈흔/혈흔 번짐/살점 유형 오버라이드
 
 **이데올로기 연동**
-- 변신 규율 5단계 (섭리에 대한 모독 → 신이 내린 축복)
+- 변신 규율 5단계 (절대적으로 혐오함 → 숭고함)
 - 금지 단계에서 자기 주도 변신 차단
 - 성스러운 동물 폼 기분 효과
 - 노출 감정 억제
