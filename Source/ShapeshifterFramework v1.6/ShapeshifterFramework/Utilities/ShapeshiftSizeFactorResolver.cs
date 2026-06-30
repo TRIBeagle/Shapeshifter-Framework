@@ -16,6 +16,8 @@ namespace ShapeshifterFramework.Utilities
             public float bodyWidth;              // 바닐라: 몸/의복 메쉬 크기
             public float headSizeFactor;         // 바닐라: 헤드/헤어/모자 메쉬 크기
             public float attachPointScaleFactor; // 바닐라: 부착점(무기/등짐) 거리
+            public float bodyWidthRatio;         // GetShapeScale 전용: eff.bodyWidth / 바닐라 baseBodyWidth (= sBody)
+            public float headSizeRatio;          // GetShapeScale 전용: eff.headSizeFactor / 바닐라 baseHead (= sBody*sHead)
         }
 
         internal static bool TryGetOverrides(Pawn pawn, out Factors f)
@@ -33,7 +35,9 @@ namespace ShapeshifterFramework.Utilities
                 bodyWidth = baseBodyWidth,
                 headSizeFactor = baseHead,
                 attachPointScaleFactor = baseAttach,
-                bodySizeFactor = baseBodyFac
+                bodySizeFactor = baseBodyFac,
+                bodyWidthRatio = 1f,   // 비변신 기본: 배수 없음
+                headSizeRatio = 1f
             };
 
             if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return false;
@@ -51,6 +55,10 @@ namespace ShapeshifterFramework.Utilities
             f.headSizeFactor = baseHead * sBody * sHead;
             f.attachPointScaleFactor = baseAttach * sBody;
             f.bodySizeFactor = baseBodyFac * sBody * sBody;
+
+            // GetShapeScale 비율 미리 계산 (base 약분 → 사실상 변신 배수). base=0 가드 보존.
+            f.bodyWidthRatio = Mathf.Approximately(baseBodyWidth, 0f) ? 1f : (f.bodyWidth / baseBodyWidth);
+            f.headSizeRatio = Mathf.Approximately(baseHead, 0f) ? 1f : (f.headSizeFactor / baseHead);
 
             return true;
         }
@@ -89,6 +97,15 @@ namespace ShapeshifterFramework.Utilities
             TryGetOverrides(pawn, out Factors f);
             _frameCache.TryAdd(pawn, f); // TryAdd로 경합 안전 — 중복 삽입 시 무시
             return f;
+        }
+
+        /// <summary>GetShapeScale 전용: 프레임 캐시에서 변신 스케일 비율을 즉시 반환.
+        /// base 재조회/재나눗셈 없이 TryGetOverrides 단계에서 계산해 둔 비율을 그대로 사용.</summary>
+        internal static float GetScaleRatio(Pawn pawn, bool useHeadScale)
+        {
+            if (pawn == null) return 1f;
+            var f = Effective(pawn);
+            return useHeadScale ? f.headSizeRatio : f.bodyWidthRatio;
         }
     }
 }

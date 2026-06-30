@@ -13,21 +13,12 @@ namespace ShapeshifterFramework.Utilities
         {
             if (pawn == null) return 1f;
 
-            if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form)) return 1f;
+            // 비변신 폰 조기 탈출 (프레임 캐시 진입 회피)
+            if (!ShapeshiftRegistry.TryGet(pawn, out _, out _)) return 1f;
 
-            var ls = pawn.ageTracker?.CurLifeStage;
-            var eff = ShapeshiftSizeFactorResolver.Effective(pawn);
-
-            if (useHeadScale)
-            {
-                float vanillaHead = (ls != null && ls.headSizeFactor.HasValue) ? ls.headSizeFactor.Value : 1f;
-                return Mathf.Approximately(vanillaHead, 0f) ? 1f : (eff.headSizeFactor / vanillaHead);
-            }
-            else
-            {
-                float vanillaBodyW = (ls != null && ls.bodyWidth.HasValue) ? ls.bodyWidth.Value : 1.5f;
-                return Mathf.Approximately(vanillaBodyW, 0f) ? 1f : (eff.bodyWidth / vanillaBodyW);
-            }
+            // 변신 배수 비율은 SizeFactorResolver 프레임 캐시에서 즉시 반환.
+            // (base 재조회/재나눗셈 제거 — 비율은 TryGetOverrides에서 base 약분 후 미리 계산됨)
+            return ShapeshiftSizeFactorResolver.GetScaleRatio(pawn, useHeadScale);
         }
 
         public static void ApplyOffsetScale(PawnDrawParms parms, ref Vector3 offset, bool useHeadScale = false)

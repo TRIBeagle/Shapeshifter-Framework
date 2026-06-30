@@ -279,21 +279,27 @@ namespace ShapeshifterFramework.Hediffs
                 }
             }
 
-            // 2차: 맵 내 장비 탐색
-            if (pawn.Map != null)
+            // 2차 스캔 가드: 인벤토리에서 모두 해석됐으면 맵/캐러밴 전수 순회를 스킵 (대형 맵 분할상환)
+            bool anyUnresolved = (tmpPrevApIds != null && tmpPrevApIds.Count > 0)
+                                 || (tmpPrevWpIds != null && tmpPrevWpIds.Count > 0);
+            if (anyUnresolved)
             {
-                // AllThings 대신 HaulableEverOrMinifiable로 범위 축소 — 대형 맵 성능 개선
-                var haulables = pawn.Map.listerThings.ThingsInGroup(ThingRequestGroup.HaulableEverOrMinifiable);
-                ResolveGearFromThingList(haulables);
-            }
-            else
-            {
-                // 캐러밴/포드 내 장비 탐색
-                var caravan = pawn.GetCaravan();
-                if (caravan != null)
+                // 2차: 맵 내 장비 탐색
+                if (pawn.Map != null)
                 {
-                    var things = CaravanInventoryUtility.AllInventoryItems(caravan);
-                    ResolveGearFromThingList(things);
+                    // AllThings 대신 HaulableEverOrMinifiable로 범위 축소 — 대형 맵 성능 개선
+                    var haulables = pawn.Map.listerThings.ThingsInGroup(ThingRequestGroup.HaulableEverOrMinifiable);
+                    ResolveGearFromThingList(haulables);
+                }
+                else
+                {
+                    // 캐러밴/포드 내 장비 탐색
+                    var caravan = pawn.GetCaravan();
+                    if (caravan != null)
+                    {
+                        var things = CaravanInventoryUtility.AllInventoryItems(caravan);
+                        ResolveGearFromThingList(things);
+                    }
                 }
             }
 
