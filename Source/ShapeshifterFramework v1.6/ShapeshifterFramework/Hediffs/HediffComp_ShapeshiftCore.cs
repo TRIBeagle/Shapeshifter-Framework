@@ -278,9 +278,10 @@ namespace ShapeshifterFramework.Hediffs
             try
             {
 
-            if (!ShapeshiftEligibility.CanTransformBasic(pawn, form))
+            string basicBlockReason = ShapeshiftEligibility.CanTransformBasicReason(pawn, form);
+            if (basicBlockReason != null)
             {
-                try { Messages.Message("SSF_Message_CannotTransform".Translate(form.LabelCap), pawn, MessageTypeDefOf.RejectInput, false); } catch (System.Exception ex) { Log.Warning("[SSF] ApplyForm message display failed: " + ex.Message); }
+                try { Messages.Message(basicBlockReason, pawn, MessageTypeDefOf.RejectInput, false); } catch (System.Exception ex) { Log.Warning("[SSF] ApplyForm message display failed: " + ex.Message); }
                 // 좀비 hediff 방지: 변신 실패 시 hediff 자체를 제거
                 if (parent != null) parent.Severity = 0f;
                 return;

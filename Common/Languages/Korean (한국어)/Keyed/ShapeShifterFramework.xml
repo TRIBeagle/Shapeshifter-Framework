@@ -29,6 +29,8 @@
   <SSF_DurationCost>변신 시간 소모: {0}</SSF_DurationCost>
 
   <SSF_Message_CannotTransform>{0} 형태로 변신할 수 없습니다.</SSF_Message_CannotTransform>
+  <SSF_Message_CannotTransformHediff>{1} 때문에 {0} 형태로 변신할 수 없습니다.</SSF_Message_CannotTransformHediff>
+  <SSF_Message_CannotTransformMentalState>{1} 상태에서는 {0} 형태로 변신할 수 없습니다.</SSF_Message_CannotTransformMentalState>
   <SSF_Message_WorkDisabled>{0} 변신으로 인해 비활성화되었습니다.</SSF_Message_WorkDisabled>
   <SSF_Message_NoProjectile>이 공격은 발사체가 없어 사용할 수 없습니다.</SSF_Message_NoProjectile>
   <SSF_Message_CannotWear>{PAWN}은(는) 변신 상태에서 의류를 착용할 수 없습니다.</SSF_Message_CannotWear>

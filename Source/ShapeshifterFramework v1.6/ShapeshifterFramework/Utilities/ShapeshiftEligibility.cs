@@ -254,5 +254,44 @@ namespace ShapeshifterFramework.Utilities
 
             return true;
         }
+
+        /// <summary>변신 불가 사유(번역된 메시지)를 반환. null이면 변신 가능.
+        /// CanTransformBasic과 동일 판정이나 사유를 구분 표출 — 메시지 표시용(비-Hot 경로 전용).
+        /// bool 경로(CanTransformBasic)는 매 프레임 타겟팅 검사에 쓰여 문자열 할당을 피해야 하므로 분리 유지.</summary>
+        public static string CanTransformBasicReason(Pawn pawn, ShapeshiftFormDef form)
+        {
+            if (pawn == null || form == null)
+                return "SSF_Message_CannotTransform".Translate(form != null ? form.LabelCap.ToString() : "?");
+            if (pawn.Dead)
+                return "SSF_Message_CannotTransform".Translate(form.LabelCap);
+
+            // 카테고리/종족/뮤턴트 부적합 — 이 종족은 해당 폼 사용 불가
+            if (!IsCategoryAllowed(pawn, form) || !IsRaceAllowed(pawn, form) || !IsMutantAllowed(pawn, form))
+                return "SSF_GizmoDisabled_RaceNotAllowed".Translate(pawn.def.label);
+
+            // 금지 hediff 보유 — 어떤 hediff가 막는지 표시
+            if (form.forbiddenHediffs != null && form.forbiddenHediffs.Count > 0 && pawn.health?.hediffSet != null)
+            {
+                for (int i = 0; i < form.forbiddenHediffs.Count; i++)
+                {
+                    var h = pawn.health.hediffSet.GetFirstHediffOfDef(form.forbiddenHediffs[i]);
+                    if (h != null)
+                        return "SSF_Message_CannotTransformHediff".Translate(form.LabelCap, h.LabelCap);
+                }
+            }
+
+            // 금지 정신 상태 — 어떤 상태가 막는지 표시
+            if (form.forbiddenMentalStates != null && form.forbiddenMentalStates.Count > 0
+                && pawn.InMentalState && pawn.MentalStateDef != null)
+            {
+                for (int i = 0; i < form.forbiddenMentalStates.Count; i++)
+                {
+                    if (form.forbiddenMentalStates[i] == pawn.MentalStateDef)
+                        return "SSF_Message_CannotTransformMentalState".Translate(form.LabelCap, pawn.MentalStateDef.label);
+                }
+            }
+
+            return null;
+        }
     }
 }

@@ -29,6 +29,8 @@
   <SSF_DurationCost>Shift time cost: {0}</SSF_DurationCost>
 
   <SSF_Message_CannotTransform>Cannot transform to {0}.</SSF_Message_CannotTransform>
+  <SSF_Message_CannotTransformHediff>Cannot transform to {0}: blocked by {1}.</SSF_Message_CannotTransformHediff>
+  <SSF_Message_CannotTransformMentalState>Cannot transform to {0} while in mental state ({1}).</SSF_Message_CannotTransformMentalState>
   <SSF_Message_WorkDisabled>Disabled by {0} transformation.</SSF_Message_WorkDisabled>
   <SSF_Message_NoProjectile>This attack cannot be used because it has no projectile.</SSF_Message_NoProjectile>
   <SSF_Message_CannotWear>{PAWN} cannot wear apparel while transformed.</SSF_Message_CannotWear>
