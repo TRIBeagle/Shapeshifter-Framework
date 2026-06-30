@@ -50,7 +50,7 @@ namespace ShapeshifterFramework.Comps
             // targetFormDef 지정 시 현재 폼과 일치하는지 확인
             if (!targetFormDef.NullOrEmpty() && core.currentForm?.defName != targetFormDef)
             {
-                Messages.Message("SSF_Message_WrongFormForExtend".Translate(pawn.LabelShort), pawn, MessageTypeDefOf.RejectInput, false);
+                Messages.Message(ShapeshiftEligibility.WrongFormForExtendReason(pawn, targetFormDef), pawn, MessageTypeDefOf.RejectInput, false);
                 return;
             }
 

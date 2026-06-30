@@ -44,7 +44,7 @@ namespace ShapeshifterFramework.Comps
             if (ShapeshiftEligibility.IsAlreadyTransformed(pawn)
                 && !ShapeshiftEligibility.IsFormTransitionAllowed(pawn, allowedFromForms))
             {
-                Messages.Message("SSF_Message_AlreadyTransformed".Translate(), pawn, MessageTypeDefOf.RejectInput, false);
+                Messages.Message(ShapeshiftEligibility.AlreadyTransformedReason(pawn), pawn, MessageTypeDefOf.RejectInput, false);
                 return;
             }
 

@@ -23,7 +23,7 @@ namespace ShapeshifterFramework.Comps
                 return "SSF_Message_NotTransformed".Translate(pawn.LabelShort);
 
             if (!Props.targetFormDef.NullOrEmpty() && core.currentForm?.defName != Props.targetFormDef)
-                return "SSF_Message_WrongFormForExtend".Translate(pawn.LabelShort);
+                return ShapeshiftEligibility.WrongFormForExtendReason(pawn, Props.targetFormDef);
 
             return base.CanBeUsedBy(pawn);
         }
@@ -47,7 +47,7 @@ namespace ShapeshifterFramework.Comps
 
             if (!Props.targetFormDef.NullOrEmpty() && core.currentForm?.defName != Props.targetFormDef)
             {
-                Messages.Message("SSF_Message_WrongFormForExtend".Translate(user.LabelShort), user, MessageTypeDefOf.RejectInput, false);
+                Messages.Message(ShapeshiftEligibility.WrongFormForExtendReason(user, Props.targetFormDef), user, MessageTypeDefOf.RejectInput, false);
                 return;
             }
 

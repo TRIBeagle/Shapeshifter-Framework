@@ -32,8 +32,11 @@ namespace ShapeshifterFramework.Patches
                     var drugAllowed = ShapeshiftEligibility.GetDrugAllowedFromForms(__instance.def);
                     transformBlocked = !ShapeshiftEligibility.IsFormTransitionAllowed(ingester, drugAllowed);
                 }
-                if (ideologyBlocked || transformBlocked)
-                    blockMessage = "SSF_Menu_Blocked".Translate();
+                // 차단 사유 구분 표시 — 이데올로기 금기 vs 이미 변신 중 (IngestBlock 패치와 일관)
+                if (ideologyBlocked)
+                    blockMessage = "SSF_GizmoDisabled_IdeologyForbidden".Translate();
+                else if (transformBlocked)
+                    blockMessage = ShapeshiftEligibility.AlreadyTransformedReason(ingester);
             }
             // 2) 연장 약물 (IngestionOutcomeDoer_ExtendShapeshift) — 비변신/폼 불일치 시 차단
             else

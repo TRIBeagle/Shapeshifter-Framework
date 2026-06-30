@@ -32,7 +32,7 @@ namespace ShapeshifterFramework.Comps
         public override AcceptanceReport CanBeUsedBy(Pawn pawn)
         {
             if (ShapeshiftEligibility.IsIdeologyForbidden(pawn))
-                return "IdeoligionForbids".Translate();
+                return "SSF_GizmoDisabled_IdeologyForbidden".Translate();
 
             var targetable = Targetable;
 
@@ -40,7 +40,7 @@ namespace ShapeshifterFramework.Comps
             if (targetable == null && ShapeshiftEligibility.IsAlreadyTransformed(pawn))
             {
                 if (!ShapeshiftEligibility.IsFormTransitionAllowed(pawn, Props.allowedFromForms))
-                    return "SSF_Menu_Blocked".Translate();
+                    return ShapeshiftEligibility.AlreadyTransformedReason(pawn);
             }
 
             // 타인변신 아이템: 대상이 이미 변신 중이면 차단 (Job 실행 시점에서만 유효)
@@ -50,7 +50,7 @@ namespace ShapeshifterFramework.Comps
                 if (jobTarget != null && ShapeshiftEligibility.IsAlreadyTransformed(jobTarget))
                 {
                     // 판정 메서드이므로 Messages.Message 부수효과 없이 거부 사유만 반환 (UI가 reason을 표출)
-                    return "SSF_Message_AlreadyTransformed".Translate();
+                    return ShapeshiftEligibility.AlreadyTransformedReason(jobTarget);
                 }
             }
 
@@ -100,7 +100,7 @@ namespace ShapeshifterFramework.Comps
             if (ShapeshiftEligibility.IsAlreadyTransformed(target)
                 && !ShapeshiftEligibility.IsFormTransitionAllowed(target, Props.allowedFromForms))
             {
-                Messages.Message("SSF_Message_AlreadyTransformed".Translate(), target, MessageTypeDefOf.RejectInput, false);
+                Messages.Message(ShapeshiftEligibility.AlreadyTransformedReason(target), target, MessageTypeDefOf.RejectInput, false);
                 return;
             }
 

@@ -13,7 +13,8 @@
   <SSF_Menu_ChooseDesc>변신할 폼을 선택합니다.</SSF_Menu_ChooseDesc>
   <SSF_Menu_SwitchLabel>변신: 폼 전환</SSF_Menu_SwitchLabel>
   <SSF_Menu_SwitchDesc>다른 폼으로 전환합니다.</SSF_Menu_SwitchDesc>
-  <SSF_Menu_Blocked>변신 중</SSF_Menu_Blocked>
+  <SSF_Menu_Blocked>변신 중 잠김</SSF_Menu_Blocked>
+  <SSF_Menu_DrugBlocked>이미 변신 중</SSF_Menu_DrugBlocked>
 
   <SSF_Hediff_FormLabel>변신 효과: {0}</SSF_Hediff_FormLabel>
   <SSF_Hediff_FormDesc>{0} 변신으로 인한 능력치 변동.</SSF_Hediff_FormDesc>
@@ -111,6 +112,6 @@
 
   <SSF_Message_DurationExtended>{0}의 변신 지속 시간이 연장되었습니다.</SSF_Message_DurationExtended>
   <SSF_Message_NotTransformed>{0}은(는) 현재 변신 중이 아닙니다.</SSF_Message_NotTransformed>
-  <SSF_Message_WrongFormForExtend>{0}은(는) 이 효과에 필요한 폼이 아닙니다.</SSF_Message_WrongFormForExtend>
+  <SSF_Message_WrongFormForExtend>{0}은(는) 이 효과를 사용하려면 {1} 형태여야 합니다.</SSF_Message_WrongFormForExtend>
 
 </LanguageData>

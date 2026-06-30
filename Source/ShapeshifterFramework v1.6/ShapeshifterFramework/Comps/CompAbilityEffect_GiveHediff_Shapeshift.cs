@@ -102,7 +102,7 @@ namespace ShapeshifterFramework.Comps
             {
                 if (!IsCurrentFormInAllowedList(core))
                 {
-                    Messages.Message("SSF_Message_AlreadyTransformed".Translate(), pawn, MessageTypeDefOf.RejectInput, false);
+                    Messages.Message(ShapeshiftEligibility.AlreadyTransformedReason(pawn), pawn, MessageTypeDefOf.RejectInput, false);
                     return false;
                 }
             }
@@ -171,10 +171,10 @@ namespace ShapeshifterFramework.Comps
             var caster = parent?.pawn;
             if (caster == null) { reason = null; return false; }
 
-            // 이데올로기 금지 체크 (바닐라 키 사용)
+            // 이데올로기 금지 체크 (변신 전용 메시지 — SSF_GizmoDisabled_RaceNotAllowed와 일관)
             if (ShapeshiftEligibility.IsIdeologyForbidden(caster))
             {
-                reason = "IdeoligionForbids".Translate();
+                reason = "SSF_GizmoDisabled_IdeologyForbidden".Translate();
                 return true;
             }
 

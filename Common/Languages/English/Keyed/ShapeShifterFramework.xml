@@ -13,7 +13,8 @@
   <SSF_Menu_ChooseDesc>Select a form to shapeshift into.</SSF_Menu_ChooseDesc>
   <SSF_Menu_SwitchLabel>Shapeshift: Switch form</SSF_Menu_SwitchLabel>
   <SSF_Menu_SwitchDesc>Switch to another form.</SSF_Menu_SwitchDesc>
-  <SSF_Menu_Blocked>shapeshifted</SSF_Menu_Blocked>
+  <SSF_Menu_Blocked>locked while shapeshifted</SSF_Menu_Blocked>
+  <SSF_Menu_DrugBlocked>already shapeshifted</SSF_Menu_DrugBlocked>
 
   <SSF_Hediff_FormLabel>Shapeshift: {0}</SSF_Hediff_FormLabel>
   <SSF_Hediff_FormDesc>Stat changes from {0} transformation.</SSF_Hediff_FormDesc>
@@ -111,6 +112,6 @@
 
   <SSF_Message_DurationExtended>{0}'s shapeshift duration has been extended.</SSF_Message_DurationExtended>
   <SSF_Message_NotTransformed>{0} is not currently transformed.</SSF_Message_NotTransformed>
-  <SSF_Message_WrongFormForExtend>{0} is not in the required form for this effect.</SSF_Message_WrongFormForExtend>
+  <SSF_Message_WrongFormForExtend>{0} must be in {1} form to use this.</SSF_Message_WrongFormForExtend>
 
 </LanguageData>

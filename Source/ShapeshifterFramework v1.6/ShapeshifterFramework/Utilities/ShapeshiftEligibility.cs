@@ -191,9 +191,28 @@ namespace ShapeshifterFramework.Utilities
             // targetFormDef 지정 시 현재 폼과 불일치하면 차단
             string targetForm = GetExtendTargetFormDef(drugDef);
             if (!targetForm.NullOrEmpty() && core.currentForm?.defName != targetForm)
-                return "SSF_Message_WrongFormForExtend".Translate(pawn.LabelShort);
+                return WrongFormForExtendReason(pawn, targetForm);
 
             return null;
+        }
+
+        /// <summary>'이미 변신 중' 차단 사유 문자열 — 현재 폼 라벨을 포함해 무엇으로 변신 중이라 막혔는지 표시.
+        /// core/폼 미해결 시 폼 미지정 일반 메시지로 폴백.</summary>
+        public static string AlreadyTransformedReason(Pawn pawn)
+        {
+            if (IsAlreadyTransformed(pawn, out var core) && core?.currentForm != null)
+                return "SSF_GizmoDisabled_AlreadyTransformed".Translate(core.currentForm.LabelCap);
+            return "SSF_Message_AlreadyTransformed".Translate();
+        }
+
+        /// <summary>연장 효과 '폼 불일치' 차단 사유 문자열 — 필요한 폼 라벨을 포함.
+        /// defName이 FormDef로 해결되지 않으면 defName을 그대로 표시.</summary>
+        public static string WrongFormForExtendReason(Pawn pawn, string requiredFormDefName)
+        {
+            string formLabel = requiredFormDefName;
+            var formDef = DefDatabase<ShapeshiftFormDef>.GetNamedSilentFail(requiredFormDefName);
+            if (formDef != null) formLabel = formDef.LabelCap;
+            return "SSF_Message_WrongFormForExtend".Translate(pawn.LabelShort, formLabel);
         }
 
         /// <summary>기본 변신 가능 여부 판정. 종족/뮤턴트 필터, 사망 체크.

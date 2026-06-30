@@ -40,14 +40,14 @@ namespace ShapeshifterFramework.Patches
                 {
                     if (ideologyForbidden)
                     {
-                        blockReason = "IdeoligionForbids".Translate();
+                        blockReason = "SSF_GizmoDisabled_IdeologyForbidden".Translate();
                     }
                     else if (isTransformed)
                     {
                         // 약물의 allowedFromForms에 현재 폼이 포함되어 있으면 허용
                         var drugAllowed = ShapeshiftEligibility.GetDrugAllowedFromForms(target.def);
                         if (!ShapeshiftEligibility.IsFormTransitionAllowed(pawn, drugAllowed))
-                            blockReason = "SSF_Menu_Blocked".Translate();
+                            blockReason = "SSF_Menu_DrugBlocked".Translate();
                     }
                 }
                 // 2) 연장 약물 (IngestionOutcomeDoer_ExtendShapeshift) — 비변신/폼 불일치 시 차단
