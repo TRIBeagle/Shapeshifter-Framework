@@ -524,7 +524,7 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 ```xml
 <transformEnterSound>SSFTest_Sound_DarkKnightEnter</transformEnterSound>
 <transformEnterEffecter>SSFTest_Effecter_DarkKnightEnter</transformEnterEffecter>
-<transformEnterFleck>FleckStatic_PsychicPulse</transformEnterFleck>
+<transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
 <transformEnterFleckCount>5</transformEnterFleckCount>
 <transformEnterFleckScale>2.0</transformEnterFleckScale>
 <transformEnterFxDelayTicks>10</transformEnterFxDelayTicks>
@@ -1152,7 +1152,7 @@ A wolf form with full features:
   <replaceNativeTools>true</replaceNativeTools>
 
   <!-- VFX -->
-  <transformEnterFleck>FleckStatic_PsychicPulse</transformEnterFleck>
+  <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
   <transformEnterFleckCount>3</transformEnterFleckCount>
   <transformEnterFleckScale>1.5</transformEnterFleckScale>
 

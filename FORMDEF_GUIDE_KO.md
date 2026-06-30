@@ -524,7 +524,7 @@
 ```xml
 <transformEnterSound>SSFTest_Sound_DarkKnightEnter</transformEnterSound>
 <transformEnterEffecter>SSFTest_Effecter_DarkKnightEnter</transformEnterEffecter>
-<transformEnterFleck>FleckStatic_PsychicPulse</transformEnterFleck>
+<transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
 <transformEnterFleckCount>5</transformEnterFleckCount>
 <transformEnterFleckScale>2.0</transformEnterFleckScale>
 <transformEnterFxDelayTicks>10</transformEnterFxDelayTicks>
@@ -1152,7 +1152,7 @@ core.ExtendDuration(30000, true);         // +5시간, 원래 최대 시간 초�
   <replaceNativeTools>true</replaceNativeTools>
 
   <!-- VFX -->
-  <transformEnterFleck>FleckStatic_PsychicPulse</transformEnterFleck>
+  <transformEnterFleck>PsycastSkipFlashEntry</transformEnterFleck>
   <transformEnterFleckCount>3</transformEnterFleckCount>
   <transformEnterFleckScale>1.5</transformEnterFleckScale>
 

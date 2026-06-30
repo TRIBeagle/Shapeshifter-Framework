@@ -98,7 +98,7 @@ HediffDef (entry point — stats/severity)
 | **Pocket Sand** | Compatible — gizmo filtering on transform |
 | **Combat Extended** | Compatible — XPath patches for ToolCE/VerbPropertiesCE |
 | **Anomaly DLC** | Compatible — per-form mutant eligibility filtering |
-| **Pawnmorpher** | **Incompatible** — overlapping transformation systems |
+| **Pawnmorpher** | **Incompatible** — both mods drive pawn transformation/graphics; applying both to the same pawn can clash (render/Hediff conflicts) |
 
 ### Documentation
 
