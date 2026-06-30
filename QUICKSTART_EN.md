@@ -50,7 +50,7 @@ The FormDef defines **what the pawn looks and acts like** while transformed.
     <!-- Visual scale (2x size) -->
     <bodyDrawScale>2.0</bodyDrawScale>
 
-    <!-- Duration: 30000 ticks = 12.5 in-game hours. Remove for permanent. -->
+    <!-- Duration: 30000 ticks = 12 in-game hours (2500 ticks/hour). Remove for permanent. -->
     <durationTicks>30000</durationTicks>
 
     <!-- Player can manually revert -->
@@ -167,9 +167,9 @@ Choose how the transformation is triggered. Ability is the most common.
 | Method | Instead of AbilityDef, use... |
 |--------|-------------------------------|
 | **Drug** | `IngestionOutcomeDoer_Shapeshift` in ThingDef.ingestible.outcomeDoers |
-| **Item (scroll)** | `CompUseEffect_Shapeshift` in ThingDef.comps |
+| **Item (scroll)** | `CompProperties_UseEffect_Shapeshift` in ThingDef.comps |
 | **Projectile** | `Projectile_GiveHediff_Shapeshift` as projectile class |
-| **Equipment grant** | `CompEquipmentGiveAbility_Shapeshift` in weapon/apparel comps |
+| **Equipment grant** | `CompProperties_GiveAbility_Shapeshift` in weapon/apparel comps |
 | **Auto-shift** | `HediffCompProperties_AutoShift` comp on a hediff (health/combat/light triggers) |
 
 See [FORMDEF_GUIDE_EN.md](FORMDEF_GUIDE_EN.md) Section 5 for full details on each method.

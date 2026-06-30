@@ -50,7 +50,7 @@ FormDef는 변신 중 폰이 **어떻게 보이고 행동하는지** 정의합�
     <!-- 시각 스케일 (2배 크기) -->
     <bodyDrawScale>2.0</bodyDrawScale>
 
-    <!-- 지속시간: 30000틱 = 약 12.5 게임 시간. 삭제하면 영구. -->
+    <!-- 지속시간: 30000틱 = 12 게임 시간 (2500틱/시간). 삭제하면 영구. -->
     <durationTicks>30000</durationTicks>
 
     <!-- 플레이어가 수동 해제 가능 -->
@@ -167,9 +167,9 @@ HediffDef는 트리거와 폼을 연결하는 **다리** 역할입니다. 스탯
 | 방법 | AbilityDef 대신 사용할 것 |
 |------|--------------------------|
 | **약물** | ThingDef.ingestible.outcomeDoers에 `IngestionOutcomeDoer_Shapeshift` |
-| **아이템(스크롤)** | ThingDef.comps에 `CompUseEffect_Shapeshift` |
+| **아이템(스크롤)** | ThingDef.comps에 `CompProperties_UseEffect_Shapeshift` |
 | **투사체** | projectile 클래스에 `Projectile_GiveHediff_Shapeshift` |
-| **장비 부여** | 무기/의류 comps에 `CompEquipmentGiveAbility_Shapeshift` |
+| **장비 부여** | 무기/의류 comps에 `CompProperties_GiveAbility_Shapeshift` |
 | **자동 변신** | hediff comps에 `HediffCompProperties_AutoShift` (체력/전투/밝기 조건) |
 
 자세한 내용: [FORMDEF_GUIDE_KO.md](FORMDEF_GUIDE_KO.md) 5장 참조.

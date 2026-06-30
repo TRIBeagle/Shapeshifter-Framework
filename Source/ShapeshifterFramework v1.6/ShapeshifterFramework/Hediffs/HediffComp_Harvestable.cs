@@ -3,7 +3,7 @@
 // 용도 : 바닐라 CompShearable/CompMilkable/CompEggLayer 3종을 HediffComp 하나로 통합.
 //        autoSpawn=false (기본): WorkGiver가 수확 (울/우유 패턴)
 //        autoSpawn=true: fullness 1.0 시 바닥에 자동 스폰 (알 패턴)
-//        femaleOnly=true: 암컷만 활성 (우유/알 패턴)
+//        requiredGender=Female: 암컷만 활성 (우유/알 패턴)
 
 using System.Collections.Generic;
 using RimWorld;
