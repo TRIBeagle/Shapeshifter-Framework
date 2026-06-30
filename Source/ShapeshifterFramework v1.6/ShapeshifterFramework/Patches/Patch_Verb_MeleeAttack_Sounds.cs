@@ -25,6 +25,7 @@ namespace ShapeshifterFramework.Patches
         [HarmonyPostfix]
         static void Postfix_HitPawn(Verb_MeleeAttack __instance, ref SoundDef __result)
         {
+            if (!ShapeshiftRegistry.HasAny()) return;
             if (__instance == null || IsWeaponVerb(__instance)) return;
 
             var pawn = __instance.CasterPawn;
@@ -40,6 +41,7 @@ namespace ShapeshifterFramework.Patches
         [HarmonyPostfix]
         static void Postfix_HitBuilding(Verb_MeleeAttack __instance, ref SoundDef __result)
         {
+            if (!ShapeshiftRegistry.HasAny()) return;
             if (__instance == null || IsWeaponVerb(__instance)) return;
 
             var pawn = __instance.CasterPawn;
@@ -54,6 +56,7 @@ namespace ShapeshifterFramework.Patches
         [HarmonyPostfix]
         static void Postfix_Miss(Verb_MeleeAttack __instance, ref SoundDef __result)
         {
+            if (!ShapeshiftRegistry.HasAny()) return;
             if (__instance == null || IsWeaponVerb(__instance)) return;
 
             var pawn = __instance.CasterPawn;

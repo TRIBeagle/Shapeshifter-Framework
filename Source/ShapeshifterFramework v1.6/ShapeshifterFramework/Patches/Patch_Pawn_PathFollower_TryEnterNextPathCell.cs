@@ -19,6 +19,9 @@ namespace ShapeshifterFramework.Patches
             Pawn pawn = ___pawn;
             if (pawn == null || !pawn.Spawned || pawn.Map == null) return;
 
+            // 비변신 폰 즉시 스킵 — 이동하는 모든 폰의 terrain 조회 회피 (Postfix도 ShouldRun으로 동일 가드)
+            if (!ShapeshiftRegistry.IsActive(pawn)) return;
+
             var terr = pawn.Position.GetTerrain(pawn.Map);
             __state = terr != null && terr.IsWater;
         }

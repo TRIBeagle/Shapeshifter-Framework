@@ -196,33 +196,47 @@ namespace ShapeshifterFramework.Utilities
             return ps;
         }
 
-        /// <summary>exclusionTags(List(string))를 필드/프로퍼티에서 탐색 반환.</summary>
+        // 타입별 exclusionTags 접근자 캐시 (FieldInfo/PropertyInfo, 미발견은 null 저장) — 매 렌더 전체 멤버 선형 스캔 방지
+        private static readonly ConcurrentDictionary<Type, MemberInfo> _exclTagAccessor =
+            new ConcurrentDictionary<Type, MemberInfo>();
+
+        /// <summary>exclusionTags(List(string))를 필드/프로퍼티에서 탐색 반환. 타입별 접근자를 1회 해소 후 캐시.</summary>
         internal static List<string> TryGetExclusionTags(object obj)
         {
             if (obj == null) return null;
-
-            // 필드 우선
-            var fs = GetFieldsCached(obj.GetType());
-            for (int i = 0; i < fs.Length; i++)
+            var t = obj.GetType();
+            MemberInfo mi;
+            if (!_exclTagAccessor.TryGetValue(t, out mi))
             {
+                mi = ResolveExclTagMember(t);
+                _exclTagAccessor[t] = mi;
+            }
+            if (mi == null) return null;
+            try
+            {
+                if (mi is FieldInfo fi) return (List<string>)fi.GetValue(obj);
+                if (mi is PropertyInfo pi) return (List<string>)pi.GetValue(obj, null);
+            }
+            catch { /* 읽기 실패 무시 */ }
+            return null;
+        }
+
+        /// <summary>타입에서 exclusionTags 필드(우선)/프로퍼티를 해소. 없으면 null.</summary>
+        private static MemberInfo ResolveExclTagMember(Type t)
+        {
+            var fs = GetFieldsCached(t);
+            for (int i = 0; i < fs.Length; i++)
                 if (string.Equals(fs[i].Name, "exclusionTags", StringComparison.OrdinalIgnoreCase)
                     && typeof(List<string>).IsAssignableFrom(fs[i].FieldType))
-                {
-                    try { return (List<string>)fs[i].GetValue(obj); } catch { /* 필드 읽기 실패 무시 */ }
-                }
-            }
+                    return fs[i];
 
-            // 프로퍼티 폴백
-            var ps = GetPropertiesCached(obj.GetType());
+            var ps = GetPropertiesCached(t);
             for (int i = 0; i < ps.Length; i++)
-            {
                 if (ps[i].CanRead
                     && string.Equals(ps[i].Name, "exclusionTags", StringComparison.OrdinalIgnoreCase)
                     && typeof(List<string>).IsAssignableFrom(ps[i].PropertyType))
-                {
-                    try { return (List<string>)ps[i].GetValue(obj, null); } catch { /* 프로퍼티 읽기 실패 무시 */ }
-                }
-            }
+                    return ps[i];
+
             return null;
         }
 

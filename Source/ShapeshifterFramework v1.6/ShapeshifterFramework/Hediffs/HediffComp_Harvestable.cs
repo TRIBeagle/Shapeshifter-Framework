@@ -109,15 +109,14 @@ namespace ShapeshifterFramework.Hediffs
         {
             base.CompPostTick(ref severityAdjustment);
             if (!IsActive) return;
-
             if (Props.intervalTicks <= 0) return;
-            float growthPerTick = 1f / Props.intervalTicks;
 
             var pawn = Pawn;
-            if (pawn != null)
-                growthPerTick *= PawnUtility.BodyResourceGrowthSpeed(pawn);
+            if (pawn == null) return;
+            // 느린 누적기 — 60틱 간격으로 60배 누적(성장률 동일), 매틱 BodyResourceGrowthSpeed 호출을 ~1/60로 절감
+            if (!pawn.IsHashIntervalTick(60)) return;
 
-            fullness += growthPerTick;
+            fullness += 60f / Props.intervalTicks * PawnUtility.BodyResourceGrowthSpeed(pawn);
 
             if (fullness >= 1f)
             {

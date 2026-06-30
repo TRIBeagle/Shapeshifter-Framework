@@ -27,12 +27,6 @@ namespace ShapeshifterFramework.Comps
                 UpdateAbilityGrant();
         }
 
-        public override void CompTickRare()
-        {
-            base.CompTickRare();
-            UpdateAbilityGrant();
-        }
-
         /// <summary>현재 장비 소유자 확인 후 어빌리티 부여/회수.</summary>
         private void UpdateAbilityGrant()
         {

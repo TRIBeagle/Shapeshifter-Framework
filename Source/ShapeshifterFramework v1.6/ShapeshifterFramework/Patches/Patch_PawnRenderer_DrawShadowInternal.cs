@@ -52,6 +52,9 @@ namespace ShapeshifterFramework.Patches
             Pawn pawn = ___pawn;
             if (pawn == null) return true;
 
+            // 변신 폰이 하나도 없으면 즉시 바닐라 — 매 프레임 모든 폰 그림자에서의 dict 조회/프로퍼티 접근 회피
+            if (!ShapeshiftRegistry.HasAny()) return true;
+
             // 비행 시 바닐라 처리
             if (pawn.Flying) return true;
 
