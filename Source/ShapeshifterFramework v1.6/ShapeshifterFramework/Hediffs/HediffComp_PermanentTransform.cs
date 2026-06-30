@@ -61,14 +61,15 @@ namespace ShapeshifterFramework.Hediffs
         {
             base.CompPostTick(ref severityAdjustment);
 
+            // 가장 싼 상수 검사부터: 설정 없으면 즉시 반환
             if (Props.animalKind == null && Props.thingDef == null) return;
-            if (parent.Severity < Props.severityThreshold) return;
 
             var pawn = Pawn;
             if (pawn == null || pawn.Dead || pawn.Destroyed) return;
 
-            // 60틱 간격으로 검사
+            // 60틱 간격 게이트를 severity 검사보다 먼저 — 매 틱 부담 최소화 (동작 동일)
             if (!pawn.IsHashIntervalTick(60)) return;
+            if (parent.Severity < Props.severityThreshold) return;
 
             ExecuteTransform(pawn);
         }

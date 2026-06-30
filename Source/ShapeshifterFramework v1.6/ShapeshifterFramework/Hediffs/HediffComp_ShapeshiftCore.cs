@@ -755,9 +755,9 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>VerbTracker.AllVerbs getter 접근으로 lazy init을 강제 트리거.</summary>
         private static void ForceVerbInit(VerbTracker vt)
         {
-            // AllVerbs getter는 내부적으로 verbsNeedReinitOnLoad 플래그 시 InitVerbsFromZero를 호출
-            // discard 변수 대신 명시적 헬퍼로 의도를 명확히 표현
-            if (vt.AllVerbs == null) { /* getter 사이드이펙트만 필요 */ }
+            // AllVerbs getter는 내부적으로 verbsNeedReinitOnLoad 플래그 시 InitVerbsFromZero를 호출.
+            // getter 호출 자체가 목적이므로 discard로 사이드이펙트만 트리거.
+            _ = vt.AllVerbs;
         }
 
 

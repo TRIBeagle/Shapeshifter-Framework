@@ -32,6 +32,8 @@ namespace ShapeshifterFramework.Patches
 
                 Thing target = FloatMenuPatchHelper.GetTargetThing(opt);
                 if (target == null) continue;
+                // 비섭취물은 변신/연장 약물일 수 없음 — 약물 판정 헬퍼 진입 전 조기 스킵
+                if (target.def?.ingestible == null) continue;
 
                 string blockReason = null;
 

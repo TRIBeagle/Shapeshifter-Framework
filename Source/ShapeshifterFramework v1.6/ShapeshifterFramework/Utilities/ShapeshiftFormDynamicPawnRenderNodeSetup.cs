@@ -23,16 +23,21 @@ namespace ShapeshifterFramework.Utilities
         const int LogDictCleanupThreshold = 128; // 딕셔너리 무한 성장 방지 임계값
         static int lastCleanupTick;
 
+        // 비변신/노드없음 케이스용 무할당 빈 리스트 (읽기 전용으로만 반환 — 절대 변경하지 않음)
+        static readonly List<ValueTuple<PawnRenderNode, PawnRenderNode>> _emptyDynamicNodes
+            = new List<ValueTuple<PawnRenderNode, PawnRenderNode>>();
+
         public override IEnumerable<(PawnRenderNode node, PawnRenderNode parent)> GetDynamicNodes(Pawn pawn, PawnRenderTree tree)
         {
-            var outList = new List<ValueTuple<PawnRenderNode, PawnRenderNode>>();
-
+            // 비변신 폰(흔한 경우)은 리스트 할당 없이 공유 빈 리스트 반환
             if (!ShapeshiftRegistry.TryGet(pawn, out var comp, out var form))
-                return outList;
+                return _emptyDynamicNodes;
 
             var extras = form.renderNodeProperties;
             if (extras == null || extras.Count == 0)
-                return outList;
+                return _emptyDynamicNodes;
+
+            var outList = new List<ValueTuple<PawnRenderNode, PawnRenderNode>>();
 
             for (int i = 0; i < extras.Count; i++)
             {
