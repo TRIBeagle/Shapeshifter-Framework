@@ -485,7 +485,7 @@
 | 필드 | 타입 | 기본값 | 설명 |
 |------|------|--------|------|
 | `suppressIdeologyUncoveredThoughts` | `bool` | `true` | 변신 중 이데올로기 노출 관련 감정 페널티(하의/상의/머리/얼굴 노출) 전부 억제. 동물/몬스터 폼에서 "미개한 벌거벗음" 디버프 방지. |
-| `linkedSacredAnimalDef` | `ThingDef` | `null` | 이 폼이 대표하는 동물 종족. 숭배 동물 일치 시 규율 단계별 기분 (-8 / -3 / +2 / +5 / +8) |
+| `linkedSacredAnimalDef` | `ThingDef` | `null` | [Ideology] 이 폼이 대표하는 동물 종족. 숭배 동물 일치 시 규율 단계별 기분 (-8 / -3 / +2 / +5 / +8) |
 
 ```xml
 <suppressIdeologyUncoveredThoughts>true</suppressIdeologyUncoveredThoughts>
@@ -539,7 +539,7 @@
 | `ambientFleck` | `FleckDef` | null | 주기적 플렉 |
 | `ambientFleckIntervalTicks` | `int` | 60 | 플렉/사운드 스폰 간격 (틱) |
 | `ambientFleckScale` | `float` | 1.0 | 플렉 스케일 |
-| `ambientSound` | `SoundDef` | null | 주기적 사운드 (플렉과 같은 간격) |
+| `ambientSound` | `SoundDef` | null | 주기적 사운드. `ambientFleckIntervalTicks` 간격 공유; `ambientFleck` 미설정이어도 동작. |
 
 ```xml
 <ambientFleck>PsycastSkipInnerExit</ambientFleck>
@@ -777,7 +777,7 @@ hediff 활성 중 자원 수확 가능. 바닐라 CompShearable/CompMilkable/Com
 | `disallowedRaces` | `List<ThingDef>` | 시전자 종족 차단 |
 | `allowedMutants` | `List<MutantDef>` | [Anomaly] 시전자 뮤턴트 필터 |
 | `disallowedMutants` | `List<MutantDef>` | [Anomaly] 시전자 뮤턴트 차단 |
-| `affectHostileOnly` | `bool` | 적대 대상만 영향 (AoE) |
+| `affectHostileOnly` | `bool` | 적대 대상만 영향 (AoE). 범위 내 비적대 대상은 조용히 무시됨(메시지 없음). |
 | `allowedFromForms` | `List<string>` | 변신 중 시전 허용 폼 defName 목록 |
 
 > **변신 차단:** 변신 중에는 동일 폼 포함 **모든** 추가 변신이 차단됩니다. 현재 폼의 `defName`이 `allowedFromForms`에 있을 때만 예외적으로 시전 가능합니다. 이 규칙은 어빌리티, 약물, 아이템, 투사체 등 모든 트리거에 일관 적용됩니다.

@@ -485,7 +485,7 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `suppressIdeologyUncoveredThoughts` | `bool` | `true` | Suppress all Ideology nudity/exposure thought penalties (groin, chest, hair, face uncovered) while transformed. Prevents animal/monster forms from triggering "naked savage" debuffs. |
-| `linkedSacredAnimalDef` | `ThingDef` | `null` | Animal race this form represents. Mood varies by precept stage when matching venerated animal (-8 / -3 / +2 / +5 / +8) |
+| `linkedSacredAnimalDef` | `ThingDef` | `null` | [Ideology] Animal race this form represents. Mood varies by precept stage when matching venerated animal (-8 / -3 / +2 / +5 / +8) |
 
 ```xml
 <suppressIdeologyUncoveredThoughts>true</suppressIdeologyUncoveredThoughts>
@@ -539,7 +539,7 @@ Persistent effects during the transformation.
 | `ambientFleck` | `FleckDef` | null | Periodically spawned fleck |
 | `ambientFleckIntervalTicks` | `int` | 60 | Spawn interval for fleck and sound (ticks) |
 | `ambientFleckScale` | `float` | 1.0 | Fleck scale |
-| `ambientSound` | `SoundDef` | null | Periodically played sound (same interval as fleck) |
+| `ambientSound` | `SoundDef` | null | Periodically played sound. Shares `ambientFleckIntervalTicks`; works even with no `ambientFleck` set. |
 
 ```xml
 <ambientFleck>PsycastSkipInnerExit</ambientFleck>
@@ -777,7 +777,7 @@ Enables resource gathering from a pawn while the hediff is active. Combines vani
 | `disallowedRaces` | `List<ThingDef>` | Caster race block |
 | `allowedMutants` | `List<MutantDef>` | [Anomaly] Caster mutant filter |
 | `disallowedMutants` | `List<MutantDef>` | [Anomaly] Caster mutant block |
-| `affectHostileOnly` | `bool` | Only affect hostile targets (AoE) |
+| `affectHostileOnly` | `bool` | Only affect hostile targets (AoE). Non-hostile targets in range are silently skipped (no message). |
 | `allowedFromForms` | `List<string>` | FormDef defNames that can cast while transformed |
 
 > **Transformation blocking:** While transformed, **all** additional transformations (including the same form) are blocked unless the current form's `defName` is listed in `allowedFromForms`. This applies consistently across all trigger types (ability, drug, item, projectile).

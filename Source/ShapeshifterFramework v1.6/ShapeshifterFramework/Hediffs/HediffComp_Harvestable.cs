@@ -20,7 +20,8 @@ namespace ShapeshifterFramework.Hediffs
         /// <summary>수확 1회당 자원 수량.</summary>
         public int resourceAmount = 10;
 
-        /// <summary>fullness 0→1 충전에 걸리는 게임 틱. 기본 600000 = 10일 (60000틱/일).</summary>
+        /// <summary>fullness 0→1 충전에 걸리는 게임 틱. 기본 600000 = 10일 (60000틱/일).
+        /// 10일은 양털 등 느린 수확물 기준 — 알/우유처럼 잦은 수확물은 1~2일(60000~120000)로 짧게 설정 권장.</summary>
         public int intervalTicks = 600000;
 
         /// <summary>true면 fullness 1.0 도달 시 바닥에 자동 스폰 (알 패턴). false면 WorkGiver 수확 (울/우유 패턴).</summary>
