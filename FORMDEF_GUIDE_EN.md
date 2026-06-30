@@ -494,13 +494,13 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 
 | Stage | Label | Mood | Opinion | Memory | Special |
 |-------|-------|------|---------|--------|---------|
-| 0 | Blasphemy against nature | -10 | -20 | -10 (5d) | **Self-initiated forbidden** |
-| 1 | Unnatural power | -5 | -10 | -5 (3d) | - |
+| 0 | Abhorrent | -10 | -20 | -10 (5d) | **Self-initiated forbidden** |
+| 1 | Disapproved | -5 | -10 | -5 (3d) | - |
 | - | Don't care | - | - | - | No effects |
-| 2 | Special talent | +5 | +10 | - | - |
-| 3 | Divine blessing | +10 | +20 | - | - |
+| 2 | Respected | +5 | +10 | - | - |
+| 3 | Sublime | +10 | +20 | - | - |
 
-> At the "Blasphemy against nature" stage, **self-initiated** transforms are blocked: ability gizmos are disabled, drug ingestion menus are disabled, and usable items (scrolls) cannot be used. **Forced transforms by others** (abilities cast by another pawn, projectiles, surgery-administered drugs) are still allowed — the pawn suffers thought penalties but the transform proceeds normally.
+> At the "Abhorrent" stage, **self-initiated** transforms are blocked: ability gizmos are disabled, drug ingestion menus are disabled, and usable items (scrolls) cannot be used. **Forced transforms by others** (abilities cast by another pawn, projectiles, surgery-administered drugs) are still allowed — the pawn suffers thought penalties but the transform proceeds normally.
 
 ### 3.15 VFX & Sound (Enter/Exit)
 | Field | Type | Description |
@@ -615,7 +615,7 @@ This comp links HediffDef to FormDef and allows per-hediff behavior overrides.
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `formDef` | `ShapeshiftFormDef` | null | Target form. null = runtime `SetFormDef()`. |
+| `formDef` | `ShapeshiftFormDef` | null | Target form. null = assigned at runtime in code (advanced/debug; normally set this in XML). |
 | `durationTicks` | `int?` | null | Override FormDef.durationTicks |
 | `canRevertVoluntarily` | `bool?` | null | Override FormDef.canRevertVoluntarily |
 | `revertOnDowned` | `bool?` | null | Override FormDef.revertOnDowned |
