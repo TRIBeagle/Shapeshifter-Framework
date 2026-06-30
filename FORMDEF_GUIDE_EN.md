@@ -411,7 +411,7 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
 **VerbGizmoOption fields:**
 | Field | Type | Description |
 |-------|------|-------------|
-| `verbLabel` | `string` | Match verb by its label |
+| `verbLabel` | `string` | Match verb by its label (case-insensitive). Empty = match by list order (index). |
 | `label` | `string` | Command button label |
 | `description` | `string` | Command button description |
 | `toggleLabel` | `string` | Auto-attack toggle label |
@@ -451,6 +451,8 @@ Form auto-reverts when conditions are no longer met (checked every 60 ticks / 1 
   </li>
 </verbGizmoOptions>
 ```
+
+> **Matching rules:** `verbLabel` matches `verbProps.label` **case-insensitively**. If left empty, the option applies to the verb at the **same index** in list order — this is fragile if you later reorder or add `verbs`, so specifying `verbLabel` is recommended. If several verbs share the same label, only the **first** match receives the option.
 
 ### 3.12 Melee Sounds
 | Field | Type | Description |
@@ -669,7 +671,7 @@ Permanently converts a pawn into an animal or Thing when hediff severity reaches
 | `severityThreshold` | `float` | 1.0 | Severity at which conversion triggers |
 | `sendLetter` | `bool` | true | Send notification letter on conversion |
 | `letterTitleKey` | `string` | `SSF_PermanentTransform_LetterTitle` | Letter title translation key |
-| `letterTextKey` | `string` | `SSF_PermanentTransform_LetterText` | Letter text key. {0}=pawn name, {1}=result name |
+| `letterTextKey` | `string` | `SSF_PermanentTransform_LetterText` | Letter text key. Both args are always provided: {0}=pawn name, {1}=result name |
 
 ```xml
 <!-- Addiction severity 1.0 → permanent bear -->
@@ -782,6 +784,8 @@ Enables resource gathering from a pawn while the hediff is active. Combines vani
 >
 > **Self-cast gizmo auto-hide:** Self-only abilities (`targetRequired = false`) are automatically hidden from the gizmo bar while transformed (unless the current form is in `allowedFromForms`). Target-required abilities remain visible.
 >
+> **Hidden vs disabled:** Hiding (above) is distinct from disabling. An "already transformed" self-cast is *hidden* (no reason shown). By contrast, ideology-forbidden casting and caster race/category mismatch leave the gizmo **visible but disabled**, with the block reason shown in its tooltip — so the player can see *why* it is unavailable.
+>
 > **Ability tooltip:** The ability hover tooltip automatically displays the target form name and duration (or "Permanent") — no extra configuration required.
 
 #### Duration Cost for Abilities
@@ -807,6 +811,8 @@ Add `CompProperties_AbilityEffect_ShapeshiftDurationCost` as an additional comp 
 |-------|------|-------------|
 | `durationCostTicks` | `int` | Ticks deducted from shift timer on use |
 | `requireTransformed` | `bool` | If true (default), gizmo is disabled when not transformed |
+
+> The deducted time is shown automatically in the ability's stat summary (via `SSF_DurationCost`) — you do **not** need to repeat it in the ability description. When `requireTransformed` is true and the caster is not transformed, the gizmo is disabled with a "not transformed" tooltip reason.
 
 ### 5.2 Drug (Ingestible)
 ```xml

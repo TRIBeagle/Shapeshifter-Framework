@@ -411,7 +411,7 @@
 **VerbGizmoOption 필드:**
 | 필드 | 타입 | 설명 |
 |------|------|------|
-| `verbLabel` | `string` | 매칭할 버브 라벨 |
+| `verbLabel` | `string` | 라벨로 버브 매칭 (대소문자 무시). 비우면 목록 순서(인덱스)로 매칭. |
 | `label` | `string` | 명령 버튼 라벨 |
 | `description` | `string` | 명령 버튼 설명 |
 | `toggleLabel` | `string` | 자동공격 토글 라벨 |
@@ -451,6 +451,8 @@
   </li>
 </verbGizmoOptions>
 ```
+
+> **매칭 규칙:** `verbLabel`은 `verbProps.label`과 **대소문자 무시**로 매칭됩니다. 비우면 목록 순서상 **같은 인덱스**의 버브에 적용되는데, 이후 `verbs` 순서를 바꾸거나 추가하면 깨질 수 있으므로 `verbLabel` 지정을 권장합니다. 같은 라벨의 버브가 여럿이면 **첫 번째** 매칭에만 적용됩니다.
 
 ### 3.12 근접 사운드
 | 필드 | 타입 | 설명 |
@@ -669,7 +671,7 @@ hediff severity가 임계값에 도달하면 폰을 동물 또는 Thing으로 �
 | `severityThreshold` | `float` | 1.0 | 전환 발동 severity 임계값 |
 | `sendLetter` | `bool` | true | 전환 시 알림 레터 발송 |
 | `letterTitleKey` | `string` | `SSF_PermanentTransform_LetterTitle` | 레터 타이틀 번역 키 |
-| `letterTextKey` | `string` | `SSF_PermanentTransform_LetterText` | 레터 본문 키. {0}=폰 이름, {1}=결과물 이름 |
+| `letterTextKey` | `string` | `SSF_PermanentTransform_LetterText` | 레터 본문 키. 두 인자 항상 제공: {0}=폰 이름, {1}=결과물 이름 |
 
 ```xml
 <!-- 중독 severity 1.0 → 영구 곰 전환 -->
@@ -782,6 +784,8 @@ hediff 활성 중 자원 수확 가능. 바닐라 CompShearable/CompMilkable/Com
 >
 > **자기 시전 기즈모 자동 숨김:** 자기 전용 어빌리티(`targetRequired = false`)는 변신 중 기즈모 바에서 자동으로 숨겨집니다 (현재 폼이 `allowedFromForms`에 있으면 예외). 대상 지정 어빌리티는 계속 표시됩니다.
 >
+> **숨김 vs 비활성:** 위의 '숨김'은 '비활성'과 다릅니다. '이미 변신 중'인 자기 시전은 *숨겨집니다*(사유 미표시). 반면 이데올로기 금지·시전자 종족/카테고리 불일치는 기즈모가 **표시되되 비활성**이고, 툴팁에 차단 사유가 나와 플레이어가 *이유*를 알 수 있습니다.
+>
 > **어빌리티 툴팁:** 어빌리티 호버 툴팁에 대상 폼 이름과 지속시간(또는 "무제한")이 자동으로 표시됩니다 — 추가 설정 불필요.
 
 #### 어빌리티 변신 시간 차감
@@ -807,6 +811,8 @@ hediff 활성 중 자원 수확 가능. 바닐라 CompShearable/CompMilkable/Com
 |------|------|------|
 | `durationCostTicks` | `int` | 사용 시 차감할 변신 잔여 틱 |
 | `requireTransformed` | `bool` | true(기본)면 변신 중이 아닐 때 기즈모 비활성화 |
+
+> 차감 시간은 어빌리티 stat summary에 자동 표시됩니다(`SSF_DurationCost` 사용) — 어빌리티 설명에 다시 적을 필요 **없습니다**. `requireTransformed`가 true이고 시전자가 변신 중이 아니면 기즈모가 '변신 안 됨' 툴팁 사유와 함께 비활성화됩니다.
 
 ### 5.2 약물 (섭취)
 ```xml
