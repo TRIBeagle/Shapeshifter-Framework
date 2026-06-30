@@ -495,6 +495,18 @@ namespace ShapeshifterFramework
             if (spawnWeaponOnTransform != null && spawnWeaponOnTransform.Count > 1)
                 yield return $"spawnWeaponOnTransform has {spawnWeaponOnTransform.Count} weapons — vanilla only supports 1 primary weapon (extras will be dropped)";
 
+            // spawnApparelStuff/spawnWeaponStuff: stuff(재료) ThingDef가 아니면 무시됨 — 오설정 경고
+            if (spawnApparelStuff != null && spawnApparelStuff.stuffProps == null)
+                yield return $"spawnApparelStuff '{spawnApparelStuff.defName}' is not a stuff (material) ThingDef — it will be ignored";
+            if (spawnWeaponStuff != null && spawnWeaponStuff.stuffProps == null)
+                yield return $"spawnWeaponStuff '{spawnWeaponStuff.defName}' is not a stuff (material) ThingDef — it will be ignored";
+
+            // FX Fleck: Fleck을 지정했는데 Count==0이면 아무것도 재생되지 않음
+            if (transformEnterFleck != null && transformEnterFleckCount == 0)
+                yield return "transformEnterFleck is set but transformEnterFleckCount == 0 — no fleck will spawn";
+            if (transformExitFleck != null && transformExitFleckCount == 0)
+                yield return "transformExitFleck is set but transformExitFleckCount == 0 — no fleck will spawn";
+
             // PartOverride: Replace 모드인데 텍스처 없으면 경고
             CheckPartReplace(body, "body", ref __warnings);
             CheckPartReplace(head, "head", ref __warnings);

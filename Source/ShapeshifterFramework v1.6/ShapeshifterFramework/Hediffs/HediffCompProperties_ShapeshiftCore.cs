@@ -58,5 +58,12 @@ namespace ShapeshifterFramework.Hediffs
         {
             compClass = typeof(HediffComp_ShapeshiftCore);
         }
+
+        public override IEnumerable<string> ConfigErrors(HediffDef parentDef)
+        {
+            foreach (var e in base.ConfigErrors(parentDef)) yield return e;
+            if (formDef == null)
+                yield return $"{parentDef.defName}: HediffCompProperties_ShapeshiftCore.formDef is null — no form will be applied unless assigned at runtime in code. Set <formDef> if this is unintended.";
+        }
     }
 }

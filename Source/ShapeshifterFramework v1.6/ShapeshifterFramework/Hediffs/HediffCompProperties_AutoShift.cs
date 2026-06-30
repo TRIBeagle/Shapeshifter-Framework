@@ -43,5 +43,21 @@ namespace ShapeshifterFramework.Hediffs
         {
             compClass = typeof(HediffComp_AutoShift);
         }
+
+        public override IEnumerable<string> ConfigErrors(HediffDef parentDef)
+        {
+            foreach (var e in base.ConfigErrors(parentDef)) yield return e;
+
+            if (hediffDef == null)
+                yield return $"{parentDef.defName}: HediffCompProperties_AutoShift.hediffDef is null — AutoShift will not fire";
+            else if (hediffDef.CompProps<HediffCompProperties_ShapeshiftCore>() == null)
+                yield return $"{parentDef.defName}: AutoShift.hediffDef '{hediffDef.defName}' has no HediffComp_ShapeshiftCore comp — transform will not occur";
+
+            bool anyTrigger = healthThreshold.HasValue
+                || (triggerMentalStates != null && triggerMentalStates.Count > 0)
+                || triggerSunGlowBelow.HasValue || severityThreshold.HasValue || triggerInCombat;
+            if (!anyTrigger)
+                yield return $"{parentDef.defName}: HediffCompProperties_AutoShift has no trigger condition defined — it will never fire";
+        }
     }
 }
