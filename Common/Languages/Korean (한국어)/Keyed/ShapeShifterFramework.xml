@@ -5,7 +5,9 @@
   <SSF_Command_TransformDesc>변신 폼: {0}</SSF_Command_TransformDesc>
   <SSF_Command_RevertLabel>변신 해제</SSF_Command_RevertLabel>
   <SSF_Command_RevertDesc>변신을 해제합니다</SSF_Command_RevertDesc>
-  <SSF_Command_RevertTime>변신이 {0}초 남음</SSF_Command_RevertTime>
+  <SSF_Command_RevertTime>변신 {0} 남음</SSF_Command_RevertTime>
+  <SSF_Command_RevertForced>이 폼은 스스로 해제할 수 없습니다.</SSF_Command_RevertForced>
+  <SSF_AutoAttack_Exclusive>자동 공격은 배타적입니다 — 여기서 켜면 이 폼의 다른 원거리 무기 자동 공격이 꺼집니다.</SSF_AutoAttack_Exclusive>
   <SSF_Command_SwitchLabel>전환: {0}</SSF_Command_SwitchLabel>
   <SSF_Command_SwitchDesc>전환 폼: {0}</SSF_Command_SwitchDesc>
 

@@ -32,15 +32,40 @@ namespace ShapeshifterFramework.Hediffs
                 }
 
                 // 해제 버튼 — 바 표시 여부와 무관하게 항상 단독 표시
+                string revertDesc = "SSF_Command_RevertDesc".Translate();
+                // 유한 지속 시 남은 시간 표시 (모드 공통 period 포맷, CompTipStringExtra와 동일 게이트)
+                var revertDur = ResolvedDurationTicks;
+                if (revertDur.HasValue && revertDur.Value > 0)
+                {
+                    int remainTicks = RemainingShapeshiftTicks;
+                    if (remainTicks > 0)
+                        revertDesc += "\n\n" + "SSF_Command_RevertTime".Translate(
+                            GenDate.ToStringTicksToPeriod(remainTicks, allowSeconds: false, shortForm: false));
+                }
+
                 if (ResolvedCanRevertVoluntarily)
                 {
                     yield return new Command_Action
                     {
                         defaultLabel = "SSF_Command_RevertLabel".Translate(),
-                        defaultDesc = "SSF_Command_RevertDesc".Translate(),
+                        defaultDesc = revertDesc,
                         action = delegate { RemoveForm(); },
                         icon = ShapeshiftTextureUtility.GetRevertIcon(currentForm)
                     };
+                }
+                else
+                {
+                    // 강제 변신(canRevertVoluntarily=false): 해제 버튼을 숨기는 대신
+                    // 비활성 상태로 표시해 '스스로 해제할 수 없음'을 명확히 안내
+                    var revertCmd = new Command_Action
+                    {
+                        defaultLabel = "SSF_Command_RevertLabel".Translate(),
+                        defaultDesc = revertDesc,
+                        action = delegate { },
+                        icon = ShapeshiftTextureUtility.GetRevertIcon(currentForm)
+                    };
+                    revertCmd.Disable("SSF_Command_RevertForced".Translate());
+                    yield return revertCmd;
                 }
             }
 
@@ -80,7 +105,7 @@ namespace ShapeshifterFramework.Hediffs
                 var tgl = new Command_Toggle
                 {
                     defaultLabel = GetVerbLabel(idx, v, preferToggleLabel: true, gizOpt),
-                    defaultDesc = GetVerbDesc(idx, v, forToggle: true, gizOpt),
+                    defaultDesc = GetVerbDesc(idx, v, forToggle: true, gizOpt) + "\n\n" + "SSF_AutoAttack_Exclusive".Translate(),
                     icon = GetVerbIcon(idx, v, gizOpt) ?? v.UIIcon,
                     isActive = () => IsAutoAttackEnabled(idx, v),
                     toggleAction = () => ToggleAutoAttack(idx, v),

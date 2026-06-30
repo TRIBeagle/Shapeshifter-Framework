@@ -5,7 +5,9 @@
   <SSF_Command_TransformDesc>Form: {0}</SSF_Command_TransformDesc>
   <SSF_Command_RevertLabel>Revert</SSF_Command_RevertLabel>
   <SSF_Command_RevertDesc>Revert shapeshift.</SSF_Command_RevertDesc>
-  <SSF_Command_RevertTime>{0}s remaining</SSF_Command_RevertTime>
+  <SSF_Command_RevertTime>{0} remaining</SSF_Command_RevertTime>
+  <SSF_Command_RevertForced>This form cannot be reverted voluntarily.</SSF_Command_RevertForced>
+  <SSF_AutoAttack_Exclusive>Auto-attack is exclusive — enabling it here turns it off for this form's other ranged weapons.</SSF_AutoAttack_Exclusive>
   <SSF_Command_SwitchLabel>Switch: {0}</SSF_Command_SwitchLabel>
   <SSF_Command_SwitchDesc>Switch form: {0}</SSF_Command_SwitchDesc>
 
