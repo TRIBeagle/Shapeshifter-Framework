@@ -170,6 +170,12 @@ namespace ShapeshifterFramework.Utilities
                     return; // 맵 외에서는 생략
                 }
 
+                // 지연 발사 시점의 상태 재검증 — delay 사이 해제/전환된 폰 위의 유령 FX 방지.
+                // Enter: 여전히 '그 폼'으로 변신 중일 때만 / Exit: 그 폼이 더 이상 활성이 아닐 때만.
+                bool formActive = ShapeshiftRegistry.TryGet(pawn, out _, out var curForm) && curForm == form;
+                if (isEnter && !formActive) return;
+                if (!isEnter && formActive) return;
+
                 var map = pawn.MapHeld;
                 var pos = pawn.PositionHeld;
                 var drawPos = pawn.DrawPos;

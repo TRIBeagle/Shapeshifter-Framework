@@ -112,6 +112,9 @@
     <Compile Include="Patches\Patch_Pawn_HealthTracker_DropBloodFilth.cs" />
     <Compile Include="Patches\Patch_FilthMaker_TryMakeFilth.cs" />
     <Compile Include="Patches\Patch_Pawn_Kill.cs" />
+    <Compile Include="Patches\Patch_Pawn_Destroy.cs" />
+    <Compile Include="Patches\Patch_EquipmentUtility_CanEquip.cs" />
+    <Compile Include="Patches\Patch_JobGiver_OptimizeApparel_TryGiveJob.cs" />
     <Compile Include="Patches\Patch_Pawn_DoKillSideEffects.cs" />
     <Compile Include="Patches\Patch_DamageWorker_AddInjury_PlayWoundedVoiceSound.cs" />
     <Compile Include="Patches\Patch_DamageWorker_AddInjury_SourceLabel.cs" />

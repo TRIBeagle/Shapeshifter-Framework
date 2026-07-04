@@ -521,6 +521,10 @@ namespace ShapeshifterFramework.Compat
                     var pawn = __instance?.Pawn;
                     if (pawn == null || form == null) return;
 
+                    // 변신이 거부(적격성 실패 조기 반환)됐으면 적용 금지 —
+                    // RemoveForm(=복원 경로)이 오지 않으므로 얼굴이 폼 얼굴로 영구 고착됨
+                    if (!__instance.isTransformed || __instance.currentForm != form) return;
+
                     var store = Current.Game?.GetComponent<FAStateStore>();
                     var backup = store?.GetOrCreate(pawn);
                     if (backup == null) return;

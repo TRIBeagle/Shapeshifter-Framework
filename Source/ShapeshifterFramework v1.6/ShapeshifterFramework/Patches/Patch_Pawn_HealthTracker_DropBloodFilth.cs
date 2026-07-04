@@ -32,6 +32,15 @@ namespace ShapeshifterFramework.Patches
                 Log.Warning("[SSF] Reflection failed: Pawn_HealthTracker.pawn not found. DropBloodFilth scope patch disabled — vanilla version mismatch?");
         }
 
+        /// <summary>두 대상 모두 미발견이면 패치 스킵 — TargetMethods가 빈 열거를 반환하면 PatchAll이 중단됨.</summary>
+        static bool Prepare()
+        {
+            if (AccessTools.Method(typeof(Pawn_HealthTracker), "DropBloodFilth") != null) return true;
+            if (AccessTools.Method(typeof(Pawn_HealthTracker), "DropBloodSmear") != null) return true;
+            Log.Warning("[SSF] Pawn_HealthTracker.DropBloodFilth/DropBloodSmear not found - patch skipped (RimWorld version change?)");
+            return false;
+        }
+
         /// <summary>DropBloodFilth, DropBloodSmear 두 메서드를 동시에 패치.</summary>
         static IEnumerable<MethodBase> TargetMethods()
         {

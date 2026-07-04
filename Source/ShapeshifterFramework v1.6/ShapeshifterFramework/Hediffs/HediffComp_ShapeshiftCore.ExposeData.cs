@@ -205,6 +205,16 @@ namespace ShapeshifterFramework.Hediffs
         private void CleanupOrphanedTransformData(Pawn pawn)
         {
             Log.Warning($"[SSF] Pawn {pawn.Name}: orphaned transform data found (FormDef removed?). Forcing cleanup.");
+            CleanupTransformArtifacts(pawn);
+        }
+
+        /// <summary>변신 잔여물(파츠/hediff/능력/생성 장비/외형) 강제 정리.
+        /// 로드 고아 정리(CleanupOrphanedTransformData)와 ApplyForm 실패 롤백이 공유.</summary>
+        internal void CleanupTransformArtifacts(Pawn pawn)
+        {
+            // 파츠 원복 — 기록이 있으면 원래 부위 상태로 (죽은 폰은 내부에서 스킵)
+            try { RestoreBodyParts(pawn); }
+            catch (Exception ex) { Log.Warning($"[SSF] CleanupTransformArtifacts RestoreBodyParts error: {ex}"); }
 
             // hediff 잔여 제거
             if (pawn.health != null)
@@ -259,6 +269,35 @@ namespace ShapeshifterFramework.Hediffs
         {
             needsGearResolve = false;
             if (tmpPrevApIds == null && tmpPrevWpIds == null) return;
+
+            // 0차: 착용/장착 중 장비 — 기본값 GearHandling.Keep 폼은 '이전 장비'가 여전히 착용 상태.
+            // 이걸 안 보면 로드마다 "could not be resolved" 거짓 경고 + 추적 리스트 소실.
+            if (tmpPrevApIds != null && tmpPrevApIds.Count > 0 && pawn.apparel != null)
+            {
+                var worn = pawn.apparel.WornApparel;
+                for (int i = 0; i < worn.Count; i++)
+                {
+                    var a = worn[i];
+                    if (a != null && tmpPrevApIds.Contains(a.ThingID))
+                    {
+                        prevApparels.Add(a);
+                        tmpPrevApIds.Remove(a.ThingID);
+                    }
+                }
+            }
+            if (tmpPrevWpIds != null && tmpPrevWpIds.Count > 0 && pawn.equipment != null)
+            {
+                var eqs = pawn.equipment.AllEquipmentListForReading;
+                for (int i = 0; i < eqs.Count; i++)
+                {
+                    var e = eqs[i];
+                    if (e != null && tmpPrevWpIds.Contains(e.ThingID))
+                    {
+                        prevWeapons.Add(e);
+                        tmpPrevWpIds.Remove(e.ThingID);
+                    }
+                }
+            }
 
             // 1차: 인벤토리 탐색
             if (pawn.inventory?.innerContainer != null)

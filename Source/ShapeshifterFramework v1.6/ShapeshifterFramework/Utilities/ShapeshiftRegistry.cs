@@ -2,7 +2,8 @@
 // 목적 : 현재 변신 중인 폰(Pawn)을 전역 Dictionary로 관리하여 O(1) 속도로 HediffComp_ShapeshiftCore를 조회.
 // 용도 : Harmony 패치에서 매 프레임/틱마다 수행하던 hediff 탐색을
 //        단일 Dictionary.TryGetValue 호출로 대체. 비변신 폰은 ContainsKey 한 번으로 즉시 스킵.
-// 주의 : Register/Unregister는 ApplyForm, RemoveForm, PostLoadInit, PostSpawnSetup, PostDestroy에서만 호출.
+// 주의 : Register/Unregister는 ApplyForm, RemoveForm, PostLoadInit, PostSpawnSetup,
+//        Pawn.Destroy(Patch_Pawn_Destroy — Kill 미경유 파괴 대비)에서만 호출.
 //        PostDeSpawn에서는 호출하지 않음 (상단/동면관/포드 진입 시 레지스트리 누락 방지).
 //        FinalizeInit 중 ClearAll → 재등록 사이에 _reinitializing 가드로 hediff 기반 폴백 조회 제공.
 

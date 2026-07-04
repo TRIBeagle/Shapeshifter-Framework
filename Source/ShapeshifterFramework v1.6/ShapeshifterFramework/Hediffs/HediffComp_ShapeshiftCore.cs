@@ -372,6 +372,15 @@ namespace ShapeshifterFramework.Hediffs
             catch (Exception ex)
             {
                 Log.Error($"[SSF] ApplyForm failed for {pawn?.Name}: {ex}");
+                // currentForm 설정(성공 지점) 이전 예외 → 이미 부여된 장비/능력/hediff/파츠가
+                // 비변신 폰에 잔류하므로 즉시 롤백 (세이브-로드까지 기다리지 않음)
+                if (currentForm == null)
+                {
+                    try { CleanupTransformArtifacts(pawn); }
+                    catch (Exception ex2) { Log.Error($"[SSF] ApplyForm rollback failed for {pawn?.Name}: {ex2}"); }
+                    // 좀비 hediff 방지 — 바닐라가 다음 틱에 자동 제거
+                    if (parent != null) parent.Severity = 0f;
+                }
             }
             finally
             {

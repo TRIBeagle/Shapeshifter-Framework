@@ -389,6 +389,30 @@ namespace ShapeshifterFramework.Compat
                 }
             }
 
+            /// <summary>변신이 거부(비변신 상태로 종료)됐으면 Prefix에서 클리어한 메모리를 즉시 복원.
+            /// RemoveForm(=복원 경로)이 오지 않으므로 여기서 복원하지 않으면 SS 메모리가 소실됨.</summary>
+            static void Postfix(HediffComp_ShapeshiftCore __instance)
+            {
+                try
+                {
+                    if (__instance == null || __instance.isTransformed) return;
+                    var pawn = __instance.Pawn;
+                    if (pawn == null) return;
+
+                    var store = Current.Game?.GetComponent<SSMemoryStore>();
+                    if (store != null && store.TryGet(pawn, out var backup))
+                    {
+                        SimpleSidearmsCompat.RestoreMemory(pawn, backup);
+                        store.Remove(pawn);
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (!CompatManager.SS.HasFailed("MemoryHook:ApplyFormReject:Exception"))
+                        CompatManager.SS.Failed("MemoryHook:ApplyFormReject:Exception", e.Message);
+                }
+            }
+
             /// <summary>ApplyForm 종료(예외 포함) 후 플래그 해제. 내부 RemoveForm은 이 시점 이전에 끝난다.</summary>
             static void Finalizer()
             {

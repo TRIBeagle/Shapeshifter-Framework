@@ -44,11 +44,13 @@ namespace ShapeshifterFramework.Patches
 
             // 이번 타격으로 추가된 부상 hediff의 sourceLabel을 폼 이름으로 교체
             // sourceDef(weaponInt)는 유지 → 바닐라 LabelInBrackets에서 "폼이름 도구이름" 형태로 표시
+            // ageTicks == 0: 이번 틱에 추가된 부상만 — 과거에 같은 종족에게 입은 옛 상처 소급 재라벨 방지
             if (pawn.health?.hediffSet?.hediffs == null) return;
             var hediffs = pawn.health.hediffSet.hediffs;
             for (int i = hediffs.Count - 1; i >= 0; i--)
             {
-                if (hediffs[i] is Hediff_Injury injury && injury.sourceLabel == attacker.def.label)
+                if (hediffs[i] is Hediff_Injury injury && injury.ageTicks == 0
+                    && injury.sourceLabel == attacker.def.label)
                 {
                     injury.sourceLabel = formLabel;
                 }

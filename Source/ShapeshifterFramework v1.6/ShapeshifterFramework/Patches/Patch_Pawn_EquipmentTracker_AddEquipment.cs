@@ -30,6 +30,9 @@ namespace ShapeshifterFramework.Patches
                     Messages.Message("SSF_Message_CannotEquip".Translate(pawn.Named("PAWN")),
                                      pawn, MessageTypeDefOf.RejectInput, false);
                 }
+                // 백스톱: JobDriver_Equip은 무기를 먼저 DeSpawn한 뒤 여기를 호출 —
+                // 그냥 차단하면 무기가 허공에서 영구 소실되므로 폰 옆에 되살림
+                ShapeshiftEquipRules.RecoverBlockedEquipItem(newEq, pawn);
                 return false; // 원본 스킵
             }
             return true;

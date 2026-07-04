@@ -16,11 +16,11 @@ namespace ShapeshifterFramework.Patches
     [HarmonyPriority(Priority.Last)] // 마지막에 오버레이
     internal static class Patch_GeneUIUtility_DrawGene
     {
-        // 대상: DrawGene(Rect, Gene, ...) 오버로드 동적 탐색
-        [HarmonyTargetMethod]
-        static MethodBase TargetMethod()
+        private static MethodBase _target;
+
+        /// <summary>대상 미발견 시 패치 스킵 — TargetMethod에서 throw하면 PatchAll 전체가 중단되므로 Prepare 가드 사용.</summary>
+        static bool Prepare()
         {
-            MethodBase target = null;
             var methods = AccessTools.GetDeclaredMethods(typeof(GeneUIUtility));
 
             for (int i = 0; i < methods.Count; i++)
@@ -40,18 +40,19 @@ namespace ShapeshifterFramework.Patches
 
                 if (hasRect && hasGene)
                 {
-                    target = m;
+                    _target = m;
                     break;
                 }
             }
 
-            if (target == null)
-            {
-                throw new MissingMethodException("[SSF] GeneUIUtility.DrawGene not found.");
-            }
-
-            return target;
+            if (_target == null)
+                Log.Warning("[SSF] GeneUIUtility.DrawGene not found - patch skipped (RimWorld version change?)");
+            return _target != null;
         }
+
+        // 대상: DrawGene(Rect, Gene, ...) 오버로드 (Prepare에서 탐색)
+        [HarmonyTargetMethod]
+        static MethodBase TargetMethod() => _target;
 
         // 억제 대상: 디밍 + 외곽선 + 툴팁
         static void Postfix(Rect geneRect, Gene gene)

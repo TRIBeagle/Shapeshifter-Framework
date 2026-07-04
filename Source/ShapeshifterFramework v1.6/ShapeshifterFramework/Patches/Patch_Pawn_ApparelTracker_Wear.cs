@@ -31,6 +31,9 @@ namespace ShapeshifterFramework.Patches
                     Messages.Message("SSF_Message_CannotWear".Translate(pawn.Named("PAWN")),
                                      pawn, MessageTypeDefOf.RejectInput, false);
                 }
+                // 백스톱: 아웃핏 스탠드 경유 Wear는 스탠드에서 먼저 제거된 뒤 여기를 호출 —
+                // 그냥 차단하면 의류가 허공에서 소실되므로 폰 옆에 되살림 (바닥 의류는 Spawned라 no-op)
+                ShapeshiftEquipRules.RecoverBlockedEquipItem(newApparel, pawn);
                 return false; // 원본 스킵
             }
             return true;
